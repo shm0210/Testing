@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEETORY - Music Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png">
+</head>
+<body class="dark-mode">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png" alt="GEETORY Logo" class="logo">
+                <h1>GEETORY</h1>
+            </div>
+            <div class="header-controls">
+                <button id="theme-toggle" class="icon-button">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="settings-button" class="icon-button">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page (Default) -->
+            <section id="home-page" class="page active">
+                <div class="page-header">
+                    <h2 class="page-title">All Songs</h2>
+                    <div class="page-actions">
+                        <button id="shuffle-all" class="action-button">
+                            <i class="fas fa-random"></i> Shuffle All
+                        </button>
+                    </div>
+                </div>
+                <div class="songs-container" id="all-songs">
+                    <!-- Songs will be loaded here from JavaScript -->
+                </div>
+            </section>
+
+            <!-- Search Page -->
+            <section id="search-page" class="page">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search songs...">
+                    <button id="search-button"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="search-results" id="search-results">
+                    <!-- Search results will appear here -->
+                </div>
+            </section>
+
+            <!-- Playlist Page -->
+            <section id="playlist-page" class="page">
+                <div class="page-header">
+                    <h2 class="page-title">Your Playlists</h2>
+                    <div class="page-actions">
+                        <button id="create-playlist" class="action-button">
+                            <i class="fas fa-plus"></i> New Playlist
+                        </button>
+                    </div>
+                </div>
+                <div class="playlists-container" id="playlists">
+                    <!-- Playlists will be loaded here -->
+                </div>
+                <div class="playlist-songs-container" id="playlist-songs">
+                    <!-- Songs in selected playlist will appear here -->
+                </div>
+            </section>
+
+            <!-- Profile Page -->
+            <section id="profile-page" class="page">
+                <div class="profile-container">
+                    <div class="profile-pic">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2>SHUBHAM</h2>
+                    <p>Music Enthusiast</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <span id="total-songs">0</span>
+                            <span>Songs</span>
+                        </div>
+                        <div class="stat">
+                            <span id="total-playlists">0</span>
+                            <span>Playlists</span>
+                        </div>
+                        <div class="stat">
+                            <span id="total-time">0</span>
+                            <span>Hours</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Player Controls -->
+        <div class="player-container">
+            <div class="song-info">
+                <img id="now-playing-cover" src="https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png" alt="Now Playing">
+                <div class="song-details">
+                    <h3 id="now-playing-title">No song selected</h3>
+                    <p id="now-playing-artist">GEETORY</p>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button id="prev-button"><i class="fas fa-step-backward"></i></button>
+                <button id="play-button"><i class="fas fa-play"></i></button>
+                <button id="next-button"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="progress-container">
+                <span id="current-time">0:00</span>
+                <input type="range" id="progress-bar" value="0">
+                <span id="duration">0:00</span>
+            </div>
+            <div class="volume-control">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="0.7">
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-button active" data-page="home-page">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button class="nav-button" data-page="search-page">
+                <i class="fas fa-search"></i>
+                <span>Search</span>
+            </button>
+            <button class="nav-button" data-page="playlist-page">
+                <i class="fas fa-list"></i>
+                <span>Playlists</span>
+            </button>
+            <button class="nav-button" data-page="profile-page">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audio-player"></audio>
+
+    <!-- New Playlist Modal -->
+    <div class="modal" id="playlist-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Create New Playlist</h3>
+            <input type="text" id="playlist-name" placeholder="Playlist name">
+            <button id="save-playlist">Create Playlist</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2023 GEETORY Music Player. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -20,9 +20,6 @@
                 <button id="theme-toggle" class="icon-button">
                     <i class="fas fa-moon"></i>
                 </button>
-                <button id="settings-button" class="icon-button">
-                    <i class="fas fa-cog"></i>
-                </button>
             </div>
         </header>
 
@@ -58,14 +55,33 @@
             <section id="playlist-page" class="page">
                 <div class="page-header">
                     <h2 class="page-title">Your Playlists</h2>
-                    <div class="page-actions">
-                        <button id="create-playlist" class="action-button">
-                            <i class="fas fa-plus"></i> New Playlist
-                        </button>
-                    </div>
                 </div>
                 <div class="playlists-container" id="playlists">
-                    <!-- Playlists will be loaded here -->
+                    <!-- Default playlists will be loaded here -->
+                    <div class="playlist-card all-songs-playlist">
+                        <div class="playlist-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="playlist-info">
+                            <div class="playlist-name">All Songs</div>
+                            <div class="playlist-song-count" id="all-songs-count">0 songs</div>
+                        </div>
+                        <button class="play-all-button">
+                            <i class="fas fa-play"></i> PLAY ALL
+                        </button>
+                    </div>
+                    <div class="playlist-card favorites-playlist">
+                        <div class="playlist-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="playlist-info">
+                            <div class="playlist-name">Favorites</div>
+                            <div class="playlist-song-count" id="favorites-count">0 songs</div>
+                        </div>
+                        <button class="play-all-button">
+                            <i class="fas fa-play"></i> PLAY ALL
+                        </button>
+                    </div>
                 </div>
                 <div class="playlist-songs-container" id="playlist-songs">
                     <!-- Songs in selected playlist will appear here -->
@@ -86,7 +102,7 @@
                             <span>Songs</span>
                         </div>
                         <div class="stat">
-                            <span id="total-playlists">0</span>
+                            <span id="total-playlists">2</span>
                             <span>Playlists</span>
                         </div>
                         <div class="stat">
@@ -146,16 +162,6 @@
 
     <!-- Audio Element -->
     <audio id="audio-player"></audio>
-
-    <!-- New Playlist Modal -->
-    <div class="modal" id="playlist-modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Create New Playlist</h3>
-            <input type="text" id="playlist-name" placeholder="Playlist name">
-            <button id="save-playlist">Create Playlist</button>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="footer">

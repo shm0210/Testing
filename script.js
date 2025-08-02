@@ -23,34 +23,12 @@ const totalSongsElement = document.getElementById('total-songs');
 const totalPlaylistsElement = document.getElementById('total-playlists');
 const totalTimeElement = document.getElementById('total-time');
 const shuffleAllButton = document.getElementById('shuffle-all');
-const createPlaylistButton = document.getElementById('create-playlist');
-const playlistModal = document.getElementById('playlist-modal');
-const closeModalButton = document.querySelector('.close-modal');
-const savePlaylistButton = document.getElementById('save-playlist');
-const playlistNameInput = document.getElementById('playlist-name');
+const allSongsCountElement = document.getElementById('all-songs-count');
+const favoritesCountElement = document.getElementById('favorites-count');
 
 // App State
 let songs = [];
-let playlists = [
-    {
-        id: 1,
-        name: "Favorites",
-        cover: "https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png",
-        songs: [1, 2, 3]
-    },
-    {
-        id: 2,
-        name: "Workout Mix",
-        cover: "https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png",
-        songs: [4, 5]
-    },
-    {
-        id: 3,
-        name: "Chill Vibes",
-        cover: "https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png",
-        songs: [2, 3, 5]
-    }
-];
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 let currentSongIndex = 0;
 let isPlaying = false;
 let currentPlaylist = null;
@@ -61,7 +39,7 @@ let currentPlaylistCurrentIndex = 0;
 async function init() {
     await loadSongs();
     renderAllSongs();
-    renderPlaylists();
+    setupPlaylistEvents();
     updatePlayerInfo();
     updateStats();
     
@@ -81,151 +59,33 @@ async function loadSongs() {
         const response = await fetch('collection.json');
         const data = await response.json();
         songs = data.songs;
+        
+        // Update counts
+        allSongsCountElement.textContent = `${songs.length} ${songs.length === 1 ? 'song' : 'songs'}`;
+        favoritesCountElement.textContent = `${favorites.length} ${favorites.length === 1 ? 'song' : 'songs'}`;
     } catch (error) {
         console.error('Error loading songs:', error);
         // Fallback data if collection.json fails to load
         songs = [
             {
-            "id": 1,
-            "title": "Aankhon Mein Doob Jaane Ko",
-            "artist": "THE 9TEEN",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.mp3"
-        },
-        {
-            "id": 2,
-            "title": "Tere Vaaste",
-            "artist": "Sachin-Jigar, Varun Jain, Shadab Faridi",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Vaaste%20-%20Sachin-Jigar%2C%20Varun%20Jain%2C%20Shadab%20Faridi.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Vaaste%20-%20Sachin-Jigar%2C%20Varun%20Jain%2C%20Shadab%20Faridi.mp3"
-        },
-        {
-            "id": 3,
-            "title": "Pasoori Nu",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pasoori%20Nu%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pasoori%20Nu%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 4,
-            "title": "Kesariya",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kesariya%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kesariya%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 5,
-            "title": "Raatan Lambiyan",
-            "artist": "Tanishk Bagchi, Jubin Nautiyal",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Raatan%20Lambiyan%20-%20Tanishk%20Bagchi%2C%20Jubin%20Nautiyal.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Raatan%20Lambiyan%20-%20Tanishk%20Bagchi%2C%20Jubin%20Nautiyal.mp3"
-        },
-        {
-            "id": 6,
-            "title": "Shayad",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shayad%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shayad%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 7,
-            "title": "Tum Hi Aana",
-            "artist": "Jubin Nautiyal",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Hi%20Aana%20-%20Jubin%20Nautiyal.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Hi%20Aana%20-%20Jubin%20Nautiyal.mp3"
-        },
-        {
-            "id": 8,
-            "title": "Bekhayali",
-            "artist": "Sachet Tandon",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bekhayali%20-%20Sachet%20Tandon.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bekhayali%20-%20Sachet%20Tandon.mp3"
-        },
-        {
-            "id": 9,
-            "title": "Tujhe Kitna Chahne Lage",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tujhe%20Kitna%20Chahne%20Lage%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tujhe%20Kitna%20Chahne%20Lage%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 10,
-            "title": "Ve Maahi",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ve%20Maahi%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ve%20Maahi%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 11,
-            "title": "Kaise Hua",
-            "artist": "Vishal Mishra",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kaise%20Hua%20-%20Vishal%20Mishra.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kaise%20Hua%20-%20Vishal%20Mishra.mp3"
-        },
-        {
-            "id": 12,
-            "title": "Tera Ban Jaunga",
-            "artist": "Akhil Sachdeva, Tulsi Kumar",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Ban%20Jaunga%20-%20Akhil%20Sachdeva%2C%20Tulsi%20Kumar.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Ban%20Jaunga%20-%20Akhil%20Sachdeva%2C%20Tulsi%20Kumar.mp3"
-        },
-        {
-            "id": 13,
-            "title": "Pehla Pyaar",
-            "artist": "Arko, Akhil Sachdeva",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pehla%20Pyaar%20-%20Arko%2C%20Akhil%20Sachdeva.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pehla%20Pyaar%20-%20Arko%2C%20Akhil%20Sachdeva.mp3"
-        },
-        {
-            "id": 14,
-            "title": "Tere Bin",
-            "artist": "Rahat Fateh Ali Khan, Asees Kaur",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Bin%20-%20Rahat%20Fateh%20Ali%20Khan%2C%20Asees%20Kaur.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Bin%20-%20Rahat%20Fateh%20Ali%20Khan%2C%20Asees%20Kaur.mp3"
-        },
-        {
-            "id": 15,
-            "title": "Dil Diyan Gallan",
-            "artist": "Atif Aslam",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Dil%20Diyan%20Gallan%20-%20Atif%20Aslam.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Dil%20Diyan%20Gallan%20-%20Atif%20Aslam.mp3"
-        },
-        {
-            "id": 16,
-            "title": "Tera Yaar Hoon Main",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Yaar%20Hoon%20Main%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Yaar%20Hoon%20Main%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 17,
-            "title": "Mere Sohneya",
-            "artist": "Sachet Tandon, Parampara Tandon",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Mere%20Sohneya%20-%20Sachet%20Tandon%2C%20Parampara%20Tandon.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Mere%20Sohneya%20-%20Sachet%20Tandon%2C%20Parampara%20Tandon.mp3"
-        },
-        {
-            "id": 18,
-            "title": "Tum Se Hi",
-            "artist": "Mohit Chauhan",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Se%20Hi%20-%20Mohit%20Chauhan.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Se%20Hi%20-%20Mohit%20Chauhan.mp3"
-        },
-        {
-            "id": 19,
-            "title": "Tum Mile",
-            "artist": "Neeraj Shridhar",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Mile%20-%20Neeraj%20Shridhar.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Mile%20-%20Neeraj%20Shridhar.mp3"
-        },
-        {
-            "id": 20,
-            "title": "Ae Dil Hai Mushkil",
-            "artist": "Pritam, Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ae%20Dil%20Hai%20Mushkil%20-%20Pritam%2C%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ae%20Dil%20Hai%20Mushkil%20-%20Pritam%2C%20Arijit%20Singh.mp3"
-        }
+                id: 1,
+                title: "Aankhon Mein Doob Jaane Ko",
+                artist: "THE 9TEEN",
+                cover: "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.jpg",
+                source: "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.mp3",
+                duration: 180
+            },
+            {
+                id: 2,
+                title: "Sample Song 2",
+                artist: "Artist 2",
+                cover: "https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png",
+                source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                duration: 210
+            }
         ];
+        
+        allSongsCountElement.textContent = `${songs.length} ${songs.length === 1 ? 'song' : 'songs'}`;
     }
 }
 
@@ -265,23 +125,26 @@ function setupEventListeners() {
     
     // Shuffle all button
     shuffleAllButton.addEventListener('click', shuffleAllSongs);
-    
-    // Playlist modal
-    createPlaylistButton.addEventListener('click', () => {
-        playlistModal.style.display = 'flex';
+}
+
+// Set up playlist events
+function setupPlaylistEvents() {
+    // All Songs playlist
+    document.querySelector('.all-songs-playlist .play-all-button').addEventListener('click', () => {
+        playAllSongs();
     });
     
-    closeModalButton.addEventListener('click', () => {
-        playlistModal.style.display = 'none';
+    document.querySelector('.all-songs-playlist').addEventListener('click', () => {
+        showAllSongsPlaylist();
     });
     
-    savePlaylistButton.addEventListener('click', createNewPlaylist);
+    // Favorites playlist
+    document.querySelector('.favorites-playlist .play-all-button').addEventListener('click', () => {
+        playFavorites();
+    });
     
-    // Close modal when clicking outside
-    window.addEventListener('click', (e) => {
-        if (e.target === playlistModal) {
-            playlistModal.style.display = 'none';
-        }
+    document.querySelector('.favorites-playlist').addEventListener('click', () => {
+        showFavoritesPlaylist();
     });
 }
 
@@ -295,74 +158,85 @@ function renderAllSongs() {
         if (index === currentSongIndex && isPlaying) {
             songElement.classList.add('now-playing');
         }
+        
+        const isFavorite = favorites.includes(song.id);
+        
         songElement.innerHTML = `
             <img src="${song.cover}" alt="${song.title}" class="song-cover">
             <div class="song-details">
                 <div class="song-title">${song.title}</div>
                 <div class="song-artist">${song.artist}</div>
             </div>
-            <button class="play-button" data-index="${index}">
-                <i class="fas fa-play"></i>
-            </button>
+            <div class="song-actions">
+                <button class="favorite-button" data-id="${song.id}">
+                    <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+                <button class="play-button" data-index="${index}">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
         `;
         
         songElement.addEventListener('click', () => {
             playSong(index);
         });
         
+        const favoriteButton = songElement.querySelector('.favorite-button');
+        favoriteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(song.id, favoriteButton);
+        });
+        
         allSongsContainer.appendChild(songElement);
     });
 }
 
-// Render playlists with improved "Play All" button
-function renderPlaylists() {
-    playlistsContainer.innerHTML = '';
+// Toggle favorite status
+function toggleFavorite(songId, button) {
+    const icon = button.querySelector('i');
+    const index = favorites.indexOf(songId);
     
-    playlists.forEach(playlist => {
-        const playlistElement = document.createElement('div');
-        playlistElement.className = 'playlist-card';
-        playlistElement.innerHTML = `
-            <img src="${playlist.cover}" alt="${playlist.name}" class="playlist-cover">
-            <div class="playlist-info">
-                <div class="playlist-name">${playlist.name}</div>
-                <div class="playlist-song-count">${playlist.songs.length} ${playlist.songs.length === 1 ? 'song' : 'songs'}</div>
-                <button class="play-all-button" data-playlist-id="${playlist.id}">
-                    <i class="fas fa-play"></i> PLAY ALL
-                </button>
-            </div>
-        `;
-        
-        const playAllButton = playlistElement.querySelector('.play-all-button');
-        playAllButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            playPlaylist(playlist.id);
-        });
-        
-        playlistElement.addEventListener('click', () => {
-            showPlaylistSongs(playlist.id);
-        });
-        
-        playlistsContainer.appendChild(playlistElement);
-    });
+    if (index === -1) {
+        favorites.push(songId);
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+    } else {
+        favorites.splice(index, 1);
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+    }
+    
+    // Update localStorage
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    
+    // Update favorites count
+    favoritesCountElement.textContent = `${favorites.length} ${favorites.length === 1 ? 'song' : 'songs'}`;
 }
 
-// Play entire playlist
-function playPlaylist(playlistId) {
-    const playlist = playlists.find(p => p.id === playlistId);
-    if (!playlist || playlist.songs.length === 0) return;
+// Play all songs
+function playAllSongs() {
+    if (songs.length === 0) return;
     
-    const songIndices = playlist.songs.map(id => songs.findIndex(s => s.id === id));
-    if (songIndices.length > 0) {
-        playSong(songIndices[0], songIndices);
+    const allSongIndices = [...Array(songs.length).keys()];
+    playSong(0, allSongIndices);
+}
+
+// Play favorites
+function playFavorites() {
+    if (favorites.length === 0) return;
+    
+    const favoriteIndices = favorites.map(id => songs.findIndex(s => s.id === id));
+    if (favoriteIndices.length > 0 && favoriteIndices[0] !== -1) {
+        playSong(favoriteIndices[0], favoriteIndices);
     }
 }
 
-// Show songs in a playlist with improved interface
-function showPlaylistSongs(playlistId) {
-    const playlist = playlists.find(p => p.id === playlistId);
-    if (!playlist) return;
-    
-    currentPlaylist = playlist;
+// Show all songs as playlist
+function showAllSongsPlaylist() {
+    currentPlaylist = {
+        name: "All Songs",
+        songs: songs.map(song => song.id)
+    };
     
     // Hide playlists, show songs
     playlistsContainer.style.display = 'none';
@@ -370,7 +244,7 @@ function showPlaylistSongs(playlistId) {
     
     playlistSongsContainer.innerHTML = `
         <div class="playlist-header">
-            <h3>${playlist.name}</h3>
+            <h3>All Songs</h3>
             <div class="playlist-actions">
                 <button class="back-button" id="back-to-playlists">
                     <i class="fas fa-arrow-left"></i> Back
@@ -394,10 +268,91 @@ function showPlaylistSongs(playlistId) {
     });
     
     playPlaylistButton.addEventListener('click', () => {
-        playPlaylist(playlistId);
+        playAllSongs();
     });
     
-    playlist.songs.forEach(songId => {
+    songs.forEach((song, index) => {
+        const songElement = document.createElement('div');
+        songElement.className = 'song-card';
+        if (index === currentSongIndex && isPlaying) {
+            songElement.classList.add('now-playing');
+        }
+        
+        const isFavorite = favorites.includes(song.id);
+        
+        songElement.innerHTML = `
+            <img src="${song.cover}" alt="${song.title}" class="song-cover">
+            <div class="song-details">
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+            </div>
+            <div class="song-actions">
+                <button class="favorite-button" data-id="${song.id}">
+                    <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+                <button class="play-button" data-index="${index}">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+        `;
+        
+        songElement.addEventListener('click', () => {
+            playSong(index, [...Array(songs.length).keys()]);
+        });
+        
+        const favoriteButton = songElement.querySelector('.favorite-button');
+        favoriteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(song.id, favoriteButton);
+        });
+        
+        playlistSongsList.appendChild(songElement);
+    });
+}
+
+// Show favorites playlist
+function showFavoritesPlaylist() {
+    if (favorites.length === 0) return;
+    
+    currentPlaylist = {
+        name: "Favorites",
+        songs: [...favorites]
+    };
+    
+    // Hide playlists, show songs
+    playlistsContainer.style.display = 'none';
+    playlistSongsContainer.style.display = 'block';
+    
+    playlistSongsContainer.innerHTML = `
+        <div class="playlist-header">
+            <h3>Favorites</h3>
+            <div class="playlist-actions">
+                <button class="back-button" id="back-to-playlists">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="action-button" id="play-playlist">
+                    <i class="fas fa-play"></i> Play All
+                </button>
+            </div>
+        </div>
+        <div class="playlist-songs-list" id="playlist-songs-list"></div>
+    `;
+    
+    const playlistSongsList = document.getElementById('playlist-songs-list');
+    const backButton = document.getElementById('back-to-playlists');
+    const playPlaylistButton = document.getElementById('play-playlist');
+    
+    backButton.addEventListener('click', () => {
+        playlistsContainer.style.display = 'grid';
+        playlistSongsContainer.style.display = 'none';
+        currentPlaylist = null;
+    });
+    
+    playPlaylistButton.addEventListener('click', () => {
+        playFavorites();
+    });
+    
+    favorites.forEach(songId => {
         const songIndex = songs.findIndex(s => s.id === songId);
         if (songIndex !== -1) {
             const song = songs[songIndex];
@@ -406,19 +361,35 @@ function showPlaylistSongs(playlistId) {
             if (songIndex === currentSongIndex && isPlaying) {
                 songElement.classList.add('now-playing');
             }
+            
             songElement.innerHTML = `
                 <img src="${song.cover}" alt="${song.title}" class="song-cover">
                 <div class="song-details">
                     <div class="song-title">${song.title}</div>
                     <div class="song-artist">${song.artist}</div>
                 </div>
-                <button class="play-button" data-index="${songIndex}">
-                    <i class="fas fa-play"></i>
-                </button>
+                <div class="song-actions">
+                    <button class="favorite-button" data-id="${song.id}">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="play-button" data-index="${songIndex}">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
             `;
             
             songElement.addEventListener('click', () => {
-                playSong(songIndex, playlist.songs.map(id => songs.findIndex(s => s.id === id)));
+                playSong(songIndex, favorites.map(id => songs.findIndex(s => s.id === id)));
+            });
+            
+            const favoriteButton = songElement.querySelector('.favorite-button');
+            favoriteButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite(song.id, favoriteButton);
+                // Remove from DOM if in favorites playlist
+                if (currentPlaylist && currentPlaylist.name === "Favorites") {
+                    songElement.remove();
+                }
             });
             
             playlistSongsList.appendChild(songElement);
@@ -426,25 +397,63 @@ function showPlaylistSongs(playlistId) {
     });
 }
 
-// Create new playlist
-function createNewPlaylist() {
-    const name = playlistNameInput.value.trim();
-    if (!name) return;
+// Perform search
+function performSearch() {
+    const query = searchInput.value.toLowerCase();
+    if (!query) {
+        searchResults.innerHTML = '<p>Enter a search term</p>';
+        return;
+    }
     
-    const newPlaylist = {
-        id: Date.now(), // Simple unique ID
-        name: name,
-        cover: "https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png",
-        songs: []
-    };
+    const results = songs.filter(song => 
+        song.title.toLowerCase().includes(query) || 
+        song.artist.toLowerCase().includes(query)
+    );
     
-    playlists.push(newPlaylist);
-    renderPlaylists();
-    updateStats();
+    if (results.length === 0) {
+        searchResults.innerHTML = '<p>No results found</p>';
+        return;
+    }
     
-    // Reset and close modal
-    playlistNameInput.value = '';
-    playlistModal.style.display = 'none';
+    searchResults.innerHTML = '';
+    results.forEach((song, index) => {
+        const songIndex = songs.findIndex(s => s.id === song.id);
+        const songElement = document.createElement('div');
+        songElement.className = 'song-card';
+        if (songIndex === currentSongIndex && isPlaying) {
+            songElement.classList.add('now-playing');
+        }
+        
+        const isFavorite = favorites.includes(song.id);
+        
+        songElement.innerHTML = `
+            <img src="${song.cover}" alt="${song.title}" class="song-cover">
+            <div class="song-details">
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+            </div>
+            <div class="song-actions">
+                <button class="favorite-button" data-id="${song.id}">
+                    <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+                <button class="play-button" data-index="${songIndex}">
+                    <i class="fas fa-play"></i>
+                </button>
+            </div>
+        `;
+        
+        songElement.addEventListener('click', () => {
+            playSong(songIndex);
+        });
+        
+        const favoriteButton = songElement.querySelector('.favorite-button');
+        favoriteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(song.id, favoriteButton);
+        });
+        
+        searchResults.appendChild(songElement);
+    });
 }
 
 // Shuffle all songs
@@ -596,7 +605,7 @@ function updatePlayerInfo() {
 // Update stats (total songs, playlists, total time)
 function updateStats() {
     totalSongsElement.textContent = songs.length;
-    totalPlaylistsElement.textContent = playlists.length;
+    totalPlaylistsElement.textContent = 2; // All Songs and Favorites
     
     // Calculate total duration in hours
     const totalSeconds = songs.reduce((sum, song) => sum + (song.duration || 180), 0);

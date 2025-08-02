@@ -21,13 +21,6 @@ const playlistsContainer = document.getElementById('playlists');
 const playlistSongsContainer = document.getElementById('playlist-songs');
 const totalSongsElement = document.getElementById('total-songs');
 const totalPlaylistsElement = document.getElementById('total-playlists');
-const totalTimeElement = document.getElementById('total-time');
-const shuffleAllButton = document.getElementById('shuffle-all');
-const createPlaylistButton = document.getElementById('create-playlist');
-const playlistModal = document.getElementById('playlist-modal');
-const closeModalButton = document.querySelector('.close-modal');
-const savePlaylistButton = document.getElementById('save-playlist');
-const playlistNameInput = document.getElementById('playlist-name');
 
 // App State
 let songs = [];
@@ -54,8 +47,6 @@ let playlists = [
 let currentSongIndex = 0;
 let isPlaying = false;
 let currentPlaylist = null;
-let currentPlaylistSongIndices = null;
-let currentPlaylistCurrentIndex = 0;
 
 // Initialize the app
 async function init() {
@@ -70,9 +61,6 @@ async function init() {
     
     // Set initial volume
     audioPlayer.volume = volumeBar.value;
-    
-    // Load theme preference from localStorage
-    loadThemePreference();
 }
 
 // Load songs from collection.json
@@ -256,68 +244,12 @@ function setupEventListeners() {
     });
     
     // Search functionality
-    function performSearch() {
-    const query = searchInput.value.trim().toLowerCase();
-    if (!query) return;
-    
-    searchResults.innerHTML = '';
-    const results = songs.filter(song => 
-        song.title.toLowerCase().includes(query) || 
-        song.artist.toLowerCase().includes(query)
-    );
-    
-    if (results.length === 0) {
-        searchResults.innerHTML = '<p class="no-results">No songs found</p>';
-        return;
-    }
-    
-    results.forEach(song => {
-        const songIndex = songs.findIndex(s => s.id === song.id);
-        const songElement = document.createElement('div');
-        songElement.className = 'song-card';
-        songElement.innerHTML = `
-            <img src="${song.cover}" alt="${song.title}" class="song-cover">
-            <div class="song-details">
-                <div class="song-title">${song.title}</div>
-                <div class="song-artist">${song.artist}</div>
-            </div>
-            <button class="play-button" data-index="${songIndex}">
-                <i class="fas fa-play"></i>
-            </button>
-        `;
-        
-        songElement.addEventListener('click', () => {
-            playSong(songIndex);
-        });
-        
-        searchResults.appendChild(songElement);
-    });
-    
-    navigateTo('search-page');
-}
-    });
-    searchButton.addEventListener('click', performSearch);
-    
-    // Shuffle all button
-    shuffleAllButton.addEventListener('click', shuffleAllSongs);
-    
-    // Playlist modal
-    createPlaylistButton.addEventListener('click', () => {
-        playlistModal.style.display = 'flex';
-    });
-    
-    closeModalButton.addEventListener('click', () => {
-        playlistModal.style.display = 'none';
-    });
-    
-    savePlaylistButton.addEventListener('click', createNewPlaylist);
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', (e) => {
-        if (e.target === playlistModal) {
-            playlistModal.style.display = 'none';
+    searchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
         }
     });
+    searchButton.addEventListener('click', performSearch);
 }
 
 // Render all songs in the home page
@@ -327,9 +259,6 @@ function renderAllSongs() {
     songs.forEach((song, index) => {
         const songElement = document.createElement('div');
         songElement.className = 'song-card';
-        if (index === currentSongIndex && isPlaying) {
-            songElement.classList.add('now-playing');
-        }
         songElement.innerHTML = `
             <img src="${song.cover}" alt="${song.title}" class="song-cover">
             <div class="song-details">
@@ -349,7 +278,7 @@ function renderAllSongs() {
     });
 }
 
-// Render playlists with improved "Play All" button
+// Render playlists
 function renderPlaylists() {
     playlistsContainer.innerHTML = '';
     
@@ -360,18 +289,12 @@ function renderPlaylists() {
             <img src="${playlist.cover}" alt="${playlist.name}" class="playlist-cover">
             <div class="playlist-info">
                 <div class="playlist-name">${playlist.name}</div>
-                <div class="playlist-song-count">${playlist.songs.length} ${playlist.songs.length === 1 ? 'song' : 'songs'}</div>
-                <button class="play-all-button" data-playlist-id="${playlist.id}">
-                    <i class="fas fa-play"></i> PLAY ALL
+                <div class="playlist-song-count">${playlist.songs.length} songs</div>
+                <button class="play-button" data-playlist-id="${playlist.id}">
+                    <i class="fas fa-play"></i> Play All
                 </button>
             </div>
         `;
-        
-        const playAllButton = playlistElement.querySelector('.play-all-button');
-        playAllButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            playPlaylist(playlist.id);
-        });
         
         playlistElement.addEventListener('click', () => {
             showPlaylistSongs(playlist.id);
@@ -381,20 +304,7 @@ function renderPlaylists() {
     });
 }
 
-
-
-// Play entire playlist
-function playPlaylist(playlistId) {
-    const playlist = playlists.find(p => p.id === playlistId);
-    if (!playlist || playlist.songs.length === 0) return;
-    
-    const songIndices = playlist.songs.map(id => songs.findIndex(s => s.id === id));
-    if (songIndices.length > 0) {
-        playSong(songIndices[0], songIndices);
-    }
-}
-
-// Show songs in a playlist with improved interface
+// Show songs in a playlist
 function showPlaylistSongs(playlistId) {
     const playlist = playlists.find(p => p.id === playlistId);
     if (!playlist) return;
@@ -408,30 +318,20 @@ function showPlaylistSongs(playlistId) {
     playlistSongsContainer.innerHTML = `
         <div class="playlist-header">
             <h3>${playlist.name}</h3>
-            <div class="playlist-actions">
-                <button class="back-button" id="back-to-playlists">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <button class="action-button" id="play-playlist">
-                    <i class="fas fa-play"></i> Play All
-                </button>
-            </div>
+            <button class="back-button" id="back-to-playlists">
+                <i class="fas fa-arrow-left"></i> Back to Playlists
+            </button>
         </div>
-        <div class="playlist-songs-list" id="playlist-songs-list"></div>
+        <div class="playlist-songs" id="playlist-songs-list"></div>
     `;
     
     const playlistSongsList = document.getElementById('playlist-songs-list');
     const backButton = document.getElementById('back-to-playlists');
-    const playPlaylistButton = document.getElementById('play-playlist');
     
     backButton.addEventListener('click', () => {
         playlistsContainer.style.display = 'grid';
         playlistSongsContainer.style.display = 'none';
         currentPlaylist = null;
-    });
-    
-    playPlaylistButton.addEventListener('click', () => {
-        playPlaylist(playlistId);
     });
     
     playlist.songs.forEach(songId => {
@@ -440,9 +340,6 @@ function showPlaylistSongs(playlistId) {
             const song = songs[songIndex];
             const songElement = document.createElement('div');
             songElement.className = 'song-card';
-            if (songIndex === currentSongIndex && isPlaying) {
-                songElement.classList.add('now-playing');
-            }
             songElement.innerHTML = `
                 <img src="${song.cover}" alt="${song.title}" class="song-cover">
                 <div class="song-details">
@@ -463,43 +360,49 @@ function showPlaylistSongs(playlistId) {
     });
 }
 
-// Create new playlist
-function createNewPlaylist() {
-    const name = playlistNameInput.value.trim();
-    if (!name) return;
-    
-    const newPlaylist = {
-        id: Date.now(), // Simple unique ID
-        name: name,
-        cover: "https://i.ibb.co/d0Lw85R6/Picsart-25-08-01-19-18-42-186.png",
-        songs: []
-    };
-    
-    playlists.push(newPlaylist);
-    renderPlaylists();
-    updateStats();
-    
-    // Reset and close modal
-    playlistNameInput.value = '';
-    playlistModal.style.display = 'none';
-}
-
-// Shuffle all songs
-function shuffleAllSongs() {
-    if (songs.length === 0) return;
-    
-    // Create array of indices and shuffle it
-    const shuffledIndices = [...Array(songs.length).keys()];
-    for (let i = shuffledIndices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+// Perform search
+function performSearch() {
+    const query = searchInput.value.toLowerCase();
+    if (!query) {
+        searchResults.innerHTML = '<p>Enter a search term</p>';
+        return;
     }
     
-    // Play first song from shuffled list
-    playSong(shuffledIndices[0], shuffledIndices);
+    const results = songs.filter(song => 
+        song.title.toLowerCase().includes(query) || 
+        song.artist.toLowerCase().includes(query)
+    );
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<p>No results found</p>';
+        return;
+    }
+    
+    searchResults.innerHTML = '';
+    results.forEach((song, index) => {
+        const songIndex = songs.findIndex(s => s.id === song.id);
+        const songElement = document.createElement('div');
+        songElement.className = 'song-card';
+        songElement.innerHTML = `
+            <img src="${song.cover}" alt="${song.title}" class="song-cover">
+            <div class="song-details">
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+            </div>
+            <button class="play-button" data-index="${songIndex}">
+                <i class="fas fa-play"></i>
+            </button>
+        `;
+        
+        songElement.addEventListener('click', () => {
+            playSong(songIndex);
+        });
+        
+        searchResults.appendChild(songElement);
+    });
 }
 
-// Play a song with improved now-playing indicator
+// Play a song
 function playSong(index, playlistSongIndices = null) {
     if (index < 0 || index >= songs.length) return;
     
@@ -513,11 +416,9 @@ function playSong(index, playlistSongIndices = null) {
             updatePlayButton();
             updatePlayerInfo();
             
-            // Update now-playing indicators
-            updateNowPlayingIndicators();
-            
             // If playing from a playlist, set the next songs to be from the playlist
             if (playlistSongIndices) {
+                // Store the playlist song indices for next/prev navigation
                 currentPlaylistSongIndices = playlistSongIndices;
                 currentPlaylistCurrentIndex = playlistSongIndices.indexOf(index);
             } else {
@@ -527,18 +428,6 @@ function playSong(index, playlistSongIndices = null) {
         .catch(error => {
             console.error('Error playing song:', error);
         });
-}
-
-// Update now-playing indicators on all song cards
-function updateNowPlayingIndicators() {
-    document.querySelectorAll('.song-card').forEach(card => {
-        card.classList.remove('now-playing');
-    });
-    
-    const currentCards = document.querySelectorAll(`.song-card button[data-index="${currentSongIndex}"]`);
-    currentCards.forEach(button => {
-        button.closest('.song-card').classList.add('now-playing');
-    });
 }
 
 // Toggle play/pause
@@ -551,7 +440,6 @@ function togglePlay() {
         }
         isPlaying = !isPlaying;
         updatePlayButton();
-        updateNowPlayingIndicators();
     } else if (songs.length > 0) {
         // If no song is selected, play the first one
         playSong(0);
@@ -630,18 +518,13 @@ function updatePlayerInfo() {
     nowPlayingCover.src = song.cover;
 }
 
-// Update stats (total songs, playlists, total time)
+// Update stats (total songs, playlists)
 function updateStats() {
     totalSongsElement.textContent = songs.length;
     totalPlaylistsElement.textContent = playlists.length;
-    
-    // Calculate total duration in hours
-    const totalSeconds = songs.reduce((sum, song) => sum + (song.duration || 180), 0);
-    const totalHours = Math.round(totalSeconds / 3600);
-    totalTimeElement.textContent = totalHours;
 }
 
-// Toggle dark/light theme with localStorage
+// Toggle dark/light theme
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
     document.body.classList.toggle('dark-mode');
@@ -649,20 +532,8 @@ function toggleTheme() {
     const icon = themeToggle.querySelector('i');
     if (document.body.classList.contains('light-mode')) {
         icon.className = 'fas fa-sun';
-        localStorage.setItem('theme', 'light');
     } else {
         icon.className = 'fas fa-moon';
-        localStorage.setItem('theme', 'dark');
-    }
-}
-
-// Load theme preference from localStorage
-function loadThemePreference() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        document.body.classList.remove('dark-mode');
-        themeToggle.querySelector('i').className = 'fas fa-sun';
     }
 }
 

@@ -93,6 +93,25 @@ body {
     background-color: var(--bg-tertiary);
 }
 
+.player-error {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    right: 0;
+    background-color: #ff4d4d;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    text-align: center;
+    border-radius: 5px 5px 0 0;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
 .main-content {
     flex: 1;
     padding: 20px;

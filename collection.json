@@ -2,24 +2,27 @@
     "songs": [
         {
             "id": 1,
-            "title": "Aankhon Mein Doob Jaane Ko",
+            "name": "Aankhon Mein Doob Jaane Ko",
             "artist": "THE 9TEEN",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.mp3"
+            "album": "Single",
+            "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.mp3",
+            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aankhon%20Mein%20Doob%20Jaane%20Ko%20-%20THE%209TEEN.jpg"
         },
         {
             "id": 2,
-            "title": "Sample Song 2",
+            "name": "Sample Song 2",
             "artist": "Artist 2",
-            "cover": "https://via.placeholder.com/300",
-            "source": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            "album": "Album 2",
+            "link": "https://example.com/song2.mp3",
+            "cover": "https://example.com/cover2.jpg"
         },
         {
             "id": 3,
-            "title": "Sample Song 3",
+            "name": "Sample Song 3",
             "artist": "Artist 3",
-            "cover": "https://via.placeholder.com/300",
-            "source": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            "album": "Album 3",
+            "link": "https://example.com/song3.mp3",
+            "cover": "https://example.com/cover3.jpg"
         }
     ]
 }

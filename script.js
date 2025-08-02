@@ -32,9 +32,15 @@ let isPlaying = false;
 let songs = [];
 let playlists = [];
 let audio = new Audio();
+let isFirstPlay = true;
 
 // Initialize the app
 async function init() {
+    // Force dark mode by default
+    document.body.classList.add('dark-mode');
+    document.body.classList.remove('light-mode');
+    themeToggle.querySelector('i').classList.add('fa-moon');
+    
     // Load songs from collection.json
     await loadSongs();
     
@@ -55,9 +61,6 @@ async function init() {
     
     // Update UI
     updateUI();
-    
-    // Load first song (but don't play)
-    loadSong(currentSongIndex);
 }
 
 // Load songs from collection.json
@@ -99,8 +102,8 @@ function renderAllSongs() {
                 <p class="song-name">${song.name}</p>
                 <p class="song-artist">${song.artist}</p>
             </div>
-            <button class="play-button song-play-button">
-                <i class="fas fa-play"></i>
+            <button class="play-button song-play-button ${index === currentSongIndex && isPlaying ? 'playing' : ''}">
+                <i class="fas ${index === currentSongIndex && isPlaying ? 'fa-pause' : 'fa-play'}"></i>
             </button>
         `;
         allSongsList.appendChild(songItem);
@@ -112,7 +115,12 @@ function renderAllSongs() {
             e.stopPropagation();
             const songItem = this.closest('.song-item');
             const index = parseInt(songItem.dataset.index);
-            playSong(index);
+            
+            if (index === currentSongIndex) {
+                togglePlay();
+            } else {
+                playSong(index);
+            }
         });
     });
     
@@ -149,6 +157,19 @@ function initPlayer() {
     audio.addEventListener('loadedmetadata', () => {
         playerContainer.style.display = 'flex';
     });
+    
+    // Play/pause events
+    audio.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayButton();
+        highlightCurrentSong();
+    });
+    
+    audio.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayButton();
+        highlightCurrentSong();
+    });
 }
 
 // Load song
@@ -163,6 +184,14 @@ function loadSong(index) {
     nowPlayingTitle.textContent = song.name;
     nowPlayingArtist.textContent = song.artist;
     
+    if (isFirstPlay) {
+        isFirstPlay = false;
+    } else {
+        audio.play().catch(error => {
+            console.error('Error playing song:', error);
+        });
+    }
+    
     // Highlight currently playing song in lists
     highlightCurrentSong();
 }
@@ -171,36 +200,61 @@ function loadSong(index) {
 function playSong(index) {
     if (index !== currentSongIndex) {
         loadSong(index);
+    } else {
+        audio.play().catch(error => {
+            console.error('Error playing song:', error);
+        });
     }
-    
-    isPlaying = true;
-    audio.play();
-    updatePlayButton();
 }
 
 // Toggle play/pause
 function togglePlay() {
     if (songs.length === 0) return;
     
-    isPlaying = !isPlaying;
     if (isPlaying) {
-        audio.play();
-    } else {
         audio.pause();
+    } else {
+        audio.play().catch(error => {
+            console.error('Error playing song:', error);
+        });
     }
-    updatePlayButton();
 }
 
 // Update play button icon
 function updatePlayButton() {
     const icon = playButton.querySelector('i');
     if (isPlaying) {
+        playButton.classList.add('playing');
         icon.classList.remove('fa-play');
         icon.classList.add('fa-pause');
     } else {
+        playButton.classList.remove('playing');
         icon.classList.remove('fa-pause');
         icon.classList.add('fa-play');
     }
+    
+    // Update all song play buttons
+    document.querySelectorAll('.song-play-button').forEach(button => {
+        const songItem = button.closest('.song-item');
+        const index = parseInt(songItem.dataset.index);
+        
+        if (index === currentSongIndex) {
+            button.classList.toggle('playing', isPlaying);
+            const btnIcon = button.querySelector('i');
+            if (isPlaying) {
+                btnIcon.classList.remove('fa-play');
+                btnIcon.classList.add('fa-pause');
+            } else {
+                btnIcon.classList.remove('fa-pause');
+                btnIcon.classList.add('fa-play');
+            }
+        } else {
+            button.classList.remove('playing');
+            const btnIcon = button.querySelector('i');
+            btnIcon.classList.remove('fa-pause');
+            btnIcon.classList.add('fa-play');
+        }
+    });
 }
 
 // Previous song
@@ -212,7 +266,6 @@ function prevSong() {
         currentSongIndex = songs.length - 1;
     }
     loadSong(currentSongIndex);
-    playSong(currentSongIndex);
 }
 
 // Next song
@@ -224,7 +277,6 @@ function nextSong() {
         currentSongIndex = 0;
     }
     loadSong(currentSongIndex);
-    playSong(currentSongIndex);
 }
 
 // Update progress bar
@@ -269,6 +321,9 @@ function highlightCurrentSong() {
     currentSongItems.forEach(item => {
         item.classList.add('active');
     });
+    
+    // Update play buttons
+    updatePlayButton();
 }
 
 // Initialize navigation
@@ -359,9 +414,10 @@ function renderSearchResults(results) {
     }
     
     results.forEach((song, index) => {
+        const songIndex = songs.findIndex(s => s.id === song.id);
         const songItem = document.createElement('div');
-        songItem.className = 'song-item';
-        songItem.dataset.index = songs.findIndex(s => s.link === song.link);
+        songItem.className = `song-item ${songIndex === currentSongIndex ? 'active' : ''}`;
+        songItem.dataset.index = songIndex;
         songItem.innerHTML = `
             <img src="${song.cover}" alt="${song.name}" class="song-cover">
             <div class="song-details">
@@ -369,8 +425,8 @@ function renderSearchResults(results) {
                 <p class="song-artist">${song.artist}</p>
                 ${song.album ? `<p class="song-album">${song.album}</p>` : ''}
             </div>
-            <button class="play-button song-play-button">
-                <i class="fas fa-play"></i>
+            <button class="play-button song-play-button ${songIndex === currentSongIndex && isPlaying ? 'playing' : ''}">
+                <i class="fas ${songIndex === currentSongIndex && isPlaying ? 'fa-pause' : 'fa-play'}"></i>
             </button>
         `;
         searchResults.appendChild(songItem);
@@ -382,7 +438,12 @@ function renderSearchResults(results) {
             e.stopPropagation();
             const songItem = this.closest('.song-item');
             const index = parseInt(songItem.dataset.index);
-            playSong(index);
+            
+            if (index === currentSongIndex) {
+                togglePlay();
+            } else {
+                playSong(index);
+            }
         });
     });
     
@@ -504,17 +565,18 @@ function showPlaylistDetail(playlistId) {
         playlist.songs.forEach(songId => {
             const song = songs.find(s => s.id === songId);
             if (song) {
+                const songIndex = songs.findIndex(s => s.id === songId);
                 const songItem = document.createElement('div');
-                songItem.className = 'song-item';
-                songItem.dataset.index = songs.findIndex(s => s.id === songId);
+                songItem.className = `song-item ${songIndex === currentSongIndex ? 'active' : ''}`;
+                songItem.dataset.index = songIndex;
                 songItem.innerHTML = `
                     <img src="${song.cover}" alt="${song.name}" class="song-cover">
                     <div class="song-details">
                         <p class="song-name">${song.name}</p>
                         <p class="song-artist">${song.artist}</p>
                     </div>
-                    <button class="play-button song-play-button">
-                        <i class="fas fa-play"></i>
+                    <button class="play-button song-play-button ${songIndex === currentSongIndex && isPlaying ? 'playing' : ''}">
+                        <i class="fas ${songIndex === currentSongIndex && isPlaying ? 'fa-pause' : 'fa-play'}"></i>
                     </button>
                 `;
                 playlistSongsList.appendChild(songItem);
@@ -527,7 +589,12 @@ function showPlaylistDetail(playlistId) {
                 e.stopPropagation();
                 const songItem = this.closest('.song-item');
                 const index = parseInt(songItem.dataset.index);
-                playSong(index);
+                
+                if (index === currentSongIndex) {
+                    togglePlay();
+                } else {
+                    playSong(index);
+                }
             });
         });
         
@@ -560,17 +627,10 @@ function playPlaylist(playlistId) {
 
 // Update UI
 function updateUI() {
-    // Check if dark mode is preferred
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (prefersDark) {
-        document.body.classList.add('dark-mode');
-        document.body.classList.remove('light-mode');
-        themeToggle.querySelector('i').classList.add('fa-moon');
-    } else {
-        document.body.classList.add('light-mode');
-        document.body.classList.remove('dark-mode');
-        themeToggle.querySelector('i').classList.add('fa-sun');
-    }
+    // Force dark mode by default
+    document.body.classList.add('dark-mode');
+    document.body.classList.remove('light-mode');
+    themeToggle.querySelector('i').classList.add('fa-moon');
 }
 
 // Initialize the app when DOM is loaded

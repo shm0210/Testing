@@ -33,7 +33,7 @@
     "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kesariya%20-%20Arijit%20Singh.jpg"
   },
   {
-    "id": 5,}
+    "id": 5,
     "name": "Raatan Lambiyan",
     "artist": "Tanishk Bagchi, Jubin Nautiyal",
     "album": "",
@@ -292,6 +292,7 @@
   "artist": "Harindu",
   "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/%E0%A4%B2_%E0%A4%99_%E0%A4%97_%E0%A4%B7_%E0%A4%9F%E0%A4%95%E0%A4%AE_%20-%20Harindu.mp3",
   "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/%E0%A4%B2_%E0%A4%99_%E0%A4%97_%E0%A4%B7_%E0%A4%9F%E0%A4%95%E0%A4%AE_%20-%20Harindu.jpg"
+}
 
 ]
 }

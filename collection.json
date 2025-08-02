@@ -33,7 +33,7 @@
     "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kesariya%20-%20Arijit%20Singh.jpg"
   },
   {
-    "id": 5,
+    "id": 5,}
     "name": "Raatan Lambiyan",
     "artist": "Tanishk Bagchi, Jubin Nautiyal",
     "album": "",
@@ -159,6 +159,139 @@
     "album": "",
     "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ae%20Dil%20Hai%20Mushkil%20-%20Pritam%2C%20Arijit%20Singh.mp3",
     "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ae%20Dil%20Hai%20Mushkil%20-%20Pritam%2C%20Arijit%20Singh.jpg"
-  }
+  },
+{
+  "id": 21,
+  "name": "Do Pal",
+  "artist": "ABRK",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Do%20Pal%20-%20ABRK.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Do%20Pal%20-%20ABRK.jpg"
+},
+{
+  "id": 22,
+  "name": "O Meri Laila",
+  "artist": "Atif Aslam, Jyotica Tangri",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/O%20Meri%20Laila%20-%20Atif%20Aslam_%20Jyotica%20Tangri.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/O%20Meri%20Laila%20-%20Atif%20Aslam_%20Jyotica%20Tangri.jpg"
+},
+{
+  "id": 23,
+  "name": "Suniyan Suniyan",
+  "artist": "Juss, MixSingh",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Suniyan%20Suniyan%20-%20Juss_%20MixSingh.jpg",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Suniyan%20Suniyan%20-%20Juss_%20MixSingh.jpg"
+},
+{
+  "id": 24,
+  "name": "Long time no see",
+  "artist": "Taimour Baig, Raffey Anwar, AUR",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Long%20time%20no%20see%20-%20Taimour%20Baig_%20Raffey%20Anwar_%20AUR.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Long%20time%20no%20see%20-%20Taimour%20Baig_%20Raffey%20Anwar_%20AUR.jpg"
+},
+{
+  "id": 25,
+  "name": "Aadi Anant Shiva",
+  "artist": "Aditya Sharma",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aadi%20Anant%20Shiva%20-%20Aditya%20Sharma.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Aadi%20Anant%20Shiva%20-%20Aditya%20Sharma.jpg"
+},
+{
+  "id": 26,
+  "name": "Bajrang Baan-Lofi",
+  "artist": "Rasraj Ji Maharaj",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bajrang%20Baan-Lofi%20-%20Rasraj%20Ji%20Maharaj.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bajrang%20Baan-Lofi%20-%20Rasraj%20Ji%20Maharaj.jpg"
+},
+{
+  "id": 27,
+  "name": "Bhole Charaniy Aaradhna",
+  "artist": "Muktidan Gadhvi",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bhole%20Charaniy%20Aaradhna%20-%20Muktidan%20Gadhvi.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bhole%20Charaniy%20Aaradhna%20-%20Muktidan%20Gadhvi.jpg"
+},
+{
+  "id": 28,
+  "name": "Deva Shree Ganesha",
+  "artist": "Ajay-Atul, Ajay Gogavale",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Deva%20Shree%20Ganesha%20-%20Ajay-Atul_%20Ajay%20Gogavale.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Deva%20Shree%20Ganesha%20-%20Ajay-Atul_%20Ajay%20Gogavale.jpg"
+},
+{
+  "id": 29,
+  "name": "Hanuman Chalisa (Lo-fi)",
+  "artist": "Rasraj Ji Maharaj",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Hanuman%20Chalisa%20_Lo-fi_%20-%20Rasraj%20Ji%20Maharaj.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Hanuman%20Chalisa%20_Lo-fi_%20-%20Rasraj%20Ji%20Maharaj.jpg"
+},
+{
+  "id": 30,
+  "name": "Namami Shamishan",
+  "artist": "Religious India",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Namami%20Shamishan%20-%20Religious%20India.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Namami%20Shamishan%20-%20Religious%20India.jpg"
+},
+{
+  "id": 31,
+  "name": "Nandi Ki Sawari Naag Angikaar Dhari",
+  "artist": "Harindu",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Nandi%20Ki%20Sawari%20Naag%20Angikaar%20Dhari%20-%20Harindu.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Nandi%20Ki%20Sawari%20Naag%20Angikaar%20Dhari%20-%20Harindu.jpg"
+},
+{
+  "id": 32,
+  "name": "Nirvana Shatakam",
+  "artist": "Religious India",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Nirvana%20Shatakam%20-%20Religious%20India.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Nirvana%20Shatakam%20-%20Religious%20India.jpg"
+},
+{
+  "id": 33,
+  "name": "Shiv Kailash (Live in Mumbai)",
+  "artist": "Rishab Rikhiram Sharma",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Kailash%20_Live%20in%20Mumbai_%20-%20Rishab%20Rikhiram%20Sharma.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Kailash%20_Live%20in%20Mumbai_%20-%20Rishab%20Rikhiram%20Sharma.jpg"
+},
+{
+  "id": 34,
+  "name": "Shiv Panchakshar Stotra",
+  "artist": "Religious India",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Panchakshar%20Stotra%20-%20Religious%20India.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Panchakshar%20Stotra%20-%20Religious%20India.jpg"
+},
+{
+  "id": 35,
+  "name": "Shiv Stuti",
+  "artist": "Religious India",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Stuti%20-%20Religious%20India.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Stuti%20-%20Religious%20India.jpg"
+},
+{
+  "id": 36,
+  "name": "Shiv Tandav Stotram",
+  "artist": "Shankar Mahadevan",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Tandav%20Stotram%20-%20Shankar%20Mahadevan.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shiv%20Tandav%20Stotram%20-%20Shankar%20Mahadevan.jpg"
+},
+{
+  "id": 37,
+  "name": "Shree Hari Stotram",
+  "artist": "G. Gayathri Devi, Saindhavi, PRIYA, R. Shruti",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shree%20Hari%20Stotram%20-%20G.%20Gayathri%20Devi_%20Saindhavi_%20PRIYA_%20R.%20Shruti.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shree%20Hari%20Stotram%20-%20G.%20Gayathri%20Devi_%20Saindhavi_%20PRIYA_%20R.%20Shruti.jpg"
+},
+{
+  "id": 38,
+  "name": "Sri Shiv Rudrastkam",
+  "artist": "Mrityunjay Hirmeth",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Sri%20Shiv%20Rudrastkam%20-%20Mrityunjay%20Hirmeth.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Sri%20Shiv%20Rudrastkam%20-%20Mrityunjay%20Hirmeth.jpg"
+},
+{
+  "id": 39,
+  "name": "लिङ्गाष्टकम्",
+  "artist": "Harindu",
+  "link": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/%E0%A4%B2_%E0%A4%99_%E0%A4%97_%E0%A4%B7_%E0%A4%9F%E0%A4%95%E0%A4%AE_%20-%20Harindu.mp3",
+  "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/%E0%A4%B2_%E0%A4%99_%E0%A4%97_%E0%A4%B7_%E0%A4%9F%E0%A4%95%E0%A4%AE_%20-%20Harindu.jpg"
+
 ]
 }

@@ -256,10 +256,45 @@ function setupEventListeners() {
     });
     
     // Search functionality
-    searchInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
+    function performSearch() {
+    const query = searchInput.value.trim().toLowerCase();
+    if (!query) return;
+    
+    searchResults.innerHTML = '';
+    const results = songs.filter(song => 
+        song.title.toLowerCase().includes(query) || 
+        song.artist.toLowerCase().includes(query)
+    );
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<p class="no-results">No songs found</p>';
+        return;
+    }
+    
+    results.forEach(song => {
+        const songIndex = songs.findIndex(s => s.id === song.id);
+        const songElement = document.createElement('div');
+        songElement.className = 'song-card';
+        songElement.innerHTML = `
+            <img src="${song.cover}" alt="${song.title}" class="song-cover">
+            <div class="song-details">
+                <div class="song-title">${song.title}</div>
+                <div class="song-artist">${song.artist}</div>
+            </div>
+            <button class="play-button" data-index="${songIndex}">
+                <i class="fas fa-play"></i>
+            </button>
+        `;
+        
+        songElement.addEventListener('click', () => {
+            playSong(songIndex);
+        });
+        
+        searchResults.appendChild(songElement);
+    });
+    
+    navigateTo('search-page');
+}
     });
     searchButton.addEventListener('click', performSearch);
     
@@ -346,45 +381,7 @@ function renderPlaylists() {
     });
 }
 
-function performSearch() {
-    const query = searchInput.value.trim().toLowerCase();
-    if (!query) return;
-    
-    searchResults.innerHTML = '';
-    const results = songs.filter(song => 
-        song.title.toLowerCase().includes(query) || 
-        song.artist.toLowerCase().includes(query)
-    );
-    
-    if (results.length === 0) {
-        searchResults.innerHTML = '<p class="no-results">No songs found</p>';
-        return;
-    }
-    
-    results.forEach(song => {
-        const songIndex = songs.findIndex(s => s.id === song.id);
-        const songElement = document.createElement('div');
-        songElement.className = 'song-card';
-        songElement.innerHTML = `
-            <img src="${song.cover}" alt="${song.title}" class="song-cover">
-            <div class="song-details">
-                <div class="song-title">${song.title}</div>
-                <div class="song-artist">${song.artist}</div>
-            </div>
-            <button class="play-button" data-index="${songIndex}">
-                <i class="fas fa-play"></i>
-            </button>
-        `;
-        
-        songElement.addEventListener('click', () => {
-            playSong(songIndex);
-        });
-        
-        searchResults.appendChild(songElement);
-    });
-    
-    navigateTo('search-page');
-}
+
 
 // Play entire playlist
 function playPlaylist(playlistId) {

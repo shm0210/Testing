@@ -9,136 +9,17 @@
         },
         {
             "id": 2,
-            "title": "Tere Vaaste",
-            "artist": "Sachin-Jigar, Varun Jain, Shadab Faridi",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Vaaste%20-%20Sachin-Jigar%2C%20Varun%20Jain%2C%20Shadab%20Faridi.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Vaaste%20-%20Sachin-Jigar%2C%20Varun%20Jain%2C%20Shadab%20Faridi.mp3"
+            "title": "Sample Song 2",
+            "artist": "Artist 2",
+            "cover": "https://via.placeholder.com/300",
+            "source": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
         },
         {
             "id": 3,
-            "title": "Pasoori Nu",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pasoori%20Nu%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pasoori%20Nu%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 4,
-            "title": "Kesariya",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kesariya%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kesariya%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 5,
-            "title": "Raatan Lambiyan",
-            "artist": "Tanishk Bagchi, Jubin Nautiyal",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Raatan%20Lambiyan%20-%20Tanishk%20Bagchi%2C%20Jubin%20Nautiyal.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Raatan%20Lambiyan%20-%20Tanishk%20Bagchi%2C%20Jubin%20Nautiyal.mp3"
-        },
-        {
-            "id": 6,
-            "title": "Shayad",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shayad%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Shayad%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 7,
-            "title": "Tum Hi Aana",
-            "artist": "Jubin Nautiyal",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Hi%20Aana%20-%20Jubin%20Nautiyal.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Hi%20Aana%20-%20Jubin%20Nautiyal.mp3"
-        },
-        {
-            "id": 8,
-            "title": "Bekhayali",
-            "artist": "Sachet Tandon",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bekhayali%20-%20Sachet%20Tandon.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Bekhayali%20-%20Sachet%20Tandon.mp3"
-        },
-        {
-            "id": 9,
-            "title": "Tujhe Kitna Chahne Lage",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tujhe%20Kitna%20Chahne%20Lage%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tujhe%20Kitna%20Chahne%20Lage%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 10,
-            "title": "Ve Maahi",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ve%20Maahi%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ve%20Maahi%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 11,
-            "title": "Kaise Hua",
-            "artist": "Vishal Mishra",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kaise%20Hua%20-%20Vishal%20Mishra.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Kaise%20Hua%20-%20Vishal%20Mishra.mp3"
-        },
-        {
-            "id": 12,
-            "title": "Tera Ban Jaunga",
-            "artist": "Akhil Sachdeva, Tulsi Kumar",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Ban%20Jaunga%20-%20Akhil%20Sachdeva%2C%20Tulsi%20Kumar.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Ban%20Jaunga%20-%20Akhil%20Sachdeva%2C%20Tulsi%20Kumar.mp3"
-        },
-        {
-            "id": 13,
-            "title": "Pehla Pyaar",
-            "artist": "Arko, Akhil Sachdeva",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pehla%20Pyaar%20-%20Arko%2C%20Akhil%20Sachdeva.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Pehla%20Pyaar%20-%20Arko%2C%20Akhil%20Sachdeva.mp3"
-        },
-        {
-            "id": 14,
-            "title": "Tere Bin",
-            "artist": "Rahat Fateh Ali Khan, Asees Kaur",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Bin%20-%20Rahat%20Fateh%20Ali%20Khan%2C%20Asees%20Kaur.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tere%20Bin%20-%20Rahat%20Fateh%20Ali%20Khan%2C%20Asees%20Kaur.mp3"
-        },
-        {
-            "id": 15,
-            "title": "Dil Diyan Gallan",
-            "artist": "Atif Aslam",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Dil%20Diyan%20Gallan%20-%20Atif%20Aslam.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Dil%20Diyan%20Gallan%20-%20Atif%20Aslam.mp3"
-        },
-        {
-            "id": 16,
-            "title": "Tera Yaar Hoon Main",
-            "artist": "Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Yaar%20Hoon%20Main%20-%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tera%20Yaar%20Hoon%20Main%20-%20Arijit%20Singh.mp3"
-        },
-        {
-            "id": 17,
-            "title": "Mere Sohneya",
-            "artist": "Sachet Tandon, Parampara Tandon",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Mere%20Sohneya%20-%20Sachet%20Tandon%2C%20Parampara%20Tandon.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Mere%20Sohneya%20-%20Sachet%20Tandon%2C%20Parampara%20Tandon.mp3"
-        },
-        {
-            "id": 18,
-            "title": "Tum Se Hi",
-            "artist": "Mohit Chauhan",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Se%20Hi%20-%20Mohit%20Chauhan.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Se%20Hi%20-%20Mohit%20Chauhan.mp3"
-        },
-        {
-            "id": 19,
-            "title": "Tum Mile",
-            "artist": "Neeraj Shridhar",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Mile%20-%20Neeraj%20Shridhar.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Tum%20Mile%20-%20Neeraj%20Shridhar.mp3"
-        },
-        {
-            "id": 20,
-            "title": "Ae Dil Hai Mushkil",
-            "artist": "Pritam, Arijit Singh",
-            "cover": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ae%20Dil%20Hai%20Mushkil%20-%20Pritam%2C%20Arijit%20Singh.jpg",
-            "source": "https://raw.githubusercontent.com/shm0210/music-player-assets/main/Ae%20Dil%20Hai%20Mushkil%20-%20Pritam%2C%20Arijit%20Singh.mp3"
+            "title": "Sample Song 3",
+            "artist": "Artist 3",
+            "cover": "https://via.placeholder.com/300",
+            "source": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
         }
     ]
 }

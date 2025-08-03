@@ -36,50 +36,104 @@ let isFirstPlay = true;
 
 // Initialize the app
 async function init() {
-    // Force dark mode by default
+    // Set default theme
+    setDefaultTheme();
+    
+    // Show loading state
+    showLoadingState();
+    
+    try {
+        // Load songs and playlists in parallel
+        await Promise.all([
+            loadSongs(),
+            initPlaylists()
+        ]);
+        
+        // Initialize player and other components
+        initPlayer();
+        initNavigation();
+        initThemeToggle();
+        initSearch();
+        
+        // Update UI
+        updateUI();
+    } catch (error) {
+        console.error('Initialization error:', error);
+        showErrorState();
+    } finally {
+        // Hide loading state
+        hideLoadingState();
+    }
+}
+
+// Show loading state
+function showLoadingState() {
+    allSongsList.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading songs...</p>
+        </div>
+    `;
+}
+
+// Hide loading state
+function hideLoadingState() {
+    // This will be handled by renderAllSongs()
+}
+
+// Show error state
+function showErrorState() {
+    allSongsList.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Failed to load songs. Please try again later.</p>
+        </div>
+    `;
+}
+
+// Set default theme
+function setDefaultTheme() {
     document.body.classList.add('dark-mode');
     document.body.classList.remove('light-mode');
     themeToggle.querySelector('i').classList.add('fa-moon');
-    
-    // Load songs from collection.json
-    await loadSongs();
-    
-    // Initialize player
-    initPlayer();
-    
-    // Initialize navigation
-    initNavigation();
-    
-    // Initialize theme toggle
-    initThemeToggle();
-    
-    // Initialize search
-    initSearch();
-    
-    // Initialize playlists
-    initPlaylists();
-    
-    // Update UI
-    updateUI();
 }
 
-// Load songs from collection.json
+// Load songs from collection.json with caching
 async function loadSongs() {
     try {
-        const response = await fetch('collection.json');
-        const data = await response.json();
-        songs = data.songs;
-        totalSongsEl.textContent = songs.length;
+        // Check cache first
+        const cachedSongs = localStorage.getItem('cachedSongs');
+        const cachedTimestamp = localStorage.getItem('cachedSongsTimestamp');
+        const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         
-        // Render all songs
+        // Use cached data if it's less than a day old
+        if (cachedSongs && cachedTimestamp && (Date.now() - parseInt(cachedTimestamp)) < oneDay) {
+            songs = JSON.parse(cachedSongs);
+        } else {
+            // Fetch fresh data
+            const response = await fetch('collection.json');
+            if (!response.ok) throw new Error('Failed to fetch songs');
+            
+            const data = await response.json();
+            songs = data.songs;
+            
+            // Cache the data
+            localStorage.setItem('cachedSongs', JSON.stringify(songs));
+            localStorage.setItem('cachedSongsTimestamp', Date.now().toString());
+        }
+        
+        totalSongsEl.textContent = songs.length;
         renderAllSongs();
     } catch (error) {
         console.error('Error loading songs:', error);
+        throw error; // Re-throw to be caught in init()
     }
 }
 
 // Render all songs in the home page
 function renderAllSongs() {
+    if (!allSongsList) return;
+    
     allSongsList.innerHTML = '';
     
     if (songs.length === 0) {
@@ -92,12 +146,15 @@ function renderAllSongs() {
         return;
     }
     
+    // Create document fragment for better performance
+    const fragment = document.createDocumentFragment();
+    
     songs.forEach((song, index) => {
         const songItem = document.createElement('div');
         songItem.className = 'song-item';
         songItem.dataset.index = index;
         songItem.innerHTML = `
-            <img src="${song.cover}" alt="${song.name}" class="song-cover">
+            <img src="${song.cover}" alt="${song.name}" class="song-cover" loading="lazy">
             <div class="song-details">
                 <p class="song-name">${song.name}</p>
                 <p class="song-artist">${song.artist}</p>
@@ -106,9 +163,17 @@ function renderAllSongs() {
                 <i class="fas ${index === currentSongIndex && isPlaying ? 'fa-pause' : 'fa-play'}"></i>
             </button>
         `;
-        allSongsList.appendChild(songItem);
+        fragment.appendChild(songItem);
     });
     
+    allSongsList.appendChild(fragment);
+    
+    // Add event listeners
+    setupSongEventListeners();
+}
+
+// Setup event listeners for songs
+function setupSongEventListeners() {
     // Add event listeners to song play buttons
     document.querySelectorAll('.song-play-button').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -170,30 +235,48 @@ function initPlayer() {
         updatePlayButton();
         highlightCurrentSong();
     });
+    
+    // Error handling
+    audio.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+        // Skip to next song if current one fails
+        setTimeout(nextSong, 1000);
+    });
 }
 
-// Load song
+// Load song with error handling
 function loadSong(index) {
-    if (songs.length === 0) return;
+    if (!songs.length || index < 0 || index >= songs.length) return;
     
-    currentSongIndex = index;
-    const song = songs[index];
-    
-    audio.src = song.link;
-    nowPlayingCover.src = song.cover;
-    nowPlayingTitle.textContent = song.name;
-    nowPlayingArtist.textContent = song.artist;
-    
-    if (isFirstPlay) {
-        isFirstPlay = false;
-    } else {
-        audio.play().catch(error => {
-            console.error('Error playing song:', error);
-        });
+    try {
+        currentSongIndex = index;
+        const song = songs[index];
+        
+        // Preload cover image
+        const img = new Image();
+        img.src = song.cover;
+        
+        audio.src = song.link;
+        nowPlayingCover.src = song.cover;
+        nowPlayingTitle.textContent = song.name;
+        nowPlayingArtist.textContent = song.artist;
+        
+        if (isFirstPlay) {
+            isFirstPlay = false;
+        } else {
+            audio.play().catch(error => {
+                console.error('Error playing song:', error);
+                // Try next song if this one fails
+                setTimeout(nextSong, 1000);
+            });
+        }
+        
+        highlightCurrentSong();
+    } catch (error) {
+        console.error('Error loading song:', error);
+        // Skip to next song if current one fails
+        setTimeout(nextSong, 1000);
     }
-    
-    // Highlight currently playing song in lists
-    highlightCurrentSong();
 }
 
 // Play song
@@ -209,7 +292,7 @@ function playSong(index) {
 
 // Toggle play/pause
 function togglePlay() {
-    if (songs.length === 0) return;
+    if (!songs.length) return;
     
     if (isPlaying) {
         audio.pause();
@@ -259,7 +342,7 @@ function updatePlayButton() {
 
 // Previous song
 function prevSong() {
-    if (songs.length === 0) return;
+    if (!songs.length) return;
     
     currentSongIndex--;
     if (currentSongIndex < 0) {
@@ -270,7 +353,7 @@ function prevSong() {
 
 // Next song
 function nextSong() {
-    if (songs.length === 0) return;
+    if (!songs.length) return;
     
     currentSongIndex++;
     if (currentSongIndex > songs.length - 1) {
@@ -413,13 +496,15 @@ function renderSearchResults(results) {
         return;
     }
     
+    const fragment = document.createDocumentFragment();
+    
     results.forEach((song, index) => {
         const songIndex = songs.findIndex(s => s.id === song.id);
         const songItem = document.createElement('div');
         songItem.className = `song-item ${songIndex === currentSongIndex ? 'active' : ''}`;
         songItem.dataset.index = songIndex;
         songItem.innerHTML = `
-            <img src="${song.cover}" alt="${song.name}" class="song-cover">
+            <img src="${song.cover}" alt="${song.name}" class="song-cover" loading="lazy">
             <div class="song-details">
                 <p class="song-name">${song.name}</p>
                 <p class="song-artist">${song.artist}</p>
@@ -429,65 +514,51 @@ function renderSearchResults(results) {
                 <i class="fas ${songIndex === currentSongIndex && isPlaying ? 'fa-pause' : 'fa-play'}"></i>
             </button>
         `;
-        searchResults.appendChild(songItem);
+        fragment.appendChild(songItem);
     });
     
-    // Add event listeners to song play buttons
-    document.querySelectorAll('.song-play-button').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const songItem = this.closest('.song-item');
-            const index = parseInt(songItem.dataset.index);
-            
-            if (index === currentSongIndex) {
-                togglePlay();
-            } else {
-                playSong(index);
-            }
-        });
-    });
+    searchResults.appendChild(fragment);
     
-    // Add event listeners to song items
-    document.querySelectorAll('.song-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const index = parseInt(this.dataset.index);
-            playSong(index);
-        });
-    });
+    // Add event listeners
+    setupSongEventListeners();
 }
 
 // Initialize playlists
 function initPlaylists() {
-    // Load playlists from localStorage
-    const savedPlaylists = localStorage.getItem('playlists');
-    if (savedPlaylists) {
-        playlists = JSON.parse(savedPlaylists);
-    } else {
-        // Default playlists
-        playlists = [
-            {
-                id: 1,
-                name: 'Just Feel',
-                cover: 'https://mosaic.scdn.co/640/ab67616d00001e024c375a25c4afc9c754061da6ab67616d00001e0275a0429b40af0e83780b58e3ab67616d00001e02f332a3bc2f19abf7de632042ab67616d00001e02fc8c4535825cdc0bcafde19a',
-                songs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-            },
-            {
-                id: 2,
-                name: 'Spritual',
-                cover: 'https://mosaic.scdn.co/640/ab67616d00001e021592fefed668233b3d38fa0eab67616d00001e023874cc361eca103f5dd69286ab67616d00001e02759b1cd31a392ad7a5fb1e9aab67616d00001e02790d4c884ca491d8562156a2',
-                songs: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
-            }
-        ];
-        savePlaylists();
-    }
-    
-    totalPlaylistsEl.textContent = playlists.length;
-    renderPlaylists();
-    
-    // Back to playlists button
-    backToPlaylists.addEventListener('click', function() {
-        playlistDetailView.style.display = 'none';
-        playlistsView.style.display = 'block';
+    return new Promise((resolve) => {
+        // Load playlists from localStorage
+        const savedPlaylists = localStorage.getItem('playlists');
+        if (savedPlaylists) {
+            playlists = JSON.parse(savedPlaylists);
+        } else {
+            // Default playlists
+            playlists = [
+                {
+                    id: 1,
+                    name: 'Just Feel',
+                    cover: 'https://mosaic.scdn.co/640/ab67616d00001e024c375a25c4afc9c754061da6ab67616d00001e0275a0429b40af0e83780b58e3ab67616d00001e02f332a3bc2f19abf7de632042ab67616d00001e02fc8c4535825cdc0bcafde19a',
+                    songs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+                },
+                {
+                    id: 2,
+                    name: 'Spritual',
+                    cover: 'https://mosaic.scdn.co/640/ab67616d00001e021592fefed668233b3d38fa0eab67616d00001e023874cc361eca103f5dd69286ab67616d00001e02759b1cd31a392ad7a5fb1e9aab67616d00001e02790d4c884ca491d8562156a2',
+                    songs: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+                }
+            ];
+            savePlaylists();
+        }
+        
+        totalPlaylistsEl.textContent = playlists.length;
+        renderPlaylists();
+        
+        // Back to playlists button
+        backToPlaylists.addEventListener('click', function() {
+            playlistDetailView.style.display = 'none';
+            playlistsView.style.display = 'block';
+        });
+        
+        resolve();
     });
 }
 
@@ -510,12 +581,14 @@ function renderPlaylists() {
         return;
     }
     
+    const fragment = document.createDocumentFragment();
+    
     playlists.forEach(playlist => {
         const playlistCard = document.createElement('div');
         playlistCard.className = 'playlist-card';
         playlistCard.dataset.id = playlist.id;
         playlistCard.innerHTML = `
-            <img src="${playlist.cover}" alt="${playlist.name}" class="playlist-cover">
+            <img src="${playlist.cover}" alt="${playlist.name}" class="playlist-cover" loading="lazy">
             <div class="playlist-info">
                 <p class="playlist-name">${playlist.name}</p>
                 <p class="playlist-song-count">${playlist.songs.length} songs</p>
@@ -524,8 +597,10 @@ function renderPlaylists() {
                 <i class="fas fa-play"></i>
             </button>
         `;
-        playlistsList.appendChild(playlistCard);
+        fragment.appendChild(playlistCard);
     });
+    
+    playlistsList.appendChild(fragment);
     
     // Add event listeners to playlist cards
     document.querySelectorAll('.playlist-card').forEach(card => {
@@ -562,6 +637,8 @@ function showPlaylistDetail(playlistId) {
             </div>
         `;
     } else {
+        const fragment = document.createDocumentFragment();
+        
         playlist.songs.forEach(songId => {
             const song = songs.find(s => s.id === songId);
             if (song) {
@@ -570,7 +647,7 @@ function showPlaylistDetail(playlistId) {
                 songItem.className = `song-item ${songIndex === currentSongIndex ? 'active' : ''}`;
                 songItem.dataset.index = songIndex;
                 songItem.innerHTML = `
-                    <img src="${song.cover}" alt="${song.name}" class="song-cover">
+                    <img src="${song.cover}" alt="${song.name}" class="song-cover" loading="lazy">
                     <div class="song-details">
                         <p class="song-name">${song.name}</p>
                         <p class="song-artist">${song.artist}</p>
@@ -579,32 +656,14 @@ function showPlaylistDetail(playlistId) {
                         <i class="fas ${songIndex === currentSongIndex && isPlaying ? 'fa-pause' : 'fa-play'}"></i>
                     </button>
                 `;
-                playlistSongsList.appendChild(songItem);
+                fragment.appendChild(songItem);
             }
         });
         
-        // Add event listeners to song play buttons
-        document.querySelectorAll('.song-play-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const songItem = this.closest('.song-item');
-                const index = parseInt(songItem.dataset.index);
-                
-                if (index === currentSongIndex) {
-                    togglePlay();
-                } else {
-                    playSong(index);
-                }
-            });
-        });
+        playlistSongsList.appendChild(fragment);
         
-        // Add event listeners to song items
-        document.querySelectorAll('.song-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const index = parseInt(this.dataset.index);
-                playSong(index);
-            });
-        });
+        // Add event listeners
+        setupSongEventListeners();
     }
     
     playlistsView.style.display = 'none';

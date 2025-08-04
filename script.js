@@ -537,13 +537,19 @@ function initPlaylists() {
                     id: 1,
                     name: 'Just Feel',
                     cover: 'https://mosaic.scdn.co/640/ab67616d00001e024c375a25c4afc9c754061da6ab67616d00001e0275a0429b40af0e83780b58e3ab67616d00001e02f332a3bc2f19abf7de632042ab67616d00001e02fc8c4535825cdc0bcafde19a',
-                    songs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+                    songs: [43, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
                 },
                 {
                     id: 2,
                     name: 'Spritual',
                     cover: 'https://mosaic.scdn.co/640/ab67616d00001e021592fefed668233b3d38fa0eab67616d00001e023874cc361eca103f5dd69286ab67616d00001e02759b1cd31a392ad7a5fb1e9aab67616d00001e02790d4c884ca491d8562156a2',
                     songs: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+                },
+                {
+                    id: 3,
+                    name: 'Favourite',
+                    cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84a97f2ce0d5468e95baebfa01',
+                    songs: [1, 21, 22, 23, 24, 41, 42]
                 }
             ];
             savePlaylists();

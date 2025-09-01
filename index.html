@@ -17,96 +17,8 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <style>
-    :root {
-      --accent: #b36b2e;
-      --accent-light: #fef3e8;
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      scroll-behavior: smooth;
-    }
-    
-    .gallery-img {
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    
-    .gallery-img:hover {
-      transform: scale(1.03);
-    }
-    
-    .instagram-embed { 
-      border-radius: 12px; 
-      overflow: hidden; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
-    }
-    
-    .instagram-embed:hover {
-      transform: translateY(-5px);
-    }
-    
-    .bio-flower {
-      display: inline-block;
-      margin: 0 5px;
-      color: #b36b2e;
-    }
-    
-    .floating-btn {
-      animation: pulse 2s infinite;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    
-    .testimonial-card {
-      transition: transform 0.3s ease;
-    }
-    
-    .testimonial-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .menu-open {
-      transform: translateX(0);
-    }
-    
-    .menu-closed {
-      transform: translateX(100%);
-    }
-    
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-    
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    
-    /* Form styles */
-    .form-input {
-      transition: all 0.3s ease;
-    }
-    
-    .form-input:focus {
-      box-shadow: 0 0 0 3px rgba(179, 107, 46, 0.2);
-    }
-  </style>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-white text-gray-800 leading-relaxed">
   <!-- Navigation -->
@@ -336,7 +248,7 @@
               <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
               <span>Design consultation</span>
             </li>
-            <li class="flex items-start">
+            <li class="flex items start">
               <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
               <span>Practice sessions</span>
             </li>
@@ -368,7 +280,7 @@
           <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
         </div>
         <div class="rounded-xl overflow-hidden aspect-square">
-          <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+          <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobmDpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
         </div>
         <div class="rounded-xl overflow-hidden aspect-square">
           <img src="https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
@@ -405,14 +317,14 @@
       
       <div class="grid md:grid-cols-2 gap-8">
         <div>
-          <div class="video-container">
+          <div class="video-container-shorts">
             <iframe src="https://www.youtube.com/embed/-Jf-qQ_TRS4" title="Mehndi Application Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <p class="mt-4 text-center text-gray-700">Mehndi design process</p>
         </div>
         
         <div>
-          <div class="video-container">
+          <div class="video-container-shorts">
             <iframe src="https://www.youtube.com/embed/VuWARBgAXRk" title="Mehndi Design Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
           <p class="mt-4 text-center text-gray-700">Intricate mehndi patterns</p>
@@ -459,7 +371,7 @@
             </div>
             <div>
               <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Preferred Date</label>
-              <input type="date" id="date" name="date" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+              <input type="date" id="date" name="date" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent" min="">
             </div>
           </div>
           
@@ -552,181 +464,121 @@
   <section id="contact" class="py-16 bg-white">
     <div class="max-w-6xl mx-auto px-4">
       <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-amber-800">Get in Touch</h2>
-        <p class="mt-2 text-gray-600">Let's create something beautiful together</p>
+        <h2 class="text-3xl font-bold text-amber-800">Contact Suku</h2>
+        <p class="mt-2 text-gray-600">Get in touch for bookings or questions</p>
       </div>
       
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto">
-            <i class="fab fa-instagram"></i>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <div class="bg-amber-50 rounded-2xl p-6 shadow-sm border border-amber-100">
+            <h3 class="text-xl font-semibold text-amber-800 mb-4">Contact Info</h3>
+            
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="text-amber-600 mr-3 mt-1">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-gray-800">Location</div>
+                  <div class="text-gray-600">Mirzapur, India</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="text-amber-600 mr-3 mt-1">
+                  <i class="fab fa-instagram"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-gray-800">Instagram</div>
+                  <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-600 hover:underline">@suku.mehndi.art</a>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="text-amber-600 mr-3 mt-1">
+                  <i class="fab fa-youtube"></i>
+                </div>
+                <div>
+                  <div class="font-medium text-gray-800">YouTube</div>
+                  <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="text-amber-600 hover:underline">Suku Mehndi Art</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8">
+              <h4 class="font-medium text-gray-800 mb-2">Business Hours</h4>
+              <div class="text-gray-600">Mon-Sun: 10AM - 7PM</div>
+              <div class="text-gray-600 text-sm">(By appointment only)</div>
+            </div>
           </div>
-          <h3 class="mt-4 text-xl font-semibold text-amber-800">Instagram</h3>
-          <p class="mt-2 text-gray-600">DM for quickest response</p>
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="mt-3 inline-block text-amber-600 hover:text-amber-700 font-medium">@suku.mehndi.art</a>
         </div>
         
-        <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto">
-            <i class="fas fa-envelope"></i>
+        <div>
+          <div class="bg-amber-50 rounded-2xl p-6 shadow-sm border border-amber-100">
+            <h3 class="text-xl font-semibold text-amber-800 mb-4">Quick Contact</h3>
+            <p class="text-gray-600 mb-6">For fastest response, DM on Instagram. For bookings, use the form above.</p>
+            
+            <div class="flex flex-col gap-4">
+              <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-4 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg shadow-sm flex items-center justify-center gap-2 hover:shadow-md transition-shadow">
+                <i class="fab fa-instagram"></i> Message on Instagram
+              </a>
+              
+              <a href="#booking" class="px-4 py-3 border border-amber-500 text-amber-600 rounded-lg flex items-center justify-center gap-2 hover:bg-amber-500 hover:text-white transition-colors">
+                <i class="fas fa-calendar-check"></i> Book Appointment
+              </a>
+            </div>
           </div>
-          <h3 class="mt-4 text-xl font-semibold text-amber-800">Email</h3>
-          <p class="mt-2 text-gray-600">For detailed inquiries</p>
-          <a href="mailto:sukumehndiart@gmail.com" class="mt-3 inline-block text-amber-600 hover:text-amber-700 font-medium">sukumehndiart@gmail.com</a>
-        </div>
-        
-        <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto">
-            <i class="fas fa-map-marker-alt"></i>
-          </div>
-          <h3 class="mt-4 text-xl font-semibold text-amber-800">Location</h3>
-          <p class="mt-2 text-gray-600">Based in Mirzapur</p>
-          <p class="mt-3 text-amber-600 font-medium">Available for travel</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-amber-800 text-amber-100 py-12">
+  <footer class="bg-amber-800 text-white py-12">
     <div class="max-w-6xl mx-auto px-4">
       <div class="grid md:grid-cols-3 gap-8">
         <div>
-          <h3 class="text-xl font-semibold mb-4">Suku Mehndi Art</h3>
-          <p class="text-amber-200">Bridal • Festive • Custom Mehndi Designs</p>
-          <div class="mt-4 flex gap-4">
-            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-200 hover:text-white">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-amber-600 flex items-center justify-center text-white font-semibold text-lg">S</div>
+            <div>
+              <div class="font-semibold">Suku Mehndi Art</div>
+              <div class="text-xs text-amber-200">@suku.mehndi.art</div>
+            </div>
+          </div>
+          <p class="text-amber-200 text-sm">Bridal & event mehndi artist based in Mirzapur, creating intricate designs for all celebrations.</p>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-sm text-amber-200">
+            <li><a href="#hero" class="hover:text-white transition-colors">Home</a></li>
+            <li><a href="#portfolio" class="hover:text-white transition-colors">Portfolio</a></li>
+            <li><a href="#booking" class="hover:text-white transition-colors">Book Now</a></li>
+            <li><a href="#contact" class="hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-semibold mb-4">Connect</h4>
+          <div class="flex gap-4">
+            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-200 hover:text-white transition-colors">
               <i class="fab fa-instagram text-xl"></i>
             </a>
-            <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="text-amber-200 hover:text-white">
+            <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="text-amber-200 hover:text-white transition-colors">
               <i class="fab fa-youtube text-xl"></i>
             </a>
           </div>
+          
+          <div class="mt-6 text-sm text-amber-200">
+            <p>© 2023 Suku Mehndi Art</p>
+            <p class="mt-1">All rights reserved</p>
+          </div>
         </div>
-        
-        <div>
-          <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
-          <ul class="space-y-2">
-            <li><a href="#hero" class="text-amber-200 hover:text-white">Home</a></li>
-            <li><a href="#portfolio" class="text-amber-200 hover:text-white">Portfolio</a></li>
-            <li><a href="#booking" class="text-amber-200 hover:text-white">Book Now</a></li>
-            <li><a href="#contact" class="text-amber-200 hover:text-white">Contact</a></li>
-          </ul>
-        </div>
-        
-        <div>
-          <h3 class="text-xl font-semibold mb-4">Contact Info</h3>
-          <ul class="space-y-2">
-            <li class="flex items-start">
-              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
-              <span class="text-amber-200">Mirzapur , India</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fab fa-instagram mt-1 mr-3"></i>
-              <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-200 hover:text-white">Instagram</a>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-envelope mt-1 mr-3"></i>
-              <a href="mailto:sukumehndiart@gmail.com" class="text-amber-200 hover:text-white">Mail</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="border-t border-amber-700 mt-8 pt-8 text-center text-sm text-amber-200">
-        <p>Crafted this site with <span class="text-red-400">💖</span> By <a href="https://instagram.com/i.shubham0210" target="_blank" class="font-medium hover:text-white">Shubham</a></p>
-        <p class="mt-2">© 2023 Suku Mehndi Art. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Floating Instagram Button -->
-  <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white shadow-lg floating-btn z-50">
-    <i class="fab fa-instagram text-xl"></i>
-  </a>
-
-  <script>
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('menu-closed');
-      mobileMenu.classList.toggle('menu-open');
-    });
-    
-    // Close menu when clicking links
-    document.querySelectorAll('#mobileMenu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('menu-closed');
-        mobileMenu.classList.remove('menu-open');
-      });
-    });
-    
-    // Form submission handling
-    const bookingForm = document.getElementById('bookingForm');
-    const formMsg = document.getElementById('formMsg');
-    const formError = document.getElementById('formError');
-    
-    bookingForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // Basic validation
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const service = document.getElementById('service').value;
-      const message = document.getElementById('message').value;
-      
-      if (!name || !phone || !service || !message) {
-        formError.textContent = 'Please fill all required fields';
-        formError.classList.remove('hidden');
-        formMsg.classList.add('hidden');
-        return;
-      }
-      
-      try {
-        // Show loading state
-        const submitBtn = bookingForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        submitBtn.disabled = true;
-        
-        // Use FormSubmit.co to send the form
-        const formData = new FormData(bookingForm);
-        
-        const response = await fetch(bookingForm.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
-        if (response.ok) {
-          // Show success message
-          formMsg.classList.remove('hidden');
-          formError.classList.add('hidden');
-          bookingForm.reset();
-        } else {
-          throw new Error('Form submission failed');
-        }
-        
-        // Restore button state
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-      } catch (error) {
-        console.error('Form submission error:', error);
-        formError.textContent = 'There was an error submitting the form. Please try again or DM me on Instagram.';
-        formError.classList.remove('hidden');
-        formMsg.classList.add('hidden');
-        
-        // Restore button state
-        const submitBtn = bookingForm.querySelector('button[type="submit"]');
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Booking Request';
-        submitBtn.disabled = false;
-      }
-    });
-  </script>
+  <!-- Custom JS -->
+  <script src="script.js"></script>
 </body>
 </html>

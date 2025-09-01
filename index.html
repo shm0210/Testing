@@ -1,398 +1,730 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Suku Mehndi Art — Bridal & Event Mehndi</title>
-  <meta name="description" content="Suku Mehndi Art — Intricate bridal and event mehndi designs. Book appointments, view portfolio, contact via WhatsApp or Instagram." />
-  <!-- Tailwind Play CDN (fast for prototypes) -->
+  <meta name="description" content="Suku Mehndi Art — Intricate bridal and event mehndi designs. Book appointments, view portfolio, contact via Instagram.">
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Simple icons (hero) -->
+  
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    :root{--accent:#b36b2e}
-    body{font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
-    .gallery-img{object-fit:cover}
+    :root {
+      --accent: #b36b2e;
+      --accent-light: #fef3e8;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    .gallery-img {
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .gallery-img:hover {
+      transform: scale(1.03);
+    }
+    
     .instagram-embed { 
       border-radius: 12px; 
       overflow: hidden; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: transform 0.3s ease;
     }
+    
     .instagram-embed:hover {
       transform: translateY(-5px);
     }
+    
     .bio-flower {
       display: inline-block;
       margin: 0 5px;
       color: #b36b2e;
     }
-    .floating-wa {
+    
+    .floating-btn {
       animation: pulse 2s infinite;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
+    
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
+    
     .testimonial-card {
       transition: transform 0.3s ease;
     }
+    
     .testimonial-card:hover {
       transform: translateY(-5px);
+    }
+    
+    .menu-open {
+      transform: translateX(0);
+    }
+    
+    .menu-closed {
+      transform: translateX(100%);
+    }
+    
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+    
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    /* Form styles */
+    .form-input {
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(179, 107, 46, 0.2);
     }
   </style>
 </head>
 <body class="bg-white text-gray-800 leading-relaxed">
-  <!-- NAV -->
-  <header class="bg-white sticky top-0 z-40 border-b shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- Navigation -->
+  <header class="bg-white sticky top-0 z-50 border-b shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <a href="#hero" class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-white font-semibold text-xl">S</div>
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-white font-semibold text-lg">S</div>
           <div>
-            <div class="font-semibold">Suku Mehndi Art</div>
+            <div class="font-semibold text-sm">Suku Mehndi Art</div>
             <div class="text-xs text-gray-500">@suku.mehndi.art</div>
           </div>
         </a>
+        
         <nav class="hidden md:flex items-center gap-6 text-sm">
+          <a href="#hero" class="hover:text-amber-600 transition-colors">Home</a>
+          <a href="#about" class="hover:text-amber-600 transition-colors">About</a>
           <a href="#portfolio" class="hover:text-amber-600 transition-colors">Portfolio</a>
+          <a href="#videos" class="hover:text-amber-600 transition-colors">Videos</a>
           <a href="#services" class="hover:text-amber-600 transition-colors">Services</a>
           <a href="#booking" class="hover:text-amber-600 transition-colors">Book</a>
           <a href="#contact" class="hover:text-amber-600 transition-colors">Contact</a>
         </nav>
+        
         <div class="flex items-center gap-3">
           <a href="https://instagram.com/suku.mehndi.art" target="_blank" rel="noopener" class="text-amber-600 text-sm hidden md:block">@suku.mehndi.art</a>
-          <button id="menuBtn" class="md:hidden p-2 rounded border"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2z" clip-rule="evenodd" /></svg></button>
+          <button id="menuBtn" class="md:hidden p-2 rounded-lg border border-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2z" clip-rule="evenodd" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
-    <!-- mobile menu -->
-    <div id="mobileMenu" class="hidden md:hidden border-t bg-white">
-      <div class="px-4 py-3 flex flex-col gap-3">
-        <a href="#portfolio" class="py-2">Portfolio</a>
-        <a href="#services" class="py-2">Services</a>
-        <a href="#booking" class="py-2">Book</a>
-        <a href="#contact" class="py-2">Contact</a>
-        <a href="https://instagram.com/suku.mehndi.art" target="_blank" rel="noopener" class="py-2 text-amber-600">Instagram</a>
+    
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="fixed top-16 right-0 w-64 h-full bg-white border-l shadow-lg menu-closed transition-transform duration-300 z-40 md:hidden">
+      <div class="p-4 flex flex-col gap-1">
+        <a href="#hero" class="py-3 px-4 rounded-lg hover:bg-amber-50">Home</a>
+        <a href="#about" class="py-3 px-4 rounded-lg hover:bg-amber-50">About</a>
+        <a href="#portfolio" class="py-3 px-4 rounded-lg hover:bg-amber-50">Portfolio</a>
+        <a href="#videos" class="py-3 px-4 rounded-lg hover:bg-amber-50">Videos</a>
+        <a href="#services" class="py-3 px-4 rounded-lg hover:bg-amber-50">Services</a>
+        <a href="#booking" class="py-3 px-4 rounded-lg hover:bg-amber-50">Book</a>
+        <a href="#contact" class="py-3 px-4 rounded-lg hover:bg-amber-50">Contact</a>
+        <div class="border-t my-2"></div>
+        <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="py-3 px-4 rounded-lg hover:bg-amber-50 text-amber-600 flex items-center gap-2">
+          <i class="fab fa-instagram"></i> Instagram
+        </a>
+        <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="py-3 px-4 rounded-lg hover:bg-amber-50 text-red-600 flex items-center gap-2">
+          <i class="fab fa-youtube"></i> YouTube
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <main>
-    <section id="hero" class="bg-[url('https://images.unsplash.com/photo-1605543454838-5afc9d8f1c7a?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center py-20">
-      <div class="max-w-5xl mx-auto px-4 text-center text-white">
-        <div class="backdrop-blur-sm bg-black/30 rounded-xl p-8 inline-block">
-          <h1 class="text-4xl md:text-5xl font-bold">Suku Mehndi Art</h1>
-          <p class="mt-3 text-lg md:text-xl opacity-90">Intricate bridal & event mehndi that tells your story.</p>
-          <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
-            <a href="#booking" class="px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow transition-colors">Book Appointment</a>
-            <a href="#portfolio" class="px-6 py-3 rounded-full border border-white/70 text-white hover:bg-white/10 transition-colors">View Portfolio</a>
+  <!-- Hero Section -->
+  <section id="hero" class="relative bg-gradient-to-r from-amber-50 to-amber-100 py-16 md:py-24">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')] opacity-10 bg-cover bg-center"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-4 relative z-10">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-bold text-amber-800">Suku Mehndi Art</h1>
+          <p class="mt-4 text-lg text-amber-700">Intricate bridal & event mehndi that tells your story.</p>
+          
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <a href="#booking" class="px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-md transition-colors flex items-center justify-center gap-2">
+              <i class="fas fa-calendar-check"></i> Book Appointment
+            </a>
+            <a href="#portfolio" class="px-6 py-3 rounded-full border border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+              <i class="fas fa-images"></i> View Portfolio
+            </a>
+          </div>
+          
+          <div class="mt-8 flex gap-4">
+            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-700 hover:text-amber-800">
+              <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="text-amber-700 hover:text-amber-800">
+              <i class="fab fa-youtube text-2xl"></i>
+            </a>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- BIO SECTION -->
-    <section class="max-w-5xl mx-auto px-6 py-12">
-      <div class="bg-amber-50 rounded-2xl p-6 md:p-8 text-center border border-amber-100">
-        <h2 class="text-2xl font-semibold text-amber-800">About Suku Mehndi Art</h2>
-        <div class="mt-4 text-amber-700">
-          <p class="flex items-center justify-center flex-wrap">
-            <span class="bio-flower">✿</span> 
-            <span>𝐌𝐞𝐡𝐧𝐝𝐢 : 𝒕𝒉𝒆 𝒂𝒓𝒕 𝒐𝒇 𝒔𝒆𝒍𝒇-𝒆𝒙𝒑𝒓𝒆𝒔𝒔𝒊𝒐𝒏</span> 
-            <span class="bio-flower">✿</span>
-          </p>
-          <p class="mt-2"><span class="bio-flower">✿</span> Bridal • Festive • Custom <span class="bio-flower">✨</span></p>
-          <p class="mt-2"><span class="bio-flower">✿</span> Mirzapur <span class="text-sm">📍</span></p>
-          <p class="mt-2"><span class="bio-flower">✿</span> DM to glow your hands <span class="bio-flower">💌</span></p>
-          <p class="mt-2"><span class="bio-flower">✿</span> By Suku (Sαƙʂԋι)</p>
-        </div>
-        <div class="mt-6 flex justify-center gap-3">
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full shadow-sm">Follow on Instagram</a>
-          <a href="#booking" class="px-4 py-2 border border-amber-500 text-amber-600 rounded-full">Book Now</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT + SERVICES -->
-    <section class="max-w-5xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 items-start">
-      <div>
-        <h2 class="text-2xl font-semibold">About Suku</h2>
-        <p class="mt-3 text-gray-700">Hi — I'm Suku. I specialise in bridal, Arabic, and Indo-Western mehndi designs blending tradition with modern sensibilities. I work with natural henna and create designs personalised for your celebration.</p>
-        <ul class="mt-4 space-y-2 text-gray-700">
-          <li class="flex items-start">
-            <span class="text-amber-600 mr-2">•</span> 7+ years experience with bridal mehndi
-          </li>
-          <li class="flex items-start">
-            <span class="text-amber-600 mr-2">•</span> Natural henna, safe & long-lasting stains
-          </li>
-          <li class="flex items-start">
-            <span class="text-amber-600 mr-2">•</span> Travel to events (ask for availability)
-          </li>
-        </ul>
-        <div class="mt-6 flex gap-3">
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-4 py-2 border rounded-lg flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-            </svg>
-            Instagram
-          </a>
-          <a href="#booking" class="px-4 py-2 bg-amber-100 rounded-lg text-amber-800 font-medium">Book Now</a>
-        </div>
-      </div>
-
-      <div id="services">
-        <h3 class="text-xl font-semibold">Services & Pricing</h3>
-        <div class="mt-4 space-y-4">
-          <div class="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-center">
-              <div>
-                <div class="font-semibold">Bridal Full</div>
-                <div class="text-sm text-gray-500">Custom full-arm + feet bridal set</div>
+        
+        <div class="relative">
+          <div class="bg-white rounded-2xl p-6 shadow-lg border border-amber-200">
+            <div class="text-center">
+              <h2 class="text-2xl font-semibold text-amber-800">About Suku Mehndi Art</h2>
+              <div class="mt-4 text-amber-700 space-y-2">
+                <p class="flex items-center justify-center flex-wrap">
+                  <span class="bio-flower">✿</span> 
+                  <span>𝐌𝐞𝐡𝐧𝐝𝐢 : 𝒕𝒉𝒆 𝒂𝒓𝒕 𝒐𝒇 𝒔𝒆𝒍𝒇-𝒆𝒙𝒑𝒓𝒆𝒔𝒔𝒊𝒐𝒏</span> 
+                  <span class="bio-flower">✿</span>
+                </p>
+                <p><span class="bio-flower">✿</span> Bridal • Festive • Custom <span class="bio-flower">✨</span></p>
+                <p><span class="bio-flower">✿</span> Mirzapur <span class="text-sm">📍</span></p>
+                <p><span class="bio-flower">✿</span> DM to glow your hands <span class="bio-flower">💌</span></p>
+                <p><span class="bio-flower">✿</span> By Suku (Sαƙʂԋι)</p>
               </div>
-              <div class="font-semibold text-amber-700">Contact for quote</div>
-            </div>
-          </div>
-          <div class="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-center">
-              <div>
-                <div class="font-semibold">Party / Guests</div>
-                <div class="text-sm text-gray-500">Small to medium designs for events</div>
+              <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+                <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full shadow-sm flex items-center justify-center gap-2">
+                  <i class="fab fa-instagram"></i> Follow
+                </a>
+                <a href="#booking" class="px-4 py-2 border border-amber-500 text-amber-600 rounded-full flex items-center justify-center gap-2">
+                  <i class="fas fa-bookmark"></i> Book Now
+                </a>
               </div>
-              <div class="font-semibold text-amber-700">₹800+</div>
-            </div>
-          </div>
-          <div class="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-center">
-              <div>
-                <div class="font-semibold">Custom & Trial</div>
-                <div class="text-sm text-gray-500">Design trials, custom motifs</div>
-              </div>
-              <div class="font-semibold text-amber-700">₹500+</div>
             </div>
           </div>
         </div>
-        <p class="mt-4 text-sm text-gray-500">Prices depend on design complexity and travel. For exact quotes, use the booking form below or WhatsApp.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- PORTFOLIO / INSTAGRAM GALLERY -->
-    <section id="portfolio" class="max-w-5xl mx-auto px-6 py-12">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl font-semibold">Portfolio Gallery</h2>
+  <!-- About Section -->
+  <section id="about" class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-amber-800">About Suku</h2>
+          <p class="mt-4 text-gray-700">Hi — I'm Suku. I specialize in bridal, Arabic, and Indo-Western mehndi designs blending tradition with modern sensibilities. I work with natural henna and create designs personalized for your celebration.</p>
+          
+          <ul class="mt-6 space-y-3">
+            <li class="flex items-start">
+              <span class="text-amber-600 mr-2 mt-1">•</span> 
+              <span>7+ years experience with bridal mehndi</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-amber-600 mr-2 mt-1">•</span> 
+              <span>Natural henna, safe & long-lasting stains</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-amber-600 mr-2 mt-1">•</span> 
+              <span>Travel to events (ask for availability)</span>
+            </li>
+          </ul>
+          
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-5 py-2.5 border rounded-lg flex items-center gap-2 text-amber-700 hover:bg-amber-50 transition-colors">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="#booking" class="px-5 py-2.5 bg-amber-100 rounded-lg text-amber-800 font-medium hover:bg-amber-200 transition-colors">
+              Book Now
+            </a>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-2xl overflow-hidden h-48 md:h-64">
+            <img src="https://images.unsplash.com/photo-1544966503-7cc5ac882d5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1laG5kaXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover">
+          </div>
+          <div class="rounded-2xl overflow-hidden h-48 md:h-64 mt-8">
+            <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="py-16 bg-amber-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-amber-800">Services & Pricing</h2>
+        <p class="mt-2 text-amber-700">Custom mehndi designs for all occasions</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-amber-100">
+          <div class="text-amber-600 text-4xl mb-4">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-amber-800">Bridal Full</h3>
+          <p class="mt-2 text-gray-600">Custom full-arm + feet bridal set</p>
+          <div class="mt-4 text-amber-700 font-semibold text-lg">Contact for quote</div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600">
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Intricate traditional patterns</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Personalized motifs</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Long-lasting natural henna</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-amber-100">
+          <div class="text-amber-600 text-4xl mb-4">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-amber-800">Party / Guests</h3>
+          <p class="mt-2 text-gray-600">Small to medium designs for events</p>
+          <div class="mt-4 text-amber-700 font-semibold text-lg">₹800+</div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600">
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Quick application</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Multiple design options</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Group booking discounts</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-amber-100">
+          <div class="text-amber-600 text-4xl mb-4">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-amber-800">Custom & Trial</h3>
+          <p class="mt-2 text-gray-600">Design trials, custom motifs</p>
+          <div class="mt-4 text-amber-700 font-semibold text-lg">₹500+</div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600">
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Design consultation</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Practice sessions</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
+              <span>Custom pattern creation</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <p class="mt-8 text-center text-gray-600">Prices depend on design complexity and travel. For exact quotes, use the booking form below or DM on Instagram.</p>
+    </div>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section id="portfolio" class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-amber-800">Portfolio Gallery</h2>
         <p class="mt-2 text-gray-600">Explore my latest mehndi designs and artwork</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Embedded Instagram posts -->
-        <div class="instagram-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DNQHuVKvUMg/?igsh=MWk3ZmRmb3V6eWVvYw==" data-instgrm-version="14">
-            <div class="flex items-center justify-center h-96 bg-gray-100 rounded-lg">
-              <div class="text-center p-4">
-                <p class="font-medium mb-2">Instagram Post</p>
-                <a href="https://www.instagram.com/p/DNQHuVKvUMg/?igsh=MWk3ZmRmb3V6eWVvYw==" target="_blank" class="text-amber-600 underline">View this post on Instagram</a>
-              </div>
-            </div>
-          </blockquote>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1544966503-7cc5ac882d5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1laG5kaXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fG1laG5kaXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG1laG5kaXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fG1laG5kaXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+        <div class="rounded-xl overflow-hidden aspect-square">
+          <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fG1laG5kaXxlbnwwfHxx8fHw%3D&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full shadow-md hover:shadow-lg transition-shadow">
+          <i class="fab fa-instagram"></i> View More on Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Videos Section -->
+  <section id="videos" class="py-16 bg-amber-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-amber-800">Mehndi Videos</h2>
+        <p class="mt-2 text-amber-700">Watch the art of mehndi application</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/-Jf-qQ_TRS4" title="Mehndi Application Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <p class="mt-4 text-center text-gray-700">Mehndi design process</p>
         </div>
         
-        <div class="instagram-embed">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DN46zqZD2-D/?igsh=Z2k5MDQxOTJyZTBt" data-instgrm-version="14">
-            <div class="flex items-center justify-center h-96 bg-gray-100 rounded-lg">
-              <div class="text-center p-4">
-                <p class="font-medium mb-2">Instagram Reel</p>
-                <a href="https://www.instagram.com/reel/DN46zqZD2-D/?igsh=Z2k5MDQxOTJyZTBt" target="_blank" class="text-amber-600 underline">View this reel on Instagram</a>
-              </div>
-            </div>
-          </blockquote>
-        </div>
-      </div>
-
-      <!-- Additional local gallery -->
-      <div class="mt-12">
-        <h3 class="text-xl font-semibold mb-6 text-center">More Designs</h3>
-        <div id="localGallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" aria-live="polite">
-          <!-- Images injected by script -->
-        </div>
-      </div>
-    </section>
-
-    <!-- LIGHTBOX MODAL -->
-    <div id="lightbox" class="fixed inset-0 bg-black/90 hidden items-center justify-center p-4 z-50">
-      <button id="closeLightbox" class="absolute top-6 right-6 text-white text-3xl z-10 bg-black/30 rounded-full w-10 h-10 flex items-center justify-center">&times;</button>
-      <img id="lightboxImg" src="" alt="" class="max-h-[90vh] max-w-[90vw] rounded shadow-lg" />
-    </div>
-
-    <!-- BOOKING FORM -->
-    <section id="booking" class="max-w-3xl mx-auto px-6 py-12 bg-amber-50 rounded-2xl mt-6">
-      <h2 class="text-2xl font-semibold text-center">Book an Appointment</h2>
-      <p class="mt-2 text-gray-600 text-center">Fill this form and I'll get back to you. You can also message on WhatsApp for urgent queries.</p>
-
-      <!-- Using Formspree as example backend. Replace the action URL with your form endpoint (Formspree, Getform, or your server). -->
-      <form id="bookingForm" action="https://formspree.io/f/your-form-id" method="POST" class="mt-6 grid gap-4">
-        <div class="grid sm:grid-cols-2 gap-4">
-          <input name="name" required class="p-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Your name" />
-          <input name="phone" required class="p-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Phone / WhatsApp" />
-        </div>
-        <div class="grid sm:grid-cols-2 gap-4">
-          <input name="email" type="email" class="p-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Email (optional)" />
-          <input name="date" type="date" class="p-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
-        </div>
-        <select name="service" class="p-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent">
-          <option>Bridal Full</option>
-          <option>Party / Guest</option>
-          <option>Custom / Trial</option>
-        </select>
-        <textarea name="message" rows="4" class="p-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Tell me about your event — location, number of guests, ideas..."></textarea>
-
-        <div class="flex flex-col sm:flex-row items-center gap-3 mt-4">
-          <button type="submit" class="px-5 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow transition-colors flex-1">Send Booking</button>
-          <a id="waBtnInline" href="https://wa.me/919999999999?text=Hi%20Suku%2C%20I%20want%20to%20book%20a%20mehndi%20appointment" target="_blank" class="px-4 py-3 rounded-full border border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white transition-colors flex items-center justify-center gap-2 flex-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.52 3.48A11.8 11.8 0 0012 0C5.373 0 .31 4.773.14 10.94a11.5 11.5 0 001.79 6.09L0 24l7.1-1.86a11.93 11.93 0 005.01 1.04c6.627 0 11.99-4.773 12.16-10.94a11.8 11.8 0 00-4.74-8.7zM12 21.5c-1.5 0-2.98-.38-4.26-1.1l-.31-.17-4.21 1.1 1.1-3.98-.18-.34A8.2 8.2 0 013.5 10.94C3.5 6.42 7.27 3 12 3s8.5 3.42 8.5 7.94S16.73 21.5 12 21.5z"/>
-            </svg>
-            Message on WhatsApp
-          </a>
-        </div>
-        <div id="formMsg" class="text-sm text-green-600 hidden mt-3 text-center">Thanks — your message was sent. I'll contact you soon!</div>
-      </form>
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section class="max-w-5xl mx-auto px-6 py-12">
-      <h3 class="text-xl font-semibold text-center mb-8">Happy Clients</h3>
-      <div class="grid md:grid-cols-3 gap-6">
-        <blockquote class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-          <div class="text-amber-400 text-2xl mb-2">"</div>
-          <p class="text-gray-700 mb-4">Suku did an amazing bridal design — everyone loved it and the stain lasted long!</p>
-          <div class="font-semibold text-amber-700">— Priya</div>
-        </blockquote>
-        <blockquote class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-          <div class="text-amber-400 text-2xl mb-2">"</div>
-          <p class="text-gray-700 mb-4">Beautiful, intricate and timely. Highly recommend for any event.</p>
-          <div class="font-semibold text-amber-700">— Aisha</div>
-        </blockquote>
-        <blockquote class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-          <div class="text-amber-400 text-2xl mb-2">"</div>
-          <p class="text-gray-700 mb-4">So talented! Customized exactly what I wanted for my sister's wedding.</p>
-          <div class="font-semibold text-amber-700">— Neha</div>
-        </blockquote>
-      </div>
-    </section>
-
-    <!-- CONTACT / FOOTER -->
-    <footer id="contact" class="bg-gray-50 border-t mt-6">
-      <div class="max-w-5xl mx-auto px-6 py-8 grid md:grid-cols-3 gap-8">
         <div>
-          <div class="font-semibold text-lg">Suku Mehndi Art</div>
-          <div class="text-sm text-gray-600 mt-2">Bridal & event mehndi — natural henna, custom designs.</div>
-          <div class="mt-4 flex gap-3">
-            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-600 hover:text-amber-700">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/VuWARBgAXRk" title="Mehndi Design Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <p class="mt-4 text-center text-gray-700">Intricate mehndi patterns</p>
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-full shadow-md hover:shadow-lg transition-shadow">
+          <i class="fab fa-youtube"></i> Subscribe on YouTube
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section id="booking" class="py-16 bg-white">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="bg-amber-50 rounded-2xl p-8 shadow-sm border border-amber-100">
+        <h2 class="text-3xl font-bold text-amber-800 text-center">Book an Appointment</h2>
+        <p class="mt-2 text-gray-600 text-center">Fill this form and I'll get back to you. You can also DM on Instagram for quick response.</p>
+
+        <form id="bookingForm" class="mt-8 grid gap-5" action="https://formsubmit.co/sukumehndiart@gmail.com" method="POST">
+          <!-- FormSubmit Configuration -->
+          <input type="hidden" name="_subject" value="New Booking Request - Suku Mehndi Art">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html">
+          <input type="hidden" name="_captcha" value="false">
+          
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
+              <input type="text" id="name" name="name" required class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Your name">
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+              <input type="tel" id="phone" name="phone" required class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Phone number">
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email (optional)</label>
+              <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Email address">
+            </div>
+            <div>
+              <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Preferred Date</label>
+              <input type="date" id="date" name="date" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+            </div>
+          </div>
+          
+          <div>
+            <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service Type *</label>
+            <select id="service" name="service" required class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+              <option value="" disabled selected>Select a service</option>
+              <option value="Bridal Full">Bridal Full</option>
+              <option value="Party/Guest">Party / Guest</option>
+              <option value="Custom/Trial">Custom / Trial</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+            <textarea id="message" name="message" rows="4" required class="w-full p-3 border border-gray-300 rounded-lg form-input focus:ring-2 focus:ring-amber-500 focus:border-transparent" placeholder="Tell me about your event — location, number of guests, ideas..."></textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
+            <button type="submit" class="flex-1 px-5 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-md transition-colors flex items-center justify-center gap-2">
+              <i class="fas fa-paper-plane"></i> Send Booking Request
+            </button>
+            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="flex-1 px-4 py-3 rounded-full border border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+              <i class="fab fa-instagram"></i> DM on Instagram
             </a>
-            <a href="https://wa.me/919999999999" target="_blank" class="text-amber-600 hover:text-amber-700">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.52 3.48A11.8 11.8 0 0012 0C5.373 0 .31 4.773.14 10.94a11.5 11.5 0 001.79 6.09L0 24l7.1-1.86a11.93 11.93 0 005.01 1.04c6.627 0 11.99-4.773 12.16-10.94a11.8 11.8 0 00-4.74-8.7zM12 21.5c-1.5 0-2.98-.38-4.26-1.1l-.31-.17-4.21 1.1 1.1-3.98-.18-.34A8.2 8.2 0 013.5 10.94C3.5 6.42 7.27 3 12 3s8.5 3.42 8.5 7.94S16.73 21.5 12 21.5z"/>
-              </svg>
+          </div>
+          
+          <div id="formMsg" class="hidden mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-center">
+            Thanks — your message was sent. I'll contact you soon!
+          </div>
+          
+          <div id="formError" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-center">
+            There was an error submitting the form. Please try again or DM me on Instagram.
+          </div>
+        </form>
+        
+        <p class="mt-6 text-center text-sm text-gray-600">
+          You can also DM me on <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-600 hover:underline">Instagram</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-16 bg-amber-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <h3 class="text-2xl font-bold text-amber-800 text-center mb-12">Happy Clients</h3>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
+          <div class="text-amber-400 text-3xl mb-3">"</div>
+          <p class="text-gray-700 mb-4">Suku did an amazing bridal design — everyone loved it and the stain lasted long!</p>
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">R</div>
+            <div class="ml-3">
+              <div class="font-semibold text-amber-700">Ritika</div>
+              <div class="text-sm text-gray-500">Bride</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
+          <div class="text-amber-400 text-3xl mb-3">"</div>
+          <p class="text-gray-700 mb-4">Beautiful, intricate and timely. Highly recommend for any event.</p>
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">A</div>
+            <div class="ml-3">
+              <div class="font-semibold text-amber-700">Anjali</div>
+              <div class="text-sm text-gray-500">Karva Chauth</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
+          <div class="text-amber-400 text-3xl mb-3">"</div>
+          <p class="text-gray-700 mb-4">Custom design was exactly what I wanted. Professional and creative!</p>
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">P</div>
+            <div class="ml-3">
+              <div class="font-semibold text-amber-700">Paro</div>
+              <div class="text-sm text-gray-500">Engagement</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-amber-800">Get in Touch</h2>
+        <p class="mt-2 text-gray-600">Let's create something beautiful together</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto">
+            <i class="fab fa-instagram"></i>
+          </div>
+          <h3 class="mt-4 text-xl font-semibold text-amber-800">Instagram</h3>
+          <p class="mt-2 text-gray-600">DM for quickest response</p>
+          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="mt-3 inline-block text-amber-600 hover:text-amber-700 font-medium">@suku.mehndi.art</a>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <h3 class="mt-4 text-xl font-semibold text-amber-800">Email</h3>
+          <p class="mt-2 text-gray-600">For detailed inquiries</p>
+          <a href="mailto:sukumehndiart@gmail.com" class="mt-3 inline-block text-amber-600 hover:text-amber-700 font-medium">sukumehndiart@gmail.com</a>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3 class="mt-4 text-xl font-semibold text-amber-800">Location</h3>
+          <p class="mt-2 text-gray-600">Based in Mirzapur</p>
+          <p class="mt-3 text-amber-600 font-medium">Available for travel</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-amber-800 text-amber-100 py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Suku Mehndi Art</h3>
+          <p class="text-amber-200">Bridal • Festive • Custom Mehndi Designs</p>
+          <div class="mt-4 flex gap-4">
+            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-200 hover:text-white">
+              <i class="fab fa-instagram text-xl"></i>
+            </a>
+            <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="text-amber-200 hover:text-white">
+              <i class="fab fa-youtube text-xl"></i>
             </a>
           </div>
         </div>
+        
         <div>
-          <div class="font-semibold">Contact</div>
-          <div class="text-sm text-gray-700 mt-2">Phone / WhatsApp: <a href="https://wa.me/919999999999" class="text-amber-600 hover:underline">+91 99999 99999</a></div>
-          <div class="text-sm text-gray-700">Instagram: <a href="https://instagram.com/suku.mehndi.art" class="text-amber-600 hover:underline">@suku.mehndi.art</a></div>
-          <div class="text-sm text-gray-700 mt-2">Email: <a href="mailto:contact@sukumehndiart.com" class="text-amber-600 hover:underline">contact@sukumehndiart.com</a></div>
+          <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="#hero" class="text-amber-200 hover:text-white">Home</a></li>
+            <li><a href="#portfolio" class="text-amber-200 hover:text-white">Portfolio</a></li>
+            <li><a href="#booking" class="text-amber-200 hover:text-white">Book Now</a></li>
+            <li><a href="#contact" class="text-amber-200 hover:text-white">Contact</a></li>
+          </ul>
         </div>
+        
         <div>
-          <div class="font-semibold">Location</div>
-          <div class="text-sm text-gray-700 mt-2">Serving: Mirzapur and surrounding areas</div>
-          <div class="text-sm text-gray-700 mt-1">Travel available for events (extra charges may apply)</div>
+          <h3 class="text-xl font-semibold mb-4">Contact Info</h3>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+              <span class="text-amber-200">Mirzapur , India</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fab fa-instagram mt-1 mr-3"></i>
+              <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-200 hover:text-white">Instagram</a>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-envelope mt-1 mr-3"></i>
+              <a href="mailto:sukumehndiart@gmail.com" class="text-amber-200 hover:text-white">Mail</a>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="text-center text-sm text-gray-500 py-4 border-t">© <span id="year"></span> Suku Mehndi Art — All rights reserved.</div>
-    </footer>
+      
+      <div class="border-t border-amber-700 mt-8 pt-8 text-center text-sm text-amber-200">
+        <p>Crafted this site with <span class="text-red-400">💖</span> By <a href="https://instagram.com/i.shubham0210" target="_blank" class="font-medium hover:text-white">Shubham</a></p>
+        <p class="mt-2">© 2023 Suku Mehndi Art. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
-    <!-- Floating WhatsApp -->
-    <a id="waFloat" href="https://wa.me/919999999999?text=Hi%20Suku%2C%20I%20saw%20your%20website" target="_blank" class="floating-wa fixed right-4 bottom-4 bg-emerald-500 rounded-full p-3 shadow-lg z-50 hover:bg-emerald-600 transition-colors" aria-label="WhatsApp">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.8 11.8 0 0012 0C5.373 0 .31 4.773.14 10.94a11.5 11.5 0 001.79 6.09L0 24l7.1-1.86a11.93 11.93 0 005.01 1.04c6.627 0 11.99-4.773 12.16-10.94a11.8 11.8 0 00-4.74-8.7zM12 21.5c-1.5 0-2.98-.38-4.26-1.1l-.31-.17-4.21 1.1 1.1-3.98-.18-.34A8.2 8.2 0 013.5 10.94C3.5 6.42 7.27 3 12 3s8.5 3.42 8.5 7.94S16.73 21.5 12 21.5z"/></svg>
-    </a>
-  </main>
+  <!-- Floating Instagram Button -->
+  <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white shadow-lg floating-btn z-50">
+    <i class="fab fa-instagram text-xl"></i>
+  </a>
 
-  <script async src="//www.instagram.com/embed.js"></script>
   <script>
-    // Small UI helpers
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // Mobile menu toggle
     const menuBtn = document.getElementById('menuBtn');
-    menuBtn?.addEventListener('click', ()=> document.getElementById('mobileMenu').classList.toggle('hidden'));
-
-    // Close mobile menu when clicking links
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('menu-closed');
+      mobileMenu.classList.toggle('menu-open');
+    });
+    
+    // Close menu when clicking links
     document.querySelectorAll('#mobileMenu a').forEach(link => {
       link.addEventListener('click', () => {
-        document.getElementById('mobileMenu').classList.add('hidden');
+        mobileMenu.classList.add('menu-closed');
+        mobileMenu.classList.remove('menu-open');
       });
     });
-
-    // LIGHTBOX
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const closeLightbox = document.getElementById('closeLightbox');
-    function openLightbox(src, alt){ 
-      lightboxImg.src = src; 
-      lightboxImg.alt = alt||''; 
-      lightbox.classList.remove('hidden'); 
-      document.body.style.overflow='hidden'; 
-    }
-    function closeLightboxFunc(){ 
-      lightbox.classList.add('hidden'); 
-      document.body.style.overflow=''; 
-    }
-    closeLightbox.addEventListener('click', closeLightboxFunc);
-    lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightboxFunc(); });
-
-    // LOCAL GALLERY (OPTION B)
-    // Add your Instagram image URLs to this array if you want to use the local gallery.
-    const galleryImages = [
-      'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1544966503-7cc5ac882d5e?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?q=80&w=500&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?q=80&w=500&auto=format&fit=crop'
-    ];
-    const galleryContainer = document.getElementById('localGallery');
-    galleryImages.forEach((imgSrc, i) => {
-      const img = document.createElement('img');
-      img.src = imgSrc;
-      img.alt = `Mehndi design ${i+1}`;
-      img.className = 'gallery-img w-full h-48 sm:h-56 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity';
-      img.addEventListener('click', () => openLightbox(imgSrc, img.alt));
-      galleryContainer.appendChild(img);
-    });
-
-    // FORM SUBMISSION
-    const form = document.getElementById('bookingForm');
+    
+    // Form submission handling
+    const bookingForm = document.getElementById('bookingForm');
     const formMsg = document.getElementById('formMsg');
-    form?.addEventListener('submit', async (e) => {
+    const formError = document.getElementById('formError');
+    
+    bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      // Replace with your form submission logic (Formspree, Getform, etc.)
-      // This is just a simulation
+      
+      // Basic validation
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const service = document.getElementById('service').value;
+      const message = document.getElementById('message').value;
+      
+      if (!name || !phone || !service || !message) {
+        formError.textContent = 'Please fill all required fields';
+        formError.classList.remove('hidden');
+        formMsg.classList.add('hidden');
+        return;
+      }
+      
       try {
-        const formData = new FormData(form);
-        // Simulate form submission
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        formMsg.classList.remove('hidden');
-        form.reset();
-        setTimeout(() => formMsg.classList.add('hidden'), 5000);
+        // Show loading state
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitBtn.disabled = true;
+        
+        // Use FormSubmit.co to send the form
+        const formData = new FormData(bookingForm);
+        
+        const response = await fetch(bookingForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          // Show success message
+          formMsg.classList.remove('hidden');
+          formError.classList.add('hidden');
+          bookingForm.reset();
+        } else {
+          throw new Error('Form submission failed');
+        }
+        
+        // Restore button state
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
       } catch (error) {
-        alert('Error sending form. Please message me on WhatsApp directly.');
+        console.error('Form submission error:', error);
+        formError.textContent = 'There was an error submitting the form. Please try again or DM me on Instagram.';
+        formError.classList.remove('hidden');
+        formMsg.classList.add('hidden');
+        
+        // Restore button state
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Booking Request';
+        submitBtn.disabled = false;
       }
     });
   </script>

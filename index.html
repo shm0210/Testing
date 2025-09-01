@@ -81,24 +81,22 @@
       transform: translateX(100%);
     }
     
-    .video-container-portrait {
-  position: relative;
-  padding-bottom: 177.8%; /* 9:16 aspect ratio (16/9 = 1.777) */
-  height: 0;
-  overflow: hidden;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 360px; /* Limits width for portrait videos */
-}
-
-.video-container-portrait iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+    
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
     
     /* Form styles */
     .form-input {
@@ -107,6 +105,26 @@
     
     .form-input:focus {
       box-shadow: 0 0 0 3px rgba(179, 107, 46, 0.2);
+    }
+    
+    /* Portrait video container */
+    .video-container-portrait {
+      position: relative;
+      padding-bottom: 177.8%; /* 9:16 aspect ratio (16/9 = 1.777) */
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 360px; /* Limits width for portrait videos */
+    }
+
+    .video-container-portrait iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
@@ -370,7 +388,7 @@
           <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
         </div>
         <div class="rounded-xl overflow-hidden aspect-square">
-          <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
+          <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWVobnRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
         </div>
         <div class="rounded-xl overflow-hidden aspect-square">
           <img src="https://images.unsplash.com/photo-1605543539298-6d2c3d1e1f8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWVobmRpfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Mehndi design" class="w-full h-full object-cover gallery-img">
@@ -398,36 +416,36 @@
   </section>
 
   <!-- Videos Section -->
-<section id="videos" class="py-16 bg-amber-50">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-amber-800">Mehndi Videos</h2>
-      <p class="mt-2 text-amber-700">Watch the art of mehndi application</p>
-    </div>
-    
-    <div class="grid md:grid-cols-2 gap-8">
-      <div class="flex flex-col items-center">
-        <div class="video-container-portrait">
-          <iframe src="https://www.youtube.com/embed/-Jf-qQ_TRS4" title="Mehndi Application Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p class="mt-4 text-center text-gray-700">Mehndi design process</p>
+  <section id="videos" class="py-16 bg-amber-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-amber-800">Mehndi Videos</h2>
+        <p class="mt-2 text-amber-700">Watch the art of mehndi application</p>
       </div>
       
-      <div class="flex flex-col items-center">
-        <div class="video-container-portrait">
-          <iframe src="https://www.youtube.com/embed/VuWARBgAXRk" title="Mehndi Design Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="flex flex-col items-center">
+          <div class="video-container-portrait">
+            <iframe src="https://www.youtube.com/embed/-Jf-qQ_TRS4" title="Mehndi Application Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <p class="mt-4 text-center text-gray-700">Mehndi design process</p>
         </div>
-        <p class="mt-4 text-center text-gray-700">Intricate mehndi patterns</p>
+        
+        <div class="flex flex-col items-center">
+          <div class="video-container-portrait">
+            <iframe src="https://www.youtube.com/embed/VuWARBgAXRk" title="Mehndi Design Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <p class="mt-4 text-center text-gray-700">Intricate mehndi patterns</p>
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-full shadow-md hover:shadow-lg transition-shadow">
+          <i class="fab fa-youtube"></i> Subscribe on YouTube
+        </a>
       </div>
     </div>
-    
-    <div class="mt-12 text-center">
-      <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-full shadow-md hover:shadow-lg transition-shadow">
-        <i class="fab fa-youtube"></i> Subscribe on YouTube
-      </a>
-    </div>
-  </div>
-</section>
+  </section>
 
   <!-- Booking Section -->
   <section id="booking" class="py-16 bg-white">
@@ -440,7 +458,7 @@
           <!-- FormSubmit Configuration -->
           <input type="hidden" name="_subject" value="New Booking Request - Suku Mehndi Art">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html">
+          <input type="hidden" name="_next" value="#thankyou">
           <input type="hidden" name="_captcha" value="false">
           
           <div class="grid md:grid-cols-2 gap-5">
@@ -504,6 +522,18 @@
       </div>
     </div>
   </section>
+
+  <!-- Thank You Message (initially hidden) -->
+  <div id="thankyou" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-2xl mx-auto mb-4">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-amber-800">Thank You!</h3>
+      <p class="mt-2 text-gray-600">Your booking request has been sent successfully. I'll contact you soon to confirm your appointment.</p>
+      <button onclick="closeThankYou()" class="mt-6 px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors">Close</button>
+    </div>
+  </div>
 
   <!-- Testimonials Section -->
   <section class="py-16 bg-amber-50">
@@ -670,6 +700,23 @@
     const formMsg = document.getElementById('formMsg');
     const formError = document.getElementById('formError');
     
+    // Function to show thank you message
+    function showThankYou() {
+      document.getElementById('thankyou').classList.remove('hidden');
+    }
+    
+    // Function to close thank you message
+    function closeThankYou() {
+      document.getElementById('thankyou').classList.add('hidden');
+    }
+    
+    // Handle URL hash (for formsubmit.co redirect)
+    if (window.location.hash === '#thankyou') {
+      showThankYou();
+      // Remove the hash from URL without refreshing
+      history.replaceState(null, null, ' ');
+    }
+    
     bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -709,6 +756,9 @@
           formMsg.classList.remove('hidden');
           formError.classList.add('hidden');
           bookingForm.reset();
+          
+          // Also show the thank you modal
+          showThankYou();
         } else {
           throw new Error('Form submission failed');
         }

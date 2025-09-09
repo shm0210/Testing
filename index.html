@@ -768,36 +768,11 @@
             updateTimeDisplay();
         }
 
-        // Extract YouTube URL from current page URL
-        function extractYouTubeUrlFromPageUrl() {
-            const currentUrl = window.location.href;
-            const baseUrl = window.location.origin + window.location.pathname;
-            
-            // If the current URL is longer than the base URL, there's something appended
-            if (currentUrl.length > baseUrl.length) {
-                const appendedUrl = currentUrl.substring(baseUrl.length);
-                
-                // Check if the appended part is a valid YouTube URL
-                if (isValidVideoLink(appendedUrl) && isYouTubeLink(appendedUrl)) {
-                    return decodeURIComponent(appendedUrl);
-                }
-            }
-            
-            return null;
-        }
-
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             // Initialize volume
             videoElement.volume = volumeSlider.value;
-            
-            // Check if there's a YouTube URL in the page URL
-            const youtubeUrl = extractYouTubeUrlFromPageUrl();
-            if (youtubeUrl) {
-                videoLinkInput.value = youtubeUrl;
-                loadVideo();
-            }
         });
 
         document.addEventListener('visibilitychange', async () => {
@@ -1024,7 +999,17 @@
             showError("Failed to load the video. Please check the link and try again");
         }
 
-        // Keyboard shortcuts
+        // Auto-load video from query string (?=videoURL)
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const videoUrl = params.get(''); // because query is like ?=link
+    if (videoUrl) {
+        videoLinkInput.value = videoUrl;
+        loadVideo();
+    }
+});
+
+       // Keyboard shortcuts
         function handleKeyboardShortcuts(e) {
             if (e.target === videoLinkInput) return;
             

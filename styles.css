@@ -276,3 +276,20 @@ body.no-scroll {
 .video-container-shorts .absolute {
   display: none;
 }
+
+/* Thank you modal animations */
+#thankyou {
+  transition: opacity 0.3s ease;
+}
+
+#thankyou.closing {
+  opacity: 0;
+}
+
+#thankyou > div {
+  transition: transform 0.3s ease;
+}
+
+#thankyou.closing > div {
+  transform: scale(0.95);
+}

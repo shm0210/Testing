@@ -1,60 +1,88 @@
-<script>
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('menu-closed');
-      mobileMenu.classList.toggle('menu-open');
-    });
-    
-    // Close menu when clicking links
-    document.querySelectorAll('#mobileMenu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('menu-closed');
-        mobileMenu.classList.remove('menu-open');
-      });
-    });
-
-    // Prevent selecting old dates
-    document.addEventListener("DOMContentLoaded", function() {
-      const dateInput = document.getElementById("date");
-      const today = new Date().toISOString().split("T")[0];
-      dateInput.setAttribute("min", today);
-    });
-    
-    // Form submission handling
-    const bookingForm = document.getElementById('bookingForm');
-    const formMsg = document.getElementById('formMsg');
-    const formError = document.getElementById('formError');
-    
-    // Function to show thank you message
-    function showThankYou() {
-      document.getElementById('thankyou').classList.remove('hidden');
-    }
-    
-    // Function to close thank you message with animation
-function closeThankYou() {
-  const thankyouModal = document.getElementById('thankyou');
-  thankyouModal.classList.add('closing');
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenuBtn = document.getElementById('closeMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuOverlay = document.getElementById('menuOverlay');
+  const menuLinks = document.querySelectorAll('#mobileMenu a');
   
-  // Add a slight delay before hiding to allow for animation
-  setTimeout(() => {
-    thankyouModal.classList.add('hidden');
-    thankyouModal.classList.remove('closing');
-    
-    // Remove any URL hash without refreshing
-    history.replaceState(null, null, ' ');
-  }, 300);
-}
-    
-    // Handle URL hash (for formsubmit.co redirect)
-    if (window.location.hash === '#thankyou') {
-      showThankYou();
-      // Remove the hash from URL without refreshing
-      history.replaceState(null, null, ' ');
+  // Open menu function
+  function openMenu() {
+    document.body.classList.add('no-scroll');
+    menuOverlay.classList.remove('invisible');
+    menuOverlay.classList.add('visible', 'opacity-100');
+    mobileMenu.classList.remove('translate-x-full');
+  }
+  
+  // Close menu function
+  function closeMenu() {
+    document.body.classList.remove('no-scroll');
+    menuOverlay.classList.remove('visible', 'opacity-100');
+    menuOverlay.classList.add('invisible');
+    mobileMenu.classList.add('translate-x-full');
+  }
+  
+  // Event listeners
+  menuBtn.addEventListener('click', openMenu);
+  closeMenuBtn.addEventListener('click', closeMenu);
+  menuOverlay.addEventListener('click', closeMenu);
+  
+  // Close menu when clicking links
+  menuLinks.forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+  
+  // Close menu with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+      closeMenu();
     }
-    
+  });
+  
+  // Handle resize events - close menu on large screens
+  function handleResize() {
+    if (window.innerWidth >= 768 && !mobileMenu.classList.contains('translate-x-full')) {
+      closeMenu();
+    }
+  }
+  
+  // Throttled resize handler
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(handleResize, 100);
+  });
+
+  // Prevent selecting old dates
+  const dateInput = document.getElementById("date");
+  if (dateInput) {
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("min", today);
+  }
+  
+  // Form submission handling
+  const bookingForm = document.getElementById('bookingForm');
+  const formMsg = document.getElementById('formMsg');
+  const formError = document.getElementById('formError');
+  
+  // Function to show thank you message
+  function showThankYou() {
+    document.getElementById('thankyou').classList.remove('hidden');
+  }
+  
+  // Function to close thank you message
+  function closeThankYou() {
+    document.getElementById('thankyou').classList.add('hidden');
+  }
+  
+  // Handle URL hash (for formsubmit.co redirect)
+  if (window.location.hash === '#thankyou') {
+    showThankYou();
+    // Remove the hash from URL without refreshing
+    history.replaceState(null, null, ' ');
+  }
+  
+  if (bookingForm) {
     bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -117,93 +145,33 @@ function closeThankYou() {
         submitBtn.disabled = false;
       }
     });
+  }
 
-     // Portfolio filtering functionality
-  document.addEventListener('DOMContentLoaded', function() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-    
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Remove active class from all buttons
-        filterButtons.forEach(btn => btn.classList.remove('active', 'bg-amber-500', 'text-white'));
-        
-        // Add active class to clicked button
-        button.classList.add('active', 'bg-amber-500', 'text-white');
-        button.classList.remove('bg-amber-100', 'text-amber-700', 'hover:bg-amber-500');
-        
-        const filterValue = button.getAttribute('data-filter');
-        
-        portfolioItems.forEach(item => {
-          if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
-        });
+  // Portfolio filtering functionality
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const portfolioItems = document.querySelectorAll('.portfolio-item');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Remove active class from all buttons
+      filterButtons.forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-white');
+        btn.classList.add('bg-amber-100', 'text-amber-700', 'hover:bg-amber-500');
+      });
+      
+      // Add active class to clicked button
+      button.classList.add('bg-amber-500', 'text-white');
+      button.classList.remove('bg-amber-100', 'text-amber-700', 'hover:bg-amber-500');
+      
+      const filterValue = button.getAttribute('data-filter');
+      
+      portfolioItems.forEach(item => {
+        if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
       });
     });
   });
-
-    // Optimized mobile menu functionality
-  document.addEventListener('DOMContentLoaded', function() {
-    const menuBtn = document.getElementById('menuBtn');
-    const closeMenuBtn = document.getElementById('closeMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-    const menuLinks = document.querySelectorAll('#mobileMenu a');
-    
-    // Open menu function
-    function openMenu() {
-      // Prevent animation frame conflicts
-      requestAnimationFrame(() => {
-        document.body.classList.add('no-scroll');
-        menuOverlay.classList.add('active');
-        mobileMenu.classList.add('menu-open');
-        mobileMenu.classList.remove('translate-x-full');
-      });
-    }
-    
-    // Close menu function
-    function closeMenu() {
-      // Prevent animation frame conflicts
-      requestAnimationFrame(() => {
-        document.body.classList.remove('no-scroll');
-        menuOverlay.classList.remove('active');
-        mobileMenu.classList.remove('menu-open');
-        mobileMenu.classList.add('translate-x-full');
-      });
-    }
-    
-    // Event listeners with passive option for better performance
-    menuBtn.addEventListener('click', openMenu, { passive: true });
-    closeMenuBtn.addEventListener('click', closeMenu, { passive: true });
-    menuOverlay.addEventListener('click', closeMenu, { passive: true });
-    
-    // Close menu when clicking links
-    menuLinks.forEach(link => {
-      link.addEventListener('click', closeMenu, { passive: true });
-    });
-    
-    // Close menu with Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && mobileMenu.classList.contains('menu-open')) {
-        closeMenu();
-      }
-    }, { passive: true });
-    
-    // Handle resize events - close menu on large screens
-    function handleResize() {
-      if (window.innerWidth >= 768 && mobileMenu.classList.contains('menu-open')) {
-        closeMenu();
-      }
-    }
-    
-    // Throttled resize handler
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(handleResize, 100);
-    }, { passive: true });
-  });
-  </script>
+});

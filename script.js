@@ -33,10 +33,20 @@
       document.getElementById('thankyou').classList.remove('hidden');
     }
     
-    // Function to close thank you message
-    function closeThankYou() {
-      document.getElementById('thankyou').classList.add('hidden');
-    }
+    // Function to close thank you message with animation
+function closeThankYou() {
+  const thankyouModal = document.getElementById('thankyou');
+  thankyouModal.classList.add('closing');
+  
+  // Add a slight delay before hiding to allow for animation
+  setTimeout(() => {
+    thankyouModal.classList.add('hidden');
+    thankyouModal.classList.remove('closing');
+    
+    // Remove any URL hash without refreshing
+    history.replaceState(null, null, ' ');
+  }, 300);
+}
     
     // Handle URL hash (for formsubmit.co redirect)
     if (window.location.hash === '#thankyou') {

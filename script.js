@@ -28,42 +28,15 @@
     const formMsg = document.getElementById('formMsg');
     const formError = document.getElementById('formError');
     
-// Function to show thank you message
-function showThankYou() {
-  const thankyou = document.getElementById('thankyou');
-  thankyou.classList.remove('hidden');
-  
-  // Prevent body scrolling when modal is open
-  document.body.style.overflow = 'hidden';
-  
-  // Add event listener for escape key
-  document.addEventListener('keydown', handleEscapeKey);
-}
-
-// Function to close thank you message
-function closeThankYou() {
-  const thankyou = document.getElementById('thankyou');
-  thankyou.classList.add('hidden');
-  
-  // Re-enable body scrolling
-  document.body.style.overflow = 'auto';
-  
-  // Remove event listener for escape key
-  document.removeEventListener('keydown', handleEscapeKey);
-}
-
-// Handle escape key press
-function handleEscapeKey(e) {
-  if (e.key === 'Escape') {
-    closeThankYou();
-  }
-}
-
-// Close modal when clicking outside content
-document.getElementById('thankyou').addEventListener('click', function(e) {
-  if (e.target === this) {
-    closeThankYou();
-  }
+    // Function to show thank you message
+    function showThankYou() {
+      document.getElementById('thankyou').classList.remove('hidden');
+    }
+    
+    // Function to close thank you message
+    function closeThankYou() {
+      document.getElementById('thankyou').classList.add('hidden');
+    }
     
     // Handle URL hash (for formsubmit.co redirect)
     if (window.location.hash === '#thankyou') {

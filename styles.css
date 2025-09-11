@@ -277,79 +277,154 @@ body.no-scroll {
   display: none;
 }
 
-/* Responsive improvements */
-@media (max-width: 640px) {
-  #hero h1 {
-    font-size: 2.5rem;
-    line-height: 1.2;
-  }
-  
-  .portfolio-container {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
-  }
-  
-  .video-container-shorts {
-    padding-bottom: 177.8%;
+/* Thank You Modal Styles */
+.thankyou-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.thankyou-overlay:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.thankyou-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 450px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: center;
+}
+
+.thankyou-overlay:not(.hidden) .thankyou-modal {
+  transform: translateY(0) scale(1);
+}
+
+.thankyou-icon {
+  margin-bottom: 1.5rem;
+}
+
+.checkmark {
+  width: 80px;
+  height: 80px;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #10B981;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  stroke: #10B981;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
   }
 }
 
-@media (min-width: 641px) and (max-width: 768px) {
-  .portfolio-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.thankyou-content h3 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 1rem;
 }
 
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-  }
+.thankyou-content p {
+  color: #6B7280;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
+.thankyou-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
+.thankyou-btn-primary {
+  background: #F59E0B;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* TV optimization */
-@media (min-width: 1920px) {
-  body {
-    font-size: 18px;
-  }
-  
-  .max-w-6xl {
-    max-width: 120rem;
-  }
-  
-  #hero h1 {
-    font-size: 5rem;
-  }
+.thankyou-btn-primary:hover {
+  background: #D97706;
+  transform: translateY(-2px);
 }
 
-/* Touch device improvements */
-@media (hover: none) and (pointer: coarse) {
-  .portfolio-item:hover {
-    transform: none;
-  }
-  
-  .filter-btn:hover {
-    background-color: initial;
-    color: initial;
-  }
+.thankyou-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
-/* Reduced motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.thankyou-btn-secondary:hover {
+  background: #FDE68A;
+  transform: translateY(-2px);
+}
+
+.thankyou-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #F3F4F6;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.thankyou-close-btn:hover {
+  background: #E5E7EB;
+  transform: rotate(90deg);
 }

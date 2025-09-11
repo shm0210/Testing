@@ -28,15 +28,42 @@
     const formMsg = document.getElementById('formMsg');
     const formError = document.getElementById('formError');
     
-    // Function to show thank you message
-    function showThankYou() {
-      document.getElementById('thankyou').classList.remove('hidden');
-    }
-    
-    // Function to close thank you message
-    function closeThankYou() {
-      document.getElementById('thankyou').classList.add('hidden');
-    }
+// Function to show thank you message
+function showThankYou() {
+  const thankyou = document.getElementById('thankyou');
+  thankyou.classList.remove('hidden');
+  
+  // Prevent body scrolling when modal is open
+  document.body.style.overflow = 'hidden';
+  
+  // Add event listener for escape key
+  document.addEventListener('keydown', handleEscapeKey);
+}
+
+// Function to close thank you message
+function closeThankYou() {
+  const thankyou = document.getElementById('thankyou');
+  thankyou.classList.add('hidden');
+  
+  // Re-enable body scrolling
+  document.body.style.overflow = 'auto';
+  
+  // Remove event listener for escape key
+  document.removeEventListener('keydown', handleEscapeKey);
+}
+
+// Handle escape key press
+function handleEscapeKey(e) {
+  if (e.key === 'Escape') {
+    closeThankYou();
+  }
+}
+
+// Close modal when clicking outside content
+document.getElementById('thankyou').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeThankYou();
+  }
     
     // Handle URL hash (for formsubmit.co redirect)
     if (window.location.hash === '#thankyou') {
@@ -164,45 +191,6 @@
         mobileMenu.classList.add('translate-x-full');
       });
     }
- 
-     // Responsive image handling
-function handleResponsiveImages() {
-  const portfolioItems = document.querySelectorAll('.portfolio-item');
-  const screenWidth = window.innerWidth;
-  
-  portfolioItems.forEach(item => {
-    const img = item.querySelector('img');
-    if (screenWidth < 640) {
-      img.src = img.src.replace('/large/', '/small/');
-    } else {
-      img.src = img.src.replace('/small/', '/large/');
-    }
-  });
-}
-
-// Initialize on load and resize
-window.addEventListener('load', handleResponsiveImages);
-window.addEventListener('resize', handleResponsiveImages);
-
-// Touch device detection
-function isTouchDevice() {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-}
-
-// Adjust interactions for touch devices
-if (isTouchDevice()) {
-  document.documentElement.classList.add('touch-device');
-  
-  // Increase tappable area for mobile
-  const tappableElements = document.querySelectorAll('a, button, .filter-btn');
-  tappableElements.forEach(el => {
-    el.style.minHeight = '44px';
-    el.style.minWidth = '44px';
-    el.style.display = 'flex';
-    el.style.alignItems = 'center';
-    el.style.justifyContent = 'center';
-  });
-}
     
     // Event listeners with passive option for better performance
     menuBtn.addEventListener('click', openMenu, { passive: true });

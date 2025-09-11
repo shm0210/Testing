@@ -71,9 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Function to close thank you message
-  function closeThankYou() {
-    document.getElementById('thankyou').classList.add('hidden');
-  }
+window.closeThankYou = function() {
+  document.getElementById('thankyou').classList.add('hidden');
+};
   
   // Handle URL hash (for formsubmit.co redirect)
   if (window.location.hash === '#thankyou') {

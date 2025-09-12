@@ -5,6 +5,126 @@ document.addEventListener('DOMContentLoaded', function() {
   const mobileMenu = document.getElementById('mobileMenu');
   const menuOverlay = document.getElementById('menuOverlay');
   const menuLinks = document.querySelectorAll('#mobileMenu a');
+
+  // Real-time analytics tracking
+function initAnalytics() {
+  // Generate a unique session ID
+  if (!localStorage.getItem('userSessionId')) {
+    localStorage.setItem('userSessionId', 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+  }
+  
+  const sessionId = localStorage.getItem('userSessionId');
+  const pageLoadTime = Date.now();
+  
+  // Track page view
+  trackEvent('page_view', {
+    url: window.location.href,
+    referrer: document.referrer
+  });
+  
+  // Track engagement time
+  let lastActivityTime = Date.now();
+  let totalEngagedTime = 0;
+  
+  const activityInterval = setInterval(() => {
+    const currentTime = Date.now();
+    const timeSinceLastActivity = currentTime - lastActivityTime;
+    
+    if (timeSinceLastActivity < 10000) { // 10 seconds
+      totalEngagedTime += 1;
+    }
+    
+    // Send engaged time every 30 seconds
+    if (totalEngagedTime % 30 === 0) {
+      trackEvent('engagement_time', {
+        time: totalEngagedTime,
+        url: window.location.href
+      });
+    }
+  }, 1000);
+  
+  // Track user interactions
+  document.addEventListener('click', function(e) {
+    lastActivityTime = Date.now();
+    
+    const target = e.target;
+    const text = target.textContent.trim();
+    const id = target.id || '';
+    const className = target.className || '';
+    
+    trackEvent('click', {
+      text: text.substring(0, 100),
+      id: id,
+      class: className.substring(0, 200),
+      url: window.location.href
+    });
+  });
+  
+  // Track form interactions
+  const forms = document.querySelectorAll('form');
+  forms.forEach(form => {
+    form.addEventListener('submit', function(e) {
+      trackEvent('form_submit', {
+        form_id: form.id || 'unknown',
+        form_action: form.action || '',
+        url: window.location.href
+      });
+    });
+  });
+  
+  // Track scroll depth
+  let maxScrollDepth = 0;
+  window.addEventListener('scroll', function() {
+    lastActivityTime = Date.now();
+    
+    const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+    if (scrollDepth > maxScrollDepth) {
+      maxScrollDepth = scrollDepth;
+      trackEvent('scroll_depth', {
+        depth: maxScrollDepth,
+        url: window.location.href
+      });
+    }
+  });
+  
+  // Track when user leaves the page
+  window.addEventListener('beforeunload', function() {
+    const sessionDuration = Date.now() - pageLoadTime;
+    
+    trackEvent('session_end', {
+      duration: sessionDuration,
+      engaged_time: totalEngagedTime,
+      max_scroll: maxScrollDepth,
+      url: window.location.href
+    });
+    
+    clearInterval(activityInterval);
+  });
+}
+
+// Function to send tracking data
+function trackEvent(type, data) {
+  const eventData = {
+    type: type,
+    data: data,
+    timestamp: Date.now(),
+    session_id: localStorage.getItem('userSessionId'),
+    url: window.location.href
+  };
+  
+  // In a real implementation, you would send this to your analytics server
+  console.log('Tracking event:', eventData);
+  
+  // For demo purposes, we'll store events in localStorage
+  const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
+  events.push(eventData);
+  localStorage.setItem('analytics_events', JSON.stringify(events));
+}
+
+// Initialize analytics when the page loads
+if (typeof localStorage !== 'undefined') {
+  initAnalytics();
+}
   
   // Open menu function
   function openMenu() {

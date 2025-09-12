@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Analytics - Suku Mehndi Art</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --accent: #b36b2e;
+      --accent-light: #fef3e8;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fef7ed;
+    }
+    
+    .analytics-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid #b36b2e;
+    }
+    
+    .analytics-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-bar {
+      transition: width 1s ease-in-out;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+    
+    .live-badge {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .user-avatar {
+      transition: all 0.3s ease;
+    }
+    
+    .user-avatar:hover {
+      transform: scale(1.2);
+      z-index: 10;
+    }
+    
+    .heatmap-cell {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .heatmap-cell:hover {
+      transform: scale(1.2);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="flex">
+    <!-- Sidebar -->
+    <div class="w-64 bg-amber-900 text-amber-100 min-h-screen p-4 hidden md:block">
+      <div class="p-4 mb-8">
+        <h1 class="text-xl font-bold">Suku Mehndi Analytics</h1>
+        <p class="text-amber-300 text-sm">Real-time Dashboard</p>
+      </div>
+      
+      <nav class="space-y-2">
+        <a href="#" class="flex items-center gap-3 p-3 bg-amber-800 rounded-lg text-white">
+          <i class="fas fa-chart-simple"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 hover:bg-amber-800 rounded-lg text-amber-200">
+          <i class="fas fa-users"></i>
+          <span>Visitors</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 hover:bg-amber-800 rounded-lg text-amber-200">
+          <i class="fas fa-mouse"></i>
+          <span>Interactions</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 hover:bg-amber-800 rounded-lg text-amber-200">
+          <i class="fas fa-receipt"></i>
+          <span>Conversions</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 hover:bg-amber-800 rounded-lg text-amber-200">
+          <i class="fas fa-map"></i>
+          <span>Heatmaps</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 hover:bg-amber-800 rounded-lg text-amber-200">
+          <i class="fas fa-gear"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="mt-8 p-4 bg-amber-800 rounded-lg">
+        <h3 class="font-medium mb-2">Live Tracking</h3>
+        <div class="flex items-center">
+          <span class="w-3 h-3 bg-green-500 rounded-full mr-2 live-badge"></span>
+          <span class="text-sm">Active</span>
+        </div>
+        <div class="mt-3 text-xs text-amber-300">
+          <p>Tracking user interactions in real-time</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+      <header class="bg-white rounded-2xl shadow-md p-6 mb-8">
+        <div class="flex justify-between items-center flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-amber-800">Real-Time Analytics Dashboard</h1>
+            <p class="text-amber-600">Monitor user behavior on your Mehndi Art website</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm">
+              <i class="fas fa-clock mr-1"></i> <span id="current-time">Loading...</span>
+            </div>
+            <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg">
+              <i class="fas fa-download mr-2"></i> Export Report
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-gray-500">Current Visitors</p>
+              <h2 class="text-3xl font-bold text-amber-800" id="current-visitors">12</h2>
+              <p class="text-green-500 text-sm"><i class="fas fa-arrow-up"></i> <span id="visitors-change">3</span> in last 5 min</p>
+            </div>
+            <div class="bg-amber-100 p-3 rounded-full">
+              <i class="fas fa-users text-amber-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-gray-500">Avg. Session</p>
+              <h2 class="text-3xl font-bold text-amber-800" id="avg-session">3m 42s</h2>
+              <p class="text-green-500 text-sm"><i class="fas fa-arrow-up"></i> 8% from yesterday</p>
+            </div>
+            <div class="bg-amber-100 p-3 rounded-full">
+              <i class="fas fa-clock text-amber-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-gray-500">Bounce Rate</p>
+              <h2 class="text-3xl font-bold text-amber-800" id="bounce-rate">42%</h2>
+              <p class="text-red-500 text-sm"><i class="fas fa-arrow-down"></i> 5% from yesterday</p>
+            </div>
+            <div class="bg-amber-100 p-3 rounded-full">
+              <i class="fas fa-sign-out-alt text-amber-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-gray-500">Conversions</p>
+              <h2 class="text-3xl font-bold text-amber-800" id="conversions">4</h2>
+              <p class="text-green-500 text-sm"><i class="fas fa-arrow-up"></i> 2 today</p>
+            </div>
+            <div class="bg-amber-100 p-3 rounded-full">
+              <i class="fas fa-check-circle text-amber-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <h3 class="text-xl font-semibold text-amber-800 mb-4">Live Visitors</h3>
+          <div class="chart-container">
+            <canvas id="visitorsChart"></canvas>
+          </div>
+        </div>
+
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <h3 class="text-xl font-semibold text-amber-800 mb-4">User Activity</h3>
+          <div class="chart-container">
+            <canvas id="activityChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Events -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <h3 class="text-xl font-semibold text-amber-800 mb-4">Active Users Right Now</h3>
+          <div class="space-y-4" id="active-users">
+            <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold user-avatar">
+                  A
+                </div>
+                <div class="ml-3">
+                  <div class="font-medium">User from Mumbai</div>
+                  <div class="text-xs text-gray-500">Viewing Portfolio</div>
+                </div>
+              </div>
+              <div class="text-green-500 text-sm">
+                <i class="fas fa-circle"></i> Active
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold user-avatar">
+                  P
+                </div>
+                <div class="ml-3">
+                  <div class="font-medium">User from Delhi</div>
+                  <div class="text-xs text-gray-500">Filling booking form</div>
+                </div>
+              </div>
+              <div class="text-green-500 text-sm">
+                <i class="fas fa-circle"></i> Active
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold user-avatar">
+                  S
+                </div>
+                <div class="ml-3">
+                  <div class="font-medium">User from Bangalore</div>
+                  <div class="text-xs text-gray-500">Viewing Services</div>
+                </div>
+              </div>
+              <div class="text-green-500 text-sm">
+                <i class="fas fa-circle"></i> Active
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card bg-white rounded-xl shadow-md p-6">
+          <h3 class="text-xl font-semibold text-amber-800 mb-4">Real-time Events</h3>
+          <div class="h-80 overflow-y-auto" id="live-events">
+            <div class="space-y-4">
+              <div class="flex items-start p-3 bg-amber-50 rounded-lg">
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3 mt-1">
+                  <i class="fas fa-mouse"></i>
+                </div>
+                <div>
+                  <div class="font-medium">Click on "Book Your Mehndi"</div>
+                  <div class="text-xs text-gray-500">2 seconds ago</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start p-3 bg-amber-50 rounded-lg">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3 mt-1">
+                  <i class="fas fa-eye"></i>
+                </div>
+                <div>
+                  <div class="font-medium">Viewed Bridal Portfolio</div>
+                  <div class="text-xs text-gray-500">15 seconds ago</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start p-3 bg-amber-50 rounded-lg">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mr-3 mt-1">
+                  <i class="fas fa-play"></i>
+                </div>
+                <div>
+                  <div class="font-medium">Watched Mehndi Tutorial</div>
+                  <div class="text-xs text-gray-500">45 seconds ago</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start p-3 bg-amber-50 rounded-lg">
+                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-3 mt-1">
+                  <i class="fas fa-share"></i>
+                </div>
+                <div>
+                  <div class="font-medium">Shared on Instagram</div>
+                  <div class="text-xs text-gray-500">1 minute ago</div>
+                </div>
+              </div>
+              
+              <div class="flex items-start p-3 bg-amber-50 rounded-lg">
+                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 mr-3 mt-1">
+                  <i class="fas fa-times"></i>
+                </div>
+                <div>
+                  <div class="font-medium">Exited from Booking Form</div>
+                  <div class="text-xs text-gray-500">2 minutes ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap -->
+      <div class="analytics-card bg-white rounded-xl shadow-md p-6 mb-8">
+        <h3 class="text-xl font-semibold text-amber-800 mb-4">Click Heatmap (Last 24 Hours)</h3>
+        <div class="bg-amber-50 rounded-xl p-4">
+          <div class="relative h-64" id="heatmap-container">
+            <!-- This would be a visual representation of your website with heatmap overlay -->
+            <div class="absolute inset-0 border-2 border-amber-300 rounded-lg flex items-center justify-center text-amber-600">
+              <div class="text-center">
+                <i class="fas fa-image fa-3x mb-3"></i>
+                <p>Website Heatmap Visualization</p>
+                <p class="text-sm">(Would show actual click density on your site)</p>
+              </div>
+            </div>
+            
+            <!-- Heatmap hotspots (simulated) -->
+            <div class="absolute top-1/4 left-1/4 w-8 h-8 bg-red-500 rounded-full opacity-70 heatmap-cell" title="200 clicks"></div>
+            <div class="absolute top-1/3 right-1/3 w-6 h-6 bg-orange-500 rounded-full opacity-70 heatmap-cell" title="150 clicks"></div>
+            <div class="absolute bottom-1/4 left-1/2 w-10 h-10 bg-red-600 rounded-full opacity-70 heatmap-cell" title="300 clicks"></div>
+            <div class="absolute bottom-1/3 right-1/4 w-5 h-5 bg-yellow-500 rounded-full opacity-70 heatmap-cell" title="100 clicks"></div>
+          </div>
+          
+          <div class="mt-4 flex items-center justify-center">
+            <span class="text-xs mr-2">Fewer Clicks</span>
+            <div class="flex-1 max-w-md h-4 rounded-full bg-gradient-to-r from-amber-100 via-amber-300 to-amber-500"></div>
+            <span class="text-xs ml-2">More Clicks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+      // Update current time
+      function updateTime() {
+        const now = new Date();
+        document.getElementById('current-time').textContent = now.toLocaleTimeString();
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
+      
+      // Visitors Chart
+      const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
+      const visitorsChart = new Chart(visitorsCtx, {
+        type: 'line',
+        data: {
+          labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+          datasets: [{
+            label: 'Visitors',
+            data: [12, 19, 14, 15, 16, 17, 19],
+            borderColor: '#b36b2e',
+            backgroundColor: 'rgba(179, 107, 46, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Visitors per hour'
+            }
+          }
+        }
+      });
+      
+      // Activity Chart
+      const activityCtx = document.getElementById('activityChart').getContext('2d');
+      const activityChart = new Chart(activityCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Portfolio', 'Booking', 'Services', 'About', 'Contact'],
+          datasets: [{
+            data: [35, 25, 20, 15, 5],
+            backgroundColor: [
+              '#b36b2e',
+              '#d69e2e',
+              '#f6ad55',
+              '#fbd38d',
+              '#fef3e8'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Page Activity Distribution'
+            }
+          }
+        }
+      });
+      
+      // Simulate real-time updates
+      setInterval(() => {
+        // Update current visitors
+        const currentVisitors = document.getElementById('current-visitors');
+        const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+        const newCount = Math.max(5, parseInt(currentVisitors.textContent) + change);
+        currentVisitors.textContent = newCount;
+        
+        // Update change indicator
+        document.getElementById('visitors-change').textContent = Math.abs(change);
+        
+        // Add a random event
+        if (Math.random() > 0.7) {
+          addRandomEvent();
+        }
+      }, 5000);
+      
+      // Add random events to simulate real-time activity
+      function addRandomEvent() {
+        const events = [
+          {icon: 'fa-mouse', color: 'blue', text: 'Clicked on "View Gallery"'},
+          {icon: 'fa-eye', color: 'green', text: 'Viewed Arabic Designs'},
+          {icon: 'fa-play', color: 'purple', text: 'Watched Mehndi Application Video'},
+          {icon: 'fa-share', color: 'amber', text: 'Shared on Social Media'},
+          {icon: 'fa-heart', color: 'red', text: 'Liked a Portfolio Item'}
+        ];
+        
+        const event = events[Math.floor(Math.random() * events.length)];
+        const eventsContainer = document.getElementById('live-events');
+        
+        const eventElement = document.createElement('div');
+        eventElement.className = 'flex items-start p-3 bg-amber-50 rounded-lg mt-3';
+        eventElement.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-${event.color}-100 flex items-center justify-center text-${event.color}-600 mr-3 mt-1">
+            <i class="fas ${event.icon}"></i>
+          </div>
+          <div>
+            <div class="font-medium">${event.text}</div>
+            <div class="text-xs text-gray-500">Just now</div>
+          </div>
+        `;
+        
+        eventsContainer.prepend(eventElement);
+        
+        // Keep only the last 10 events
+        if (eventsContainer.children.length > 10) {
+          eventsContainer.removeChild(eventsContainer.lastChild);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -399,3 +399,42 @@ button:focus, a:focus, input:focus, select:focus, textarea:focus {
   box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
 }
 
+
+/* Enhanced contact section styles */
+#contact {
+  position: relative;
+  isolation: isolate;
+}
+
+#contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+  z-index: -1;
+}
+
+/* Form focus styles */
+#contact-form input:focus,
+#contact-form textarea:focus {
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+/* Form message styles */
+#form-message {
+  transition: all 0.3s ease;
+}
+
+/* Responsive adjustments for contact section */
+@media (max-width: 1024px) {
+  #contact .grid {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #contact .md\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}

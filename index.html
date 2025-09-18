@@ -1,957 +1,1163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suku Mehndi Art — Bridal & Event Mehndi</title>
-  <meta name="description" content="Suku Mehndi Art — Intricate bridal and event mehndi designs. Book appointments, view portfolio, contact via Instagram.">
-  
-  <!-- Tailwind CSS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Modern Technology with premium features">
+  <!-- SEO Meta Tags -->
+  <meta property="og:title" content="SHM INFINITY - The Premium World">
+  <meta property="og:description" content="Discover premium features with beautiful, fast, and responsive UI designed for the modern digital experience.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shminfinity.fun/">
+  <meta property="og:image" content="https://shm-infinity.example.com/images/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SHM INFINITY - The Premium World">
+  <meta name="twitter:description" content="Discover premium features with beautiful, fast, and responsive UI designed for the modern digital experience.">
+  <meta name="twitter:image" content="https://shm-infinity.example.com/images/twitter-card.jpg">
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+  <title>SHM INFINITY - The Premium World</title>
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://cdn.tailwindcss.com" as="script" crossorigin>
+  <link rel="preload" href="https://unpkg.com/aos@2.3.4/dist/aos.css" as="style">
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            gradient: {
+              start: '#3b82f6',
+              end: '#8b5cf6',
+            }
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-15px)' },
+            },
+            pulse: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.05)' },
+            },
+            spin: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' },
+            },
+            'slide-down': {
+              '0%': { opacity: '0', transform: 'translateY(-20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'fade-in': {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            'gradient-shift': {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            }
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            pulse: 'pulse 4s ease-in-out infinite',
+            spin: 'spin 0.5s ease',
+            'slide-down': 'slide-down 0.3s ease-out',
+            'fade-in': 'fade-in 0.5s ease-out',
+            'gradient-shift': 'gradient-shift 3s ease infinite'
+          },
+          backgroundSize: {
+            'gradient-shift': '200% 200%'
+          }
+        }
+      }
+    }
+  </script>
+  <!-- AOS (Animate On Scroll) CSS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <link rel="stylesheet" href="styles.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Custom CSS */
+    :root {
+      --primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .glass-effect {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+    }
+    
+    .gradient-text {
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .gradient-bg {
+      background: var(--primary-gradient);
+    }
+    
+    .gradient-border {
+      position: relative;
+      background: linear-gradient(#0f172a, #0f172a) padding-box,
+                  var(--primary-gradient) border-box;
+      border: 1px solid transparent;
+    }
+    
+    .animated-gradient {
+      background: linear-gradient(-45deg, #0ea5e9, #3b82f6, #8b5cf6, #6366f1);
+      background-size: 400% 400%;
+      animation: gradient-shift 8s ease infinite;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.1), 0 10px 10px -5px rgba(14, 165, 233, 0.04);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-gradient);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .floating-element {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--primary-gradient);
+      border-radius: 10px;
+    }
+    
+    .parallax-bg {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+    
+    .shimmer {
+      animation: shimmer 2s infinite linear;
+      background: linear-gradient(to right, #1e293b 4%, #334155 25%, #1e293b 36%);
+      background-size: 1000px 100%;
+    }
+    
+    /* Focus styles for accessibility */
+    button:focus, a:focus, input:focus, select:focus, textarea:focus {
+      outline: 2px solid rgba(14, 165, 233, 0.5);
+      outline-offset: 2px;
+    }
+    
+    /* Skip to content link for keyboard users */
+    .skip-to-content {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 999;
+      padding: 1em;
+      background-color: #0f172a;
+      color: white;
+      opacity: 0;
+    }
+    
+    .skip-to-content:focus {
+      left: 0;
+      opacity: 1;
+    }
+    
+    /* Reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
-<body class="bg-white text-gray-800 leading-relaxed">
-  <!-- Navigation -->
-  <header class="bg-white sticky top-0 z-50 border-b shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a href="#hero" class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center text-white font-semibold text-lg">S</div>
-          <div>
-            <div class="font-semibold text-sm">Suku Mehndi Art</div>
-            <div class="text-xs text-gray-500">Mirzapur, Uttar Pradesh</div>
-          </div>
-        </a>
-        
-        <nav class="hidden md:flex items-center gap-6 text-sm">
-          <a href="#hero" class="hover:text-amber-600 transition-colors">Home</a>
-          <a href="#about" class="hover:text-amber-600 transition-colors">About</a>
-          <a href="#portfolio" class="hover:text-amber-600 transition-colors">Portfolio</a>
-          <a href="#videos" class="hover:text-amber-600 transition-colors">Videos</a>
-          <a href="#services" class="hover:text-amber-600 transition-colors">Services</a>
-          <a href="#booking" class="hover:text-amber-600 transition-colors">Book</a>
-          <a href="#contact" class="hover:text-amber-600 transition-colors">Contact</a>
-        </nav>
-        
-        <div class="flex items-center gap-3">
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" rel="noopener" class="text-amber-600 text-sm hidden md:block">@suku.mehndi.art</a>
-          <button id="menuBtn" class="md:hidden p-2 rounded-lg border border-gray-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2z" clip-rule="evenodd" />
-            </svg>
-          </button>
-        </div>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white min-h-screen flex flex-col transition-colors duration-300">
+  <!-- Skip to content link for keyboard users -->
+  <a href="#main" class="skip-to-content">Skip to content</a>
+
+  <!-- Animated background elements -->
+  <div class="fixed inset-0 overflow-hidden z-0" aria-hidden="true">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500 rounded-full filter blur-3xl opacity-10 animate-float"></div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="glass-effect flex items-center justify-between px-6 py-4 shadow-lg sticky top-0 z-50 transition-all duration-300">
+    <div class="flex items-center space-x-2">
+      <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center">
+        <i class="fas fa-infinity text-xs text-white" aria-hidden="true"></i>
+      </div>
+      <h1 class="text-2xl font-bold gradient-text">SHM INFINITY</h1>
+    </div>
+    
+    <!-- Search Bar (Medium screens and up) -->
+    <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
+      <label for="search-input" class="sr-only">Search apps</label>
+      <input type="text" placeholder="Search apps..." 
+        class="w-full glass-effect border border-gray-700 rounded-full py-2 px-4 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+        id="search-input" aria-label="Search apps">
+      <i class="fas fa-search absolute left-3 top-3 text-gray-400" aria-hidden="true"></i>
+      <div id="search-results" class="absolute top-full mt-2 w-full glass-effect rounded-lg shadow-xl z-50 hidden overflow-hidden custom-scrollbar max-h-80 overflow-y-auto">
+        <!-- Search results will be populated here -->
       </div>
     </div>
-
-    <!-- Mobile menu overlay -->
-    <div id="menuOverlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 invisible transition-opacity duration-300 md:hidden"></div>
-
-    <!-- Mobile menu -->
-    <div id="mobileMenu" class="fixed top-0 right-0 w-80 h-full bg-gradient-to-b from-amber-800 to-amber-900 shadow-2xl z-50 md:hidden transform translate-x-full transition-transform duration-300">
-      <!-- Menu header -->
-      <div class="p-5 border-b border-amber-700 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-amber-600 flex items-center justify-center text-amber-100 font-semibold text-lg">S</div>
-          <div class="text-amber-100">
-            <div class="font-semibold text-sm">Suku Mehndi Art</div>
-            <div class="text-xs text-amber-300">By SAKSHI</div>
+    
+    <nav class="hidden md:flex gap-6 items-center" aria-label="Main navigation">
+      <a href="#home" class="nav-link hover:text-primary-400 transition-all duration-300">
+        Home
+      </a>
+      <a href="#apps" class="nav-link hover:text-primary-400 transition-all duration-300">
+        Apps
+      </a>
+      <a href="#contact" class="nav-link hover:text-primary-400 transition-all duration-300">
+        Contact
+      </a>
+    </nav>
+    
+    <div class="flex items-center gap-4">
+      <!-- Search Button (Mobile) -->
+      <button id="mobile-search-button" class="md:hidden p-2 rounded-full hover:bg-gray-800 transition-all duration-300" aria-label="Search">
+        <i class="fas fa-search" aria-hidden="true"></i>
+      </button>
+      
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-800 transition-all duration-300 group relative" aria-label="Toggle dark mode">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:text-primary-400 transition-colors" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path id="theme-icon" fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+        </svg>
+      </button>
+      
+      <!-- User Profile Dropdown -->
+      <div class="relative hidden md:block" id="user-dropdown-container">
+        <button id="user-dropdown-button" class="flex items-center gap-2 p-1 rounded-full hover:bg-gray-800 transition-all duration-300" aria-label="User menu" aria-expanded="false" aria-controls="user-dropdown">
+          <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-xs text-white" aria-hidden="true"></i>
           </div>
-        </div>
-        <button id="closeMenuBtn" class="text-amber-200 hover:text-white p-2 rounded-full hover:bg-amber-700 transition-colors" aria-label="Close menu">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <span class="hidden lg:inline-block">SHUBHAM</span>
+          <i class="fas fa-chevron-down text-xs hidden lg:inline-block" aria-hidden="true"></i>
         </button>
-      </div>
-
-      <!-- Menu navigation -->
-      <div class="p-4 flex flex-col gap-1 h-[calc(100%-140px)] overflow-y-auto">
-        <a href="#hero" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-home text-amber-400 w-5 text-center"></i>
-          <span>Home</span>
-        </a>
-        <a href="#about" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-user text-amber-400 w-5 text-center"></i>
-          <span>About</span>
-        </a>
-        <a href="#portfolio" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-images text-amber-400 w-5 text-center"></i>
-          <span>Portfolio</span>
-        </a>
-        <a href="#videos" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-play-circle text-amber-400 w-5 text-center"></i>
-          <span>Videos</span>
-        </a>
-        <a href="#services" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-concierge-bell text-amber-400 w-5 text-center"></i>
-          <span>Services</span>
-        </a>
-        <a href="#booking" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-calendar-check text-amber-400 w-5 text-center"></i>
-          <span>Book</span>
-        </a>
-        <a href="#contact" class="py-4 px-5 rounded-xl text-amber-100 hover:bg-amber-700 hover:text-white transition-colors duration-200 flex items-center gap-3">
-          <i class="fas fa-envelope text-amber-400 w-5 text-center"></i>
-          <span>Contact</span>
-        </a>
         
-        <div class="border-t border-amber-700 my-4"></div>
-        
-        <!-- Social links -->
-        <div class="px-5 py-3">
-          <p class="text-amber-300 text-sm font-medium mb-3">Follow Me</p>
-          <div class="flex gap-3">
-            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="w-12 h-12 rounded-xl bg-amber-700 flex items-center justify-center text-amber-100 hover:bg-pink-600 hover:text-white transition-colors duration-200">
-              <i class="fab fa-instagram text-lg"></i>
-            </a>
-            <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="w-12 h-12 rounded-xl bg-amber-700 flex items-center justify-center text-amber-100 hover:bg-red-600 hover:text-white transition-colors duration-200">
-              <i class="fab fa-youtube text-lg"></i>
-            </a>
-            <a href="https://wa.me/91xxxxx?text=Hi%20Suku,%20I'm%20interested%20in%20your%20mehndi%20services" target="_blank" class="w-12 h-12 rounded-xl bg-amber-700 flex items-center justify-center text-amber-100 hover:bg-green-600 hover:text-white transition-colors duration-200">
-              <i class="fab fa-whatsapp text-lg"></i>
-            </a>
+        <div id="user-dropdown" class="absolute right-0 mt-2 w-48 glass-effect rounded-lg shadow-xl z-50 hidden overflow-hidden transition-all duration-300 origin-top-right transform scale-95 opacity-0">
+          <div class="p-4 border-b border-gray-700">
+            <p class="font-semibold">SHUBHAM</p>
+            <p class="text-xs text-gray-400">Owner</p>
           </div>
-        </div>
-        
-        <!-- Contact info -->
-        <div class="px-5 py-3 mt-auto">
-          <div class="bg-amber-700/30 rounded-xl p-4">
-            <p class="text-amber-200 text-sm font-medium mb-2">Quick Contact</p>
-            <a href="mailto:sukumehndiart@gmail.com" class="text-amber-100 text-sm flex items-center gap-2 mb-2 hover:text-white transition-colors duration-200">
-              <i class="fas fa-envelope text-amber-400 text-xs"></i>
-              sukumehndiart@gmail.com
-            </a>
-            <a href="tel:+91xxxxx" class="text-amber-100 text-sm flex items-center gap-2 hover:text-white transition-colors duration-200">
-              <i class="fas fa-phone text-amber-400 text-xs"></i>
-              Not available right now 
-            </a>
-          </div>
+          <a href="#" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-200 flex items-center gap-2">
+            <i class="fas fa-user text-primary-400 w-5" aria-hidden="true"></i>
+            Profile
+          </a>
+          <a href="#" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-200 flex items-center gap-2">
+            <i class="fas fa-cog text-primary-400 w-5" aria-hidden="true"></i>
+            Settings
+          </a>
+          <a href="#" class="block px-4 py-2 hover:bg-gray-700 transition-colors duration-200 flex items-center gap-2">
+            <i class="fas fa-sign-out-alt text-primary-400 w-5" aria-hidden="true"></i>
+            Sign Out
+          </a>
         </div>
       </div>
+      
+      <!-- Mobile Menu Button -->
+      <button class="md:hidden p-2 rounded-full hover:bg-gray-800 transition-colors relative group" id="mobile-menu-button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor" id="menu-icon" aria-hidden="true">
+          <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+        </svg>
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden" id="menu-notification" aria-hidden="true">3</span>
+      </button>
     </div>
   </header>
 
-  
-<!-- Hero Section -->
-<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-  <!-- Background with gradient overlay -->
-  <div class="absolute inset-0 z-0">
-    <div class="absolute inset-0 bg-gradient-to-r from-amber-900/70 to-amber-700/50 z-10"></div>
-    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1769&q=80')] bg-cover bg-center bg-no-repeat"></div>
-    
-    <!-- Decorative elements -->
-    <div class="absolute top-10 left-10 w-24 h-24 opacity-20">
-      <svg viewBox="0 0 100 100" class="text-amber-300">
-        <path fill="currentColor" d="M50,0 C77.614,0 100,22.386 100,50 C100,77.614 77.614,100 50,100 C22.386,100 0,77.614 0,50 C0,22.386 22.386,0 50,0 Z M50,10 C27.909,10 10,27.909 10,50 C10,72.091 27.909,90 50,90 C72.091,90 90,72.091 90,50 C90,27.909 72.091,10 50,10 Z"></path>
-      </svg>
+  <!-- Mobile Search Bar -->
+  <div id="mobile-search" class="hidden md:hidden glass-effect backdrop-blur-md px-6 py-3 border-b border-gray-800">
+    <div class="relative">
+      <label for="mobile-search-input" class="sr-only">Search apps</label>
+      <input type="text" placeholder="Search apps..." 
+        class="w-full glass-effect border border-gray-700 rounded-full py-2 px-4 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+        id="mobile-search-input" aria-label="Search apps">
+      <i class="fas fa-search absolute left-3 top-3 text-gray-400" aria-hidden="true"></i>
+      <button id="mobile-search-close" class="absolute right-3 top-3 text-gray-400 hover:text-white" aria-label="Close search">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
     </div>
-    <div class="absolute bottom-20 right-16 w-16 h-16 opacity-20">
-      <svg viewBox="0 0 100 100" class="text-amber-300">
-        <path fill="currentColor" d="M50,0 C77.614,0 100,22.386 100,50 C100,77.614 77.614,100 50,100 C22.386,100 0,77.614 0,50 C0,22.386 22.386,0 50,0 Z M50,10 C27.909,10 10,27.909 10,50 C10,72.091 27.909,90 50,90 C72.091,90 90,72.091 90,50 C90,27.909 72.091,10 50,10 Z"></path>
-      </svg>
+    <div id="mobile-search-results" class="mt-2 glass-effect rounded-lg shadow-xl hidden overflow-hidden custom-scrollbar max-h-64 overflow-y-auto">
+      <!-- Mobile search results will be populated here -->
     </div>
   </div>
-  
-  <div class="max-w-6xl mx-auto px-4 relative z-20 py-16">
-    <div class="grid md:grid-cols-2 gap-12 items-center">
-      <div class="text-center md:text-left">
-        <div class="inline-flex items-center bg-amber-100/90 backdrop-blur-sm px-4 py-2 rounded-full text-amber-800 text-sm mb-6 shadow-md">
-          <span class="w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></span>
-          Available in Mirzapur
-        </div>
-        
-        <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">Suku <span class="text-amber-300">Mehndi</span> Art</h1>
-        <p class="mt-4 text-xl text-amber-100 font-light max-w-md">Intricate bridal & event mehndi that tells your unique story through beautiful patterns.</p>
-        
-        <div class="mt-8 flex flex-col sm:flex-row gap-4">
-          <a href="#booking" class="px-8 py-4 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 group hover:shadow-amber-500/30">
-            <i class="fas fa-calendar-check group-hover:scale-110 transition-transform"></i> Book Your Mehndi
-          </a>
-          <a href="#portfolio" class="px-8 py-4 rounded-full border-2 border-amber-400 bg-amber-400/10 backdrop-blur-sm text-white hover:bg-amber-500 transition-all duration-300 flex items-center justify-center gap-2 group">
-            <i class="fas fa-images group-hover:scale-110 transition-transform"></i> View Gallery
-          </a>
-        </div>
-        
-        <div class="mt-10 flex items-center justify-center md:justify-start gap-6">
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-100 hover:text-white p-3 bg-amber-600/30 backdrop-blur-sm rounded-full hover:bg-amber-500 transition-all duration-300">
-            <i class="fab fa-instagram text-2xl"></i>
-          </a>
-          <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="text-amber-100 hover:text-white p-3 bg-amber-600/30 backdrop-blur-sm rounded-full hover:bg-amber-500 transition-all duration-300">
-            <i class="fab fa-youtube text-2xl"></i>
-          </a>
-          <div class="h-6 w-px bg-amber-400/50"></div>
-          <div class="text-amber-200 text-sm">
-            <span class="font-semibold">4+ Years</span> of Experience
-          </div>
-        </div>
-      </div>
-      
-      <div class="relative">
-        <div class="bg-white/95 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-amber-200/30 transform hover:scale-[1.02] transition-all duration-500">
-          <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-amber-500 rotate-45 rounded-sm"></div>
-          <div class="text-center">
-            <h2 class="text-2xl font-semibold text-amber-800 mb-2">About Suku Mehndi Art</h2>
-            <div class="mt-4 text-amber-700 space-y-3 text-sm md:text-base">
-              <p class="flex items-center justify-center flex-wrap">
-                <span class="bio-flower text-amber-600">✿</span> 
-                <span class="font-medium">𝐌𝐞𝐡𝐧𝐝𝐢 : 𝒕𝒉𝒆 𝒂𝒓𝒕 𝒐𝒇 𝒔𝒆𝒍𝒇-𝒆𝒙𝒑𝒓𝒆𝒔𝒔𝒊𝒐𝒏</span> 
-                <span class="bio-flower text-amber-600">✿</span>
-              </p>
-              <p><span class="bio-flower text-amber-600">✿</span> Bridal • Festive • Custom <span class="text-amber-500 ml-1">✨</span></p>
-              <p><span class="bio-flower text-amber-600">✿</span> Mirzapur <span class="text-amber-600 ml-1">📍</span></p>
-              <p><span class="bio-flower text-amber-600">✿</span> DM to glow your hands <span class="bio-flower text-amber-600 ml-1">💌</span></p>
-              <p><span class="bio-flower text-amber-600">✿</span> By Suku (Sαƙʂԋι)</p>
-            </div>
-            <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
-              <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 group">
-                <i class="fab fa-instagram group-hover:scale-110 transition-transform"></i> Follow
-              </a>
-              <a href="#booking" class="px-5 py-2.5 border border-amber-500 text-amber-600 rounded-full hover:bg-amber-500 hover:text-white transition-all flex items-center justify-center gap-2 group">
-                <i class="fas fa-bookmark group-hover:scale-110 transition-transform"></i> Book Now
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Floating elements around the card -->
-        <div class="absolute -top-4 -left-4 w-8 h-8 rounded-full bg-amber-400/20 animate-pulse"></div>
-        <div class="absolute -bottom-4 -right-4 w-6 h-6 rounded-full bg-amber-400/30 animate-pulse delay-1000"></div>
-      </div>
-    </div>
-  </div>
-  
-<!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-    <a href="#about" class="flex flex-col items-center text-amber-100 hover:text-white group">
-      <span class="text-sm mb-2 opacity-80 group-hover:opacity-100"></span>
-      <div class="w-6 h-10 border-2 border-amber-200 rounded-full flex justify-center p-1">
-        <div class="w-2 h-2 bg-amber-200 rounded-full animate-bounce"></div>
-      </div>
-    </a>
-  </div>
-</section>
 
-<!-- About Section -->
-<section id="about" class="py-16 bg-white relative overflow-hidden">
-  <!-- Decorative elements -->
-  <div class="absolute -top-24 -right-24 w-48 h-48 opacity-5">
-    <svg viewBox="0 0 100 100" class="text-amber-500">
-      <path fill="currentColor" d="M50,0 C77.614,0 100,22.386 100,50 C100,77.614 77.614,100 50,100 C22.386,100 0,77.614 0,50 C0,22.386 22.386,0 50,0 Z M50,10 C27.909,10 10,27.909 10,50 C10,72.091 27.909,90 50,90 C72.091,90 90,72.091 90,50 C90,27.909 72.091,10 50,10 Z"></path>
-    </svg>
-  </div>
-  
-  <div class="max-w-6xl mx-auto px-4 relative z-10">
-    <div class="grid md:grid-cols-2 gap-12 items-center">
-      <div class="order-2 md:order-1">
-        <!-- Section header with decorative element -->
-        <div class="flex items-center mb-6">
-          <div class="w-12 h-0.5 bg-amber-500 mr-4"></div>
-          <span class="text-amber-600 font-medium uppercase tracking-wider text-sm">About The Artist</span>
+  <!-- Enhanced Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden glass-effect fixed inset-0 z-40 pt-20 px-6 overflow-y-auto transition-all duration-300 transform -translate-y-5 opacity-0" aria-hidden="true">
+    <div class="flex flex-col gap-4">
+      <!-- User profile section -->
+      <div class="flex items-center gap-3 p-4 bg-gray-800/50 rounded-xl mb-4">
+        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+          <i class="fas fa-user text-lg text-white" aria-hidden="true"></i>
         </div>
-        
-        <h2 class="text-4xl font-bold text-amber-800 mb-6">Meet Suku</h2>
-        
-        <div class="prose prose-amber max-w-none">
-          <p class="text-gray-700 text-lg leading-relaxed mb-6">
-            Hi — I'm Sakshi (Suku). I specialize in creating beautiful bridal, Arabic, and Indo-Western mehndi designs that blend tradition with modern sensibilities. With a passion for intricate patterns and a keen eye for detail, I create personalized designs that tell your unique story.
-          </p>
-          
-          <p class="text-gray-700 text-lg leading-relaxed mb-8">
-            I work exclusively with natural, high-quality henna to ensure safe application and long-lasting, rich stains that will beautifully complement your celebration.
-          </p>
-        </div>
-        
-        <!-- Features list -->
-        <div class="space-y-4 mb-8">
-          <div class="flex items-start">
-            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-4 flex-shrink-0">
-              <i class="fas fa-award text-sm"></i>
-            </div>
-            <div>
-              <h4 class="font-semibold text-amber-800">4+ Years Experience</h4>
-              <p class="text-gray-600 text-sm mt-1">Specializing in bridal mehndi with countless satisfied clients</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start">
-            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-4 flex-shrink-0">
-              <i class="fas fa-leaf text-sm"></i>
-            </div>
-            <div>
-              <h4 class="font-semibold text-amber-800">Natural & Safe</h4>
-              <p class="text-gray-600 text-sm mt-1">Using only natural henna for safe application and long-lasting stains</p>
-            </div>
-          </div>
-          
-          <div class="flex items-start">
-            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-4 flex-shrink-0">
-              <i class="fas fa-map-marker-alt text-sm"></i>
-            </div>
-            <div>
-              <h4 class="font-semibold text-amber-800">Travel Services</h4>
-              <p class="text-gray-600 text-sm mt-1">Available to travel to events throughout the region (ask for availability)</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Action buttons -->
-        <div class="flex flex-wrap gap-4">
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="px-6 py-3 border border-amber-500 rounded-lg flex items-center gap-2 text-amber-700 hover:bg-amber-50 transition-all duration-300 group">
-            <i class="fab fa-instagram group-hover:scale-110 transition-transform"></i> 
-            <span>Follow on Instagram</span>
-          </a>
-          <a href="#booking" class="px-6 py-3 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-all duration-300 group">
-            <span class="group-hover:scale-105 transition-transform inline-block">Book Your Session</span>
-          </a>
+        <div>
+          <p class="font-semibold">SHUBHAM</p>
+          <p class="text-xs text-gray-400">Owner</p>
         </div>
       </div>
       
-      <!-- Image gallery -->
-      <div class="order-1 md:order-2 relative">
-        <div class="grid grid-cols-2 gap-6">
-          <!-- Main image -->
-          <div class="rounded-2xl overflow-hidden h-64 md:h-80 shadow-lg transform hover:scale-105 transition-transform duration-500">
-            <img src="https://i.ibb.co/cc092hnc/Post-D.webp" alt="Suku Mehndi Art Design" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-          </div>
-          
-          <!-- Secondary image with decorative element -->
-          <div class="rounded-2xl overflow-hidden h-64 md:h-80 mt-8 shadow-lg transform hover:scale-105 transition-transform duration-500 relative">
-            <img src="https://i.ibb.co/HRKY8D6/Post-D.png" alt="Suku Mehndi Art Design" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-            
-            <!-- Decorative badge -->
-            <div class="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-lg">
-              <i class="fas fa-heart text-xl"></i>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Experience badge -->
-        <div class="absolute -bottom-4 -left-4 bg-white py-2 px-4 rounded-full shadow-md flex items-center">
-          <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mr-2">
-            <i class="fas fa-star"></i>
-          </div>
-          <div>
-            <div class="font-bold text-amber-800">4+ Years</div>
-            <div class="text-xs text-gray-500">Experience</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Videos Section -->
-<section id="videos" class="py-16 bg-amber-50 relative overflow-hidden">
-  <!-- Decorative elements -->
-  <div class="absolute top-10 right-10 w-20 h-20 opacity-5">
-    <svg viewBox="0 0 100 100" class="text-amber-500">
-      <path fill="currentColor" d="M50,0 C77.614,0 100,22.386 100,50 C100,77.614 77.614,100 50,100 C22.386,100 0,77.614 0,50 C0,22.386 22.386,0 50,0 Z M50,10 C27.909,10 10,27.909 10,50 C10,72.091 27.909,90 50,90 C72.091,90 90,72.091 90,50 C90,27.909 72.091,10 50,10 Z"></path>
-    </svg>
-  </div>
-  
-  <div class="max-w-6xl mx-auto px-4 relative z-10">
-    <div class="text-center mb-12">
-      <div class="inline-flex items-center bg-amber-100 px-4 py-2 rounded-full text-amber-700 text-sm mb-4">
-        <i class="fas fa-play-circle mr-2"></i> Short Videos
-      </div>
-      <h2 class="text-4xl font-bold text-amber-800">Mehndi Art Shorts</h2>
-      <p class="mt-3 text-amber-700 max-w-2xl mx-auto">Watch quick mehndi tutorials and design showcases</p>
-    </div>
-    
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-      <!-- Video 1 - YouTube Short -->
-      <div class="video-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
-        <div class="video-container-shorts relative">
-          <iframe src="https://www.youtube.com/embed/S3b85gZEcSk" title="Mehndi Application Process" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="p-5">
-          <h3 class="font-semibold text-amber-800 mb-2">Mehndi Design Process</h3>
-          <p class="text-sm text-gray-600">Quick timelapse of mehndi application</p>
-          <div class="mt-3 flex items-center text-xs text-amber-600">
-            <i class="fab fa-youtube mr-1 text-red-500"></i> YouTube Short
-          </div>
-        </div>
-      </div>
-      
-      <!-- Video 2 - YouTube Short -->
-      <div class="video-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
-        <div class="video-container-shorts relative">
-          <iframe src="https://www.youtube.com/embed/1UVchkMdjaw" title="Intricate Mehndi Patterns" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="p-5">
-          <h3 class="font-semibold text-amber-800 mb-2">Intricate Patterns</h3>
-          <p class="text-sm text-gray-600">Detailed mehndi design showcase</p>
-          <div class="mt-3 flex items-center text-xs text-amber-600">
-            <i class="fab fa-youtube mr-1 text-red-500"></i> YouTube Short
-          </div>
-        </div>
-      </div>
-      
-      <!-- Video 3 - YouTube Short -->
-      <div class="video-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
-        <div class="video-container-shorts relative">
-          <iframe src="https://www.youtube.com/embed/VuWARBgAXRk" title="Bridal Mehndi Special" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="p-5">
-          <h3 class="font-semibold text-amber-800 mb-2">Bridal Mehndi</h3>
-          <p class="text-sm text-gray-600">Beautiful bridal design showcase</p>
-          <div class="mt-3 flex items-center text-xs text-amber-600">
-            <i class="fab fa-youtube mr-1 text-red-500"></i> YouTube Short
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Video Stats -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm mb-12">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        <div>
-          <div class="text-3xl font-bold text-amber-700">15+</div>
-          <div class="text-sm text-gray-600">Shorts</div>
-        </div>
-        <div>
-          <div class="text-3xl font-bold text-amber-700">10K+</div>
-          <div class="text-sm text-gray-600">Views</div>
-        </div>
-        <div>
-          <div class="text-3xl font-bold text-amber-700">⏳</div>
-          <div class="text-sm text-gray-600">Subscribers</div>
-        </div>
-        <div>
-          <div class="text-3xl font-bold text-amber-700">150+</div>
-          <div class="text-sm text-gray-600">Likes</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="text-center">
-      <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-full shadow-md hover:shadow-lg hover:bg-red-700 transition-all duration-300 group">
-        <i class="fab fa-youtube group-hover:scale-110 transition-transform"></i> Subscribe on YouTube 
+      <!-- Main menu items -->
+      <a href="#home" class="text-lg py-3 px-4 rounded-lg hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-3 transform hover:translate-x-2">
+        <i class="fas fa-home text-primary-400 w-5 text-center" aria-hidden="true"></i>
+        Home
       </a>
-      <p class="mt-4 text-sm text-gray-600">New shorts uploaded every week!</p>
-    </div>
-  </div>
-</section>
-
-<!-- Portfolio Section -->
-<section id="portfolio" class="py-16 bg-white">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-      <div class="inline-flex items-center bg-amber-100 px-4 py-2 rounded-full text-amber-700 text-sm mb-4">
-        <i class="fas fa-palette mr-2"></i> Featured Work
-      </div>
-      <h2 class="text-4xl font-bold text-amber-800">Portfolio Gallery</h2>
-      <p class="mt-3 text-gray-600 max-w-2xl mx-auto">Explore my latest mehndi designs and artwork - from intricate bridal patterns to contemporary designs</p>
-    </div>
-
-    <!-- Filter buttons -->
-    <div class="flex flex-wrap justify-center gap-3 mb-10">
-      <button class="filter-btn px-4 py-2 bg-amber-500 text-white rounded-full text-sm font-medium transition-all duration-300" data-filter="all">
-        All Work
-      </button>
-      <button class="filter-btn px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-500 hover:text-white transition-all duration-300" data-filter="bridal">
-        Bridal
-      </button>
-      <button class="filter-btn px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-500 hover:text-white transition-all duration-300" data-filter="arabic">
-        Arabic
-      </button>
-      <button class="filter-btn px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium hover:bg-amber-500 hover:text-white transition-all duration-300" data-filter="contemporary">
-        Contemporary
-      </button>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 portfolio-container">
-      <!-- Portfolio item 1 - Bridal -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="bridal">
-        <img src="https://i.ibb.co/HRKY8D6/Post-D.png" alt="Bridal Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Bridal Full Arm</h3>
-            <p class="text-xs text-amber-200">Traditional Design</p>
+      <a href="#apps" class="text-lg py-3 px-4 rounded-lg hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-3 transform hover:translate-x-2">
+        <i class="fas fa-th text-primary-400 w-5 text-center" aria-hidden="true"></i>
+        Apps
+        <span class="ml-auto bg-primary-500/20 text-primary-400 text-xs px-2 py-1 rounded-full animate-pulse" aria-hidden="true">New</span>
+      </a>
+      <a href="#contact" class="text-lg py-3 px-4 rounded-lg hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-3 transform hover:translate-x-2">
+        <i class="fas fa-envelope text-primary-400 w-5 text-center" aria-hidden="true"></i>
+        Contact
+      </a>
+      
+      <!-- Additional menu items -->
+      <div class="border-t border-gray-800 pt-2 mt-2">
+        <a href="#" class="text-lg py-3 px-4 rounded-lg hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-3 transform hover:translate-x-2">
+          <i class="fas fa-cog text-gray-400 w-5 text-center" aria-hidden="true"></i>
+          Settings
+        </a>
+        <a href="#" class="text-lg py-3 px-4 rounded-lg hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-3 transform hover:translate-x-2">
+          <i class="fas fa-question-circle text-gray-400 w-5 text-center" aria-hidden="true"></i>
+          Help
+        </a>
+        <a href="#" class="text-lg py-3 px-4 rounded-lg hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-3 transform hover:translate-x-2">
+          <i class="fas fa-moon text-gray-400 w-5 text-center" aria-hidden="true"></i>
+          Dark Mode
+          <div class="ml-auto relative inline-block w-10 mr-2 align-middle select-none">
+            <input type="checkbox" id="mobile-theme-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300" aria-label="Toggle dark mode"/>
+            <label for="mobile-theme-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer transition-all duration-300"></label>
           </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Bridal
-        </div>
+        </a>
       </div>
       
-      <!-- Portfolio item 2 - Arabic -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="arabic">
-        <img src="https://i.ibb.co/PG1NKK3Z/Post-02.png" alt="Arabic Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Arabic Patterns</h3>
-            <p class="text-xs text-amber-200">Floral Design</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Arabic
-        </div>
-      </div>
-      
-      <!-- Portfolio item 3 - Contemporary -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="contemporary">
-        <img src="https://i.ibb.co/Fby4VYcj/01.jpg" alt="Contemporary Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Modern Fusion</h3>
-            <p class="text-xs text-amber-200">Contemporary Style</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Contemporary
-        </div>
-      </div>
-      
-      <!-- Portfolio item 4 - Bridal -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="bridal">
-        <img src="https://i.ibb.co/Fkt7wDzP/02.jpg" alt="Bridal Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Traditional Bridal</h3>
-            <p class="text-xs text-amber-200">Full Hand Design</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Bridal
-        </div>
-      </div>
-      
-      <!-- Portfolio item 5 - Arabic -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="arabic">
-        <img src="https://i.ibb.co/5tnGDv1/03.jpg" alt="Arabic Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Arabic Delicate</h3>
-            <p class="text-xs text-amber-200">Fine Patterns</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Arabic
-        </div>
-      </div>
-      
-      <!-- Portfolio item 6 - Contemporary -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="contemporary">
-        <img src="https://i.ibb.co/ynS6jxzZ/04.jpg" alt="Contemporary Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Modern Art</h3>
-            <p class="text-xs text-amber-200">Innovative Design</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Contemporary
-        </div>
-      </div>
-      
-      <!-- Portfolio item 7 - Bridal -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="bridal">
-        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fG1laG5kaXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Bridal Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Bridal Elegance</h3>
-            <p class="text-xs text-amber-200">Traditional Patterns</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Bridal
-        </div>
-      </div>
-      
-      <!-- Portfolio item 8 - Arabic -->
-      <div class="portfolio-item rounded-xl overflow-hidden aspect-[9/16] relative group" data-category="arabic">
-        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fG1laG5kaXxlbnwwfHxx8fHw%3D&auto=format&fit=crop&w=500&q=80" alt="Arabic Mehndi Design" class="w-full h-full object-cover gallery-img">
-        <div class="portfolio-overlay absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="font-semibold">Arabic Floral</h3>
-            <p class="text-xs text-amber-200">Floral Motifs</p>
-          </div>
-        </div>
-        <div class="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-          Arabic
-        </div>
+      <!-- Action buttons -->
+      <div class="mt-6 flex flex-col gap-3">
+        <button class="px-6 py-3 gradient-bg rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 flex items-center justify-center gap-2 transform hover:scale-105">
+          <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In
+        </button>
+        <button class="px-6 py-3 border border-gray-700 text-gray-300 rounded-full font-semibold transition-all hover:bg-gray-800/50 flex items-center justify-center gap-2 transform hover:scale-105">
+          <i class="fas fa-user-plus" aria-hidden="true"></i> Create Account
+        </button>
       </div>
     </div>
     
-    <div class="mt-12 text-center">
-      <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 group">
-        <i class="fab fa-instagram group-hover:scale-110 transition-transform"></i> View More on Instagram
-      </a>
-    </div>
+    <!-- Close button -->
+    <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:rotate-90" id="mobile-menu-close" aria-label="Close menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
   </div>
-</section>
 
-  <!-- Services Section -->
-  <section id="services" class="py-16 bg-amber-50">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-amber-800">Services & Pricing</h2>
-        <p class="mt-2 text-amber-700">Custom mehndi designs for all occasions</p>
+  <!-- Hero Section -->
+  <section id="home" class="text-center hero-section py-32 px-6 relative overflow-hidden" data-aos="fade-up">
+    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500 rounded-full filter blur-3xl opacity-10 animate-float"></div>
+    </div>
+    <div class="max-w-4xl mx-auto relative z-10">
+      <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text">Explore Infinity World</h2>
+      <p class="text-gray-300 mb-8 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">Discover premium applications with beautiful, fast, and responsive UI designed for the modern digital experience.</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <button class="px-8 py-4 gradient-bg rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 flex items-center gap-2 transform hover:scale-105">
+          <i class="fas fa-rocket" aria-hidden="true"></i> Get Started
+        </button>
+        <button class="px-8 py-4 border-2 border-primary-400 text-primary-400 hover:bg-primary-900/30 rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/20 flex items-center gap-2 transform hover:scale-105">
+          <i class="fas fa-info-circle" aria-hidden="true"></i> Learn More
+        </button>
       </div>
-      
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-amber-100">
-          <div class="text-amber-600 text-4xl mb-4">
-            <i class="fas fa-heart"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-amber-800">Bridal Full</h3>
-          <p class="mt-2 text-gray-600">Custom full-arm + feet bridal set</p>
-          <div class="mt-4 text-amber-700 font-semibold text-lg">Contact for quote</div>
-          <ul class="mt-4 space-y-2 text-sm text-gray-600">
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Intricate traditional patterns</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Personalized motifs</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Long-lasting natural henna</span>
-            </li>
-          </ul>
-        </div>
-        
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-amber-100">
-          <div class="text-amber-600 text-4xl mb-4">
-            <i class="fas fa-users"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-amber-800">Party / Guests</h3>
-          <p class="mt-2 text-gray-600">Small to medium designs for events</p>
-          <div class="mt-4 text-amber-700 font-semibold text-lg">₹800+</div>
-          <ul class="mt-4 space-y-2 text-sm text-gray-600">
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Quick application</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Multiple design options</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Group booking discounts</span>
-            </li>
-          </ul>
-        </div>
-        
-        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-amber-100">
-          <div class="text-amber-600 text-4xl mb-4">
-            <i class="fas fa-palette"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-amber-800">Custom & Trial</h3>
-          <p class="mt-2 text-gray-600">Design trials, custom motifs</p>
-          <div class="mt-4 text-amber-700 font-semibold text-lg">₹500+</div>
-          <ul class="mt-4 space-y-2 text-sm text-gray-600">
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Design consultation</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Practice sessions</span>
-            </li>
-            <li class="flex items-start">
-              <i class="fas fa-check text-amber-500 mt-1 mr-2"></i>
-              <span>Custom pattern creation</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      
-      <p class="mt-8 text-center text-gray-600">Prices depend on design complexity and travel. For exact quotes, use the booking form below or DM on Instagram.</p>
     </div>
   </section>
 
-  <!-- Booking Section -->
-  <section id="booking" class="py-16 bg-white">
-    <div class="max-w-3xl mx-auto px-4">
-      <div class="bg-amber-50 rounded-2xl p-8 shadow-sm border border-amber-100">
-        <h2 class="text-3xl font-bold text-amber-800 text-center">Book an Appointment</h2>
-        <p class="mt-2 text-gray-600 text-center">Fill this form and I'll get back to you. You can also DM on Instagram for quick response.</p>
+  <!-- Apps Section -->
+  <main id="main" class="relative z-10">
+    <section id="apps" class="py-20 px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">Our Premium Applications</h2>
+          <p class="text-gray-400 max-w-2xl mx-auto">Discover our collection of high-quality applications designed to enhance your digital experience</p>
+        </div>
+        
+        <!-- App Filter -->
+        <div class="flex justify-center mb-12" data-aos="fade-up" data-aos-delay="100">
+          <div class="glass-effect rounded-full p-1 flex">
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="all">All</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="video">Video</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="music">Music</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="gaming">Gaming</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="photo">Photo</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="development">Development</button>
+            <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all" data-filter="finance">Finance</button>
+          </div>
+        </div>
+        
+        <!-- App Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Card 1 - YouTube Player-->
+          <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 card-hover" data-aos="fade-up" data-app-name="YouTube Player" data-app-category="video">
+            <div class="relative overflow-hidden h-48">
+              <img 
+                src="https://i.ibb.co/Kx18Kftr/Picsart-25-07-27-15-39-32-515.jpg" 
+                alt="YouTube Player app interface showing video playback controls"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              >
+              <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow">
+                20+ ♥️
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Trending</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                  <i class="fas fa-video text-primary-400" aria-hidden="true"></i> YouTube Player
+                </h3>
+                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Video</span>
+              </div>
+              <p class="text-gray-400 mb-4 text-sm leading-relaxed">Watch YouTube videos ad-free with our website! Simply paste the video link and enjoy uninterrupted playback.</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa-solid fa-paperclip" aria-hidden="true"></i> v1.0.0 • Website 
+                </span>
+                <button class="download-btn px-4 py-2 gradient-bg hover:shadow-lg hover:shadow-primary-500/30 rounded-full text-sm font-semibold transition-all transform hover:scale-105">
+                  <a href="player" 
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     class="block w-full h-full flex items-center gap-1"
+                     aria-label="Open YouTube Player"
+                  >
+                    <i class="fa-solid fa-link" aria-hidden="true"></i>    Open   
+                  </a>
+                </button>
+              </div>
+            </div>
+          </article>
 
-        <form id="bookingForm" class="mt-8 grid gap-5" action="https://formsubmit.co/sukumehndiart@gmail.com" method="POST">
-          <input type="hidden" name="_subject" value="New Booking Request - Suku Mehndi Art">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" value="#thankyou">
-          <input type="hidden" name="_captcha" value="false">
+          <!-- Card 2 - GEETORY-Music Player -->
+          <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 card-hover" data-aos="fade-up" data-aos-delay="100" data-app-name="Geetory" data-app-category="music">
+            <div class="relative overflow-hidden h-48">
+              <img 
+                src="https://i.ibb.co/jPStpHBs/Picsart-25-08-01-19-24-55-922.jpg" 
+                alt="Geetory placeholder image"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              >
+              <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow">
+                25+ ♥️
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Owner Choice</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                  <i class="fas fa-music text-primary-400" aria-hidden="true"></i> GEETORY
+                </h3>
+                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Music</span>
+              </div>
+              <p class="text-gray-400 mb-4 text-sm leading-relaxed">"Geetory Music Player: Stream your favorite songs and playlists ad-free. Discover new music and enjoy seamless playback. Elevate your music experience!"</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa-solid fa-paperclip" aria-hidden="true"></i> v1.0.0 • Website 
+                </span>
+                <button class="download-btn px-4 py-2 gradient-bg hover:shadow-lg hover:shadow-primary-500/30 rounded-full text-sm font-semibold transition-all transform hover:scale-105">
+                  <a href="music" 
+                     class="block w-full h-full flex items-center gap-1"
+                     aria-label="Download Geetory app"
+                  >
+                    <i class="fa-solid fa-link" aria-hidden="true"></i> Open  
+                  </a>
+                </button>
+              </div>
+            </div>
+          </article>
 
-          <div class="grid md:grid-cols-2 gap-5">
+          <!-- Card 3 - GameHub -->
+          <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 card-hover" data-aos="fade-up" data-aos-delay="100" data-app-name="GameHub" data-app-category="gaming">
+            <div class="relative overflow-hidden h-48">
+              <img 
+                src="https://i.ibb.co/gM4xZVVf/Picsart-25-07-29-23-13-26-374.png" 
+                alt="Coming Soon placeholder image"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              >
+              <div class="absolute inset-0 flex items-center justify-center bg-gray-900/70">
+                <span class="text-2xl font-bold text-white">Coming Soon</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                  <i class="fas fa-gamepad text-primary-400" aria-hidden="true"></i> GameHub
+                </h3>
+                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Gaming</span>
+              </div>
+              <p class="text-gray-400 mb-4 text-sm leading-relaxed">A collection of fun and engaging games to play in your browser. From puzzles to action games, GameHub has something for everyone.</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa-solid fa-paperclip" aria-hidden="true"></i> v0.0.1 • Website 
+                </span>
+                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-full text-sm font-semibold cursor-not-allowed">
+                  Coming Soon
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 4 - PhotoEditor -->
+          <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 card-hover" data-aos="fade-up" data-aos-delay="150" data-app-name="PhotoEditor" data-app-category="photo">
+            <div class="relative overflow-hidden h-48">
+              <img 
+                src="https://i.ibb.co/3hTqy2zL/Picsart-25-07-29-23-13-26-374.png" 
+                alt="Coming Soon placeholder image"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              >
+              <div class="absolute inset-0 flex items-center justify-center bg-gray-900/70">
+                <span class="text-2xl font-bold text-white">Coming Soon</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                  <i class="fas fa-image text-primary-400" aria-hidden="true"></i> PhotoEditor
+                </h3>
+                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Photo</span>
+              </div>
+              <p class="text-gray-400 mb-4 text-sm leading-relaxed">Edit your photos with our powerful yet easy-to-use photo editor. Crop, rotate, apply filters, and enhance your images with just a few clicks.</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa-solid fa-paperclip" aria-hidden="true"></i> v0.0.1 • Website 
+                </span>
+                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-full text-sm font-semibold cursor-not-allowed">
+                  Coming Soon
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 5 - CodeEditor -->
+          <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 card-hover" data-aos="fade-up" data-aos-delay="200" data-app-name="CodeEditor" data-app-category="development">
+            <div class="relative overflow-hidden h-48">
+              <img 
+                src="https://i.ibb.co/5B1Lt4vz/Picsart-25-07-29-23-13-26-374.png" 
+                alt="Coming Soon placeholder image"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              >
+              <div class="absolute inset-0 flex items-center justify-center bg-gray-900/70">
+                <span class="text-2xl font-bold text-white">Coming Soon</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                  <i class="fas fa-code text-primary-400" aria-hidden="true"></i> CodeEditor
+                </h3>
+                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Development</span>
+              </div>
+              <p class="text-gray-400 mb-4 text-sm leading-relaxed">Write, edit, and run code in multiple programming languages with our powerful online code editor. Perfect for learning and quick prototyping.</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa-solid fa-paperclip" aria-hidden="true"></i> v0.0.1 • Website 
+                </span>
+                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-full text-sm font-semibold cursor-not-allowed">
+                  Coming Soon
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 6 - FinanceApp -->
+          <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 card-hover" data-aos="fade-up" data-aos-delay="250" data-app-name="FinanceApp" data-app-category="finance">
+            <div class="relative overflow-hidden h-48">
+              <img 
+                src="https://i.ibb.co/2KJd2p2c/Picsart-25-07-29-23-13-26-374.png" 
+                alt="Coming Soon placeholder image"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              >
+              <div class="absolute inset-0 flex items-center justify-center bg-gray-900/70">
+                <span class="text-2xl font-bold text-white">Coming Soon</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                  <i class="fas fa-chart-line text-primary-400" aria-hidden="true"></i> FinanceApp
+                </h3>
+                <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Finance</span>
+              </div>
+              <p class="text-gray-400 mb-4 text-sm leading-relaxed">Track your expenses, create budgets, and manage your finances with our comprehensive financial management application.</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa-solid fa-paperclip" aria-hidden="true"></i> v0.0.1 • Website 
+                </span>
+                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-full text-sm font-semibold cursor-not-allowed">
+                  Coming Soon
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6">
+      <div class="max-w-4xl mx-auto glass-effect rounded-2xl p-8 md:p-12 shadow-xl" data-aos="fade-up">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">Get In Touch</h2>
+          <p class="text-gray-400 max-w-2xl mx-auto">Have questions or feedback? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+        
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
-              <input type="text" id="name" name="name" required class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Your name">
+              <label for="name" class="block text-sm font-medium mb-2">Your Name</label>
+              <input type="text" id="name" class="w-full glass-effect border border-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300" placeholder="Enter your name">
             </div>
             <div>
-              <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-              <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" inputmode="numeric" maxlength="10" required class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Your number">
+              <label for="email" class="block text-sm font-medium mb-2">Email Address</label>
+              <input type="email" id="email" class="w-full glass-effect border border-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300" placeholder="Enter your email">
             </div>
           </div>
-
-          <div class="grid md:grid-cols-2 gap-5">
-            <div>
-              <label for="instagram" class="block text-sm font-medium text-gray-700 mb-1">Instagram I'D</label>
-              <input type="text" id="instagram" name="instagram" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Your Username ~ @yourusername">
-            </div>
-            <div>
-              <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
-              <input type="date" id="date" name="date" required class="w-full p-3 border border-gray-300 rounded-lg">
-            </div>
-          </div>
-
           <div>
-            <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service Type *</label>
-            <select id="service" name="service" required class="w-full p-3 border border-gray-300 rounded-lg">
-              <option value="" disabled selected>Select a service</option>
-              <option value="Bridal Full">Bridal Full</option>
-              <option value="Party/Guest">Party / Guest</option>
-              <option value="Custom/Trial">Custom / Trial</option>
-            </select>
+            <label for="subject" class="block text-sm font-medium mb-2">Subject</label>
+            <input type="text" id="subject" class="w-full glass-effect border border-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300" placeholder="What is this regarding?">
           </div>
-
           <div>
-            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
-            <textarea id="message" name="message" rows="4" required class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Tell me about your event — location, number of guests, ideas..."></textarea>
+            <label for="message" class="block text-sm font-medium mb-2">Message</label>
+            <textarea id="message" rows="5" class="w-full glass-effect border border-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300" placeholder="Type your message here..."></textarea>
           </div>
+          <button type="submit" class="w-full px-6 py-3 gradient-bg hover:shadow-lg hover:shadow-primary-500/30 rounded-lg text-lg font-semibold transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane" aria-hidden="true"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
 
-          <div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
-            <button type="submit" class="flex-1 px-5 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-md transition-colors flex items-center justify-center gap-2">
-              <i class="fas fa-paper-plane"></i> Send Booking Request
-            </button>
-            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="flex-1 px-4 py-3 rounded-full border border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white transition-colors flex items-center justify-center gap-2">
-              <i class="fab fa-instagram"></i> Click to DM on Instagram
+  <!-- Footer -->
+  <footer class="glass-effect mt-auto py-12 px-6 relative z-10">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="md:col-span-2">
+          <div class="flex items-center space-x-2 mb-4">
+            <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center">
+              <i class="fas fa-infinity text-xs text-white" aria-hidden="true"></i>
+            </div>
+            <h2 class="text-2xl font-bold gradient-text">SHM INFINITY</h2>
+          </div>
+          <p class="text-gray-400 mb-6 max-w-md">Creating premium digital experiences with beautiful, fast, and responsive applications for the modern world.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300" aria-label="Facebook">
+              <i class="fab fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300" aria-label="Twitter">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300" aria-label="Instagram">
+              <i class="fab fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300" aria-label="LinkedIn">
+              <i class="fab fa-linkedin-in" aria-hidden="true"></i>
             </a>
           </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="#home" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">Home</a></li>
+            <li><a href="#apps" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">Apps</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">Contact</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">About Us</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">Terms of Service</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors duration-300">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm mb-4 md:mb-0">&copy; 2023 SHM INFINITY. All rights reserved.</p>
+        <button class="px-4 py-2 border border-gray-700 text-gray-400 rounded-full text-sm font-medium hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-2">
+          <i class="fas fa-language" aria-hidden="true"></i> English
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 gradient-bg rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible transform translate-y-10 z-40" aria-label="Back to top">
+    <i class="fas fa-arrow-up text-white" aria-hidden="true"></i>
+  </button>
+
+  <!-- Loading Spinner -->
+  <div id="loading-spinner" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50 transition-opacity duration-500">
+    <div class="flex flex-col items-center">
+      <div class="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-4 text-gray-400">Loading Infinity...</p>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize AOS (Animate On Scroll)
+      try {
+        AOS.init({
+          duration: 800,
+          easing: 'ease-out-quart',
+          once: true,
+          offset: 50,
+          delay: 100
+        });
+      } catch (error) {
+        console.error('AOS initialization error:', error);
+      }
+
+      // Performance optimization for low-end devices
+      const isLowEndDevice = () => {
+        const screenSize = window.innerWidth * window.innerHeight;
+        const hasLowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
+        const hasLowCores = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
+        
+        return screenSize < 768 * 1024 || hasLowMemory || hasLowCores;
+      };
+
+      if (isLowEndDevice()) {
+        // Disable animations for low-end devices
+        document.documentElement.classList.add('reduce-motion');
+        if (typeof AOS !== 'undefined') {
+          AOS.refreshHard();
+        }
+      }
+
+      // Theme Toggle
+      const themeToggle = document.getElementById('theme-toggle');
+      const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+      
+      // Check for saved theme preference or respect OS preference
+      const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+      const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+      
+      // Apply the theme
+      if (currentTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        themeIcon.setAttribute('d', 'M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z');
+        if (themeColorMeta) themeColorMeta.setAttribute('content', '#0f172a');
+        if (mobileThemeToggle) mobileThemeToggle.checked = true;
+      } else {
+        document.documentElement.classList.remove('dark');
+        themeIcon.setAttribute('d', 'M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z');
+        if (themeColorMeta) themeColorMeta.setAttribute('content', '#f8fafc');
+        if (mobileThemeToggle) mobileThemeToggle.checked = false;
+      }
+      
+      // Theme toggle functionality
+      const toggleTheme = () => {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+          themeIcon.setAttribute('d', 'M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z');
+          if (themeColorMeta) themeColorMeta.setAttribute('content', '#f8fafc');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+          themeIcon.setAttribute('d', 'M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z');
+          if (themeColorMeta) themeColorMeta.setAttribute('content', '#0f172a');
+        }
+      };
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+      }
+      
+      if (mobileThemeToggle) {
+        mobileThemeToggle.addEventListener('change', toggleTheme);
+      }
+
+      // Mobile Menu
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+      const menuIcon = document.getElementById('menu-icon');
+      
+      const toggleMobileMenu = () => {
+        const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+        mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+        
+        if (isExpanded) {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('animate-slide-down');
+          mobileMenu.classList.add('opacity-0', '-translate-y-5');
+          document.body.style.overflow = 'auto';
+        } else {
+          mobileMenu.classList.remove('hidden', 'opacity-0', '-translate-y-5');
+          mobileMenu.classList.add('animate-slide-down');
+          document.body.style.overflow = 'hidden';
+        }
+      };
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', toggleMobileMenu);
+      }
+      
+      if (mobileMenuClose) {
+        mobileMenuClose.addEventListener('click', toggleMobileMenu);
+      }
+      
+      // Close mobile menu when clicking on links
+      const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+      mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', toggleMobileMenu);
+      });
+
+      // User Dropdown
+      const userDropdownButton = document.getElementById('user-dropdown-button');
+      const userDropdown = document.getElementById('user-dropdown');
+      
+      if (userDropdownButton && userDropdown) {
+        userDropdownButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isExpanded = userDropdownButton.getAttribute('aria-expanded') === 'true';
+          userDropdownButton.setAttribute('aria-expanded', !isExpanded);
           
-          <div id="formMsg" class="hidden mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-center">
-            Thanks — your message was sent. I'll contact you soon!
-          </div>
+          if (isExpanded) {
+            userDropdown.classList.add('hidden', 'opacity-0', 'scale-95');
+          } else {
+            userDropdown.classList.remove('hidden', 'opacity-0', 'scale-95');
+            userDropdown.classList.add('animate-slide-down');
+          }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!userDropdown.contains(e.target) && !userDropdownButton.contains(e.target)) {
+            userDropdown.classList.add('hidden', 'opacity-0', 'scale-95');
+            userDropdownButton.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // Search System
+      const searchInput = document.getElementById('search-input');
+      const mobileSearchInput = document.getElementById('mobile-search-input');
+      const searchResults = document.getElementById('search-results');
+      const mobileSearchResults = document.getElementById('mobile-search-results');
+      const mobileSearchButton = document.getElementById('mobile-search-button');
+      const mobileSearch = document.getElementById('mobile-search');
+      const mobileSearchClose = document.getElementById('mobile-search-close');
+      
+      // Collect app data for search
+      const appCards = document.querySelectorAll('.app-card');
+      const appData = Array.from(appCards).map(card => {
+        return {
+          element: card,
+          name: card.dataset.appName.toLowerCase(),
+          category: card.dataset.appCategory.toLowerCase()
+        };
+      });
+      
+      // Debounce function for search
+      const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      };
+      
+      // Search function
+      const performSearch = (query, resultsContainer) => {
+        if (query.length < 2) {
+          resultsContainer.classList.add('hidden');
+          return;
+        }
+        
+        const filteredApps = appData.filter(app => 
+          app.name.includes(query.toLowerCase()) || 
+          app.category.includes(query.toLowerCase())
+        );
+        
+        if (filteredApps.length > 0) {
+          resultsContainer.innerHTML = filteredApps.map(app => `
+            <a href="#" class="block p-3 hover:bg-gray-700/50 transition-colors duration-200 border-b border-gray-800 last:border-b-0" data-app-id="${app.name}">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-${app.category} text-primary-400"></i>
+                </div>
+                <div>
+                  <p class="font-medium">${app.element.querySelector('h3').textContent}</p>
+                  <p class="text-xs text-gray-400">${app.category}</p>
+                </div>
+              </div>
+            </a>
+          `).join('');
           
-          <div id="formError" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-center">
-            There was an error submitting the form. Please try again or DM me on Instagram.
-          </div>
-        </form>
+          resultsContainer.classList.remove('hidden');
+          
+          // Add click event to search results
+          resultsContainer.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const appId = link.dataset.appId;
+              const targetApp = appData.find(app => app.name === appId);
+              if (targetApp) {
+                targetApp.element.scrollIntoView({ behavior: 'smooth' });
+                targetApp.element.classList.add('ring-2', 'ring-primary-500');
+                setTimeout(() => {
+                  targetApp.element.classList.remove('ring-2', 'ring-primary-500');
+                }, 2000);
+              }
+              resultsContainer.classList.add('hidden');
+              if (searchInput) searchInput.value = '';
+              if (mobileSearchInput) mobileSearchInput.value = '';
+              if (mobileSearch) mobileSearch.classList.add('hidden');
+            });
+          });
+        } else {
+          resultsContainer.innerHTML = `
+            <div class="p-4 text-center">
+              <i class="fas fa-search text-gray-500 text-2xl mb-2"></i>
+              <p class="text-gray-400">No results found for "${query}"</p>
+            </div>
+          `;
+          resultsContainer.classList.remove('hidden');
+        }
+      };
+      
+      // Debounced search function
+      const debouncedSearch = debounce((query, resultsContainer) => {
+        performSearch(query, resultsContainer);
+      }, 300);
+      
+      // Set up search event listeners
+      if (searchInput && searchResults) {
+        searchInput.addEventListener('input', (e) => {
+          debouncedSearch(e.target.value, searchResults);
+        });
         
-        <p class="mt-6 text-center text-sm text-gray-600">
-          You can also DM me on <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-600 hover:underline">Instagram</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Thank You Message (initially hidden) -->
-  <div id="thankyou" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
-      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-2xl mx-auto mb-4">
-        <i class="fas fa-check"></i>
-      </div>
-      <h3 class="text-2xl font-bold text-amber-800">Thank You!</h3>
-      <p class="mt-2 text-gray-600">Your booking request has been sent successfully. I'll contact you soon to confirm your appointment.</p>
-      <button onclick="closeThankYou()" class="mt-6 px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors">Close</button>
-    </div>
-  </div>
-
-  <!-- Testimonials Section -->
-  <section class="py-16 bg-amber-50">
-    <div class="max-w-6xl mx-auto px-4">
-      <h3 class="text-2xl font-bold text-amber-800 text-center mb-12">Happy Clients</h3>
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!searchResults.contains(e.target) && !searchInput.contains(e.target)) {
+            searchResults.classList.add('hidden');
+          }
+        });
+      }
       
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-          <div class="text-amber-400 text-3xl mb-3">"</div>
-          <p class="text-gray-700 mb-4">Suku did an amazing bridal design — everyone loved it and the stain lasted long!</p>
-          <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">R</div>
-            <div class="ml-3">
-              <div class="font-semibold text-amber-700">Ritika</div>
-              <div class="text-sm text-gray-500">Bride</div>
-            </div>
-          </div>
-        </div>
+      if (mobileSearchInput && mobileSearchResults) {
+        mobileSearchInput.addEventListener('input', (e) => {
+          debouncedSearch(e.target.value, mobileSearchResults);
+        });
+      }
+      
+      // Mobile search toggle
+      if (mobileSearchButton && mobileSearch) {
+        mobileSearchButton.addEventListener('click', () => {
+          mobileSearch.classList.toggle('hidden');
+          if (!mobileSearch.classList.contains('hidden')) {
+            mobileSearchInput.focus();
+          }
+        });
+      }
+      
+      if (mobileSearchClose) {
+        mobileSearchClose.addEventListener('click', () => {
+          mobileSearch.classList.add('hidden');
+        });
+      }
+
+      // Back to Top Button
+      const backToTopButton = document.getElementById('back-to-top');
+      
+      if (backToTopButton) {
+        window.addEventListener('scroll', () => {
+          if (window.pageYOffset > 300) {
+            backToTopButton.classList.remove('opacity-0', 'invisible', 'translate-y-10');
+          } else {
+            backToTopButton.classList.add('opacity-0', 'invisible', 'translate-y-10');
+          }
+        });
         
-        <div class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-          <div class="text-amber-400 text-3xl mb-3">"</div>
-          <p class="text-gray-700 mb-4">Beautiful, intricate and timely. Highly recommend for any event.</p>
-          <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">?</div>
-            <div class="ml-3">
-              <div class="font-semibold text-amber-700">Unknown</div>
-              <div class="text-sm text-gray-500">Karva Chauth</div>
-            </div>
-          </div>
-        </div>
+        backToTopButton.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // App filtering
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      
+      if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const filter = button.dataset.filter;
+            
+            // Update active state
+            filterButtons.forEach(btn => btn.classList.remove('gradient-bg', 'text-white'));
+            button.classList.add('gradient-bg', 'text-white');
+            
+            // Filter apps
+            appCards.forEach(card => {
+              if (filter === 'all' || card.dataset.appCategory === filter) {
+                card.classList.remove('hidden');
+                setTimeout(() => {
+                  card.style.opacity = 1;
+                  card.style.transform = 'translateY(0)';
+                }, 50);
+              } else {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                  card.classList.add('hidden');
+                }, 300);
+              }
+            });
+          });
+        });
+      }
+
+      // Image loading handling
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        // Add loading state
+        img.addEventListener('load', function() {
+          this.style.opacity = 1;
+        });
         
-        <div class="testimonial-card bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
-          <div class="text-amber-400 text-3xl mb-3">"</div>
-          <p class="text-gray-700 mb-4">Custom design was exactly what I wanted. Professional and creative!</p>
-          <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">P</div>
-            <div class="ml-3">
-              <div class="font-semibold text-amber-700">Paro</div>
-              <div class="text-sm text-gray-500">Engagement</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+        // Handle image errors
+        img.addEventListener('error', function() {
+          this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTZweCIgZmlsbD0iI2ZmZiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';
+          this.alt = 'Image failed to load';
+        });
+      });
 
-  <!-- Contact Section -->
-<section id="contact" class="py-16 bg-white">
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-amber-800">Get in Touch</h2>
-      <p class="mt-2 text-gray-600">Let's create something beautiful together</p>
-    </div>
-    
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="contact-card text-center bg-amber-50 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100">
-        <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto mb-4 transition-all duration-300 hover:bg-amber-200 hover:scale-110">
-          <i class="fab fa-instagram"></i>
-        </div>
-        <h3 class="mt-4 text-xl font-semibold text-amber-800">Instagram</h3>
-        <p class="mt-2 text-gray-600">DM for quickest response</p>
-        <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="mt-4 inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full hover:bg-amber-200 transition-colors font-medium">
-          @suku.mehndi.art
-        </a>
-      </div>
-      
-      <div class="contact-card text-center bg-amber-50 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100">
-        <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto mb-4 transition-all duration-300 hover:bg-amber-200 hover:scale-110">
-          <i class="fas fa-envelope"></i>
-        </div>
-        <h3 class="mt-4 text-xl font-semibold text-amber-800">Email</h3>
-        <p class="mt-2 text-gray-600">For detailed inquiries</p>
-        <a href="mailto:sukumehndiart@gmail.com" class="mt-4 inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full hover:bg-amber-200 transition-colors font-medium">
-          Send Email
-        </a>
-      </div>
-      
-      <div class="contact-card text-center bg-amber-50 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100">
-        <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-2xl mx-auto mb-4 transition-all duration-300 hover:bg-amber-200 hover:scale-110">
-          <i class="fas fa-map-marker-alt"></i>
-        </div>
-        <h3 class="mt-4 text-xl font-semibold text-amber-800">Location</h3>
-        <p class="mt-2 text-gray-600">Based in Mirzapur</p>
-        <div class="mt-4 px-4 py-2 bg-amber-100 text-amber-700 rounded-full font-medium">
-          Available for travel
-        </div>
-      </div>
-    </div>
-    
-    <!-- Additional contact options -->
-    <div class="mt-16 bg-gradient-to-r from-amber-100 to-amber-200 rounded-2xl p-8 text-center">
-      <h3 class="text-2xl font-semibold text-amber-800">Prefer to message directly?</h3>
-      <p class="mt-2 text-amber-700">Click below to start a conversation on WhatsApp</p>
-      <a href="https://wa.me/91xxxxx?text=Hi%20Suku,%20I'm%20interested%20in%20your%20mehndi%20services" 
-         target="_blank" 
-         class="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-full shadow-md hover:shadow-lg hover:bg-green-700 transition-all">
-        <i class="fab fa-whatsapp text-xl"></i> Not Available 
-      </a>
-    </div>
-  </div>
-</section>
+      // Hide loading spinner when page is fully loaded
+      window.addEventListener('load', () => {
+        const loadingSpinner = document.getElementById('loading-spinner');
+        if (loadingSpinner) {
+          loadingSpinner.style.opacity = 0;
+          setTimeout(() => {
+            loadingSpinner.remove();
+          }, 500);
+        }
+      });
 
-<!-- Footer -->
-<footer class="bg-gradient-to-b from-amber-800 to-amber-900 text-amber-100 py-12 relative overflow-hidden">
-  <!-- Decorative elements -->
-  <div class="absolute top-0 left-0 w-full h-full opacity-10">
-    <div class="absolute top-10 left-10 text-5xl">🌺</div>
-    <div class="absolute top-20 right-20 text-4xl">✨</div>
-    <div class="absolute bottom-16 left-1/4 text-5xl">🌸</div>
-    <div class="absolute bottom-24 right-16 text-4xl">🌿</div>
-  </div>
-  
-  <div class="max-w-6xl mx-auto px-4 relative z-10">
-    <div class="grid md:grid-cols-3 gap-8">
-      <div>
-        <h3 class="text-xl font-semibold mb-4 flex items-center">
-          <div class="w-8 h-8 rounded-full bg-amber-600 flex items-center justify-center text-amber-100 mr-2">S</div>
-          Suku Mehndi Art
-        </h3>
-        <p class="text-amber-200 mb-4">Creating beautiful memories with intricate bridal, festive, and custom mehndi designs</p>
-        <div class="mt-4 flex gap-4">
-          <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-amber-100 hover:bg-amber-600 hover:text-white transition-all duration-300">
-            <i class="fab fa-instagram text-lg"></i>
-          </a>
-          <a href="https://youtube.com/@sakshipandey_2201?si=GyyHI_Nm5XEbaCXS" target="_blank" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-amber-100 hover:bg-amber-600 hover:text-white transition-all duration-300">
-            <i class="fab fa-youtube text-lg"></i>
-          </a>
-          <a href="https://wa.me/91xxxxx?text=Hi%20Suku,%20I'm%20interested%20in%20your%20mehndi%20services" target="_blank" class="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-amber-100 hover:bg-amber-600 hover:text-white transition-all duration-300">
-            <i class="fab fa-whatsapp text-lg"></i>
-          </a>
-        </div>
-      </div>
-      
-      <div>
-        <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-amber-700">Quick Links</h3>
-        <ul class="space-y-3">
-          <li><a href="#hero" class="text-amber-200 hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2 text-amber-500"></i> Home</a></li>
-          <li><a href="#portfolio" class="text-amber-200 hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2 text-amber-500"></i> Portfolio</a></li>
-          <li><a href="#services" class="text-amber-200 hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2 text-amber-500"></i> Services</a></li>
-          <li><a href="#booking" class="text-amber-200 hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2 text-amber-500"></i> Book Now</a></li>
-          <li><a href="#contact" class="text-amber-200 hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2 text-amber-500"></i> Contact</a></li>
-        </ul>
-      </div>
-      
-      <div>
-        <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-amber-700">Contact Info</h3>
-        <ul class="space-y-4">
-          <li class="flex items-start">
-            <div class="w-8 h-8 rounded-full bg-amber-700 flex items-center justify-center text-amber-100 mr-3 mt-1">
-              <i class="fas fa-map-marker-alt text-xs"></i>
-            </div>
-            <span class="text-amber-200">Mirzapur, India</span>
-          </li>
-          <li class="flex items-start">
-            <div class="w-8 h-8 rounded-full bg-amber-700 flex items-center justify-center text-amber-100 mr-3 mt-1">
-              <i class="fab fa-instagram text-xs"></i>
-            </div>
-            <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="text-amber-200 hover:text-white transition-colors">@suku.mehndi.art</a>
-          </li>
-          <li class="flex items-start">
-            <div class="w-8 h-8 rounded-full bg-amber-700 flex items-center justify-center text-amber-100 mr-3 mt-1">
-              <i class="fas fa-envelope text-xs"></i>
-            </div>
-            <a href="mailto:sukumehndiart@gmail.com" class="text-amber-200 hover:text-white transition-colors">sukumehndiart@gmail.com</a>
-          </li>
-        </ul>
-        
-        <div class="mt-6 pt-4 border-t border-amber-700">
-          <a href="#booking" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-full text-sm hover:bg-amber-500 transition-colors">
-            <i class="fas fa-calendar-check"></i> Book Appointment
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    <div class="border-t border-amber-700 mt-10 pt-8 text-center text-sm text-amber-200">
-      <p class="flex items-center justify-center gap-1">Crafted this site with <span class="text-red-400 animate-pulse">🫶🏻</span> By <a href="https://instagram.com/i.shubham0210" target="_blank" class="font-medium hover:text-white transition-colors">SHM</a></p>
-      <p class="mt-2">© 2025 Suku Mehndi Art. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
-
-  <!-- Floating Instagram Button -->
-  <a href="https://instagram.com/suku.mehndi.art" target="_blank" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white shadow-lg floating-btn z-50">
-    <i class="fab fa-instagram text-xl"></i>
-  </a>
-   
-  
-  <script src="script.js"></script>
+      // Performance monitoring
+      if ('performance' in window) {
+        setTimeout(() => {
+          const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+          console.log(`Page load time: ${loadTime}ms`);
+        }, 0);
+      }
+    });
+  </script>
 </body>
 </html>

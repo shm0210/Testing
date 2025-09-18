@@ -354,147 +354,150 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   // Enhanced Category filtering
-const setupCategoryFiltering = () => {
-  const categoryFilters = document.querySelectorAll('.category-filter');
-  const appCards = document.querySelectorAll('.app-card');
-  const appCountElement = document.getElementById('app-count');
-  
-  // Set "All Apps" as active by default
-  const allButton = document.querySelector('[data-category="all"]');
-  if (allButton) allButton.classList.add('active-filter');
-  
-  // Update app count
-  const updateAppCount = (count) => {
-    if (appCountElement) {
-      appCountElement.textContent = count;
-    }
-  };
-  
-  categoryFilters.forEach(filter => {
-    filter.addEventListener('click', () => {
-      const category = filter.getAttribute('data-category');
-      
-      // Update active state
-      categoryFilters.forEach(f => f.classList.remove('active-filter'));
-      filter.classList.add('active-filter');
-      
-      let visibleCount = 0;
-      
-      // Filter apps with animation
-      appCards.forEach(card => {
-        const cardCategory = card.getAttribute('data-app-category');
+  const setupCategoryFiltering = () => {
+    const categoryFilters = document.querySelectorAll('.category-filter');
+    const appCards = document.querySelectorAll('.app-card');
+    const appCountElement = document.getElementById('app-count');
+    
+    // Set "All Apps" as active by default
+    const allButton = document.querySelector('[data-category="all"]');
+    if (allButton) allButton.classList.add('active-filter');
+    
+    // Update app count
+    const updateAppCount = (count) => {
+      if (appCountElement) {
+        appCountElement.textContent = count;
+      }
+    };
+    
+    categoryFilters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const category = filter.getAttribute('data-category');
         
-        if (category === 'all' || cardCategory === category) {
-          card.style.display = 'block';
-          setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) scale(1)';
-          }, 10);
-          visibleCount++;
-        } else {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(20px) scale(0.95)';
-          setTimeout(() => {
-            card.style.display = 'none';
-          }, 300);
+        // Update active state
+        categoryFilters.forEach(f => f.classList.remove('active-filter'));
+        filter.classList.add('active-filter');
+        
+        let visibleCount = 0;
+        
+        // Filter apps with animation
+        appCards.forEach(card => {
+          const cardCategory = card.getAttribute('data-app-category');
+          
+          if (category === 'all' || cardCategory === category) {
+            card.style.display = 'block';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0) scale(1)';
+            }, 10);
+            visibleCount++;
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px) scale(0.95)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+        
+        updateAppCount(visibleCount);
+      });
+    });
+    
+    // Initialize count
+    updateAppCount(appCards.length);
+  };
+
+  // Policy popup functionality
+  const setupPolicyPopup = () => {
+    const policyLinks = document.querySelectorAll('.policy-link');
+    const policyPopup = document.getElementById('policy-popup');
+    const policyTitle = document.getElementById('policy-title');
+    const policyContent = document.getElementById('policy-content');
+    const policyClose = document.getElementById('policy-close');
+    
+    const policies = {
+      privacy: {
+        title: 'Privacy Policy',
+        content: `<p class="mb-4">Your privacy is important to us. This Privacy Policy explains how SHM Infinity collects, uses, and protects your personal information.</p>
+        <h4 class="font-semibold mt-4 mb-2">Information We Collect</h4>
+        <p class="mb-4">We may collect personal information such as your name, email address, and usage data when you interact with our services.</p>
+        <h4 class="font-semibold mt-4 mb-2">How We Use Your Information</h4>
+        <p class="mb-4">We use your information to provide and improve our services, communicate with you, and ensure the security of our platform.</p>`
+      },
+      terms: {
+        title: 'Terms of Service',
+        content: `<p class="mb-4">By using SHM Infinity services, you agree to the following terms and conditions:</p>
+        <h4 class="font-semibold mt-4 mb-2">User Responsibilities</h4>
+        <p class="mb-4">You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account.</p>
+        <h4 class="font-semibold mt-4 mb-2">Content Guidelines</h4>
+        <p class="mb-4">You agree not to post content that is illegal, offensive, or infringes on the rights of others.</p>`
+      },
+      cookies: {
+        title: 'Cookies Policy',
+        content: `<p class="mb-4">We use cookies and similar technologies to enhance your experience on our website.</p>
+        <h4 class="font-semibold mt-4 mb-2">What Are Cookies</h4>
+        <p class="mb-4">Cookies are small text files stored on your device that help us remember your preferences and improve site functionality.</p>
+        <h4 class="font-semibold mt-4 mb-2">Managing Cookies</h4>
+        <p class="mb-4">You can control cookies through your browser settings. However, disabling cookies may limit your ability to use some features of our site.</p>`
+      },
+      license: {
+        title: 'License Information',
+        content: `<p class="mb-4">All content and applications on SHM Infinity are protected by copyright and other intellectual property laws.</p>
+        <h4 class="font-semibold mt-4 mb-2">Usage Rights</h4>
+        <p class="mb-4">You are granted a limited, non-exclusive license to use our services for personal, non-commercial purposes.</p>
+        <h4 class="font-semibold mt-4 mb-2">Restrictions</h4>
+        <p class="mb-4">You may not redistribute, modify, or commercially exploit any content from SHM Infinity without explicit permission.</p>`
+      }
+    };
+    
+    // Open policy popup
+    policyLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const policyType = link.getAttribute('data-policy');
+        
+        if (policies[policyType]) {
+          policyTitle.textContent = policies[policyType].title;
+          policyContent.innerHTML = policies[policyType].content;
+          policyPopup.classList.remove('hidden');
+          document.body.classList.add('overflow-hidden');
         }
       });
-      
-      updateAppCount(visibleCount);
     });
-  });
-  
-  // Initialize count
-  updateAppCount(appCards.length);
-};
+    
+    // Close policy popup
+    if (policyClose) {
+      policyClose.addEventListener('click', () => {
+        policyPopup.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      });
+    }
+    
+    // Close popup when clicking outside
+    if (policyPopup) {
+      policyPopup.addEventListener('click', (e) => {
+        if (e.target === policyPopup) {
+          policyPopup.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
+      });
+    }
+  };
 
   // Initialize all functionality
-const init = () => {
-  initAOS();
-  setupMobileMenu();
-  setupSearch();
-  setupUserDropdown();
-  setupThemeToggle();
-  setupSmoothScrolling();
-  setupImageLoading();
-  setupBackToTop();
-  setupCategoryFiltering();
-  setupPolicyPopup(); // Add this line
-};
+  const init = () => {
+    initAOS();
+    setupMobileMenu();
+    setupSearch();
+    setupUserDropdown();
+    setupThemeToggle();
+    setupSmoothScrolling();
+    setupImageLoading();
+    setupBackToTop();
+    setupCategoryFiltering();
+    setupPolicyPopup();
+  };
 
   init();
 });
-
-// Policy popup functionality
-const setupPolicyPopup = () => {
-  const policyLinks = document.querySelectorAll('.policy-link');
-  const policyPopup = document.getElementById('policy-popup');
-  const policyTitle = document.getElementById('policy-title');
-  const policyContent = document.getElementById('policy-content');
-  const policyClose = document.getElementById('policy-close');
-  
-  const policies = {
-    privacy: {
-      title: 'Privacy Policy',
-      content: `<p class="mb-4">Your privacy is important to us. This Privacy Policy explains how SHM Infinity collects, uses, and protects your personal information.</p>
-      <h4 class="font-semibold mt-4 mb-2">Information We Collect</h4>
-      <p class="mb-4">We may collect personal information such as your name, email address, and usage data when you interact with our services.</p>
-      <h4 class="font-semibold mt-4 mb-2">How We Use Your Information</h4>
-      <p class="mb-4">We use your information to provide and improve our services, communicate with you, and ensure the security of our platform.</p>`
-    },
-    terms: {
-      title: 'Terms of Service',
-      content: `<p class="mb-4">By using SHM Infinity services, you agree to the following terms and conditions:</p>
-      <h4 class="font-semibold mt-4 mb-2">User Responsibilities</h4>
-      <p class="mb-4">You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account.</p>
-      <h4 class="font-semibold mt-4 mb-2">Content Guidelines</h4>
-      <p class="mb-4">You agree not to post content that is illegal, offensive, or infringes on the rights of others.</p>`
-    },
-    cookies: {
-      title: 'Cookies Policy',
-      content: `<p class="mb-4">We use cookies and similar technologies to enhance your experience on our website.</p>
-      <h4 class="font-semibold mt-4 mb-2">What Are Cookies</h4>
-      <p class="mb-4">Cookies are small text files stored on your device that help us remember your preferences and improve site functionality.</p>
-      <h4 class="font-semibold mt-4 mb-2">Managing Cookies</h4>
-      <p class="mb-4">You can control cookies through your browser settings. However, disabling cookies may limit your ability to use some features of our site.</p>`
-    },
-    license: {
-      title: 'License Information',
-      content: `<p class="mb-4">All content and applications on SHM Infinity are protected by copyright and other intellectual property laws.</p>
-      <h4 class="font-semibold mt-4 mb-2">Usage Rights</h4>
-      <p class="mb-4">You are granted a limited, non-exclusive license to use our services for personal, non-commercial purposes.</p>
-      <h4 class="font-semibold mt-4 mb-2">Restrictions</h4>
-      <p class="mb-4">You may not redistribute, modify, or commercially exploit any content from SHM Infinity without explicit permission.</p>`
-    }
-  };
-  
-  // Open policy popup
-  policyLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const policyType = link.getAttribute('data-policy');
-      
-      if (policies[policyType]) {
-        policyTitle.textContent = policies[policyType].title;
-        policyContent.innerHTML = policies[policyType].content;
-        policyPopup.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-      }
-    });
-  });
-  
-  // Close policy popup
-  policyClose.addEventListener('click', () => {
-    policyPopup.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-  });
-  
-  // Close popup when clicking outside
-  policyPopup.addEventListener('click', (e) => {
-    if (e.target === policyPopup) {
-      policyPopup.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-    }
-  });
-};
-

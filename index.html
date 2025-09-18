@@ -104,6 +104,21 @@
   <!-- Skip to content link for keyboard users -->
   <a href="#main" class="skip-to-content">Skip to content</a>
 
+  <!-- Policy Popup -->
+<div id="policy-popup" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+  <div class="glass-effect rounded-2xl max-w-2xl w-full mx-4 p-6 max-h-[80vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 id="policy-title" class="text-xl font-bold gradient-text">Policy</h3>
+      <button id="policy-close" class="p-2 rounded-full hover:bg-gray-800 transition-all">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="policy-content" class="text-gray-300 text-sm">
+      <!-- Policy content will be loaded here -->
+    </div>
+  </div>
+</div>
+  
   <!-- Lightweight background elements -->
   <div class="background">
     <div class="gradient-overlay"></div>

@@ -311,29 +311,105 @@
     </button>
   </div>
 
-  <!-- Hero Section -->
-  <section id="home" class="text-center hero-section py-32 px-6 relative overflow-hidden" data-aos="fade-up">
-    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
-      <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-      <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-blue-500 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
+  <!-- Enhanced Hero Section -->
+<section id="home" class="relative overflow-hidden hero-section py-28 md:py-36 px-6" data-aos="fade-up">
+  <!-- Animated background elements -->
+  <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
+    <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-blue-500 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-4000"></div>
+    
+    <!-- Animated grid pattern -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     </div>
-    <div class="max-w-4xl mx-auto relative z-10">
-      <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text">Explore Infinity World</h2>
-      <p class="text-gray-300 mb-8 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">Discover premium applications with beautiful, fast, and responsive UI designed for the modern digital experience.</p>
-      <div class="flex gap-4 justify-center flex-wrap">
-        <button class="px-8 py-4 gradient-bg rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 flex items-center gap-2 transform hover:-translate-y-1">
-          <i class="fas fa-rocket" aria-hidden="true"></i> Get Started
-        </button>
-        <button class="px-8 py-4 border-2 border-primary-400 text-primary-400 hover:bg-primary-900/30 rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/20 flex items-center gap-2 transform hover:-translate-y-1">
-          <i class="fas fa-info-circle" aria-hidden="true"></i> Learn More
-        </button>
+  </div>
+  
+  <div class="max-w-6xl mx-auto relative z-10">
+    <!-- Main content with improved layout -->
+    <div class="flex flex-col lg:flex-row items-center gap-12">
+      <!-- Text content -->
+      <div class="flex-1 text-center lg:text-left" data-aos="fade-right" data-aos-delay="200">
+        <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text leading-tight">
+          Explore The <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-purple-500">Infinity</span> World
+        </h2>
+        <p class="text-gray-300 mb-8 text-lg md:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+          Discover premium applications with beautiful, fast, and responsive UI designed for the modern digital experience.
+        </p>
+        
+        <!-- Stats section -->
+        <div class="flex flex-wrap gap-6 justify-center lg:justify-start mb-10">
+          <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+            <div class="text-2xl md:text-3xl font-bold gradient-text">10K+</div>
+            <div class="text-sm text-gray-400">Active Users</div>
+          </div>
+          <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+            <div class="text-2xl md:text-3xl font-bold gradient-text">50+</div>
+            <div class="text-sm text-gray-400">Premium Apps</div>
+          </div>
+          <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+            <div class="text-2xl md:text-3xl font-bold gradient-text">99%</div>
+            <div class="text-sm text-gray-400">Satisfaction</div>
+          </div>
+        </div>
+        
+        <!-- CTA buttons -->
+        <div class="flex gap-4 justify-center lg:justify-start flex-wrap" data-aos="fade-up" data-aos-delay="600">
+          <button class="px-8 py-4 gradient-bg rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 flex items-center gap-2 transform hover:-translate-y-1 group">
+            <i class="fas fa-rocket group-hover:animate-pulse" aria-hidden="true"></i> 
+            Get Started
+            <i class="fas fa-arrow-right text-sm transform group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
+          </button>
+          <button class="px-8 py-4 border-2 border-primary-400 text-primary-400 hover:bg-primary-900/30 rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/20 flex items-center gap-2 transform hover:-translate-y-1 group">
+            <i class="fas fa-play-circle group-hover:animate-pulse" aria-hidden="true"></i> 
+            Watch Demo
+          </button>
+        </div>
+      </div>
+      
+      <!-- Visual element (could be replaced with an actual illustration) -->
+      <div class="flex-1 flex justify-center" data-aos="fade-left" data-aos-delay="400">
+        <div class="relative w-full max-w-md">
+          <!-- Floating device mockup -->
+          <div class="relative mx-auto w-80 h-96">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-purple-500/10 rounded-3xl transform rotate-6"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-600/20 to-purple-600/20 rounded-3xl transform -rotate-3"></div>
+            <div class="absolute inset-0 glass-effect rounded-3xl border border-gray-700/50 p-6 flex flex-col items-center justify-center">
+              <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mb-6">
+                <i class="fas fa-infinity text-white text-2xl" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold text-white mb-2">SHM Infinity</h3>
+              <p class="text-gray-400 text-sm text-center">Premium Digital Experience</p>
+              <div class="mt-6 w-full bg-gray-800 rounded-full h-2">
+                <div class="gradient-bg h-2 rounded-full w-3/4"></div>
+              </div>
+              <div class="mt-8 flex gap-3">
+                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Floating elements around the mockup -->
+          <div class="absolute -top-4 -right-4 w-16 h-16 gradient-bg rounded-full flex items-center justify-center opacity-80 animate-float">
+            <i class="fas fa-star text-white" aria-hidden="true"></i>
+          </div>
+          <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center opacity-80 animate-float animation-delay-2000">
+            <i class="fas fa-heart text-white text-sm" aria-hidden="true"></i>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-      <i class="fas fa-chevron-down text-2xl text-primary-400" aria-hidden="true"></i>
-    </div>
-  </section>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <a href="#apps" class="block p-3 rounded-full glass-effect hover:bg-gray-800/50 transition-colors">
+      <i class="fas fa-chevron-down text-xl text-primary-400" aria-hidden="true"></i>
+    </a>
+  </div>
+</section>
 
   <!-- App Categories -->
   <section class="py-12 px-6">

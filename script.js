@@ -409,18 +409,18 @@ const setupCategoryFiltering = () => {
 };
 
   // Initialize all functionality
-  const init = () => {
-    initAOS();
-    setupMobileMenu();
-    setupSearch();
-    setupUserDropdown();
-    setupThemeToggle();
-    setupSmoothScrolling();
-    setupImageLoading();
-    setupBackToTop();
-    setupCategoryFiltering();
-  };
-
+const init = () => {
+  initAOS();
+  setupMobileMenu();
+  setupSearch();
+  setupUserDropdown();
+  setupThemeToggle();
+  setupSmoothScrolling();
+  setupImageLoading();
+  setupBackToTop();
+  setupCategoryFiltering();
+  setupPolicyPopup(); // This was missing
+};
   init();
 });
 

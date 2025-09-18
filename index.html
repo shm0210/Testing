@@ -387,14 +387,28 @@
     </div>
   </div>
   
-  <!-- Scroll indicator -->
-  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce" data-aos="fade-up" data-aos-delay="600">
-    <a href="#apps" class="flex flex-col items-center text-primary-400 group" aria-label="Scroll to apps section">
-      <span class="text-sm mb-1 opacity-0 group-hover:opacity-100 transition-opacity">Explore Apps</span>
-      <i class="fas fa-chevron-down text-2xl" aria-hidden="true"></i>
-    </a>
-  </div>
+  <!-- Scroll Indicator -->
+<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2" data-aos="fade-up" data-aos-delay="600">
+  <a href="#apps" 
+     class="flex flex-col items-center group relative" 
+     aria-label="Scroll to apps section">
+    
+    <!-- Text that fades in smoothly -->
+    <span class="text-sm mb-2 text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      Explore Apps
+    </span>
+    
+    <!-- Animated scroll icon inside a circle -->
+    <div class="w-10 h-10 rounded-full border-2 border-primary-400 flex items-center justify-center relative overflow-hidden">
+      <i class="fas fa-chevron-down text-primary-400 text-lg animate-bounce" aria-hidden="true"></i>
+      
+      <!-- Glow effect on hover -->
+      <span class="absolute inset-0 rounded-full bg-primary-400/20 scale-0 group-hover:scale-100 transition-transform duration-500"></span>
+    </div>
+  </a>
+</div>
 </section>
+  
   <!-- App Categories -->
   <section class="py-12 px-6">
     <div class="max-w-7xl mx-auto">

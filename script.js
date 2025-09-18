@@ -419,7 +419,7 @@ const init = () => {
   setupImageLoading();
   setupBackToTop();
   setupCategoryFiltering();
-  setupPolicyPopup(); // This was missing
+  setupPolicyPopup(); 
 };
   init();
 });

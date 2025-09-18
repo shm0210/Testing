@@ -313,100 +313,73 @@
 
 <!-- Hero Section -->
 <section id="home" class="text-center hero-section py-32 px-6 relative overflow-hidden" data-aos="fade-up">
+  <!-- Enhanced background elements -->
   <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
     <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-    <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-blue-500 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
-  </div>
-  
-  <!-- Floating particles/animated elements -->
-  <div class="absolute top-20 left-10 opacity-50 floating-element">
-    <i class="fas fa-star text-primary-400 text-xl" aria-hidden="true"></i>
-  </div>
-  <div class="absolute top-40 right-20 opacity-70 floating-element" style="animation-delay: 2s;">
-    <i class="fas fa-circle text-purple-400 text-sm" aria-hidden="true"></i>
-  </div>
-  <div class="absolute bottom-40 left-20 opacity-60 floating-element" style="animation-delay: 4s;">
-    <i class="fas fa-diamond text-blue-400 text-xs" aria-hidden="true"></i>
+    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-2000"></div>
+    <div class="absolute top-3/4 left-1/2 w-48 h-48 bg-blue-500 rounded-full filter blur-3xl opacity-20 animate-pulse animation-delay-4000"></div>
+    
+    <!-- New animated particles -->
+    <div class="particle particle-1"></div>
+    <div class="particle particle-2"></div>
+    <div class="particle particle-3"></div>
+    <div class="particle particle-4"></div>
+    <div class="particle particle-5"></div>
   </div>
   
   <div class="max-w-4xl mx-auto relative z-10">
-    <!-- Animated badge -->
-    <div class="inline-flex items-center gap-2 bg-primary-900/30 backdrop-blur-sm border border-primary-500/30 rounded-full px-4 py-2 mb-6 animate-pulse" data-aos="fade-down" data-aos-delay="300">
-      <span class="w-2 h-2 bg-primary-400 rounded-full animate-ping absolute"></span>
-      <span class="w-2 h-2 bg-primary-400 rounded-full"></span>
-      <span class="text-primary-300 text-sm font-medium">Premium Experience Available</span>
-    </div>
-    
-    <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text" data-aos="fade-up" data-aos-delay="200">
-      Explore <span class="inline-block relative">
-        Infinity World
-        <svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 0 15 Q 100 0 200 15" stroke="url(#gradient)" stroke-width="3" fill="none" />
-          <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#0ea5e9" />
-              <stop offset="100%" stop-color="#8b5cf6" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </span>
+    <!-- Enhanced title with typing animation -->
+    <h2 class="text-4xl md:text-6xl font-bold mb-6 gradient-text typing-animation">
+      Explore Infinity World
     </h2>
     
-    <p class="text-gray-300 mb-8 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="300">
+    <!-- Improved description with fade-in effect -->
+    <p class="text-gray-300 mb-8 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed fade-in-text">
       Discover premium applications with beautiful, fast, and responsive UI designed for the modern digital experience.
     </p>
     
-    <div class="flex gap-4 justify-center flex-wrap" data-aos="fade-up" data-aos-delay="400">
-      <button class="px-8 py-4 gradient-bg rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 flex items-center gap-2 transform hover:-translate-y-1 group">
+    <!-- Enhanced buttons with hover effects -->
+    <div class="flex gap-4 justify-center flex-wrap">
+      <button class="px-8 py-4 gradient-bg rounded-full font-semibold transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/40 flex items-center gap-2 transform hover:-translate-y-1 hover:scale-105 group">
         <i class="fas fa-rocket group-hover:animate-bounce" aria-hidden="true"></i> 
-        Get Started
-        <i class="fas fa-arrow-right text-sm transform group-hover:translate-x-1 transition-transform" aria-hidden="true"></i>
+        <span class="relative">
+          Get Started
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+        </span>
       </button>
-      
-      <button class="px-8 py-4 border-2 border-primary-400/50 hover:border-primary-400 text-primary-400 hover:bg-primary-900/30 rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/20 flex items-center gap-2 transform hover:-translate-y-1 group">
-        <i class="fas fa-play-circle group-hover:animate-pulse" aria-hidden="true"></i> 
-        Watch Demo
+      <button class="px-8 py-4 border-2 border-primary-400 text-primary-400 hover:bg-primary-900/30 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/20 flex items-center gap-2 transform hover:-translate-y-1 group">
+        <i class="fas fa-info-circle group-hover:rotate-180 transition-transform duration-500" aria-hidden="true"></i> 
+        <span class="relative">
+          Learn More
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-400 transition-all duration-300 group-hover:w-full"></span>
+        </span>
       </button>
     </div>
     
-    <!-- Stats section -->
-    <div class="flex flex-wrap justify-center gap-6 mt-12 text-center" data-aos="fade-up" data-aos-delay="500">
-      <div class="glass-effect px-6 py-3 rounded-xl min-w-[120px]">
-        <div class="text-2xl font-bold gradient-text">10K+</div>
-        <div class="text-xs text-gray-400">Active Users</div>
+    <!-- Stats counter -->
+    <div class="flex justify-center mt-12 gap-6 text-center stats-container">
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+        <div class="text-3xl md:text-4xl font-bold gradient-text counter" data-target="500">0</div>
+        <div class="text-gray-400 text-sm mt-1">Active Users</div>
       </div>
-      <div class="glass-effect px-6 py-3 rounded-xl min-w-[120px]">
-        <div class="text-2xl font-bold gradient-text">50+</div>
-        <div class="text-xs text-gray-400">Premium Apps</div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+        <div class="text-3xl md:text-4xl font-bold gradient-text counter" data-target="50">0</div>
+        <div class="text-gray-400 text-sm mt-1">Premium Apps</div>
       </div>
-      <div class="glass-effect px-6 py-3 rounded-xl min-w-[120px]">
-        <div class="text-2xl font-bold gradient-text">99%</div>
-        <div class="text-xs text-gray-400">Satisfaction</div>
+      <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
+        <div class="text-3xl md:text-4xl font-bold gradient-text counter" data-target="99">0</div>
+        <div class="text-gray-400 text-sm mt-1">Satisfaction %</div>
       </div>
     </div>
   </div>
   
-  <!-- Scroll Indicator -->
-<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2" data-aos="fade-up" data-aos-delay="600">
-  <a href="#apps" 
-     class="flex flex-col items-center group relative" 
-     aria-label="Scroll to apps section">
-    
-    <!-- Text that fades in smoothly -->
-    <span class="text-sm mb-2 text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-      Explore Apps
-    </span>
-    
-    <!-- Animated scroll icon inside a circle -->
-    <div class="w-10 h-10 rounded-full border-2 border-primary-400 flex items-center justify-center relative overflow-hidden">
-      <i class="fas fa-chevron-down text-primary-400 text-lg animate-bounce" aria-hidden="true"></i>
-      
-      <!-- Glow effect on hover -->
-      <span class="absolute inset-0 rounded-full bg-primary-400/20 scale-0 group-hover:scale-100 transition-transform duration-500"></span>
+  <!-- Enhanced scroll indicator -->
+  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <div class="scroll-indicator">
+      <i class="fas fa-chevron-down text-2xl text-primary-400" aria-hidden="true"></i>
+      <span class="scroll-text">Scroll Down</span>
     </div>
-  </a>
-</div>
+  </div>
 </section>
 
   <!-- Features Section -->

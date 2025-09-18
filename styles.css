@@ -258,3 +258,167 @@ button:focus, a:focus, input:focus, select:focus, textarea:focus {
     scroll-behavior: auto !important;
   }
 }
+
+/* Enhanced Hero Section Styles */
+.hero-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+  z-index: -1;
+}
+
+/* Particle animation */
+.particle {
+  position: absolute;
+  background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: float 8s infinite linear;
+}
+
+.particle-1 {
+  width: 12px;
+  height: 12px;
+  top: 20%;
+  left: 10%;
+  animation-duration: 15s;
+  animation-delay: 0s;
+}
+
+.particle-2 {
+  width: 8px;
+  height: 8px;
+  top: 60%;
+  left: 80%;
+  animation-duration: 12s;
+  animation-delay: 2s;
+}
+
+.particle-3 {
+  width: 6px;
+  height: 6px;
+  top: 40%;
+  left: 65%;
+  animation-duration: 10s;
+  animation-delay: 1s;
+}
+
+.particle-4 {
+  width: 10px;
+  height: 10px;
+  top: 70%;
+  left: 25%;
+  animation-duration: 18s;
+  animation-delay: 3s;
+}
+
+.particle-5 {
+  width: 4px;
+  height: 4px;
+  top: 30%;
+  left: 45%;
+  animation-duration: 9s;
+  animation-delay: 4s;
+}
+
+/* Typing animation for title */
+.typing-animation {
+  overflow: hidden;
+  border-right: 3px solid #0ea5e9;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #0ea5e9 }
+}
+
+/* Fade in text animation */
+.fade-in-text {
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+  animation-delay: 1.5s;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1 }
+}
+
+/* Stats counter */
+.stats-container {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s forwards;
+  animation-delay: 2s;
+}
+
+.stat-item {
+  padding: 0 1.5rem;
+  position: relative;
+}
+
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, #0ea5e9, transparent);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced scroll indicator */
+.scroll-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.scroll-text {
+  font-size: 0.75rem;
+  color: #0ea5e9;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+  animation-delay: 4s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .typing-animation {
+    white-space: normal;
+    border-right: none;
+    animation: none;
+  }
+  
+  .stat-item:not(:last-child)::after {
+    display: none;
+  }
+  
+  .stats-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}

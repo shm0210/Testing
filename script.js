@@ -353,6 +353,61 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
+  // Enhanced Category filtering
+const setupCategoryFiltering = () => {
+  const categoryFilters = document.querySelectorAll('.category-filter');
+  const appCards = document.querySelectorAll('.app-card');
+  const appCountElement = document.getElementById('app-count');
+  
+  // Set "All Apps" as active by default
+  const allButton = document.querySelector('[data-category="all"]');
+  if (allButton) allButton.classList.add('active-filter');
+  
+  // Update app count
+  const updateAppCount = (count) => {
+    if (appCountElement) {
+      appCountElement.textContent = count;
+    }
+  };
+  
+  categoryFilters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      const category = filter.getAttribute('data-category');
+      
+      // Update active state
+      categoryFilters.forEach(f => f.classList.remove('active-filter'));
+      filter.classList.add('active-filter');
+      
+      let visibleCount = 0;
+      
+      // Filter apps with animation
+      appCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-app-category');
+        
+        if (category === 'all' || cardCategory === category) {
+          card.style.display = 'block';
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0) scale(1)';
+          }, 10);
+          visibleCount++;
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px) scale(0.95)';
+          setTimeout(() => {
+            card.style.display = 'none';
+          }, 300);
+        }
+      });
+      
+      updateAppCount(visibleCount);
+    });
+  });
+  
+  // Initialize count
+  updateAppCount(appCards.length);
+};
+
   // Category filtering
   const setupCategoryFiltering = () => {
     const categoryFilters = document.querySelectorAll('.category-filter');

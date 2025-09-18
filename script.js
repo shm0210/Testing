@@ -353,6 +353,51 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
+  // Counter animation for stats
+const setupCounterAnimation = () => {
+  const counters = document.querySelectorAll('.counter');
+  if (!counters.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counter = entry.target;
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const increment = target / 100;
+        
+        if (count < target) {
+          counter.innerText = Math.ceil(count + increment);
+          setTimeout(() => {
+            const updateCounter = () => {
+              const count = +counter.innerText;
+              if (count < target) {
+                counter.innerText = Math.ceil(count + increment);
+                setTimeout(updateCounter, 20);
+              } else {
+                counter.innerText = target;
+              }
+            };
+            updateCounter();
+          }, 200);
+        }
+        
+        observer.unobserve(counter);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(counter => {
+    observer.observe(counter);
+  });
+};
+
+// Call this function in your init function
+const init = () => {
+  // ... your existing initialization code
+  setupCounterAnimation(); // Add this line
+};
+
   // Category filtering
   const setupCategoryFiltering = () => {
     const categoryFilters = document.querySelectorAll('.category-filter');

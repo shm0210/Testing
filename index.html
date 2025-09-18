@@ -655,80 +655,288 @@
       </div>
     </article>
 
-     <!-- Card 5 - CodeEditor -->
-    <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500" data-aos="fade-up" data-aos-delay="100" data-app-name="CodeEditor" data-app-category="development">
-      <div class="relative overflow-hidden h-48">
-        <img 
-          src="https://i.ibb.co/gM4xZVVf/Picsart-25-07-29-23-13-26-374.png" 
-          alt="CodeEditor placeholder image"
-          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          loading="lazy"
-        >
-        <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
-          .... ♥️
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Coming Soon</span>
-        </div>
-      </div>
-      <div class="p-6">
-        <div class="flex justify-between items-start mb-3">
-          <h3 class="text-xl font-bold flex items-center gap-2">
-            <i class="fas fa-code text-primary-400" aria-hidden="true"></i> CodeEditor
-          </h3>
-          <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Development</span>
-        </div>
-        <p class="text-gray-400 mb-4 text-sm leading-relaxed">Powerful code editor application coming soon. Syntax highlighting, auto-completion, and all the tools developers need in one place.</p>
-        <div class="flex justify-between items-center">
-          <span class="text-xs text-gray-500 flex items-center gap-1">
-            <i class="fas fa-download" aria-hidden="true"></i> v0.0.0 • 00MB
-          </span>
-          <button class="download-btn px-4 py-2 bg-gray-700 rounded-full text-sm font-semibold transition-all cursor-not-allowed opacity-70">
-            <span class="flex items-center gap-1">
-              <i class="fas fa-clock" aria-hidden="true"></i> Soon
-            </span>
-          </button>
-        </div>
-      </div>
-    </article>
+<!-- Improved App Categories Section -->
+<section class="py-12 px-6">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 gradient-text" data-aos="fade-up">Browse by Category</h2>
+    
+    <div class="flex flex-wrap justify-center gap-3 mb-12" id="category-filters">
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20 active-filter" data-category="all">
+        <i class="fas fa-th-large mr-1" aria-hidden="true"></i> All Apps
+      </button>
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20" data-category="video">
+        <i class="fas fa-video mr-1" aria-hidden="true"></i> Video
+      </button>
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20" data-category="music">
+        <i class="fas fa-music mr-1" aria-hidden="true"></i> Music
+      </button>
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20" data-category="gaming">
+        <i class="fas fa-gamepad mr-1" aria-hidden="true"></i> Gaming
+      </button>
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20" data-category="photo">
+        <i class="fas fa-camera mr-1" aria-hidden="true"></i> Photo
+      </button>
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20" data-category="development">
+        <i class="fas fa-code mr-1" aria-hidden="true"></i> Development
+      </button>
+      <button class="category-filter px-4 py-2 bg-gray-800/50 rounded-full text-sm font-medium transition-all hover:bg-primary-500 hover:text-white hover:shadow-lg hover:shadow-primary-500/20" data-category="finance">
+        <i class="fas fa-chart-line mr-1" aria-hidden="true"></i> Finance
+      </button>
+    </div>
+    
+    <!-- Category counter -->
+    <div class="text-center mb-6 text-gray-400 text-sm" id="category-counter">
+      Showing <span class="font-semibold text-primary-400" id="app-count">6</span> apps
+    </div>
+  </div>
+</section>
 
-    <!-- Card 6 - FinanceApp -->
-    <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500" data-aos="fade-up" data-aos-delay="100" data-app-name="FinanceApp" data-app-category="finance">
-      <div class="relative overflow-hidden h-48">
-        <img 
-          src="https://i.ibb.co/KxpV2xJW/Picsart-25-07-29-21-52-41-960.png" 
-          alt="FinanceApp placeholder image"
-          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          loading="lazy"
-        >
-        <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
-          .... ♥️
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-          <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Coming Soon</span>
-        </div>
+<!-- Enhanced Modern Card Grid -->
+<main id="apps" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-20 max-w-7xl mx-auto relative z-10">
+  <!-- Card 1 - YouTube Player-->
+  <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 transform hover:-translate-y-2" data-aos="fade-up" data-app-name="YouTube Player" data-app-category="video" data-app-status="available">
+    <div class="relative overflow-hidden h-48">
+      <img 
+        src="https://i.ibb.co/Kx18Kftr/Picsart-25-07-27-15-39-32-515.jpg" 
+        alt="YouTube Player app interface showing video playback controls"
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      >
+      <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
+        20+ ♥️
       </div>
-      <div class="p-6">
-        <div class="flex justify-between items-start mb-3">
-          <h3 class="text-xl font-bold flex items-center gap-2">
-            <i class="fas fa-chart-line text-primary-400" aria-hidden="true"></i> FinanceApp
-          </h3>
-          <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Finance</span>
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Trending</span>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-video text-primary-400" aria-hidden="true"></i> YouTube Player
+        </h3>
+        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Video</span>
+      </div>
+      <p class="text-gray-400 mb-4 text-sm leading-relaxed">Watch YouTube videos ad-free with our website! Simply paste the video link and enjoy uninterrupted playback.</p>
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="flex items-center">
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star-half-alt text-yellow-400 text-xs" aria-hidden="true"></i>
+          </div>
+          <span class="text-xs text-gray-500">4.5</span>
         </div>
-        <p class="text-gray-400 mb-4 text-sm leading-relaxed">Comprehensive finance management application coming soon. Track expenses, create budgets, and manage your financial life with ease.</p>
-        <div class="flex justify-between items-center">
-          <span class="text-xs text-gray-500 flex items-center gap-1">
-            <i class="fas fa-download" aria-hidden="true"></i> v0.0.0 • 00MB
+        <button class="download-btn px-4 py-2 gradient-bg rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 text-white group-hover:scale-105">
+          <a href="player" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="block w-full h-full flex items-center gap-1"
+             aria-label="Open YouTube Player"
+          >
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Open
+          </a>
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Card 2 - GEETORY-Music Player -->
+  <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100" data-app-name="Geetory" data-app-category="music" data-app-status="available">
+    <div class="relative overflow-hidden h-48">
+      <img 
+        src="https://i.ibb.co/jPStpHBs/Picsart-25-08-01-19-24-55-922.jpg" 
+        alt="Geetory placeholder image"
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      >
+      <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
+        25+ ♥️
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Owner Choice</span>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-music text-primary-400" aria-hidden="true"></i> GEETORY
+        </h3>
+        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Music</span>
+      </div>
+      <p class="text-gray-400 mb-4 text-sm leading-relaxed">"Geetory Music Player: Stream your favorite songs and playlists ad-free. Discover new music and enjoy seamless playback. Elevate your music experience!"</p>
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <div class="flex items-center">
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+          </div>
+          <span class="text-xs text-gray-500">5.0</span>
+        </div>
+        <button class="download-btn px-4 py-2 gradient-bg rounded-full text-sm font-semibold transition-all hover:shadow-lg hover:shadow-primary-500/30 text-white group-hover:scale-105">
+          <a href="music" 
+             class="block w-full h-full flex items-center gap-1"
+             aria-label="Download Geetory app"
+          >
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Open
+          </a>
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Card 3 - GameHub -->
+  <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100" data-app-name="GameHub" data-app-category="gaming" data-app-status="coming-soon">
+    <div class="relative overflow-hidden h-48">
+      <img 
+        src="https://i.ibb.co/gM4xZVVf/Picsart-25-07-29-23-13-26-374.png" 
+        alt="GameHub placeholder image"
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      >
+      <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
+        .... ♥️
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Coming Soon</span>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-gamepad text-primary-400" aria-hidden="true"></i> GameHub
+        </h3>
+        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Gaming</span>
+      </div>
+      <p class="text-gray-400 mb-4 text-sm leading-relaxed">Exciting new gaming platform coming soon. Stay tuned for updates and get ready for the ultimate gaming experience!</p>
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-gray-500 flex items-center gap-1">
+          <i class="fas fa-download" aria-hidden="true"></i> v0.0.0 • 00MB
+        </span>
+        <button class="download-btn px-4 py-2 bg-gray-700 rounded-full text-sm font-semibold transition-all cursor-not-allowed opacity-70">
+          <span class="flex items-center gap-1">
+            <i class="fas fa-clock" aria-hidden="true"></i> Soon
           </span>
-          <button class="download-btn px-4 py-2 bg-gray-700 rounded-full text-sm font-semibold transition-all cursor-not-allowed opacity-70">
-            <span class="flex items-center gap-1">
-              <i class="fas fa-clock" aria-hidden="true"></i> Soon
-            </span>
-          </button>
-        </div>
+        </button>
       </div>
-    </article>
-  </main>
+    </div>
+  </article>
+
+  <!-- Card 4 - PhotoEditor -->
+  <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100" data-app-name="PhotoEditor" data-app-category="photo" data-app-status="coming-soon">
+    <div class="relative overflow-hidden h-48">
+      <img 
+        src="https://i.ibb.co/KxpV2xJW/Picsart-25-07-29-21-52-41-960.png" 
+        alt="PhotoEditor placeholder image"
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      >
+      <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
+        .... ♥️
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Coming Soon</span>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-camera text-primary-400" aria-hidden="true"></i> PhotoEditor
+        </h3>
+        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Photo</span>
+      </div>
+      <p class="text-gray-400 mb-4 text-sm leading-relaxed">Advanced photo editing application coming soon. Powerful tools for enhancing and transforming your images with professional results.</p>
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-gray-500 flex items-center gap-1">
+          <i class="fas fa-download" aria-hidden="true"></i> v0.0.0 • 00MB
+        </span>
+        <button class="download-btn px-4 py-2 bg-gray-700 rounded-full text-sm font-semibold transition-all cursor-not-allowed opacity-70">
+          <span class="flex items-center gap-1">
+            <i class="fas fa-clock" aria-hidden="true"></i> Soon
+          </span>
+        </button>
+      </div>
+    </div>
+  </article>
+
+   <!-- Card 5 - CodeEditor -->
+  <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100" data-app-name="CodeEditor" data-app-category="development" data-app-status="coming-soon">
+    <div class="relative overflow-hidden h-48">
+      <img 
+        src="https://i.ibb.co/gM4xZVVf/Picsart-25-07-29-23-13-26-374.png" 
+        alt="CodeEditor placeholder image"
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      >
+      <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
+        .... ♥️
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Coming Soon</span>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-code text-primary-400" aria-hidden="true"></i> CodeEditor
+        </h3>
+        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Development</span>
+      </div>
+      <p class="text-gray-400 mb-4 text-sm leading-relaxed">Powerful code editor application coming soon. Syntax highlighting, auto-completion, and all the tools developers need in one place.</p>
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-gray-500 flex items-center gap-1">
+          <i class="fas fa-download" aria-hidden="true"></i> v0.0.0 • 00MB
+        </span>
+        <button class="download-btn px-4 py-2 bg-gray-700 rounded-full text-sm font-semibold transition-all cursor-not-allowed opacity-70">
+          <span class="flex items-center gap-1">
+            <i class="fas fa-clock" aria-hidden="true"></i> Soon
+          </span>
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Card 6 - FinanceApp -->
+  <article class="group app-card glass-effect rounded-2xl overflow-hidden shadow-xl border border-gray-800 hover:border-primary-500/30 transition-all duration-500 transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100" data-app-name="FinanceApp" data-app-category="finance" data-app-status="coming-soon">
+    <div class="relative overflow-hidden h-48">
+      <img 
+        src="https://i.ibb.co/KxpV2xJW/Picsart-25-07-29-21-52-41-960.png" 
+        alt="FinanceApp placeholder image"
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+      >
+      <div class="absolute top-2 right-2 gradient-bg text-xs font-bold px-2 py-1 rounded-full shadow text-white">
+        .... ♥️
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+        <span class="text-xs bg-primary-500/80 px-2 py-1 rounded-full">Coming Soon</span>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-xl font-bold flex items-center gap-2">
+          <i class="fas fa-chart-line text-primary-400" aria-hidden="true"></i> FinanceApp
+        </h3>
+        <span class="text-xs bg-gray-800 px-2 py-1 rounded-full">Finance</span>
+      </div>
+      <p class="text-gray-400 mb-4 text-sm leading-relaxed">Comprehensive finance management application coming soon. Track expenses, create budgets, and manage your financial life with ease.</p>
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-gray-500 flex items-center gap-1">
+          <i class="fas fa-download" aria-hidden="true"></i> v0.0.0 • 00MB
+        </span>
+        <button class="download-btn px-4 py-2 bg-gray-700 rounded-full text-sm font-semibold transition-all cursor-not-allowed opacity-70">
+          <span class="flex items-center gap-1">
+            <i class="fas fa-clock" aria-hidden="true"></i> Soon
+          </span>
+        </button>
+      </div>
+    </div>
+  </article>
+</main>
   
   <!-- Newsletter Section -->
   <section class="py-16 px-6 bg-gradient-to-r from-gray-900 to-gray-800">

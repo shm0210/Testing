@@ -419,8 +419,9 @@ const init = () => {
   setupImageLoading();
   setupBackToTop();
   setupCategoryFiltering();
-  setupPolicyPopup(); 
+  setupPolicyPopup(); // Add this line
 };
+
   init();
 });
 
@@ -497,16 +498,3 @@ const setupPolicyPopup = () => {
   });
 };
 
-// Add setupPolicyPopup to your init function
-const init = () => {
-  initAOS();
-  setupMobileMenu();
-  setupSearch();
-  setupUserDropdown();
-  setupThemeToggle();
-  setupSmoothScrolling();
-  setupImageLoading();
-  setupBackToTop();
-  setupCategoryFiltering();
-  setupPolicyPopup(); // Add this line
-};

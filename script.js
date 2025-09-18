@@ -354,126 +354,59 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   // Enhanced Category filtering
-const setupCategoryFiltering = () => {
-  const categoryFilters = document.querySelectorAll('.category-filter');
-  const appCards = document.querySelectorAll('.app-card');
-  const appCountElement = document.getElementById('app-count');
-  
-  // Set "All Apps" as active by default
-  const allButton = document.querySelector('[data-category="all"]');
-  if (allButton) allButton.classList.add('active-filter');
-  
-  // Update app count
-  const updateAppCount = (count) => {
-    if (appCountElement) {
-      appCountElement.textContent = count;
-    }
-  };
-  
-  categoryFilters.forEach(filter => {
-    filter.addEventListener('click', () => {
-      const category = filter.getAttribute('data-category');
-      
-      // Update active state
-      categoryFilters.forEach(f => f.classList.remove('active-filter'));
-      filter.classList.add('active-filter');
-      
-      let visibleCount = 0;
-      
-      // Filter apps with animation
-      appCards.forEach(card => {
-        const cardCategory = card.getAttribute('data-app-category');
-        
-        if (category === 'all' || cardCategory === category) {
-          card.style.display = 'block';
-          setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) scale(1)';
-          }, 10);
-          visibleCount++;
-        } else {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(20px) scale(0.95)';
-          setTimeout(() => {
-            card.style.display = 'none';
-          }, 300);
-        }
-      });
-      
-      updateAppCount(visibleCount);
-    });
-  });
-
-  // Contact form functionality
-const setupContactForm = () => {
-  const contactForm = document.getElementById('contact-form');
-  const formMessage = document.getElementById('form-message');
-  
-  if (contactForm && formMessage) {
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      
-      // Show loading state
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-      submitBtn.disabled = true;
-      
-      // Simulate form submission (replace with actual API call)
-      try {
-        // This would be replaced with actual form submission logic
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Show success message
-        formMessage.textContent = 'Message sent successfully! We\'ll get back to you soon.';
-        formMessage.classList.remove('hidden', 'bg-red-500/20', 'text-red-400');
-        formMessage.classList.add('bg-green-500/20', 'text-green-400');
-        
-        // Reset form
-        contactForm.reset();
-      } catch (error) {
-        // Show error message
-        formMessage.textContent = 'There was an error sending your message. Please try again.';
-        formMessage.classList.remove('hidden', 'bg-green-500/20', 'text-green-400');
-        formMessage.classList.add('bg-red-500/20', 'text-red-400');
-      } finally {
-        // Restore button state
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // Hide message after 5 seconds
-        setTimeout(() => {
-          formMessage.classList.add('hidden');
-        }, 5000);
+  const setupCategoryFiltering = () => {
+    const categoryFilters = document.querySelectorAll('.category-filter');
+    const appCards = document.querySelectorAll('.app-card');
+    const appCountElement = document.getElementById('app-count');
+    
+    // Set "All Apps" as active by default
+    const allButton = document.querySelector('[data-category="all"]');
+    if (allButton) allButton.classList.add('active-filter');
+    
+    // Update app count
+    const updateAppCount = (count) => {
+      if (appCountElement) {
+        appCountElement.textContent = count;
       }
+    };
+    
+    categoryFilters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const category = filter.getAttribute('data-category');
+        
+        // Update active state
+        categoryFilters.forEach(f => f.classList.remove('active-filter'));
+        filter.classList.add('active-filter');
+        
+        let visibleCount = 0;
+        
+        // Filter apps with animation
+        appCards.forEach(card => {
+          const cardCategory = card.getAttribute('data-app-category');
+          
+          if (category === 'all' || cardCategory === category) {
+            card.style.display = 'block';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0) scale(1)';
+            }, 10);
+            visibleCount++;
+          } else {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px) scale(0.95)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+        
+        updateAppCount(visibleCount);
+      });
     });
-  }
-  
-  // Add to your init function
-  // setupContactForm();
-};
 
-// Also add these small interactive features
-const setupContactInteractions = () => {
-  // Start chat button
-  document.querySelectorAll('.start-chat-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      alert('Live chat feature would open here. This could connect to a service like Intercom, Drift, or a custom solution.');
-    });
-  });
-  
-  // View map button
-  document.querySelectorAll('.view-map-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      alert('Map view would open here, showing our location. This could integrate with Google Maps or similar.');
-    });
-  });
-};
-  
-  // Initialize count
-  updateAppCount(appCards.length);
-};
+    // Initialize count
+    updateAppCount(appCards.length);
+  };
 
   // Initialize all functionality
   const init = () => {

@@ -538,3 +538,16 @@ video::-webkit-media-controls {
 .fullscreen-btn.rotating {
     animation: rotate-btn 0.5s linear;
 }
+
+/* Rotated YouTube fullscreen */
+.youtube-rotated {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 100vh !important;   /* swap width/height for landscape */
+    height: 100vw !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    background: black;
+    z-index: 9999; /* on top */
+}

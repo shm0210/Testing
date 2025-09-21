@@ -527,17 +527,6 @@ video::-webkit-media-controls {
     .volume-control input[type="range"] {
         width: 70px;
     }
-}
-
-/* Rotate animation for fullscreen button */
-@keyframes rotate-btn {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.fullscreen-btn.rotating {
-    animation: rotate-btn 0.5s linear;
-}
 
 /* Rotated YouTube fullscreen */
 .youtube-rotated {
@@ -550,4 +539,5 @@ video::-webkit-media-controls {
     left: 0;
     background: black;
     z-index: 9999; /* on top */
+}
 }

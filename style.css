@@ -528,3 +528,13 @@ video::-webkit-media-controls {
         width: 70px;
     }
 }
+
+/* Rotate animation for fullscreen button */
+@keyframes rotate-btn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fullscreen-btn.rotating {
+    animation: rotate-btn 0.5s linear;
+}

@@ -303,7 +303,13 @@ function togglePiP() {
 
 function toggleFullscreen() {
     const element = directVideoPlayer.style.display !== 'none' ? videoElement : youtubeIframe;
-    
+
+    // Add rotation effect when button is clicked
+    fullscreenButton.classList.add('rotating');
+
+    // Remove class after animation finishes
+    setTimeout(() => fullscreenButton.classList.remove('rotating'), 500);
+
     if (document.fullscreenElement) {
         document.exitFullscreen();
     } else {

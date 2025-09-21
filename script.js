@@ -336,6 +336,7 @@ function toggleFullscreen() {
     }
 }
 
+
 function downloadVideo() {
     if (!currentVideoUrl || isYouTubeLink(currentVideoUrl)) {
         showError("Download is only available for direct video links");

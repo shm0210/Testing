@@ -302,21 +302,37 @@ function togglePiP() {
 }
 
 function toggleFullscreen() {
-    const element = directVideoPlayer.style.display !== 'none' ? videoElement : youtubeIframe;
+    const isDirectVideo = directVideoPlayer.style.display !== 'none';
 
-    // Add rotation effect when button is clicked
-    fullscreenButton.classList.add('rotating');
+    // Rotate fullscreen button (animation)
+    if (window.innerWidth <= 768) {
+        fullscreenButton.classList.add('rotating');
+        setTimeout(() => fullscreenButton.classList.remove('rotating'), 500);
+    }
 
-    // Remove class after animation finishes
-    setTimeout(() => fullscreenButton.classList.remove('rotating'), 500);
-
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
+    if (isDirectVideo) {
+        // Native fullscreen for direct videos
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+        } else {
+            videoElement.requestFullscreen().then(() => {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock("landscape").catch(err => {
+                        console.warn("Orientation lock failed:", err);
+                    });
+                }
+            });
+        }
     } else {
-        element.requestFullscreen().catch(err => {
-            showError("Fullscreen mode not available");
-            console.error("Fullscreen error:", err);
-        });
+        // YouTube iframe "fake fullscreen" with rotation
+        if (youtubeIframe.classList.contains("youtube-rotated")) {
+            youtubeIframe.classList.remove("youtube-rotated");
+        } else {
+            youtubeIframe.classList.add("youtube-rotated");
+        }
     }
 }
 
@@ -336,7 +352,8 @@ function downloadVideo() {
 }
 
 document.addEventListener('fullscreenchange', () => {
-    const icon = document.fullscreenElement ? '⛶ Exit' : '⛶ Fullscreen';
+    const isYoutubeRotated = youtubeIframe.classList.contains("youtube-rotated");
+    const icon = (document.fullscreenElement || isYoutubeRotated) ? '⛶ Exit' : '⛶ Fullscreen';
     fullscreenButton.innerHTML = `<span class="tooltip">${icon}<span class="tooltiptext">Toggle Fullscreen (F)</span></span>`;
 });
 

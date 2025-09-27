@@ -5,13 +5,12 @@
         {
             "title": "Project Ideas",
             "content": "Develop a machine learning model for image recognition.",
-            "date": "2025-09-27"
+            "date": "2024-09-27"
         },
         {
             "title": "Learning Resources",
             "content": "Check out the new cybersecurity course on Coursera.",
-            "date": "2025-09-26"
+            "date": "2024-09-26"
         }
-    ],
-    "additionalContent": "<div class='custom-section'><h3>Quick Actions</h3><button class='action-btn'>Add New Note</button></div>"
+    ]
 }

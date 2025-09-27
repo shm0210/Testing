@@ -3,140 +3,700 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT Video Player</title>
-    <meta name="description" content="Watch videos without ads from YouTube or direct video links">
-    <meta name="keywords" content="video player, ad-free, YouTube, video streaming">
-    <meta name="author" content="Shubham">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <title>Classroom Multiplayer Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .player-setup, .game-board, .notifications {
+            padding: 20px;
+        }
+
+        .player-setup {
+            flex: 1;
+            min-width: 300px;
+            border-right: 1px solid #eee;
+        }
+
+        .game-board {
+            flex: 2;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notifications {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .secret-code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #4a00e0;
+        }
+
+        .player-list {
+            margin-top: 20px;
+        }
+
+        .player-card {
+            background-color: #f1f3f4;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-name {
+            font-weight: 600;
+        }
+
+        .player-status {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .status-ready {
+            background-color: #28a745;
+        }
+
+        .status-waiting {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .game-cell {
+            width: 80px;
+            height: 80px;
+            background-color: #f1f3f4;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-cell:hover {
+            background-color: #e2e6ea;
+            transform: scale(1.05);
+        }
+
+        .notification-item {
+            padding: 10px;
+            border-left: 4px solid #4a00e0;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .winner-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .winner-popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .winner-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.7);
+            transition: transform 0.5s ease;
+        }
+
+        .winner-popup.active .winner-content {
+            transform: scale(1);
+        }
+
+        .winner-content h2 {
+            color: #4a00e0;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .export-options {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .export-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .player-setup {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <div class="background">
-        <canvas id="matrix"></canvas>
-        <div id="particles-js"></div>
-    </div>
-
-    <div class="owner-profile">
-        <a href="https://www.instagram.com/i.shubham0210/" target="_blank" rel="noopener noreferrer">
-            <img src="https://i.ibb.co/MkQF0vJ2/IMG-20250915-070304.jpg" alt="Shubham">
-            <span>Shubham</span>
-            <i class="fab fa-instagram social-icon"></i>
-        </a>
-    </div>
-
-    <h1>YouTube Video Player</h1>
-
-    <div class="video-container">
-        <div id="youtube-player">
-    <div class="youtube-wrapper">
-        <iframe id="youtube-iframe" src=""
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowfullscreen
-            frameborder="0">
-        </iframe>
-    </div>
-</div>
-
-        <div id="direct-video-player" style="display: none;">
-            <video controls id="video">
-                <source src="" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="progress-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="time-display">
-                <span id="current-time">00:00</span>
-                <span id="duration">00:00</span>
-            </div>
-            <div class="player-controls">
-                <button class="play-pause-btn" id="play-pause-btn" aria-label="Play/Pause">▶</button>
-                <button id="rewind-btn" aria-label="Rewind 10s">⏪</button>
-                <button id="forward-btn" aria-label="Forward 10s">⏩</button>
-                <div class="volume-control">
-                    <button id="mute-btn" aria-label="Mute/Unmute">🔊</button>
-                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" aria-label="Volume Control">
+    <div class="container">
+        <header>
+            <h1>Classroom Multiplayer Game</h1>
+            <p>Play together with your classmates!</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="player-setup">
+                <div class="form-group">
+                    <label for="playerName">Your Name</label>
+                    <input type="text" id="playerName" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="maxPlayers">Number of Players</label>
+                    <select id="maxPlayers">
+                        <option value="2">2 Players</option>
+                        <option value="3">3 Players</option>
+                        <option value="4">4 Players</option>
+                        <option value="5">5 Players</option>
+                        <option value="6">6 Players</option>
+                    </select>
+                </div>
+                
+                <button id="createGame">Create Game</button>
+                <button id="joinGame">Join Game</button>
+                
+                <div id="secretCodeContainer" style="display: none;">
+                    <p>Share this code with other players:</p>
+                    <div class="secret-code" id="secretCode">XXXX</div>
+                </div>
+                
+                <div class="player-list">
+                    <h3>Players in Game</h3>
+                    <div id="playersContainer"></div>
                 </div>
             </div>
-            <div class="quality-selector" id="quality-selector">
-                <select id="quality-select" aria-label="Select Video Quality">
-                    <option value="auto">Auto Quality</option>
-                </select>
+            
+            <div class="game-board">
+                <h2 id="gameStatus">Waiting for players to join...</h2>
+                <div class="game-grid" id="gameGrid" style="display: none;">
+                    <!-- Game cells will be generated by JavaScript -->
+                </div>
+                <button id="startGame" style="display: none;">Start Game</button>
+                <button id="restartGame" style="display: none;">Play Again</button>
+            </div>
+            
+            <div class="notifications">
+                <h3>Game Events</h3>
+                <div id="notificationsContainer"></div>
             </div>
         </div>
-
-        <div class="input-group">
-            <input type="text" id="video-link" placeholder="Paste YouTube or Direct Video Link" aria-label="Video Link">
-            <button id="play-button" aria-label="Play Video">
-                <span class="tooltip">
-                    ▶ Play
-                    <span class="tooltiptext">Play Video (Enter)</span>
-                </span>
-            </button>
+        
+        <div class="export-options">
+            <button class="export-btn" id="exportTxt">Export as TXT</button>
+            <button class="export-btn" id="exportPdf">Export as PDF</button>
+            <button class="export-btn" id="exportEmail">Send to Email</button>
         </div>
-
-        <div id="loading">Loading video...</div>
-
-        <div id="error-message" class="message error-message"></div>
-        <div id="success-message" class="message success-message"></div>
-
-        <div class="controls">
-            <button class="pip-btn" id="pip-button" aria-label="Enable Picture-in-Picture">
-                <span class="tooltip">
-                    📌 PiP
-                    <span class="tooltiptext">Picture-in-Picture (P)</span>
-                </span>
-            </button>
-            <button class="fullscreen-btn" id="fullscreen-button" aria-label="Toggle Fullscreen">
-                <span class="tooltip">
-                    ⛶ Fullscreen
-                    <span class="tooltiptext">Toggle Fullscreen (F)</span>
-                </span>
-            </button>
-            <button class="download-btn" id="download-button" aria-label="Download Video" style="display: none;">
-                <span class="tooltip">
-                    ⬇ Download
-                    <span class="tooltiptext">Download Video (D)</span>
-                </span>
-            </button>
-            <button class="reset-btn" id="reset-button" aria-label="Reset Player">
-                <span class="tooltip">
-                    🔄 Reset
-                    <span class="tooltiptext">Reset Player (R)</span>
-                </span>
-            </button>
-            <button class="theme-btn" id="theme-toggle" aria-label="Toggle Dark Mode">
-                <span class="tooltip">
-                    🌙 Theme
-                    <span class="tooltiptext">Toggle Theme (T)</span>
-                </span>
-            </button>
+    </div>
+    
+    <div class="winner-popup" id="winnerPopup">
+        <div class="winner-content">
+            <h2>Congratulations!</h2>
+            <p id="winnerMessage">Player Name wins the game!</p>
+            <button id="closePopup">Close</button>
         </div>
     </div>
 
-    <div class="footer">
-        <div>Crafted with ❤️ by <a href="https://www.instagram.com/i.shubham0210/" target="_blank" rel="noopener noreferrer">Shubham</a></div>
-        <div class="social-links">
-            <a href="https://www.instagram.com/i.shubham0210/" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://t.me/Shubham_mzp" target="_blank">
-                    <i class="fab fa-telegram"></i>
-                </a>
-            <a href="https://youtube.com/@shubham_mzp" target="_blank">
-                    <i class="fab fa-youtube"></i>
-                </a>
-            <a href="https://t.me/Shubham_mzp" target="_blank">
-                    <i class="fab fa-discord"></i>
-                </a>
-        </div>
-    </div>
+    <script>
+        // Game state
+        const gameState = {
+            players: [],
+            currentPlayer: 0,
+            gameBoard: ['', '', '', '', '', '', '', '', ''],
+            gameActive: false,
+            secretCode: '',
+            isHost: false,
+            notifications: [],
+            moveHistory: []
+        };
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="script.js"></script>
+        // DOM elements
+        const playerNameInput = document.getElementById('playerName');
+        const maxPlayersSelect = document.getElementById('maxPlayers');
+        const createGameBtn = document.getElementById('createGame');
+        const joinGameBtn = document.getElementById('joinGame');
+        const secretCodeContainer = document.getElementById('secretCodeContainer');
+        const secretCodeDisplay = document.getElementById('secretCode');
+        const playersContainer = document.getElementById('playersContainer');
+        const gameStatus = document.getElementById('gameStatus');
+        const gameGrid = document.getElementById('gameGrid');
+        const startGameBtn = document.getElementById('startGame');
+        const restartGameBtn = document.getElementById('restartGame');
+        const notificationsContainer = document.getElementById('notificationsContainer');
+        const winnerPopup = document.getElementById('winnerPopup');
+        const winnerMessage = document.getElementById('winnerMessage');
+        const closePopupBtn = document.getElementById('closePopup');
+        const exportTxtBtn = document.getElementById('exportTxt');
+        const exportPdfBtn = document.getElementById('exportPdf');
+        const exportEmailBtn = document.getElementById('exportEmail');
+
+        // Initialize game
+        function init() {
+            createGameBtn.addEventListener('click', createGame);
+            joinGameBtn.addEventListener('click', joinGame);
+            startGameBtn.addEventListener('click', startGame);
+            restartGameBtn.addEventListener('click', restartGame);
+            closePopupBtn.addEventListener('click', closeWinnerPopup);
+            exportTxtBtn.addEventListener('click', exportToTxt);
+            exportPdfBtn.addEventListener('click', exportToPdf);
+            exportEmailBtn.addEventListener('click', exportToEmail);
+            
+            // Simulate network events for demonstration
+            setInterval(simulateNetworkEvents, 10000);
+        }
+
+        // Create a new game
+        function createGame() {
+            const playerName = playerNameInput.value.trim();
+            if (!playerName) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            gameState.isHost = true;
+            gameState.secretCode = generateSecretCode();
+            secretCodeDisplay.textContent = gameState.secretCode;
+            secretCodeContainer.style.display = 'block';
+            
+            // Add host as first player
+            gameState.players = [{ name: playerName, id: generateId(), status: 'ready' }];
+            updatePlayersList();
+            
+            addNotification(`Game created by ${playerName}. Share code: ${gameState.secretCode}`);
+            addNotification(`${playerName} joined the game`);
+            
+            gameStatus.textContent = 'Waiting for players to join...';
+            startGameBtn.style.display = 'block';
+            joinGameBtn.disabled = true;
+            createGameBtn.disabled = true;
+        }
+
+        // Join an existing game
+        function joinGame() {
+            const playerName = playerNameInput.value.trim();
+            if (!playerName) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            // In a real app, this would prompt for a code and validate it
+            const code = prompt('Enter game code:');
+            if (!code) return;
+            
+            gameState.secretCode = code;
+            gameState.players.push({ name: playerName, id: generateId(), status: 'ready' });
+            updatePlayersList();
+            
+            addNotification(`${playerName} joined the game`);
+            
+            gameStatus.textContent = 'Waiting for host to start the game...';
+            joinGameBtn.disabled = true;
+            createGameBtn.disabled = true;
+        }
+
+        // Start the game
+        function startGame() {
+            if (gameState.players.length < 2) {
+                alert('Need at least 2 players to start the game');
+                return;
+            }
+            
+            gameState.gameActive = true;
+            gameState.currentPlayer = 0;
+            gameState.gameBoard = ['', '', '', '', '', '', '', '', ''];
+            
+            createGameBoard();
+            gameGrid.style.display = 'grid';
+            startGameBtn.style.display = 'none';
+            restartGameBtn.style.display = 'block';
+            
+            gameStatus.textContent = `Current turn: ${gameState.players[0].name}`;
+            addNotification('Game started!');
+        }
+
+        // Create the game board
+        function createGameBoard() {
+            gameGrid.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'game-cell';
+                cell.dataset.index = i;
+                cell.addEventListener('click', () => makeMove(i));
+                gameGrid.appendChild(cell);
+            }
+        }
+
+        // Make a move in the game
+        function makeMove(index) {
+            if (!gameState.gameActive || gameState.gameBoard[index] !== '') {
+                return;
+            }
+            
+            const currentPlayer = gameState.players[gameState.currentPlayer];
+            const symbol = gameState.currentPlayer === 0 ? 'X' : 'O';
+            
+            gameState.gameBoard[index] = symbol;
+            gameState.moveHistory.push({
+                player: currentPlayer.name,
+                position: index,
+                symbol: symbol,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            const cell = gameGrid.querySelector(`[data-index="${index}"]`);
+            cell.textContent = symbol;
+            cell.style.pointerEvents = 'none';
+            
+            addNotification(`${currentPlayer.name} placed ${symbol} at position ${index + 1}`);
+            
+            if (checkWinner()) {
+                endGame(currentPlayer.name);
+                return;
+            }
+            
+            if (checkTie()) {
+                endGame(null);
+                return;
+            }
+            
+            // Switch to next player
+            gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.players.length;
+            gameStatus.textContent = `Current turn: ${gameState.players[gameState.currentPlayer].name}`;
+        }
+
+        // Check for a winner
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                [0, 4, 8], [2, 4, 6] // diagonals
+            ];
+            
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (gameState.gameBoard[a] && 
+                    gameState.gameBoard[a] === gameState.gameBoard[b] && 
+                    gameState.gameBoard[a] === gameState.gameBoard[c]) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // Check for a tie
+        function checkTie() {
+            return gameState.gameBoard.every(cell => cell !== '');
+        }
+
+        // End the game
+        function endGame(winner) {
+            gameState.gameActive = false;
+            
+            if (winner) {
+                gameStatus.textContent = `Game Over! ${winner} wins!`;
+                addNotification(`${winner} wins the game!`);
+                showWinnerPopup(winner);
+            } else {
+                gameStatus.textContent = "Game Over! It's a tie!";
+                addNotification("Game ended in a tie!");
+            }
+        }
+
+        // Show winner popup with celebration
+        function showWinnerPopup(winner) {
+            winnerMessage.textContent = `${winner} wins the game!`;
+            winnerPopup.classList.add('active');
+            createConfetti();
+        }
+
+        // Close winner popup
+        function closeWinnerPopup() {
+            winnerPopup.classList.remove('active');
+        }
+
+        // Restart the game
+        function restartGame() {
+            gameState.gameActive = true;
+            gameState.currentPlayer = 0;
+            gameState.gameBoard = ['', '', '', '', '', '', '', '', ''];
+            
+            createGameBoard();
+            gameStatus.textContent = `Current turn: ${gameState.players[0].name}`;
+            addNotification('New game started!');
+        }
+
+        // Update players list
+        function updatePlayersList() {
+            playersContainer.innerHTML = '';
+            gameState.players.forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = 'player-card';
+                playerCard.innerHTML = `
+                    <span class="player-name">${player.name}</span>
+                    <span class="player-status ${player.status === 'ready' ? 'status-ready' : 'status-waiting'}">${player.status}</span>
+                `;
+                playersContainer.appendChild(playerCard);
+            });
+        }
+
+        // Add notification
+        function addNotification(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const notification = {
+                message,
+                timestamp,
+                id: generateId()
+            };
+            
+            gameState.notifications.push(notification);
+            
+            const notificationElement = document.createElement('div');
+            notificationElement.className = 'notification-item';
+            notificationElement.innerHTML = `
+                <div>${message}</div>
+                <div class="notification-time">${timestamp}</div>
+            `;
+            
+            notificationsContainer.appendChild(notificationElement);
+            notificationsContainer.scrollTop = notificationsContainer.scrollHeight;
+        }
+
+        // Generate secret code
+        function generateSecretCode() {
+            return Math.random().toString(36).substring(2, 6).toUpperCase();
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Math.random().toString(36).substring(2, 9);
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#f94144', '#f3722c', '#f8961e', '#f9c74f', '#90be6d', '#43aa8b', '#577590'];
+            const container = document.body;
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confetti-fall ${Math.random() * 3 + 2}s linear forwards`;
+                container.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Simulate network events for demonstration
+        function simulateNetworkEvents() {
+            if (gameState.players.length > 0 && Math.random() > 0.7) {
+                const events = [
+                    'Network latency detected',
+                    'Player connection unstable',
+                    'Game sync in progress'
+                ];
+                addNotification(events[Math.floor(Math.random() * events.length)]);
+            }
+        }
+
+        // Export game data as TXT
+        function exportToTxt() {
+            let content = `Classroom Multiplayer Game Report\n`;
+            content += `Generated on: ${new Date().toLocaleString()}\n\n`;
+            
+            content += `Players (${gameState.players.length}):\n`;
+            gameState.players.forEach(player => {
+                content += `- ${player.name} (${player.status})\n`;
+            });
+            
+            content += `\nGame Notifications:\n`;
+            gameState.notifications.forEach(notification => {
+                content += `[${notification.timestamp}] ${notification.message}\n`;
+            });
+            
+            content += `\nMove History:\n`;
+            gameState.moveHistory.forEach(move => {
+                content += `[${move.timestamp}] ${move.player} placed ${move.symbol} at position ${move.position + 1}\n`;
+            });
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `game-report-${new Date().getTime()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addNotification('Game data exported as TXT');
+        }
+
+        // Export game data as PDF (simulated)
+        function exportToPdf() {
+            // In a real implementation, you would use a library like jsPDF
+            alert('PDF export would be implemented with a library like jsPDF in a real application');
+            addNotification('PDF export functionality would require additional libraries');
+        }
+
+        // Export game data via email (simulated)
+        function exportToEmail() {
+            const email = prompt('Enter your email address:');
+            if (email) {
+                alert(`In a real application, the game report would be sent to ${email}`);
+                addNotification(`Game report would be sent to ${email}`);
+            }
+        }
+
+        // Initialize the game when the page loads
+        window.onload = init;
+    </script>
 </body>
 </html>

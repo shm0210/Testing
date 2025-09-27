@@ -1,0 +1,22 @@
+{
+    "welcomeMessage": "Suku's Private Vault",
+    "greeting": "Welcome back, Suku!",
+    "notes": [
+        {
+            "title": "Important Reminder",
+            "content": "Remember to complete the project documentation by Friday.",
+            "date": "2025-09-27"
+        },
+        {
+            "title": "Personal Goals",
+            "content": "Learn advanced JavaScript patterns and contribute to open source.",
+            "date": "2025-09-26"
+        },
+        {
+            "title": "Security Notes",
+            "content": "Always use strong, unique passwords for different services.",
+            "date": "2025-09-25"
+        }
+    ],
+    "additionalContent": "<div class='custom-section'><h3>Recent Activity</h3><p>Last login from trusted device.</p></div>"
+}

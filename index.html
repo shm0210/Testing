@@ -1,69 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modern GPT-J Chatbot</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My AI Chatbot</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-md flex flex-col overflow-hidden">
-    <div id="chatWindow" class="flex-1 p-4 overflow-y-auto space-y-4 h-96">
-      <!-- Chat messages will appear here -->
+<body>
+    <div class="chat-container">
+        <div id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Type a message..." />
+        <button id="send-btn">Send</button>
     </div>
-    <form id="chatForm" class="flex p-4 border-t border-gray-200">
-      <input id="userInput" type="text" placeholder="Type your message..." class="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-      <button type="submit" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>
-    </form>
-  </div>
-
-<script>
-const chatWindow = document.getElementById('chatWindow');
-const chatForm = document.getElementById('chatForm');
-const userInput = document.getElementById('userInput');
-
-// GPT-J model endpoint on Hugging Face
-const HF_API_URL = 'https://api-inference.huggingface.co/models/EleutherAI/gpt-j-6B';
-const HF_API_TOKEN = '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';
-
-async function sendMessage(message) {
-    // Show user message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'text-right';
-    userMsg.innerHTML = `<span class="inline-block bg-blue-100 text-blue-800 p-2 rounded-lg">${message}</span>`;
-    chatWindow.appendChild(userMsg);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    // Call Hugging Face API
-    const response = await fetch(HF_API_URL, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${HF_API_TOKEN}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ inputs: message })
-    });
-    const data = await response.json();
-
-    // Show bot message
-    let botText = "Sorry, I didn't understand that.";
-    if (data && Array.isArray(data) && data[0].generated_text) {
-        botText = data[0].generated_text.replace(message, '').trim();
-    }
-    const botMsg = document.createElement('div');
-    botMsg.className = 'text-left';
-    botMsg.innerHTML = `<span class="inline-block bg-gray-200 text-gray-900 p-2 rounded-lg">${botText}</span>`;
-    chatWindow.appendChild(botMsg);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-chatForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const message = userInput.value.trim();
-    if (!message) return;
-    userInput.value = '';
-    sendMessage(message);
-});
-</script>
+    <script src="script.js"></script>
 </body>
 </html>

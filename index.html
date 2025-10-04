@@ -1,237 +1,470 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BATTLEGROUNDS MOBILE INDIA — Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+  <meta property="og:image" content="https://www.battlegroundsmobileindia.com/common/img/thum.jpg">
+  <meta property="og:url" content="https://www.battlegroundsmobileindia.com/">
+  <meta property="og:description" content="BATTLEGROUNDS MOBILE INDIA">
+  <meta property="og:title" content="BATTLEGROUNDS MOBILE INDIA">
+  <meta name="description" content="BATTLEGROUNDS MOBILE INDIA">
+  <meta name="keywords" content="BGMI, Battleground mobile, PUBGM, PUBG, BGIS">
+  <link rel="shortcut icon" href="https://www.battlegroundsmobileindia.com/common/img/favicon.ico">
+  <title>BATTLEGROUNDS MOBILE INDIA Official</title>
 
-  <!-- Google fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Teko:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- fonts (same families used on site) -->
+  <link href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500|Teko:100,300,400,700|Oswald:400,500,700&subset=latin-ext,cyrillic" rel="stylesheet">
 
-  <!-- main stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- local CSS files (from this project) -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/bx.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/main.css">
 
-  <!-- simple lightweight Swiper (optional for nicer slider) -->
-  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css"/>
+  <!-- Swiper CSS (official source used by BGMI) -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+
+  <!-- jQuery from CDN (BGMI original uses jQuery 1.x) -->
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+  <!-- Swiper JS -->
+  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 </head>
 <body>
 
+<div id="viewport" class="intro">
   <!-- HEADER -->
-  <header id="header">
-    <div class="container header-inner">
-      <a href="#" class="logo">
-        <img src="images/logo.png" alt="BGMI Logo">
-      </a>
+  <div id="header" class="">
+    <div class="contains">
+      <h1 class="logo">
+        <a href="https://www.battlegroundsmobileindia.com/">
+          <img src="https://www.battlegroundsmobileindia.com/common/img/common/logo.png" alt="BGMI" class="logo_top">
+          <img src="https://www.battlegroundsmobileindia.com/common/img/common/logo.png" alt="BGMI" class="logo_b">
+        </a>
+      </h1>
 
-      <nav id="main-nav" class="hide-mobile">
-        <ul class="nav-list">
-          <li><a href="#" class="active">HOME</a></li>
-          <li><a href="#news">NEWS</a></li>
-          <li><a href="#redeem">REDEEM</a></li>
-          <li><a href="https://esports-battlegroundsmobileindia.com" target="_blank">ESPORTS</a></li>
-          <li><a href="#support">SUPPORT</a></li>
-          <li><a href="#responsibly">GAME RESPONSIBLY</a></li>
+      <div id="gnb" class="hide_m">
+        <ul class="gnb_menu">
+          <li><a href="https://www.battlegroundsmobileindia.com/" class="gnb_menu_01 active"><span><span>HOME</span></span></a></li>
+          <li><a href="https://www.battlegroundsmobileindia.com/news" class="gnb_menu_02"><span>NEWS</span></a></li>
+          <li><a href="https://www.battlegroundsmobileindia.com/redeem" class="gnb_menu_03"><span>REDEEM</span></a></li>
+          <li><a href="https://esports-battlegroundsmobileindia.com" target="_blank" class="gnb_menu_04 gnb_link"><span>ESPORTS</span></a></li>
+          <li><a href="https://help.battlegroundsmobileindia.com/hc/app/6-bgmi" target="_blank" class="gnb_menu_05 gnb_link"><span>SUPPORT</span></a></li>
+          <li><a href="https://www.battlegroundsmobileindia.com/game-responsibly" class="gnb_menu_06"><span>GAME RESPONSIBLY</span></a></li>
         </ul>
-      </nav>
 
-      <div class="header-cta hide-mobile">
-        <a class="btn btn-ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank">IOS DOWNLOAD</a>
-        <a class="btn btn-android" href="https://bit.ly/BGMI_AppStore" target="_blank">AOS DOWNLOAD</a>
+        <ul class="gnb_sns">
+          <li class="gnb_sns-discord">
+            <a href="https://discord.gg/battlegroundsmobilein" target="_blank">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_d_w.png" class="nm" alt="">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_d.png" class="on" alt="">
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.facebook.com/BattlegroundsMobileIN?home" target="_blank">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_f_w.png" class="nm" alt="">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_f.png" class="on" alt="">
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.instagram.com/battlegroundsmobilein_official" target="_blank">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_i_w.png" class="nm" alt="">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_i.png" class="on" alt="">
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.youtube.com/channel/UCe31NPEeRGO0hcznx6Tdb-g" target="_blank">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_y_w.png" class="nm" alt="">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/btn/sns_y.png" class="on" alt="">
+            </a>
+          </li>
+
+          <li class="odd">
+            <a class="btn1 btn1__ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank"><span>IOS DOWNLOAD</span></a>
+          </li>
+          <li class="odd">
+            <a class="btn1 btn1__aos" href="https://bit.ly/BGMI_AppStore" target="_blank"><span>AOS DOWNLOAD</span></a>
+          </li>
+
+          <li class="gnb_shop">
+            <a href="https://www.unipin.com/in/bgmi?utm_source=Referral&amp;utm_medium=Website&amp;utm_campaign=BGMI-Website" target="_blank">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/icon/icon_shop_50.png" class="nm" alt="">
+              <img src="https://www.battlegroundsmobileindia.com/common/img/icon/icon_shop_50_y.png" class="on" alt="">
+            </a>
+          </li>
+        </ul>
       </div>
 
-      <button id="menu-btn" class="show-mobile" aria-label="Open menu">☰</button>
-    </div>
+      <!-- mobile nav (simplified) -->
+      <div id="gnb" class="show_m">
+        <div class="gnb_menu">
+          <a href="https://www.battlegroundsmobileindia.com/" class="logo">
+            <img src="https://www.battlegroundsmobileindia.com/common/img/common/logo.png" alt="">
+          </a>
+          <button id="hamburger" class="hamburger">☰</button>
+        </div>
+      </div>
 
-    <!-- mobile menu -->
-    <div id="mobile-menu" class="mobile-menu">
-      <button id="menu-close" aria-label="Close menu">✕</button>
-      <ul>
-        <li><a href="#">HOME</a></li>
-        <li><a href="#news">NEWS</a></li>
-        <li><a href="#redeem">REDEEM</a></li>
-        <li><a href="#esports">ESPORTS</a></li>
-        <li><a href="#support">SUPPORT</a></li>
+      <a href="javascript:;" class="btn btn_menu" id="openMenu"><img src="https://www.battlegroundsmobileindia.com/common/img/btn/header_menu.png" alt="메뉴" class="icon"></a>
+      <a href="javascript:;" class="btn btn_close" id="closeMenu"><img src="https://www.battlegroundsmobileindia.com/common/img/btn/header_close.png" alt="닫기" class="icon"></a>
+      <ul class="gnb_sns gnb_shop show_m" id="mobileIcons">
+        <li>
+          <a href="https://www.unipin.com/in/bgmi?utm_source=Referral&amp;utm_medium=Website&amp;utm_campaign=BGMI-Website" target="_blank">
+            <img src="https://www.battlegroundsmobileindia.com/common/img/icon/icon_shop_50_y.png" class="hide_m" alt="">
+            <img src="https://www.battlegroundsmobileindia.com/common/img/icon/icon_shop_50.png" class="show_m" alt="">
+          </a>
+        </li>
       </ul>
-      <div class="mobile-downloads">
-        <a class="btn btn-ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank">IOS</a>
-        <a class="btn btn-android" href="https://bit.ly/BGMI_AppStore" target="_blank">AOS</a>
+    </div>
+    <div class="bg"></div>
+  </div>
+
+  <script>
+    function applyLookup(){
+      window.open('https://bit.ly/BGMI_Launch_HP');
+    }
+  </script>
+
+  <!-- VISUAL / HERO (desktop) -->
+  <div class="visual_main hide_m">
+    <figure class="visual_main_bg hide_m">
+      <img class="visual_main_bg_img" src="https://www.battlegroundsmobileindia.com/common/img_web/img_(1)1.png" alt="hero">
+    </figure>
+    <div class="visual_wrap">
+      <p class="visual">INDIA KA <br> BATTLEGROUNDS</p>
+      <div class="visual_btn">
+        <p>
+          <a class="btn1 btn1__ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank"><span class="txt">Download on the App Store</span></a>
+          <a class="btn1 btn1__aos" href="https://bit.ly/BGMI_AppStore" target="_blank"><span class="txt">GET IT ON Google Play</span></a>
+        </p>
+        <p>
+          <a class="btn2 btn2__shop" href="https://www.unipin.com/in/bgmi?utm_source=Referral&amp;utm_medium=Website&amp;utm_campaign=BGMI-Website" target="_blank"><span class="txt">BUY UC AT UniPin</span></a>
+        </p>
+        <p>
+          <a class="btn3 btn3__apk" download href="https://apkdownload.battlegroundsmobileindia.com/bgmi_4.0.0_homepage_Jawenfls.apk"><span class="txt">APK DOWNLOAD</span></a>
+        </p>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- HERO / VISUAL -->
-  <section class="hero">
-    <div class="hero-bg" style="background-image:url('images/main_bg.jpg')"></div>
-    <div class="hero-inner container">
-      <h1 class="hero-title">INDIA KA<br>BATTLEGROUNDS</h1>
-      <div class="hero-buttons">
-        <a class="btn btn-primary" href="https://app.adjust.net.in/m9r6x2t" target="_blank">Download on the App Store</a>
-        <a class="btn btn-primary outline" href="https://bit.ly/BGMI_AppStore" target="_blank">GET IT ON Google Play</a>
-        <a class="btn btn-secondary" href="https://www.unipin.com/in/bgmi?utm_source=Referral" target="_blank">BUY UC AT UniPin</a>
-        <a class="btn btn-ghost" href="https://apkdownload.battlegroundsmobileindia.com/bgmi_4.0.0_homepage_Jawenfls.apk">APK DOWNLOAD</a>
+  <!-- VISUAL (mobile) -->
+  <div class="visual_main_m show_m">
+    <img src="https://www.battlegroundsmobileindia.com/common/img_m/main_bg_m1.jpg" alt="" class="visual_bg">
+    <div class="visual_wrap">
+      <div class="txt_wrap">
+        <p class="visual">INDIA KA <br> BATTLEGROUNDS</p>
+      </div>
+      <div class="visual_btn">
+        <p>
+          <a class="btn1 btn1__ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank"><span class="txt">Download on the App Store</span></a>
+          <a class="btn1 btn1__aos" href="https://bit.ly/BGMI_AppStore" target="_blank"><span class="txt">GET IT ON Google Play</span></a>
+        </p>
+        <p>
+          <a class="btn2 btn2__shop" href="https://www.unipin.com/in/bgmi?utm_source=Referral&amp;utm_medium=Website&amp;utm_campaign=BGMI-Website" target="_blank"><span class="txt">BUY UC AT UniPin</span></a>
+        </p>
+        <p>
+          <a class="btn3 btn3__apk" download href="https://apkdownload.battlegroundsmobileindia.com/bgmi_4.0.0_homepage_Jawenfls.apk"><span class="txt">APK DOWNLOAD</span></a>
+        </p>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- PREVIEW / VIDEO (embedded) -->
-  <section id="pre" class="container section">
-    <div class="section-head">
-      <h2>India Ki Heartbeat</h2>
+  <!-- PRE (video embed) -->
+  <div id="pre1" class="main_panel news_panel prevideo_panel">
+    <div class="contains">
+      <div class="sub_tit">
+        <p class="top_tit en">India Ki Heartbeat</p>
+      </div>
+      <div class="con_box">
+        <div class="videowrapper">
+          <iframe width="100%" height="480" src="https://www.youtube.com/embed/5NfkxxxndRc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
     </div>
-    <div class="video-wrap">
-      <iframe width="100%" height="420" src="https://www.youtube.com/embed/5NfkxxxndRc" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </section>
+  </div>
 
   <!-- NEWS -->
-  <section id="news" class="container section">
-    <div class="section-head">
-      <h2>NEWS</h2>
+  <div class="main_panel news_panel">
+    <div class="contains">
+      <div class="sub_tit">
+        <p class="top_tit en">NEWS</p>
+      </div>
+
+      <div class="con_box">
+        <div class="news_area">
+          <div class="news_slide" id="newsList">
+            <!-- 1 -->
+            <div class="list_box list_notice page_animate" seq="1" style="display:block">
+              <a href="https://www.battlegroundsmobileindia.com/news_view/892" class="btn_menu">
+                <span class="thum">
+                  <img src="https://www.battlegroundsmobileindia.com/data/board/2/892/Skin-design-contest_web-banner42.png" alt="" onerror="this.src='https://www.battlegroundsmobileindia.com/common/img/bbs.jpg'">
+                </span>
+                <span class="cate"></span>
+                <span class="title">BDC’25 - BGMI Design Competetion</span>
+                <span class="date">2025-09-20</span>
+              </a>
+            </div>
+
+            <!-- 2 -->
+            <div class="list_box list_notice page_animate" seq="2" style="display:block">
+              <a href="https://www.battlegroundsmobileindia.com/news_view/891" class="btn_menu">
+                <span class="thum">
+                  <img src="https://www.battlegroundsmobileindia.com/data/board/2/891/Ban-pan-web-banner_August.png" alt="" onerror="this.src='https://www.battlegroundsmobileindia.com/common/img/bbs.jpg'">
+                </span>
+                <span class="cate">Anti-Cheat</span>
+                <span class="title">Anti Cheat Update - August</span>
+                <span class="date">2025-09-07</span>
+              </a>
+            </div>
+
+            <!-- 3 -->
+            <div class="list_box list_notice page_animate" seq="3" style="display:block">
+              <a href="https://www.battlegroundsmobileindia.com/news_view/890" class="btn_menu">
+                <span class="thum">
+                  <img src="https://www.battlegroundsmobileindia.com/data/board/2/890/Ban-pan-web-banner_July.png" alt="" onerror="this.src='https://www.battlegroundsmobileindia.com/common/img/bbs.jpg'">
+                </span>
+                <span class="cate">Anti-Cheat</span>
+                <span class="title">Anti Cheat Report - July</span>
+                <span class="date">2025-08-25</span>
+              </a>
+            </div>
+
+            <!-- hidden ones (revealed by VIEW MORE) -->
+            <div class="list_box list_notice page_animate animate" seq="4" style="display:none">
+              <a href="https://www.battlegroundsmobileindia.com/news_view/889" class="btn_menu">
+                <span class="thum">
+                  <img src="https://www.battlegroundsmobileindia.com/data/board/2/889/Skin-design-contest_web-banner4.png" alt="" onerror="this.src='https://www.battlegroundsmobileindia.com/common/img/bbs.jpg'">
+                </span>
+                <span class="cate">Event</span>
+                <span class="title">BDC’25 - BGMI Design Competetion</span>
+                <span class="date">2025-08-18</span>
+              </a>
+            </div>
+
+            <div class="list_box list_notice page_animate animate" seq="5" style="display:none">
+              <a href="https://www.battlegroundsmobileindia.com/news_view/888" class="btn_menu">
+                <span class="thum">
+                  <img src="https://www.battlegroundsmobileindia.com/data/board/2/888/website_banner_1280_x_720.png" alt="" onerror="this.src='https://www.battlegroundsmobileindia.com/common/img/bbs.jpg'">
+                </span>
+                <span class="cate">Notice</span>
+                <span class="title">Play WOW Everyday Winners</span>
+                <span class="date">2025-07-30</span>
+              </a>
+            </div>
+
+            <div class="list_box list_notice page_animate animate" seq="6" style="display:none">
+              <a href="https://www.battlegroundsmobileindia.com/news_view/884" class="btn_menu">
+                <span class="thum">
+                  <img src="https://www.battlegroundsmobileindia.com/data/board/2/884/image_(68).png" alt="" onerror="this.src='https://www.battlegroundsmobileindia.com/common/img/bbs.jpg'">
+                </span>
+                <span class="cate">Patch Notes</span>
+                <span class="title">3.9 Update Patch notes</span>
+                <span class="date">2025-07-16</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="btn_wrap" id="getNewsBtnWrap">
+          <a href="javascript:getNotice()" class="btn more"><span id="notice_more_btn">VIEW MORE</span></a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="news-grid" id="newsGrid">
-      <!-- sample items -->
-      <article class="news-card">
-        <img src="images/thum.jpg" alt="">
-        <div class="news-meta">
-          <span class="cate">Event</span>
-          <h3 class="title">BDC’25 - BGMI Design Competition</h3>
-          <time datetime="2025-09-20">2025-09-20</time>
-        </div>
-      </article>
+  <script>
+    var noticeLoadFlag = false;
+    function getNotice(){
+      var noticeCnt = $(".list_notice").length;
+      $("#getNewsBtnWrap").hide();
 
-      <article class="news-card">
-        <img src="images/thum.jpg" alt="">
-        <div class="news-meta">
-          <span class="cate">Anti-Cheat</span>
-          <h3 class="title">Anti Cheat Update - August</h3>
-          <time datetime="2025-09-07">2025-09-07</time>
-        </div>
-      </article>
-
-      <article class="news-card">
-        <img src="images/thum.jpg" alt="">
-        <div class="news-meta">
-          <span class="cate">Anti-Cheat</span>
-          <h3 class="title">Anti Cheat Report - July</h3>
-          <time datetime="2025-08-25">2025-08-25</time>
-        </div>
-      </article>
-
-      <!-- hidden items to reveal -->
-      <article class="news-card hidden">
-        <img src="images/thum.jpg" alt="">
-        <div class="news-meta">
-          <span class="cate">Notice</span>
-          <h3 class="title">Play WOW Everyday Winners</h3>
-          <time datetime="2025-07-30">2025-07-30</time>
-        </div>
-      </article>
-
-      <article class="news-card hidden">
-        <img src="images/thum.jpg" alt="">
-        <div class="news-meta">
-          <span class="cate">Patch Notes</span>
-          <h3 class="title">3.9 Update Patch notes</h3>
-          <time datetime="2025-07-16">2025-07-16</time>
-        </div>
-      </article>
-    </div>
-
-    <div class="btn-wrap" id="newsBtnWrap">
-      <button id="loadMoreNews" class="btn more">VIEW MORE</button>
-    </div>
-  </section>
+      if(!noticeLoadFlag && noticeCnt > 3){
+        $(".list_notice:hidden").fadeIn();
+        noticeLoadFlag = true;
+        $("#notice_more_btn").html("NEWS");
+        $("#notice_more_btn").parent().removeClass('more').addClass('notice');
+      }else{
+        location.href = 'https://www.battlegroundsmobileindia.com/news';
+      }
+      $("#getNewsBtnWrap").show();
+    }
+  </script>
 
   <!-- PARTNERS / VIDEO SLIDER -->
-  <section id="partners" class="container section">
-    <div class="section-head"><h2>PARTNERS</h2></div>
+  <div class="main_panel news_panel video_panel">
+    <div class="sub_tit">
+      <p class="top_tit en">PARTNERS</p>
+    </div>
 
-    <!-- Swiper slider markup -->
-    <div class="swiper mySwiper">
+    <div id="video_slide" class="swiper-container">
       <div class="swiper-wrapper">
+        <!-- slides — using the same YouTube thumbnails BGMI uses -->
         <div class="swiper-slide">
-          <div class="partner-card">
-            <a class="video-trigger" data-youtube="https://www.youtube.com/embed/sbVZ5IaBPWM">
-              <img src="https://img.youtube.com/vi/sbVZ5IaBPWM/hq720.jpg" alt="Mr Cyber Squad">
-              <div class="pmeta"><h4>Mr Cyber Squad</h4><time>2022-07-14</time></div>
-            </a>
+          <div class="news_slide">
+            <div class="list_box list_notice">
+              <a class="btn_menu btn_play" data-youtube="https://www.youtube.com/embed/sbVZ5IaBPWM">
+                <span class="thum">
+                  <img src="https://img.youtube.com/vi/sbVZ5IaBPWM/hq720.jpg" alt="">
+                </span>
+                <span class="txt">
+                  <span class="title">Mr Cyber Squad</span>
+                  <span class="date">2022-07-14</span>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
 
         <div class="swiper-slide">
-          <div class="partner-card">
-            <a class="video-trigger" data-youtube="https://www.youtube.com/embed/CHzTggyYp0Q">
-              <img src="https://img.youtube.com/vi/CHzTggyYp0Q/hq720.jpg" alt="Creative Pavan">
-              <div class="pmeta"><h4>Creative Pavan</h4><time>2022-07-14</time></div>
-            </a>
+          <div class="news_slide">
+            <div class="list_box list_notice">
+              <a class="btn_menu btn_play" data-youtube="https://www.youtube.com/embed/CHzTggyYp0Q">
+                <span class="thum">
+                  <img src="https://img.youtube.com/vi/CHzTggyYp0Q/hq720.jpg" alt="">
+                </span>
+                <span class="txt">
+                  <span class="title">Creative Pavan</span>
+                  <span class="date">2022-07-14</span>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
 
         <div class="swiper-slide">
-          <div class="partner-card">
-            <a class="video-trigger" data-youtube="https://www.youtube.com/embed/WE1EclPONAM">
-              <img src="https://img.youtube.com/vi/WE1EclPONAM/hq720.jpg" alt="Scout">
-              <div class="pmeta"><h4>Scout</h4><time>2022-07-14</time></div>
-            </a>
+          <div class="news_slide">
+            <div class="list_box list_notice">
+              <a class="btn_menu btn_play" data-youtube="https://www.youtube.com/embed/WE1EclPONAM">
+                <span class="thum">
+                  <img src="https://img.youtube.com/vi/WE1EclPONAM/hq720.jpg" alt="">
+                </span>
+                <span class="txt">
+                  <span class="title">Scout</span>
+                  <span class="date">2022-07-14</span>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
 
-        <!-- duplicate or more slides as needed -->
+        <!-- duplicates and more slides can be added as needed -->
       </div>
 
-      <!-- navigation -->
-      <div class="swiper-button-prev"></div>
+      <!-- navigation (Swiper) -->
       <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
       <div class="swiper-pagination"></div>
     </div>
-  </section>
-
-  <!-- VIDEO POPUP -->
-  <div id="videoPopup" class="overlay">
-    <div class="overlay-inner">
-      <button id="closeVideo" class="overlay-close" aria-label="Close video">✕</button>
-      <div id="videoContainer" class="video-container"></div>
-    </div>
   </div>
 
-  <!-- BOTTOM CTA -->
-  <section class="bottom-cta">
-    <div class="container">
-      <img src="images/footerlg.png" alt="BGMI" class="appicon">
-      <div class="cta-copy">
-        <h3>INDIA KA BATTLEGROUNDS IS HERE</h3>
-        <p>DOWNLOAD NOW!</p>
-        <div class="cta-buttons">
-          <a class="btn btn-ios" href="https://app.adjust.net.in/m9r6x2t">IOS</a>
-          <a class="btn btn-android" href="https://bit.ly/BGMI_AppStore">AOS</a>
+  <!-- popup_trailer -->
+  <div class="popup_trailer">   
+    <div class="video_box">
+      <div class="box">
+        <div class="popup_mask"></div>
+        <div class="contains">
+          <div class="popup_close">
+            <a class="btn_play_close"></a>
+          </div>
+          <div class="videowrapper video_en" id="youtube_play"></div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer id="footer">
-    <div class="container footer-inner">
-      <img src="images/footerlg.png" alt="footer logo" class="footer-logo">
-      <div class="copyright">© 2023 KRAFTON, Inc. All rights reserved.</div>
-      <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Rules of Conduct</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- COOKIE BAR -->
-  <div id="cookieBar" class="cookie-bar">
-    <p>This website uses cookies to ensure you get the best experience. <a href="#">Learn more</a></p>
-    <button id="cookieClose" class="btn small">OK</button>
   </div>
 
-  <!-- SCRIPTS -->
-  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-  <script src="js/script.js"></script>
+  <script>
+    // initialize Swiper
+    var swiper = new Swiper('#video_slide', {
+      slidesPerView: 'auto',
+      spaceBetween: 10,
+      loop: true,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      pagination: { el: '.swiper-pagination', clickable: true },
+      breakpoints: {
+        320: { slidesPerView: 2, spaceBetween: 5 },
+        640: { slidesPerView: 2, spaceBetween: 5 },
+        1200: { slidesPerView: 3, spaceBetween: 20 },
+        1400: { slidesPerView: 5, spaceBetween: 20 }
+      }
+    });
+
+    // video popup behaviour (jQuery)
+    $(function(){
+      $('.btn_play').on('click', function(e){
+        e.preventDefault();
+        var youtube = $(this).data('youtube');
+        $('#youtube_play').html('<iframe id="player" width="100%" height="480" src="' + youtube + '?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+        $('body').addClass('open_video');
+      });
+
+      $('.btn_play_close, .popup_mask').on('click', function(){
+        $('body').removeClass('open_video');
+        $('#youtube_play').empty();
+      });
+    });
+  </script>
+
+  <!-- BOTTOM CTA -->
+  <div class="bottomctn" id="div1">
+    <div class="contains">
+      <p class="appicon"><img src="https://www.battlegroundsmobileindia.com/common/img/main/app.png" alt=""></p>
+      <p class="tit">
+        INDIA KA BATTLEGROUNDS IS HERE<br>
+        DOWNLOAD NOW!
+      </p>
+      <div class="tablebox">
+        <div class="offset_wrapper">
+          <div class="offset_wrap">
+            <div>
+              <a class="appstore" href="https://app.adjust.net.in/m9r6x2t" target="_blank"></a>
+              <a class="google" href="https://bit.ly/BGMI_AppStore" target="_blank"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <a href="javascript:;" id="btn_top" class="hide_m">TOP</a>
+
+  <div id="footer">
+    <div class="footer_wrap">
+      <div class="contains">
+        <div class="footer_text">
+          <h6 class="logo"><a href="https://www.battlegroundsmobileindia.com/"><img src="https://www.battlegroundsmobileindia.com/common/img/common/footerlg.png" alt="" class="img"></a></h6>
+          <span class="copyright">© 2023 KRAFTON, Inc. All rights reserved.</span>
+          <p>
+            <a href="https://www.battlegroundsmobileindia.com/privacy"><span>Privacy Policy</span></a>
+            <a href="https://www.battlegroundsmobileindia.com/terms"><span>Terms of Service</span></a>
+            <a href="https://www.battlegroundsmobileindia.com/rules"><span>Rules of Conduct</span></a>
+            <a href="https://www.battlegroundsmobileindia.com/privacy_community"><span>Official Community Policy</span></a>
+            <a href="https://www.battlegroundsmobileindia.com/ccg"><span>Content Creation Guideline</span></a>
+            <a href="https://www.battlegroundsmobileindia.com/terms_home"><span>HOME Terms of Service</span></a>
+            <a href="https://www.battlegroundsmobileindia.com/terms_wow"><span>WOW Terms of Service</span></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floating_bottom">
+    <div class="cookies_bar">
+      <p class="txt"><span>This website uses cookies to ensure you get the best experience.</span> <a href="https://www.battlegroundsmobileindia.com/privacy" class="btn_learn"><span>Learn more</span></a></p>
+      <a href="javascript:;" class="btn_cookies_close"></a>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+
+</div> <!-- /viewport -->
 </body>
 </html>

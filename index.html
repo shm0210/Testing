@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BATTLEGROUNDS MOBILE INDIA — Demo</title>
+
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Teko:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- main stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- simple lightweight Swiper (optional for nicer slider) -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <img src="images/logo.png" alt="BGMI Logo">
+      </a>
+
+      <nav id="main-nav" class="hide-mobile">
+        <ul class="nav-list">
+          <li><a href="#" class="active">HOME</a></li>
+          <li><a href="#news">NEWS</a></li>
+          <li><a href="#redeem">REDEEM</a></li>
+          <li><a href="https://esports-battlegroundsmobileindia.com" target="_blank">ESPORTS</a></li>
+          <li><a href="#support">SUPPORT</a></li>
+          <li><a href="#responsibly">GAME RESPONSIBLY</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-cta hide-mobile">
+        <a class="btn btn-ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank">IOS DOWNLOAD</a>
+        <a class="btn btn-android" href="https://bit.ly/BGMI_AppStore" target="_blank">AOS DOWNLOAD</a>
+      </div>
+
+      <button id="menu-btn" class="show-mobile" aria-label="Open menu">☰</button>
+    </div>
+
+    <!-- mobile menu -->
+    <div id="mobile-menu" class="mobile-menu">
+      <button id="menu-close" aria-label="Close menu">✕</button>
+      <ul>
+        <li><a href="#">HOME</a></li>
+        <li><a href="#news">NEWS</a></li>
+        <li><a href="#redeem">REDEEM</a></li>
+        <li><a href="#esports">ESPORTS</a></li>
+        <li><a href="#support">SUPPORT</a></li>
+      </ul>
+      <div class="mobile-downloads">
+        <a class="btn btn-ios" href="https://app.adjust.net.in/m9r6x2t" target="_blank">IOS</a>
+        <a class="btn btn-android" href="https://bit.ly/BGMI_AppStore" target="_blank">AOS</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO / VISUAL -->
+  <section class="hero">
+    <div class="hero-bg" style="background-image:url('images/main_bg.jpg')"></div>
+    <div class="hero-inner container">
+      <h1 class="hero-title">INDIA KA<br>BATTLEGROUNDS</h1>
+      <div class="hero-buttons">
+        <a class="btn btn-primary" href="https://app.adjust.net.in/m9r6x2t" target="_blank">Download on the App Store</a>
+        <a class="btn btn-primary outline" href="https://bit.ly/BGMI_AppStore" target="_blank">GET IT ON Google Play</a>
+        <a class="btn btn-secondary" href="https://www.unipin.com/in/bgmi?utm_source=Referral" target="_blank">BUY UC AT UniPin</a>
+        <a class="btn btn-ghost" href="https://apkdownload.battlegroundsmobileindia.com/bgmi_4.0.0_homepage_Jawenfls.apk">APK DOWNLOAD</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREVIEW / VIDEO (embedded) -->
+  <section id="pre" class="container section">
+    <div class="section-head">
+      <h2>India Ki Heartbeat</h2>
+    </div>
+    <div class="video-wrap">
+      <iframe width="100%" height="420" src="https://www.youtube.com/embed/5NfkxxxndRc" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news" class="container section">
+    <div class="section-head">
+      <h2>NEWS</h2>
+    </div>
+
+    <div class="news-grid" id="newsGrid">
+      <!-- sample items -->
+      <article class="news-card">
+        <img src="images/thum.jpg" alt="">
+        <div class="news-meta">
+          <span class="cate">Event</span>
+          <h3 class="title">BDC’25 - BGMI Design Competition</h3>
+          <time datetime="2025-09-20">2025-09-20</time>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <img src="images/thum.jpg" alt="">
+        <div class="news-meta">
+          <span class="cate">Anti-Cheat</span>
+          <h3 class="title">Anti Cheat Update - August</h3>
+          <time datetime="2025-09-07">2025-09-07</time>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <img src="images/thum.jpg" alt="">
+        <div class="news-meta">
+          <span class="cate">Anti-Cheat</span>
+          <h3 class="title">Anti Cheat Report - July</h3>
+          <time datetime="2025-08-25">2025-08-25</time>
+        </div>
+      </article>
+
+      <!-- hidden items to reveal -->
+      <article class="news-card hidden">
+        <img src="images/thum.jpg" alt="">
+        <div class="news-meta">
+          <span class="cate">Notice</span>
+          <h3 class="title">Play WOW Everyday Winners</h3>
+          <time datetime="2025-07-30">2025-07-30</time>
+        </div>
+      </article>
+
+      <article class="news-card hidden">
+        <img src="images/thum.jpg" alt="">
+        <div class="news-meta">
+          <span class="cate">Patch Notes</span>
+          <h3 class="title">3.9 Update Patch notes</h3>
+          <time datetime="2025-07-16">2025-07-16</time>
+        </div>
+      </article>
+    </div>
+
+    <div class="btn-wrap" id="newsBtnWrap">
+      <button id="loadMoreNews" class="btn more">VIEW MORE</button>
+    </div>
+  </section>
+
+  <!-- PARTNERS / VIDEO SLIDER -->
+  <section id="partners" class="container section">
+    <div class="section-head"><h2>PARTNERS</h2></div>
+
+    <!-- Swiper slider markup -->
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="partner-card">
+            <a class="video-trigger" data-youtube="https://www.youtube.com/embed/sbVZ5IaBPWM">
+              <img src="https://img.youtube.com/vi/sbVZ5IaBPWM/hq720.jpg" alt="Mr Cyber Squad">
+              <div class="pmeta"><h4>Mr Cyber Squad</h4><time>2022-07-14</time></div>
+            </a>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="partner-card">
+            <a class="video-trigger" data-youtube="https://www.youtube.com/embed/CHzTggyYp0Q">
+              <img src="https://img.youtube.com/vi/CHzTggyYp0Q/hq720.jpg" alt="Creative Pavan">
+              <div class="pmeta"><h4>Creative Pavan</h4><time>2022-07-14</time></div>
+            </a>
+          </div>
+        </div>
+
+        <div class="swiper-slide">
+          <div class="partner-card">
+            <a class="video-trigger" data-youtube="https://www.youtube.com/embed/WE1EclPONAM">
+              <img src="https://img.youtube.com/vi/WE1EclPONAM/hq720.jpg" alt="Scout">
+              <div class="pmeta"><h4>Scout</h4><time>2022-07-14</time></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- duplicate or more slides as needed -->
+      </div>
+
+      <!-- navigation -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <!-- VIDEO POPUP -->
+  <div id="videoPopup" class="overlay">
+    <div class="overlay-inner">
+      <button id="closeVideo" class="overlay-close" aria-label="Close video">✕</button>
+      <div id="videoContainer" class="video-container"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <section class="bottom-cta">
+    <div class="container">
+      <img src="images/footerlg.png" alt="BGMI" class="appicon">
+      <div class="cta-copy">
+        <h3>INDIA KA BATTLEGROUNDS IS HERE</h3>
+        <p>DOWNLOAD NOW!</p>
+        <div class="cta-buttons">
+          <a class="btn btn-ios" href="https://app.adjust.net.in/m9r6x2t">IOS</a>
+          <a class="btn btn-android" href="https://bit.ly/BGMI_AppStore">AOS</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="container footer-inner">
+      <img src="images/footerlg.png" alt="footer logo" class="footer-logo">
+      <div class="copyright">© 2023 KRAFTON, Inc. All rights reserved.</div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Rules of Conduct</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- COOKIE BAR -->
+  <div id="cookieBar" class="cookie-bar">
+    <p>This website uses cookies to ensure you get the best experience. <a href="#">Learn more</a></p>
+    <button id="cookieClose" class="btn small">OK</button>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

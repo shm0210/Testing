@@ -3,6 +3,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
 const pdfUrlInput = document.getElementById('pdfUrl');
+const pdfFileInput = document.getElementById('pdfFile');
 const loadBtn = document.getElementById('loadBtn');
 const viewer = document.getElementById('viewer');
 const viewerWrap = document.getElementById('viewerWrap');
@@ -82,6 +83,36 @@ pdfUrlInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     const url = pdfUrlInput.value.trim();
     if (url) loadPdf(url);
+  }
+});
+
+/* ---- Local file loading ---- */
+pdfFileInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // Clear URL input to avoid confusion
+  pdfUrlInput.value = '';
+
+  viewer.innerHTML = '<div style="text-align:center;padding:20px;">Loading local PDF…</div>';
+  pageIndicator.textContent = '0 / 0';
+  showLoader(true);
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+    pdfDoc = await loadingTask.promise;
+    viewer.innerHTML = '';
+
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+      await renderPage(i);
+    }
+
+    setupScrollObserver();
+  } catch (err) {
+    viewer.innerHTML = `<div style="color:#ff6b6b;padding:20px;">Error: ${err.message}</div>`;
+  } finally {
+    showLoader(false);
   }
 });
 

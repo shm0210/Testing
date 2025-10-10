@@ -9,13 +9,14 @@
 <body class="light">
   <div class="topbar">
     <input id="pdfUrl" type="url" placeholder="Paste PDF URL here..." />
+    <input id="pdfFile" type="file" accept="application/pdf" />
     <button id="loadBtn">Load</button>
   </div>
 
   <div class="viewer-area">
     <div id="viewerWrap" class="viewer-wrap">
       <div id="viewer" class="viewer">
-        <div id="hint" class="hint">Paste a public PDF link above and press Enter or Load.</div>
+        <div id="hint" class="hint">Paste a public PDF link above, select a local PDF, or press Load.</div>
       </div>
     </div>
 

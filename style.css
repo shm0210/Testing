@@ -40,7 +40,7 @@ html, body {
   border-bottom: 1px solid var(--border);
 }
 
-.topbar input {
+.topbar input[type="url"] {
   flex: 1;
   padding: 8px 10px;
   border-radius: 6px;
@@ -52,6 +52,11 @@ html, body {
 
 .topbar input::placeholder { 
   color: #888; 
+}
+
+.topbar input[type="file"] {
+  padding: 4px;
+  font-size: 13px;
 }
 
 .topbar button {

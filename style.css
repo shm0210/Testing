@@ -1,16 +1,41 @@
 :root {
-    --primary-bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    --button-bg: #ff6b6b;
-    --button-hover-bg: #ff4757;
-    --transition-speed: 0.3s;
-    --error-color: #ff4757;
-    --success-color: #2ecc71;
-    --text-color: #ffffff;
-    --input-bg: rgba(255, 255, 255, 0.2);
-    --container-bg: rgba(255, 255, 255, 0.1);
-    --shadow-color: rgba(0, 0, 0, 0.4);
-    --progress-bg: rgba(255, 255, 255, 0.1);
+  --primary-bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  --button-bg: #ff6b6b;
+  --button-hover-bg: #ff4757;
+  --transition-speed: 0.3s;
+  --error-color: #ff4757;
+  --success-color: #2ecc71;
+  --text-color: #ffffff;
+  --input-bg: rgba(255, 255, 255, 0.2);
+  --container-bg: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --progress-bg: rgba(255, 255, 255, 0.1);
 }
+
+/* 🌌 Animated Background Layer */
+.background {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+#matrix {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0.4;
+}
+
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 
 .dark-mode {
     --primary-bg: linear-gradient(135deg, #1a1a1a, #2a2a2a, #3a3a3a);

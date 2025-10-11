@@ -1,119 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YT Video Player</title>
-  <meta name="description" content="Watch videos without ads from YouTube or direct video links">
-  <meta name="keywords" content="video player, ad-free, YouTube, video streaming">
-  <meta name="author" content="Shubham">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>INFINITY Video Player</title>
+  <meta name="description" content="INFINITY Video Player — ad-free YouTube + direct video playback" />
+  <meta name="author" content="Shubham" />
 
-  <!-- ✅ Favicon -->
-  <link rel="icon" type="image/png" href="https://i.ibb.co/84t4yncH/file-000000000a846230a59752a366af7442.png">
+  <!-- Inline SVG favicon (infinity) -->
+  <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="%230b8793"/><path d="M18 34c6-10 16-10 22 0 6 10-4 22-22 6" fill="none" stroke="%23fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>'>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fonts + icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Particles.js library -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <!-- 🌌 Animated Background -->
   <div class="background">
     <canvas id="matrix"></canvas>
-    <div id="particles-js"></div>
+    <div id="particles-js" aria-hidden="true"></div>
   </div>
 
-  <div class="owner-profile">
-    <a href="https://www.instagram.com/i.shubham0210/" target="_blank" rel="noopener noreferrer">
-      <img src="https://i.ibb.co/84t4yncH/file-000000000a846230a59752a366af7442.png" alt="Shubham">
-      <span>Shubham</span>
-      <i class="fab fa-instagram social-icon"></i>
-    </a>
-  </div>
-
-  <h1>Youtube Video Player</h1>
-
-  <div class="video-container">
-    <div id="youtube-player">
-      <iframe id="youtube-iframe" src=""
-        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-        allowfullscreen frameborder="0">
-      </iframe>
+  <header class="site-header">
+    <div class="title-wrap">
+      <h1>INFINITY Video Player</h1>
     </div>
 
-    <div id="direct-video-player" style="display: none;">
-      <video controls id="video">
-        <source src="" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <div class="progress-container" id="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
-      <div class="time-display">
-        <span id="current-time">00:00</span>
-        <span id="duration">00:00</span>
-      </div>
-      <div class="player-controls">
-        <button class="play-pause-btn" id="play-pause-btn" aria-label="Play/Pause">▶</button>
-        <button id="rewind-btn" aria-label="Rewind 10s">⏪</button>
-        <button id="forward-btn" aria-label="Forward 10s">⏩</button>
-        <div class="volume-control">
-          <button id="mute-btn" aria-label="Mute/Unmute">🔊</button>
-          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" aria-label="Volume Control">
+    <div class="owner-profile" title="Shubham - Instagram">
+      <a href="https://www.instagram.com/i.shubham0210/" target="_blank" rel="noopener noreferrer">
+        <img src="https://i.ibb.co/MkQF0vJ2/IMG-20250915-070304.jpg" alt="Shubham">
+        <span>Shubham</span>
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="player-card" aria-label="Video player">
+      <div class="player-frame">
+        <!-- YouTube iframe -->
+        <div id="youtube-wrapper" class="player-inner">
+          <iframe id="youtube-iframe" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="YouTube player"></iframe>
+        </div>
+
+        <!-- Direct video -->
+        <div id="direct-wrapper" class="player-inner" style="display:none;">
+          <video id="video" playsinline></video>
         </div>
       </div>
-      <div class="quality-selector" id="quality-selector">
-        <select id="quality-select" aria-label="Select Video Quality">
-          <option value="auto">Auto Quality</option>
-        </select>
+
+      <div class="controls-area">
+        <div class="input-row">
+          <input id="video-link" type="text" placeholder="Paste YouTube or direct video link (mp4, webm, m3u8...)" aria-label="Video link">
+          <button id="play-button" class="btn btn-play" aria-label="Play"><i class="fa fa-play"></i> Play</button>
+        </div>
+
+        <div class="action-row">
+          <div class="left-actions">
+            <button id="pip-button" class="btn btn-pill" title="Picture-in-Picture (P)"><i class="fa-solid fa-clone"></i> PiP</button>
+            <button id="fullscreen-button" class="btn btn-pill" title="Fullscreen (F)"><i class="fa-solid fa-expand"></i> Fullscreen</button>
+            <button id="download-button" class="btn btn-pill" title="Download (D)" style="display:none"><i class="fa-solid fa-download"></i> Download</button>
+            <button id="reset-button" class="btn btn-pill" title="Reset (R)"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+          </div>
+
+          <div class="right-actions">
+            <button id="theme-toggle" class="btn btn-circle" title="Toggle Theme (T)"><i class="fa-solid fa-moon"></i></button>
+          </div>
+        </div>
+
+        <!-- Custom video controls (visible for direct videos) -->
+        <div id="direct-controls" class="video-controls" style="display:none;">
+          <div class="progress-wrap" id="progress-container" aria-hidden="false">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+
+          <div class="media-controls">
+            <button id="play-pause-btn" class="small-btn" aria-label="Play/Pause">▶</button>
+            <button id="rewind-btn" class="small-btn" title="Rewind 10s">⏪</button>
+            <button id="forward-btn" class="small-btn" title="Forward 10s">⏩</button>
+
+            <div class="volume-control">
+              <button id="mute-btn" class="small-btn" title="Mute/Unmute">🔊</button>
+              <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+            </div>
+
+            <div class="time-display">
+              <span id="current-time">00:00</span> / <span id="duration">00:00</span>
+            </div>
+
+            <div class="quality-selector" id="quality-selector" style="display:none;">
+              <select id="quality-select" aria-label="Quality">
+                <option value="auto">Auto</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="messages">
+          <div id="loading" class="msg" style="display:none">Loading video...</div>
+          <div id="success-message" class="msg success" style="display:none"></div>
+          <div id="error-message" class="msg error" style="display:none"></div>
+        </div>
       </div>
-    </div>
+    </section>
+  </main>
 
-    <div class="input-group">
-      <input type="text" id="video-link" placeholder="Paste YouTube or Direct Video Link" aria-label="Video Link">
-      <button id="play-button" aria-label="Play Video">
-        <span class="tooltip">
-          ▶ Play
-          <span class="tooltiptext">Play Video (Enter)</span>
-        </span>
-      </button>
-    </div>
+  <footer class="site-footer">
+    <div>Crafted with ❤️ by <a href="https://www.instagram.com/i.shubham0210/">Shubham</a></div>
+  </footer>
 
-    <div id="loading">Loading video...</div>
-
-    <div id="error-message" class="message error-message"></div>
-    <div id="success-message" class="message success-message"></div>
-
-    <div class="controls">
-      <button class="pip-btn" id="pip-button" aria-label="Enable Picture-in-Picture">
-        <span class="tooltip">📌 PiP<span class="tooltiptext">Picture-in-Picture (P)</span></span>
-      </button>
-      <button class="fullscreen-btn" id="fullscreen-button" aria-label="Toggle Fullscreen">
-        <span class="tooltip">⛶ Fullscreen<span class="tooltiptext">Toggle Fullscreen (F)</span></span>
-      </button>
-      <button class="download-btn" id="download-button" aria-label="Download Video" style="display: none;">
-        <span class="tooltip">⬇ Download<span class="tooltiptext">Download Video (D)</span></span>
-      </button>
-      <button class="reset-btn" id="reset-button" aria-label="Reset Player">
-        <span class="tooltip">🔄 Reset<span class="tooltiptext">Reset Player (R)</span></span>
-      </button>
-      <button class="theme-btn" id="theme-toggle" aria-label="Toggle Dark Mode">
-        <span class="tooltip">🌙 Theme<span class="tooltiptext">Toggle Theme (T)</span></span>
-      </button>
-    </div>
-  </div>
-
-  <div class="footer">
-    <div>Made with ❤️ by <a href="https://www.instagram.com/i.shubham0210/" target="_blank">Shubham</a></div>
-    <div class="social-links">
-      <a href="https://www.instagram.com/i.shubham0418/" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://github.com/shm0210" target="_blank"><i class="fab fa-github"></i></a>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
-  <script src="background.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,94 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(120deg, #1e1f3a, #2a3b6b);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+  height: 60px;
+}
+
+.countdown {
+  margin-top: 1rem;
+}
+
+#days-left {
+  font-size: 1.5rem;
+  color: #ffd166;
+}
+
+.quote-section {
+  margin: 2rem auto;
+  text-align: center;
+  width: 80%;
+}
+
+blockquote {
+  font-style: italic;
+  color: #cddafd;
+}
+
+main {
+  flex: 1;
+  padding: 1rem 2rem;
+}
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.subject-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: 0.3s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.subject-card img {
+  height: 50px;
+}
+
+.chapter {
+  margin-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+a {
+  color: #90e0ef;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+}

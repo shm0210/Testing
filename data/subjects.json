@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Physics",
+    "icon": "assets/icons/physics.png",
+    "chapters": [
+      {
+        "name": "Kinematics",
+        "lecture": "https://youtu.be/sample_kinematics_lecture",
+        "notes": "https://drive.google.com/sample_kinematics_notes"
+      },
+      {
+        "name": "Laws of Motion",
+        "lecture": "https://youtu.be/sample_motion_lecture",
+        "notes": "https://drive.google.com/sample_motion_notes"
+      }
+    ]
+  },
+  {
+    "name": "Chemistry",
+    "icon": "assets/icons/chemistry.png",
+    "chapters": [
+      {
+        "name": "Atomic Structure",
+        "lecture": "https://youtu.be/sample_atomic_lecture",
+        "notes": "https://drive.google.com/sample_atomic_notes"
+      }
+    ]
+  },
+  {
+    "name": "Biology",
+    "icon": "assets/icons/biology.png",
+    "chapters": [
+      {
+        "name": "Cell - The Unit of Life",
+        "lecture": "https://youtu.be/sample_cell_lecture",
+        "notes": "https://drive.google.com/sample_cell_notes"
+      }
+    ]
+  }
+]

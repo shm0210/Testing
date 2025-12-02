@@ -1,94 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Minimal PDF Viewer</title>
-  <style>
-    :root{--bar:#111;--bg:#0f1720;--muted:#9aa3ad}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#fff}
-    .toolbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(180deg,var(--bar),#0b1220);box-shadow:0 1px 0 rgba(255,255,255,0.02)}
-    .url{flex:1;min-width:0}
-    input[type="text"]{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#eee}
-    button{background:#0ea5a0;border:none;padding:8px 10px;border-radius:6px;color:#042;cursor:pointer}
-    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-    main{height:calc(100% - 56px)}
-    .viewer{width:100%;height:100%;border:0}
-    .hint{padding:18px;color:var(--muted);font-size:14px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFINITY Direct Video Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
 </head>
 <body>
-  <div class="toolbar">
-    <div style="font-weight:600">PDF</div>
-    <div class="url">
-      <input id="urlInput" type="text" placeholder="Paste a PDF URL or use ?pdflink=... in the address bar" />
+    <div class="background">
+        <canvas id="matrix"></canvas>
+        <div id="particles-js"></div>
     </div>
-    <button id="loadBtn">Load</button>
-    <button id="openBtn" class="ghost">Open in new tab</button>
-  </div>
-  <main>
-    <div id="hint" class="hint">No PDF loaded. Use <code>?pdflink=ENCODED_URL</code> in the address bar or paste a PDF URL above and click Load.</div>
-    <iframe id="pdfFrame" class="viewer" hidden sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
-  </main>
 
-  <script>
-    // Read variations of the query param: ?pdflink=...  OR malformed ?=... (some users typed that)
-    function getPdfLinkFromQuery(){
-      const q = location.search.replace(/^\?/, '');
-      if(!q) return null;
-      // Common case: pdflink=...
-      const params = new URLSearchParams(location.search);
-      if(params.has('pdflink')) return params.get('pdflink');
-      // Older/ambiguous: ?=https://... or ?=pdflink
-      // Try to detect a raw url after the first '=' or entire query as URL
-      const raw = q.split('=')[1] || q;
-      try{ const u = decodeURIComponent(raw); if(u.startsWith('http')) return u }catch(e){}
-      if(q.startsWith('http')) return q;
-      return null;
-    }
+    <!-- Owner Profile -->
+    <div class="owner-profile">
+        <a href="https://github.com" target="_blank">
+            <img src="https://via.placeholder.com/36" alt="Owner">
+            <span>INFINITY Player</span>
+            <i class="fab fa-github social-icon"></i>
+        </a>
+    </div>
 
-    const input = document.getElementById('urlInput');
-    const loadBtn = document.getElementById('loadBtn');
-    const openBtn = document.getElementById('openBtn');
-    const hint = document.getElementById('hint');
-    const frame = document.getElementById('pdfFrame');
+    <div class="video-container">
+        <h1>🎬 INFINITY Direct Video Player</h1>
+        
+        <video id="video-player" controls></video>
 
-    function setPdf(url){
-      if(!url) return;
-      // Basic safety: require http or https
-      if(!/^https?:\/\//i.test(url)){
-        hint.textContent = 'Error: only http/https PDF links are supported.';
-        return;
-      }
+        <!-- Video progress slider -->
+        <div class="progress-wrapper">
+            <div class="progress-buffer" id="progress-buffer"></div>
+            <input type="range" id="progress-bar" value="0" min="0" max="100" step="0.1">
+        </div>
+        
+        <div class="time-display" id="time-display">00:00 / 00:00</div>
 
-      // Try to show PDF directly in an iframe (Chrome/Edge built-in viewer will handle it)
-      frame.src = url;
-      frame.hidden = false;
-      hint.hidden = true;
-      input.value = url;
-      openBtn.disabled = false;
-    }
+        <div class="input-group">
+            <input type="text" id="video-link" placeholder="Paste Direct Video URL (MP4, WebM, MKV, MOV, HLS .m3u8)">
+            <button id="play-button">▶ Play</button>
+        </div>
 
-    loadBtn.addEventListener('click', ()=>{
-      setPdf(input.value.trim());
-    });
+        <div id="loading">Loading video...</div>
+        <div id="error-message" class="message error-message"></div>
+        <div id="success-message" class="message success-message"></div>
 
-    openBtn.addEventListener('click', ()=>{
-      const u = input.value.trim(); if(!u) return; window.open(u, '_blank');
-    });
+        <!-- Quality Selector (Hidden by default) -->
+        <div class="quality-selector" id="quality-selector">
+            <select id="quality-select">
+                <option value="auto">Auto Quality</option>
+            </select>
+        </div>
 
-    // Auto-load from query string if available
-    const fromQuery = getPdfLinkFromQuery();
-    if(fromQuery){
-      try{ setPdf(decodeURIComponent(fromQuery)); }catch(e){ setPdf(fromQuery); }
-    }
+        <!-- Main Player Controls -->
+        <div class="player-controls">
+            <button id="backward-btn" title="Rewind 10 seconds">⏪ 10s</button>
+            <button id="play-pause-btn" title="Play/Pause">▶️</button>
+            <button id="forward-btn" title="Forward 10 seconds">⏩ 10s</button>
+            <button id="mute-btn" title="Mute/Unmute">🔊</button>
+            <button id="speed-btn" title="Playback Speed">1.0x</button>
+            <button id="share-btn" title="Share Video">🔗 Share</button>
+            <button id="stats-btn" title="Show Stats">📊 Stats</button>
+        </div>
 
-    // Minimal: show helpful message if browser blocks embedding due to headers
-    frame.addEventListener('error', ()=>{
-      hint.hidden = false; hint.textContent = 'Unable to embed the PDF. The server hosting the PDF may disallow framing (X-Frame-Options) — use "Open in new tab" or host the PDF on a server that allows embedding.';
-      frame.hidden = true;
-    });
+        <!-- Additional Controls -->
+        <div class="controls">
+            <button class="fullscreen-btn" id="fullscreen-button" title="Fullscreen (F)">⛶ Fullscreen</button>
+            <button class="reset-btn" id="reset-button" title="Reset Player (R)">🔄 Reset</button>
+            <button class="theme-btn" id="theme-toggle" title="Toggle Theme (T)">🌙 Theme</button>
+            <button class="shortcuts-btn" id="shortcuts-button" title="Keyboard Shortcuts">⌨️ Shortcuts</button>
+        </div>
+    </div>
 
-  </script>
+    <!-- About Section -->
+    <section class="about">
+        <button id="about-toggle" class="about-toggle">
+            <i class="fas fa-info-circle"></i>
+        </button>
+        <div id="about-content" class="about-content">
+            <h2>💡 About INFINITY Direct Player</h2>
+            <p><strong>INFINITY Direct Player</strong> is a fast, modern, and ad-free web player designed to stream any direct video or network link instantly.</p>
+            <p>It supports multiple formats such as <strong>MP4, WebM, MKV, MOV, and HLS (.m3u8)</strong> — letting you watch content directly from URLs without needing to download files.</p>
+            <p>Whether it's a live stream, cloud-hosted video, or direct media link, the player delivers smooth playback right in your browser.</p>
+            <div class="about-signature">Made with ❤️ by INFINITY Team</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Made with ❤️ by <a href="https://github.com" target="_blank">INFINITY Team</a></p>
+        <div class="social-links">
+            <a href="https://github.com" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p class="footer-note">Supports: MP4, WebM, MKV, MOV, HLS (.m3u8)</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // ============================
 // INFINITY YouTube Player JS
-// Fixed Version - No Auto-Show Issues
+// Fixed Version - Font Awesome Icons Fixed
 // ============================
 
 // --- Element References ---
@@ -71,7 +71,9 @@ function initTheme() {
     
     // Update theme toggle icon
     const icon = themeMenuToggle.querySelector('i');
-    icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+    if (icon) {
+        icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+    }
 }
 
 function toggleTheme() {
@@ -81,7 +83,7 @@ function toggleTheme() {
     showSuccess(isDarkMode ? "🌙 Dark theme enabled" : "☀️ Light theme enabled");
 }
 
-// --- Menu System (FIXED) ---
+// --- Menu System ---
 function toggleMenu() {
     isMenuOpen = !isMenuOpen;
     

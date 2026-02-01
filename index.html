@@ -1,103 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INFINITY Direct Video Player</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>INFINITY YouTube Player</title>
+    <meta name="description" content="A privacy-focused YouTube player with minimal interface for better focus and content viewing.">
+    <meta name="theme-color" content="#00e0ff">
+    <meta name="author" content="Shubham" />
+    <meta property="og:title" content="INFINITY YouTube Player — Minimal Interface" />
+    <meta property="og:description" content="A privacy-focused YouTube player using nocookie mode. Minimal interface for focused viewing." />
+    <meta property="og:image" content="https://static.pw.live/5b09189f7285894d9130ccd0/59794d57-bb52-4efb-aba4-f0519a16fc7e.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://shminfinity.fun/">
+    
+    <!-- Simplified CSP for GitHub Pages -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net https://www.youtube.com; 
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+                   img-src 'self' https: data:;
+                   frame-src https://www.youtube-nocookie.com;
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                   connect-src 'self' https://www.youtube.com https://noembed.com;">
+    
+    <!-- YouTube API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <link rel="icon" href="https://www.youtube.com/s/desktop/5b55d6d2/img/favicon_32x32.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6.4.0 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
 </head>
+
 <body>
     <div class="background">
-        <canvas id="matrix"></canvas>
         <div id="particles-js"></div>
     </div>
 
-    <!-- Owner Profile -->
-    <div class="owner-profile">
-        <a href="https://github.com" target="_blank">
-            <img src="https://via.placeholder.com/36" alt="Owner">
-            <span>INFINITY Player</span>
-            <i class="fab fa-github social-icon"></i>
-        </a>
+    <!-- Legal Disclaimer -->
+    <div class="legal-disclaimer">
+        <p><i class="fas fa-exclamation-triangle"></i> <strong>Disclaimer:</strong> This player uses YouTube's official embed feature. All videos are served directly from YouTube.</p>
     </div>
 
+    <!-- Hamburger Menu Button -->
+    <button class="menu-toggle" id="menu-toggle" aria-label="Open Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-infinity"></i> INFINITY Player</h3>
+            <button class="close-menu" id="close-menu" aria-label="Close Menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="menu-section">
+            <h4><i class="fas fa-user-circle"></i> Owner Profile</h4>
+            <div class="owner-profile-menu">
+                <img src="https://i.ibb.co/MkQF0vJ2/IMG-20250915-070304.jpg" alt="Shubham">
+                <div class="owner-info">
+                    <strong>Shubham</strong>
+                    <small>Developer</small>
+                </div>
+                <a href="https://www.instagram.com/i.shubham0210/" target="_blank" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4><i class="fas fa-clock-rotate-left"></i> Recent Videos</h4>
+            <div id="menu-history" class="menu-history">
+                <!-- Recent videos will be loaded here -->
+                <div class="empty-state">
+                    <i class="fas fa-video"></i>
+                    <p>No recent videos yet</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4><i class="fas fa-sliders-h"></i> Settings</h4>
+            <div class="menu-options">
+                <button class="menu-option" id="theme-menu-toggle">
+                    <i class="fas fa-palette"></i>
+                    <span>Theme: <span id="theme-status">Dark</span></span>
+                </button>
+                <button class="menu-option" id="clear-history">
+                    <i class="fas fa-trash-can"></i>
+                    <span>Clear History</span>
+                </button>
+                <button class="menu-option" id="shortcuts-help">
+                    <i class="fas fa-keyboard"></i>
+                    <span>Keyboard Shortcuts</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4><i class="fas fa-circle-info"></i> Information</h4>
+            <div class="menu-options">
+                <button class="menu-option" id="about-menu">
+                    <i class="fas fa-info"></i>
+                    <span>About Player</span>
+                </button>
+                <button class="menu-option" id="privacy-menu">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Privacy Info</span>
+                </button>
+                <button class="menu-option" id="terms-menu">
+                    <i class="fas fa-file-lines"></i>
+                    <span>Terms of Use</span>
+                </button>
+                <button class="menu-option" id="contact-menu">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <span>Contact & Support</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="menu-footer">
+            <p><i class="fas fa-heart"></i> Crafted by Shubham</p>
+            <div class="menu-social">
+                <a href="https://www.instagram.com/i.shubham0210/" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay for menu -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+
     <div class="video-container">
-        <h1>🎬 INFINITY Direct Video Player</h1>
-        
-        <video id="video-player" controls></video>
-
-        <!-- Video progress slider -->
-        <div class="progress-wrapper">
-            <div class="progress-buffer" id="progress-buffer"></div>
-            <input type="range" id="progress-bar" value="0" min="0" max="100" step="0.1">
+        <!-- YouTube Player -->
+        <div id="youtube-player">
+            <iframe id="youtube-iframe" src=""
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowfullscreen frameborder="0">
+            </iframe>
         </div>
-        
-        <div class="time-display" id="time-display">00:00 / 00:00</div>
 
+        <!-- YouTube API Loading -->
+        <div id="api-loading" class="message info-message">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Loading video information...</span>
+        </div>
+
+        <!-- Video Info Display -->
+        <div id="video-info" class="video-info">
+            <div class="video-info-header">
+                <div class="video-thumbnail" id="video-thumbnail">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="video-details">
+                    <h3 id="video-title">No video loaded</h3>
+                    <div class="video-meta">
+                        <span id="video-channel">YouTube</span>
+                        <span class="separator">•</span>
+                        <span id="video-duration">0:00</span>
+                        <span class="separator">•</span>
+                        <span id="video-views">0 views</span>
+                    </div>
+                </div>
+                <button class="copy-link" id="copy-link" aria-label="Copy video link">
+                    <i class="fas fa-link"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Input Section -->
         <div class="input-group">
-            <input type="text" id="video-link" placeholder="Paste Direct Video URL (MP4, WebM, MKV, MOV, HLS .m3u8)">
-            <button id="play-button">▶ Play</button>
+            <input type="text" id="video-link" placeholder="Paste YouTube Video Link" aria-label="YouTube Link">
+            <button id="play-button" aria-label="Play Video">
+                <i class="fas fa-play"></i>
+                <span>Play</span>
+            </button>
         </div>
 
-        <div id="loading">Loading video...</div>
+        <!-- Loading State -->
+        <div id="loading">
+            <div class="loading-spinner"></div>
+            <span>Loading video...</span>
+        </div>
+
+        <!-- Messages -->
         <div id="error-message" class="message error-message"></div>
         <div id="success-message" class="message success-message"></div>
 
-        <!-- Quality Selector (Hidden by default) -->
-        <div class="quality-selector" id="quality-selector">
-            <select id="quality-select">
-                <option value="auto">Auto Quality</option>
-            </select>
-        </div>
-
-        <!-- Main Player Controls -->
-        <div class="player-controls">
-            <button id="backward-btn" title="Rewind 10 seconds">⏪ 10s</button>
-            <button id="play-pause-btn" title="Play/Pause">▶️</button>
-            <button id="forward-btn" title="Forward 10 seconds">⏩ 10s</button>
-            <button id="mute-btn" title="Mute/Unmute">🔊</button>
-            <button id="speed-btn" title="Playback Speed">1.0x</button>
-            <button id="share-btn" title="Share Video">🔗 Share</button>
-            <button id="stats-btn" title="Show Stats">📊 Stats</button>
-        </div>
-
-        <!-- Additional Controls -->
+        <!-- Main Controls -->
         <div class="controls">
-            <button class="fullscreen-btn" id="fullscreen-button" title="Fullscreen (F)">⛶ Fullscreen</button>
-            <button class="reset-btn" id="reset-button" title="Reset Player (R)">🔄 Reset</button>
-            <button class="theme-btn" id="theme-toggle" title="Toggle Theme (T)">🌙 Theme</button>
-            <button class="shortcuts-btn" id="shortcuts-button" title="Keyboard Shortcuts">⌨️ Shortcuts</button>
+            <button class="fullscreen-btn" id="fullscreen-button" aria-label="Toggle Fullscreen">
+                <i class="fas fa-expand-alt"></i>
+                <span>Fullscreen</span>
+            </button>
+            <button class="reset-btn" id="reset-button" aria-label="Reset Player">
+                <i class="fas fa-rotate-right"></i>
+                <span>Reset</span>
+            </button>
+            <button class="pip-btn" id="pip-button" aria-label="Picture-in-Picture" disabled>
+                <i class="fas fa-clone"></i>
+                <span>PiP</span>
+            </button>
         </div>
     </div>
 
-    <!-- About Section -->
-    <section class="about">
-        <button id="about-toggle" class="about-toggle">
-            <i class="fas fa-info-circle"></i>
-        </button>
-        <div id="about-content" class="about-content">
-            <h2>💡 About INFINITY Direct Player</h2>
-            <p><strong>INFINITY Direct Player</strong> is a fast, modern, and ad-free web player designed to stream any direct video or network link instantly.</p>
-            <p>It supports multiple formats such as <strong>MP4, WebM, MKV, MOV, and HLS (.m3u8)</strong> — letting you watch content directly from URLs without needing to download files.</p>
-            <p>Whether it's a live stream, cloud-hosted video, or direct media link, the player delivers smooth playback right in your browser.</p>
-            <div class="about-signature">Made with ❤️ by INFINITY Team</div>
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal"><i class="fas fa-xmark"></i></span>
+            <h3 id="modal-title">Information</h3>
+            <div id="modal-content">
+                <p>Content will load here...</p>
+            </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>Made with ❤️ by <a href="https://github.com" target="_blank">INFINITY Team</a></p>
-        <div class="social-links">
-            <a href="https://github.com" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-            <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="shortcuts-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal"><i class="fas fa-xmark"></i></span>
+            <h3><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h3>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <kbd>Enter</kbd>
+                    <span>Play Video</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>F</kbd>
+                    <span>Fullscreen</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>R</kbd>
+                    <span>Reset Player</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>T</kbd>
+                    <span>Toggle Theme</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>M</kbd>
+                    <span>Open Menu</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>C</kbd>
+                    <span>Copy Link</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>H</kbd>
+                    <span>History (in menu)</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>/</kbd>
+                    <span>Focus Search</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>ESC</kbd>
+                    <span>Close Menu/Modal</span>
+                </div>
+            </div>
         </div>
-        <p class="footer-note">Supports: MP4, WebM, MKV, MOV, HLS (.m3u8)</p>
-    </footer>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

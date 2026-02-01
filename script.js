@@ -1,6 +1,6 @@
 // ============================
 // INFINITY YouTube Player JS
-// Modern Icons Version
+// Fixed Version - No Auto-Show Issues
 // ============================
 
 // --- Element References ---
@@ -71,10 +71,7 @@ function initTheme() {
     
     // Update theme toggle icon
     const icon = themeMenuToggle.querySelector('i');
-    if (icon) {
-        icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
-        icon.style.color = isDarkMode ? '#FFD700' : '#6c757d';
-    }
+    icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
 }
 
 function toggleTheme() {
@@ -84,7 +81,7 @@ function toggleTheme() {
     showSuccess(isDarkMode ? "🌙 Dark theme enabled" : "☀️ Light theme enabled");
 }
 
-// --- Menu System ---
+// --- Menu System (FIXED) ---
 function toggleMenu() {
     isMenuOpen = !isMenuOpen;
     
@@ -158,7 +155,7 @@ function checkNewVideosInHistory() {
     ).length;
     
     if (newVideos > 0) {
-        showSuccess(`🎬 ${newVideos} new video${newVideos > 1 ? 's' : ''} in history`);
+        showSuccess(`📹 ${newVideos} new video${newVideos > 1 ? 's' : ''} in history`);
     }
     
     localStorage.setItem('lastMenuOpen', new Date().toISOString());
@@ -259,7 +256,7 @@ function updateVideoInfoUI(videoData) {
     if (videoData.thumbnail) {
         videoThumbnail.innerHTML = `<img src="${videoData.thumbnail}" alt="${videoData.title}" loading="lazy">`;
     } else {
-        videoThumbnail.innerHTML = '<i class="fas fa-play-circle"></i>';
+        videoThumbnail.innerHTML = '<i class="fas fa-play"></i>';
     }
     
     // Update duration if available
@@ -352,7 +349,7 @@ function updateMenuHistory() {
     if (history.length === 0) {
         menuHistory.innerHTML = `
             <div class="empty-state">
-                <i class="fas fa-video"></i>
+                <i class="fas fa-history"></i>
                 <p>No recent videos yet</p>
             </div>
         `;
@@ -368,7 +365,7 @@ function updateMenuHistory() {
                 ${item.thumbnail ? 
                     `<img src="${item.thumbnail}" alt="${item.title}" loading="lazy">` :
                     `<div style="background: linear-gradient(45deg, #00e0ff, #00c4ff); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-play" style="color: #000; font-size: 1.2rem;"></i>
+                        <i class="fas fa-play" style="color: #000;"></i>
                     </div>`
                 }
             </div>
@@ -406,13 +403,13 @@ function formatTimeAgo(timestamp) {
 // --- Status Handlers ---
 function showError(message) {
     errorMessageElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-    errorMessageElement.style.display = 'flex';
+    errorMessageElement.style.display = 'block';
     setTimeout(() => (errorMessageElement.style.display = 'none'), 5000);
 }
 
 function showSuccess(message) {
     successMessageElement.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-    successMessageElement.style.display = 'flex';
+    successMessageElement.style.display = 'block';
     setTimeout(() => (successMessageElement.style.display = 'none'), 3000);
 }
 
@@ -706,7 +703,7 @@ function resetPlayer() {
     videoChannel.textContent = "YouTube";
     videoDuration.textContent = "0:00";
     videoViews.textContent = "0 views";
-    videoThumbnail.innerHTML = '<i class="fas fa-play-circle"></i>';
+    videoThumbnail.innerHTML = '<i class="fas fa-play"></i>';
     
     releaseWakeLock();
     showSuccess("🔄 Player reset");
@@ -760,14 +757,14 @@ const modalContents = {
         </div>
         
         <div class="modal-signature">
-            <p><i class="fas fa-heart"></i> Crafted by Shubham</p>
+            <p>Crafted with ❤️ by Shubham</p>
             <p class="version">v2.0 • Enhanced Edition</p>
         </div>
     `,
     
     privacy: `
         <div class="modal-section">
-            <h4><i class="fas fa-shield-halved"></i> Privacy Information</h4>
+            <h4><i class="fas fa-shield-alt"></i> Privacy Information</h4>
             <p>Your privacy is our priority. Here's how we handle your data:</p>
         </div>
         
@@ -804,7 +801,7 @@ const modalContents = {
     
     terms: `
         <div class="modal-section">
-            <h4><i class="fas fa-file-lines"></i> Terms of Use</h4>
+            <h4><i class="fas fa-file-contract"></i> Terms of Use</h4>
             <p>By using INFINITY YouTube Player, you agree to these terms:</p>
         </div>
         
@@ -887,7 +884,7 @@ const modalContents = {
         </div>
         
         <div class="modal-section">
-            <p class="thank-you">Thank you for using INFINITY Player! <i class="fas fa-heart"></i></p>
+            <p class="thank-you">Thank you for using INFINITY Player! 🙏</p>
         </div>
     `
 };
@@ -1040,10 +1037,10 @@ function init() {
     autoLoadFromURL();
     
     console.log("🎬 INFINITY Player v2.0 initialized");
-    console.log("📹 Features: YouTube API, Video Metadata, Enhanced Menu");
+    console.log("📹 Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info");
     console.log("🎨 Theme: " + (isDarkMode ? "Dark" : "Light"));
     console.log("💾 History Items: " + (JSON.parse(localStorage.getItem('videoHistory') || '[]').length));
-    console.log("✅ Icons: Font Awesome 6.4.0 with modern design");
+    console.log("✅ Menu: Closed by default");
 }
 
 // Start the application

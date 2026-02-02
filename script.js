@@ -1113,3 +1113,65 @@ function init() {
 
 // Start the application
 init();
+
+// --- Share Video Function ---
+function shareVideo() {
+    if (!currentVideoId) {
+        showError("No video loaded to share");
+        return;
+    }
+    
+    const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
+    const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(videoUrl)}`;
+    
+    // Create share text
+    const shareText = currentVideoData ? 
+        `Watch "${currentVideoData.title}" on INFINITY Player` : 
+        "Watch this video on INFINITY Player";
+    
+    // Try Web Share API first
+    if (navigator.share) {
+        navigator.share({
+            title: 'INFINITY YouTube Player',
+            text: shareText,
+            url: shareUrl,
+        })
+        .catch(error => {
+            console.log('Error sharing:', error);
+            copyToClipboard(shareUrl);
+        });
+    } else {
+        // Fallback to clipboard
+        copyToClipboard(shareUrl);
+    }
+}
+
+// Helper function for clipboard
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        showSuccess("🔗 Share link copied to clipboard");
+    } catch (error) {
+        // Fallback method
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showSuccess("🔗 Share link copied!");
+    }
+}
+
+// Add event listener in initializeEventListeners():
+function initializeEventListeners() {
+    // ... existing code ...
+    
+    // Share button
+    const shareButton = document.getElementById('share-button');
+    if (shareButton) {
+        shareButton.addEventListener('click', shareVideo);
+    }
+    
+    // ... rest of existing code ...
+}

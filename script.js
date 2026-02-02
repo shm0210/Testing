@@ -1013,19 +1013,81 @@ function initParticles() {
 // --- Auto-load from URL ---
 function autoLoadFromURL() {
     const params = new URLSearchParams(window.location.search);
-    const videoParam = params.get('v') || params.get('video') || params.get('url');
-    if (videoParam && isYouTubeLink(videoParam)) {
-        const decodedUrl = decodeURIComponent(videoParam);
-        videoLinkInput.value = decodedUrl;
+    
+    // Check multiple possible parameters
+    const videoParam = params.get('v') || params.get('video') || params.get('url') || params.get('link');
+    
+    if (videoParam) {
+        try {
+            // Decode URL and clean it
+            const decodedUrl = decodeURIComponent(videoParam);
+            
+            // Check if it's a YouTube URL
+            if (isYouTubeLink(decodedUrl)) {
+                videoLinkInput.value = decodedUrl;
+                
+                // Small delay to ensure everything is loaded
+                setTimeout(() => {
+                    loadVideo();
+                    showSuccess("🎬 Video auto-loaded from URL");
+                }, 800);
+                
+                // Update page title and URL for sharing
+                updatePageURL(decodedUrl);
+                return true;
+            } else {
+                console.log("Not a YouTube URL:", decodedUrl);
+            }
+        } catch (error) {
+            console.error("Error parsing URL parameter:", error);
+        }
+    }
+    
+    // Check for YouTube ID directly
+    const videoIdParam = params.get('id') || params.get('vid');
+    if (videoIdParam) {
+        const youtubeUrl = `https://www.youtube.com/watch?v=${videoIdParam}`;
+        videoLinkInput.value = youtubeUrl;
         
-        // Small delay to ensure everything is loaded
         setTimeout(() => {
             loadVideo();
-        }, 1000);
+            showSuccess("🎬 Video auto-loaded from ID");
+        }, 800);
+        
+        updatePageURL(youtubeUrl);
+        return true;
+    }
+    
+    return false;
+}
+
+// Function to update page URL without reloading
+function updatePageURL(url) {
+    try {
+        const videoId = getYouTubeVideoId(url);
+        if (videoId) {
+            // Update URL without reloading
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('v', url);
+            newUrl.searchParams.delete('id');
+            newUrl.searchParams.delete('vid');
+            newUrl.searchParams.delete('video');
+            newUrl.searchParams.delete('url');
+            newUrl.searchParams.delete('link');
+            
+            window.history.replaceState({}, document.title, newUrl.toString());
+            
+            // Update page title with video info
+            if (currentVideoData && currentVideoData.title) {
+                document.title = `${currentVideoData.title} | INFINITY Player`;
+            }
+        }
+    } catch (error) {
+        console.error("Error updating URL:", error);
     }
 }
 
-// --- Initialization ---
+// Add to your existing init() function:
 function init() {
     initializeEventListeners();
     initParticles();
@@ -1034,7 +1096,13 @@ function init() {
     // Make sure menu starts closed
     closeMenu();
     
-    autoLoadFromURL();
+    // Auto-load from URL
+    setTimeout(() => {
+        const loaded = autoLoadFromURL();
+        if (!loaded) {
+            console.log("No auto-load parameter found");
+        }
+    }, 500);
     
     console.log("🎬 INFINITY Player v2.0 initialized");
     console.log("📹 Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info");

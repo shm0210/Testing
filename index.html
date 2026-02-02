@@ -13,15 +13,20 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://shminfinity.fun/">
     
-    <!-- FIXED: Updated Content Security Policy for Font Awesome -->
+    <!-- Step 1: AdSense Auto Ads Script -->
+    <!-- REPLACE YOUR_PUBLISHER_ID with your actual AdSense Publisher ID -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+    
+    <!-- Updated Content Security Policy for AdSense -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self'; 
-        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com; 
-        style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
-        img-src 'self' https: data: blob:; 
-        frame-src https://www.youtube-nocookie.com https://www.youtube.com; 
+        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagmanager.com https://www.google-analytics.com; 
+        style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; 
+        img-src 'self' https: data: blob: https://googleads.g.doubleclick.net https://www.googlesyndication.com https://stats.g.doubleclick.net https://www.google.com https://ssl.gstatic.com; 
+        frame-src https://www.youtube-nocookie.com https://www.youtube.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://securepubads.g.doubleclick.net; 
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
-        connect-src 'self' https://www.youtube.com https://noembed.com https://img.youtube.com;
+        connect-src 'self' https://www.youtube.com https://noembed.com https://img.youtube.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google-analytics.com;
+        media-src 'self' https:;
     ">
     
     <!-- YouTube API -->
@@ -32,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- FIXED: Use specific Font Awesome version with correct integrity hash -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -104,6 +109,11 @@
                     <i class="fas fa-keyboard"></i>
                     <span>Keyboard Shortcuts</span>
                 </button>
+                <!-- AdSense Toggle Option -->
+                <button class="menu-option" id="toggle-ads">
+                    <i class="fas fa-ad"></i>
+                    <span>Ads: <span id="ads-status">On</span></span>
+                </button>
             </div>
         </div>
 
@@ -126,6 +136,15 @@
                     <i class="fas fa-envelope"></i>
                     <span>Contact & Support</span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Sidebar Ad Container (Option C) -->
+        <div class="sidebar-ad" id="sidebar-ad">
+            <!-- Sidebar Ad will be loaded here -->
+            <div class="ad-placeholder">
+                <i class="fas fa-ad"></i>
+                <p>Ad loading...</p>
             </div>
         </div>
 
@@ -188,6 +207,16 @@
             </button>
         </div>
 
+        <!-- Step 2: In-Content Ad (Option B) -->
+        <div class="ad-inline" id="inline-ad">
+            <!-- In-content Ad will be loaded here -->
+            <div class="ad-placeholder">
+                <i class="fas fa-ad"></i>
+                <p>Advertisement loading...</p>
+                <small>Ads help support our free service</small>
+            </div>
+        </div>
+
         <!-- Loading State -->
         <div id="loading">
             <div class="loading-spinner"></div>
@@ -213,9 +242,53 @@
                 <span>PiP</span>
             </button>
             <button class="share-btn" id="share-button" aria-label="Share Video">
-    <i class="fas fa-share-alt"></i>
-    <span>Share</span>
-</button>
+                <i class="fas fa-share-alt"></i>
+                <span>Share</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Original Content Section for Better AdSense Approval -->
+    <div class="original-content">
+        <h3><i class="fas fa-lightbulb"></i> YouTube Tips & Guides</h3>
+        <div class="content-grid">
+            <div class="content-card">
+                <div class="content-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>YouTube Privacy Guide</h4>
+                <p>Learn how to protect your privacy on YouTube, manage viewing history, and control data collection.</p>
+            </div>
+            <div class="content-card">
+                <div class="content-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h4>Legal Video Downloading</h4>
+                <p>Official methods to save YouTube videos offline using YouTube Premium and legal alternatives.</p>
+            </div>
+            <div class="content-card">
+                <div class="content-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h4>Player Settings Explained</h4>
+                <p>Understand YouTube player settings, quality options, playback speed, and subtitle management.</p>
+            </div>
+            <div class="content-card">
+                <div class="content-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4>Mobile Optimization Tips</h4>
+                <p>Optimize YouTube viewing on mobile devices for better battery life and data usage.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner Ad at Bottom -->
+    <div class="ad-container" id="bottom-ad">
+        <!-- Banner Ad will be loaded here -->
+        <div class="ad-placeholder">
+            <i class="fas fa-ad"></i>
+            <p>Advertisement</p>
         </div>
     </div>
 
@@ -261,6 +334,10 @@
                     <span>Copy Link</span>
                 </div>
                 <div class="shortcut-item">
+                    <kbd>A</kbd>
+                    <span>Toggle Ads</span>
+                </div>
+                <div class="shortcut-item">
                     <kbd>H</kbd>
                     <span>History (in menu)</span>
                 </div>
@@ -276,7 +353,7 @@
         </div>
     </div>
 
-    <!-- FIXED: Updated script sources -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="script.js"></script>
 </body>

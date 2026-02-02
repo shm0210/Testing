@@ -1072,3 +1072,8 @@ body {
         padding: 15px;
     }
 }
+
+.share-btn {
+    background: #17a2b8;
+    color: #fff;
+}

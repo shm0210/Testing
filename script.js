@@ -1,6 +1,6 @@
 // ============================
 // INFINITY YouTube Player JS
-// Fixed Version - No Auto-Show Issues
+// Enhanced Version with Auto-Load & Share Features
 // ============================
 
 // --- Element References ---
@@ -19,6 +19,7 @@ const videoChannel = document.getElementById('video-channel');
 const videoDuration = document.getElementById('video-duration');
 const videoViews = document.getElementById('video-views');
 const videoThumbnail = document.getElementById('video-thumbnail');
+const shareButton = document.getElementById('share-button') || document.createElement('button'); // Optional share button
 
 // Menu Elements
 const menuToggle = document.getElementById('menu-toggle');
@@ -78,10 +79,10 @@ function toggleTheme() {
     isDarkMode = !isDarkMode;
     localStorage.setItem('darkMode', isDarkMode);
     initTheme();
-    showSuccess(isDarkMode ? "🌙 Dark theme enabled" : "☀️ Light theme enabled");
+    showSuccess(isDarkMode ? "Dark theme enabled" : "Light theme enabled");
 }
 
-// --- Menu System (FIXED) ---
+// --- Menu System ---
 function toggleMenu() {
     isMenuOpen = !isMenuOpen;
     
@@ -155,7 +156,7 @@ function checkNewVideosInHistory() {
     ).length;
     
     if (newVideos > 0) {
-        showSuccess(`📹 ${newVideos} new video${newVideos > 1 ? 's' : ''} in history`);
+        showSuccess(`${newVideos} new video${newVideos > 1 ? 's' : ''} in history`);
     }
     
     localStorage.setItem('lastMenuOpen', new Date().toISOString());
@@ -474,8 +475,11 @@ async function loadVideo() {
         const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
         youtubeIframe.src = embedUrl;
         
-        showSuccess("🎬 Video loaded successfully");
+        showSuccess("Video loaded successfully");
         requestWakeLock();
+        
+        // Update page URL for sharing
+        updatePageURL(link);
         
         // Add notification animation to menu toggle
         menuToggle.classList.add('has-notification');
@@ -556,7 +560,7 @@ function clearHistory() {
     if (confirm("Are you sure you want to clear all video history?")) {
         localStorage.removeItem('videoHistory');
         updateMenuHistory();
-        showSuccess("🗑️ History cleared successfully");
+        showSuccess("History cleared successfully");
     }
 }
 
@@ -570,7 +574,7 @@ async function copyVideoLink() {
     try {
         const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
         await navigator.clipboard.writeText(videoUrl);
-        showSuccess("🔗 Video link copied to clipboard");
+        showSuccess("Video link copied to clipboard");
     } catch (error) {
         // Fallback for browsers without clipboard API
         const textArea = document.createElement('textarea');
@@ -579,7 +583,163 @@ async function copyVideoLink() {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        showSuccess("🔗 Link copied!");
+        showSuccess("Link copied!");
+    }
+}
+
+// --- Share Video Function (NEW) ---
+async function shareVideo() {
+    if (!currentVideoId) {
+        showError("No video loaded to share");
+        return;
+    }
+    
+    try {
+        const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
+        const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(videoUrl)}`;
+        
+        // Create share text
+        const shareText = currentVideoData ? 
+            `Watch "${currentVideoData.title}" on INFINITY Player` : 
+            "Watch this video on INFINITY Player";
+        
+        // Try Web Share API first (mobile devices)
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'INFINITY YouTube Player',
+                    text: shareText,
+                    url: shareUrl,
+                });
+                showSuccess("Shared successfully");
+                return;
+            } catch (shareError) {
+                console.log('Web Share API failed, falling back to clipboard:', shareError);
+            }
+        }
+        
+        // Fallback to clipboard copy
+        await copyToClipboard(shareUrl);
+        
+    } catch (error) {
+        console.error("Error sharing video:", error);
+        showError("Failed to share video");
+    }
+}
+
+// --- Helper for Clipboard ---
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        showSuccess("Share link copied to clipboard");
+        return true;
+    } catch (error) {
+        // Fallback method for older browsers
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            const result = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            if (result) {
+                showSuccess("Share link copied!");
+                return true;
+            } else {
+                showError("Failed to copy link");
+                return false;
+            }
+        } catch (fallbackError) {
+            showError("Failed to copy link");
+            return false;
+        }
+    }
+}
+
+// --- Auto-load from URL (ENHANCED) ---
+function autoLoadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Check multiple possible parameters for flexibility
+    const videoParam = params.get('v') || params.get('video') || params.get('url') || params.get('link');
+    
+    if (videoParam) {
+        try {
+            // Decode URL and clean it
+            const decodedUrl = decodeURIComponent(videoParam);
+            
+            // Check if it's a YouTube URL
+            if (isYouTubeLink(decodedUrl)) {
+                videoLinkInput.value = decodedUrl;
+                
+                // Show loading indicator
+                loadingElement.style.display = 'flex';
+                
+                // Load video after short delay
+                setTimeout(() => {
+                    loadVideo();
+                    showSuccess("Video auto-loaded from URL");
+                }, 800);
+                
+                return true;
+            } else {
+                console.log("Not a YouTube URL:", decodedUrl);
+            }
+        } catch (error) {
+            console.error("Error parsing URL parameter:", error);
+        }
+    }
+    
+    // Check for YouTube ID directly
+    const videoIdParam = params.get('id') || params.get('vid');
+    if (videoIdParam) {
+        const youtubeUrl = `https://www.youtube.com/watch?v=${videoIdParam}`;
+        videoLinkInput.value = youtubeUrl;
+        
+        loadingElement.style.display = 'flex';
+        
+        setTimeout(() => {
+            loadVideo();
+            showSuccess("Video auto-loaded from ID");
+        }, 800);
+        
+        return true;
+    }
+    
+    return false;
+}
+
+// --- Update Page URL for Sharing ---
+function updatePageURL(url) {
+    try {
+        const videoId = getYouTubeVideoId(url);
+        if (videoId) {
+            // Create clean URL with just the 'v' parameter
+            const newUrl = new URL(window.location.href);
+            
+            // Remove all video-related parameters first
+            const paramsToRemove = ['v', 'video', 'url', 'link', 'id', 'vid'];
+            paramsToRemove.forEach(param => newUrl.searchParams.delete(param));
+            
+            // Add the clean parameter
+            newUrl.searchParams.set('v', url);
+            
+            // Update URL without reloading
+            window.history.replaceState({}, document.title, newUrl.toString());
+            
+            // Update page title with video info
+            if (currentVideoData && currentVideoData.title) {
+                document.title = `${currentVideoData.title} | INFINITY Player`;
+            }
+        }
+    } catch (error) {
+        console.error("Error updating URL:", error);
     }
 }
 
@@ -588,10 +748,10 @@ async function requestWakeLock() {
     if ('wakeLock' in navigator && !wakeLock) {
         try {
             wakeLock = await navigator.wakeLock.request('screen');
-            console.log("✅ Wake Lock activated");
+            console.log("Wake Lock activated");
             
             wakeLock.addEventListener('release', () => {
-                console.log("⚠️ Wake Lock released");
+                console.log("Wake Lock released");
                 wakeLock = null;
             });
             
@@ -635,6 +795,10 @@ function handleKeyboardShortcuts(event) {
         case 'c': // C for Copy
             event.preventDefault();
             copyVideoLink();
+            break;
+        case 's': // S for Share (NEW)
+            event.preventDefault();
+            if (shareButton) shareVideo();
             break;
         case 'enter': // Enter to play
             if (document.activeElement !== videoLinkInput) {
@@ -681,12 +845,20 @@ function toggleFullscreen() {
             elem.requestFullscreen();
         } else if (elem.webkitRequestFullscreen) {
             elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
         }
     } else {
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
         }
     }
 }
@@ -705,8 +877,17 @@ function resetPlayer() {
     videoViews.textContent = "0 views";
     videoThumbnail.innerHTML = '<i class="fas fa-play"></i>';
     
+    // Reset page title
+    document.title = "INFINITY YouTube Player";
+    
+    // Clean URL
+    const newUrl = new URL(window.location.href);
+    const paramsToRemove = ['v', 'video', 'url', 'link', 'id', 'vid'];
+    paramsToRemove.forEach(param => newUrl.searchParams.delete(param));
+    window.history.replaceState({}, document.title, newUrl.toString());
+    
     releaseWakeLock();
-    showSuccess("🔄 Player reset");
+    showSuccess("Player reset");
 }
 
 // --- Modal System ---
@@ -740,6 +921,8 @@ const modalContents = {
                 <li><strong>Themes:</strong> Dark/Light mode support</li>
                 <li><strong>Video Info:</strong> Real-time metadata display</li>
                 <li><strong>Wake Lock:</strong> Screen stays on during playback</li>
+                <li><strong>Auto-load:</strong> Load videos directly from URL parameters</li>
+                <li><strong>Share:</strong> Generate shareable links</li>
             </ul>
         </div>
         
@@ -753,12 +936,13 @@ const modalContents = {
                 <span>YouTube API</span>
                 <span>LocalStorage</span>
                 <span>Wake Lock API</span>
+                <span>Web Share API</span>
             </div>
         </div>
         
         <div class="modal-signature">
-            <p>Crafted with ❤️ by Shubham</p>
-            <p class="version">v2.0 • Enhanced Edition</p>
+            <p>Crafted with <i class="fas fa-heart"></i> by Shubham</p>
+            <p class="version">v2.1 • Enhanced with Auto-Load & Share</p>
         </div>
     `,
     
@@ -884,7 +1068,7 @@ const modalContents = {
         </div>
         
         <div class="modal-section">
-            <p class="thank-you">Thank you for using INFINITY Player! 🙏</p>
+            <p class="thank-you">Thank you for using INFINITY Player!</p>
         </div>
     `
 };
@@ -941,6 +1125,11 @@ function initializeEventListeners() {
     resetButton.addEventListener('click', resetPlayer);
     copyLinkButton.addEventListener('click', copyVideoLink);
     
+    // Share button (if exists)
+    if (shareButton && shareButton.id === 'share-button') {
+        shareButton.addEventListener('click', shareVideo);
+    }
+    
     // Keyboard shortcuts
     document.addEventListener('keydown', handleKeyboardShortcuts);
     
@@ -968,7 +1157,9 @@ function initializeEventListeners() {
     // Auto-focus input on page load
     window.addEventListener('load', () => {
         setTimeout(() => {
-            videoLinkInput.focus();
+            if (!videoLinkInput.value) {
+                videoLinkInput.focus();
+            }
         }, 500);
     });
 }
@@ -1010,84 +1201,7 @@ function initParticles() {
     }
 }
 
-// --- Auto-load from URL ---
-function autoLoadFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    
-    // Check multiple possible parameters
-    const videoParam = params.get('v') || params.get('video') || params.get('url') || params.get('link');
-    
-    if (videoParam) {
-        try {
-            // Decode URL and clean it
-            const decodedUrl = decodeURIComponent(videoParam);
-            
-            // Check if it's a YouTube URL
-            if (isYouTubeLink(decodedUrl)) {
-                videoLinkInput.value = decodedUrl;
-                
-                // Small delay to ensure everything is loaded
-                setTimeout(() => {
-                    loadVideo();
-                    showSuccess("🎬 Video auto-loaded from URL");
-                }, 800);
-                
-                // Update page title and URL for sharing
-                updatePageURL(decodedUrl);
-                return true;
-            } else {
-                console.log("Not a YouTube URL:", decodedUrl);
-            }
-        } catch (error) {
-            console.error("Error parsing URL parameter:", error);
-        }
-    }
-    
-    // Check for YouTube ID directly
-    const videoIdParam = params.get('id') || params.get('vid');
-    if (videoIdParam) {
-        const youtubeUrl = `https://www.youtube.com/watch?v=${videoIdParam}`;
-        videoLinkInput.value = youtubeUrl;
-        
-        setTimeout(() => {
-            loadVideo();
-            showSuccess("🎬 Video auto-loaded from ID");
-        }, 800);
-        
-        updatePageURL(youtubeUrl);
-        return true;
-    }
-    
-    return false;
-}
-
-// Function to update page URL without reloading
-function updatePageURL(url) {
-    try {
-        const videoId = getYouTubeVideoId(url);
-        if (videoId) {
-            // Update URL without reloading
-            const newUrl = new URL(window.location.href);
-            newUrl.searchParams.set('v', url);
-            newUrl.searchParams.delete('id');
-            newUrl.searchParams.delete('vid');
-            newUrl.searchParams.delete('video');
-            newUrl.searchParams.delete('url');
-            newUrl.searchParams.delete('link');
-            
-            window.history.replaceState({}, document.title, newUrl.toString());
-            
-            // Update page title with video info
-            if (currentVideoData && currentVideoData.title) {
-                document.title = `${currentVideoData.title} | INFINITY Player`;
-            }
-        }
-    } catch (error) {
-        console.error("Error updating URL:", error);
-    }
-}
-
-// Add to your existing init() function:
+// --- Initialization ---
 function init() {
     initializeEventListeners();
     initParticles();
@@ -1104,74 +1218,13 @@ function init() {
         }
     }, 500);
     
-    console.log("🎬 INFINITY Player v2.0 initialized");
-    console.log("📹 Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info");
-    console.log("🎨 Theme: " + (isDarkMode ? "Dark" : "Light"));
-    console.log("💾 History Items: " + (JSON.parse(localStorage.getItem('videoHistory') || '[]').length));
-    console.log("✅ Menu: Closed by default");
+    console.log("INFINITY Player v2.1 initialized");
+    console.log("Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info");
+    console.log("New Features: Auto-load from URL, Share functionality");
+    console.log("Theme: " + (isDarkMode ? "Dark" : "Light"));
+    console.log("History Items: " + (JSON.parse(localStorage.getItem('videoHistory') || '[]').length));
+    console.log("Menu: Closed by default");
 }
 
 // Start the application
 init();
-
-// --- Share Video Function ---
-function shareVideo() {
-    if (!currentVideoId) {
-        showError("No video loaded to share");
-        return;
-    }
-    
-    const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-    const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(videoUrl)}`;
-    
-    // Create share text
-    const shareText = currentVideoData ? 
-        `Watch "${currentVideoData.title}" on INFINITY Player` : 
-        "Watch this video on INFINITY Player";
-    
-    // Try Web Share API first
-    if (navigator.share) {
-        navigator.share({
-            title: 'INFINITY YouTube Player',
-            text: shareText,
-            url: shareUrl,
-        })
-        .catch(error => {
-            console.log('Error sharing:', error);
-            copyToClipboard(shareUrl);
-        });
-    } else {
-        // Fallback to clipboard
-        copyToClipboard(shareUrl);
-    }
-}
-
-// Helper function for clipboard
-async function copyToClipboard(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        showSuccess("🔗 Share link copied to clipboard");
-    } catch (error) {
-        // Fallback method
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showSuccess("🔗 Share link copied!");
-    }
-}
-
-// Add event listener in initializeEventListeners():
-function initializeEventListeners() {
-    // ... existing code ...
-    
-    // Share button
-    const shareButton = document.getElementById('share-button');
-    if (shareButton) {
-        shareButton.addEventListener('click', shareVideo);
-    }
-    
-    // ... rest of existing code ...
-}

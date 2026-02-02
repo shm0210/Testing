@@ -1,6 +1,6 @@
 // ============================
 // INFINITY YouTube Player JS
-// Enhanced Version with Fixed Menu
+// Enhanced Version with Fixed Menu & AdSense Integration
 // ============================
 
 // --- Element References ---
@@ -36,6 +36,13 @@ const termsMenuButton = document.getElementById('terms-menu');
 const contactMenuButton = document.getElementById('contact-menu');
 const menuHistory = document.getElementById('menu-history');
 
+// AdSense Elements
+const toggleAdsButton = document.getElementById('toggle-ads');
+const adsStatus = document.getElementById('ads-status');
+const inlineAdContainer = document.getElementById('inline-ad');
+const sidebarAdContainer = document.getElementById('sidebar-ad');
+const bottomAdContainer = document.getElementById('bottom-ad');
+
 // Modal Elements
 const infoModal = document.getElementById('info-modal');
 const shortcutsModal = document.getElementById('shortcuts-modal');
@@ -45,10 +52,13 @@ const closeModalButtons = document.querySelectorAll('.close-modal');
 
 // --- State Variables ---
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
+let adsEnabled = localStorage.getItem('adsEnabled') !== 'false'; // Default to true
 let currentVideoId = null;
 let currentVideoData = null;
 let wakeLock = null;
 let isMenuOpen = false;
+let adSlots = {};
+let adInterval = null;
 
 // --- YouTube API Integration ---
 let ytAPILoaded = false;
@@ -78,6 +88,188 @@ function toggleTheme() {
     localStorage.setItem('darkMode', isDarkMode);
     initTheme();
     showSuccess(isDarkMode ? "Dark theme enabled" : "Light theme enabled");
+}
+
+// --- AdSense Management ---
+function initAds() {
+    adsEnabled = localStorage.getItem('adsEnabled') !== 'false';
+    adsStatus.textContent = adsEnabled ? "On" : "Off";
+    
+    if (adsEnabled) {
+        loadAdSenseAds();
+        startAdRefreshInterval();
+    } else {
+        hideAllAds();
+    }
+}
+
+function toggleAds() {
+    adsEnabled = !adsEnabled;
+    localStorage.setItem('adsEnabled', adsEnabled);
+    adsStatus.textContent = adsEnabled ? "On" : "Off";
+    
+    if (adsEnabled) {
+        loadAdSenseAds();
+        startAdRefreshInterval();
+        showSuccess("Ads enabled");
+    } else {
+        hideAllAds();
+        stopAdRefreshInterval();
+        showSuccess("Ads disabled");
+    }
+}
+
+function loadAdSenseAds() {
+    // Clear existing ads first
+    hideAllAds();
+    
+    // Show containers
+    if (inlineAdContainer) inlineAdContainer.style.display = 'flex';
+    if (bottomAdContainer) bottomAdContainer.style.display = 'flex';
+    if (sidebarAdContainer && window.innerWidth > 768) sidebarAdContainer.style.display = 'flex';
+    
+    // Load ads after a short delay to ensure DOM is ready
+    setTimeout(() => {
+        if (adsEnabled && typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
+            
+            // Inline Ad (Option B - In-Content)
+            if (inlineAdContainer) {
+                try {
+                    inlineAdContainer.innerHTML = `
+                        <ins class="adsbygoogle"
+                             style="display:block; text-align:center;"
+                             data-ad-layout="in-article"
+                             data-ad-format="fluid"
+                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                             data-ad-slot="YOUR_INLINE_AD_SLOT">
+                        </ins>
+                    `;
+                    
+                    // Push the ad
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    
+                    console.log("✅ Inline ad loaded");
+                } catch (error) {
+                    console.error("❌ Error loading inline ad:", error);
+                    showAdPlaceholder(inlineAdContainer, "Inline Ad");
+                }
+            }
+            
+            // Bottom Banner Ad
+            if (bottomAdContainer) {
+                try {
+                    bottomAdContainer.innerHTML = `
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                             data-ad-slot="YOUR_BANNER_AD_SLOT"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true">
+                        </ins>
+                    `;
+                    
+                    // Push the ad
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    
+                    console.log("✅ Bottom banner ad loaded");
+                } catch (error) {
+                    console.error("❌ Error loading bottom ad:", error);
+                    showAdPlaceholder(bottomAdContainer, "Banner Ad");
+                }
+            }
+            
+            // Sidebar Ad (only on desktop)
+            if (sidebarAdContainer && window.innerWidth > 768) {
+                try {
+                    sidebarAdContainer.innerHTML = `
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                             data-ad-slot="YOUR_SIDEBAR_AD_SLOT"
+                             data-ad-format="rectangle">
+                        </ins>
+                    `;
+                    
+                    // Push the ad
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    
+                    console.log("✅ Sidebar ad loaded");
+                } catch (error) {
+                    console.error("❌ Error loading sidebar ad:", error);
+                    showAdPlaceholder(sidebarAdContainer, "Sidebar Ad");
+                }
+            }
+            
+        } else {
+            console.log("⚠️ AdSense not available or ads disabled");
+            showAdPlaceholders();
+        }
+    }, 1500); // Wait 1.5 seconds to ensure page is fully loaded
+}
+
+function hideAllAds() {
+    [inlineAdContainer, sidebarAdContainer, bottomAdContainer].forEach(container => {
+        if (container) {
+            container.style.display = 'none';
+            container.innerHTML = `
+                <div class="ad-placeholder">
+                    <i class="fas fa-ad"></i>
+                    <p>Ads are currently disabled</p>
+                    <small>Enable in settings to see ads</small>
+                </div>
+            `;
+        }
+    });
+}
+
+function showAdPlaceholders() {
+    [inlineAdContainer, sidebarAdContainer, bottomAdContainer].forEach(container => {
+        if (container) {
+            showAdPlaceholder(container, "Advertisement");
+        }
+    });
+}
+
+function showAdPlaceholder(container, type = "Ad") {
+    if (container) {
+        container.style.display = 'flex';
+        container.innerHTML = `
+            <div class="ad-placeholder">
+                <i class="fas fa-ad"></i>
+                <p>${type}</p>
+                <small>Advertisement</small>
+            </div>
+        `;
+    }
+}
+
+function startAdRefreshInterval() {
+    // Refresh ads every 30 seconds if enabled
+    stopAdRefreshInterval(); // Clear any existing interval
+    
+    if (adsEnabled) {
+        adInterval = setInterval(() => {
+            if (adsEnabled && document.visibilityState === 'visible') {
+                console.log("🔄 Refreshing ads...");
+                loadAdSenseAds();
+            }
+        }, 30000); // 30 seconds
+    }
+}
+
+function stopAdRefreshInterval() {
+    if (adInterval) {
+        clearInterval(adInterval);
+        adInterval = null;
+    }
+}
+
+// Handle window resize for responsive ads
+function handleWindowResize() {
+    if (adsEnabled) {
+        // Reload ads on resize to ensure proper formatting
+        setTimeout(loadAdSenseAds, 300);
+    }
 }
 
 // --- Menu System (FIXED) ---
@@ -423,6 +615,11 @@ async function loadVideo() {
         menuToggle.classList.add('has-notification');
         setTimeout(() => menuToggle.classList.remove('has-notification'), 3000);
         
+        // Refresh ads after video load (if enabled)
+        if (adsEnabled) {
+            setTimeout(loadAdSenseAds, 2000);
+        }
+        
     } catch (error) {
         showError("Failed to load video");
         console.error(error);
@@ -693,6 +890,10 @@ function handleKeyboardShortcuts(event) {
             event.preventDefault();
             if (shareButton) shareVideo();
             break;
+        case 'a':
+            event.preventDefault();
+            toggleAds();
+            break;
         case 'enter':
             if (document.activeElement !== videoLinkInput) {
                 event.preventDefault();
@@ -801,6 +1002,7 @@ const modalContents = {
                 <li><strong>Wake Lock:</strong> Screen stays on during playback</li>
                 <li><strong>Auto-load:</strong> Load videos directly from URL parameters</li>
                 <li><strong>Share:</strong> Generate shareable links</li>
+                <li><strong>Ad Support:</strong> Optional ads to support development</li>
             </ul>
         </div>
         
@@ -815,12 +1017,13 @@ const modalContents = {
                 <span>LocalStorage</span>
                 <span>Wake Lock API</span>
                 <span>Web Share API</span>
+                <span>Google AdSense</span>
             </div>
         </div>
         
         <div class="modal-signature">
             <p>Crafted with <i class="fas fa-heart"></i> by Shubham</p>
-            <p class="version">v2.1 • Enhanced with Auto-Load & Share</p>
+            <p class="version">v2.2 • Enhanced with AdSense Integration</p>
         </div>
     `,
     
@@ -846,6 +1049,7 @@ const modalContents = {
                 <li><strong>Video History:</strong> Last 20 videos (browser storage only)</li>
                 <li><strong>Theme Preference:</strong> Your dark/light mode choice</li>
                 <li><strong>Video Cache:</strong> Temporary video metadata (24 hours)</li>
+                <li><strong>Ad Preference:</strong> Your ads enabled/disabled setting</li>
             </ul>
             <p class="note">All data is stored locally in your browser and never sent to any server.</p>
         </div>
@@ -857,6 +1061,17 @@ const modalContents = {
                 <li>Doesn't set tracking cookies until you interact</li>
                 <li>Respects YouTube's privacy settings</li>
                 <li>Follows Google's privacy guidelines</li>
+            </ul>
+        </div>
+        
+        <div class="modal-section">
+            <h4><i class="fas fa-ad"></i> Advertising</h4>
+            <p>We use Google AdSense for ads. You can disable ads anytime in settings.</p>
+            <ul>
+                <li>Ads help support free development of this tool</li>
+                <li>All ads are served by Google AdSense</li>
+                <li>You can toggle ads on/off in the menu</li>
+                <li>No personalized ads are served</li>
             </ul>
         </div>
     `,
@@ -884,6 +1099,7 @@ const modalContents = {
                 <li><strong>No Bypassing:</strong> Do not use to bypass age or region restrictions</li>
                 <li><strong>Legal Content Only:</strong> Only watch legally available content</li>
                 <li><strong>No Abuse:</strong> Do not overload or abuse the service</li>
+                <li><strong>Ad Blocking:</strong> Please don't use ad blockers - ads support development</li>
             </ul>
         </div>
         
@@ -896,6 +1112,7 @@ const modalContents = {
                 <li>YouTube policy changes</li>
                 <li>Video takedowns or copyright issues</li>
                 <li>Browser compatibility issues</li>
+                <li>Ad content served by Google AdSense</li>
             </ul>
         </div>
     `,
@@ -933,6 +1150,14 @@ const modalContents = {
                     View Projects
                 </a>
             </div>
+            
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-ad"></i>
+                </div>
+                <h5>Ad Support</h5>
+                <p>Ads help keep this service free</p>
+            </div>
         </div>
         
         <div class="modal-section">
@@ -942,6 +1167,7 @@ const modalContents = {
                 <li><strong>Feature Requests:</strong> We welcome suggestions</li>
                 <li><strong>Questions:</strong> Feel free to reach out</li>
                 <li><strong>Feedback:</strong> Helps improve the player</li>
+                <li><strong>Ad Issues:</strong> Report inappropriate ads via AdSense</li>
             </ul>
         </div>
         
@@ -953,11 +1179,15 @@ const modalContents = {
 
 // --- Event Listeners ---
 function initializeEventListeners() {
-    // Initialize theme
+    // Initialize theme and ads
     initTheme();
+    initAds();
     
     // Theme toggle
     themeMenuToggle.addEventListener('click', toggleTheme);
+    
+    // Ads toggle
+    toggleAdsButton.addEventListener('click', toggleAds);
     
     // Video loading
     playButton.addEventListener('click', loadVideo);
@@ -1025,7 +1255,12 @@ function initializeEventListeners() {
     // Wake lock release
     window.addEventListener('beforeunload', releaseWakeLock);
     document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') releaseWakeLock();
+        if (document.visibilityState === 'hidden') {
+            releaseWakeLock();
+            stopAdRefreshInterval();
+        } else if (document.visibilityState === 'visible' && adsEnabled) {
+            startAdRefreshInterval();
+        }
     });
     
     // Auto-focus input on page load
@@ -1034,6 +1269,37 @@ function initializeEventListeners() {
             if (!videoLinkInput.value) videoLinkInput.focus();
         }, 500);
     });
+    
+    // Window resize for responsive ads
+    window.addEventListener('resize', handleWindowResize);
+    
+    // Check AdSense script loading
+    checkAdSenseLoaded();
+}
+
+function checkAdSenseLoaded() {
+    let checkCount = 0;
+    const maxChecks = 10;
+    
+    const checkInterval = setInterval(() => {
+        checkCount++;
+        
+        if (typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
+            console.log("✅ AdSense script loaded");
+            clearInterval(checkInterval);
+            
+            if (adsEnabled) {
+                setTimeout(loadAdSenseAds, 2000);
+            }
+        } else if (checkCount >= maxChecks) {
+            console.log("⚠️ AdSense script not loaded after multiple attempts");
+            clearInterval(checkInterval);
+            
+            if (adsEnabled) {
+                showAdPlaceholders();
+            }
+        }
+    }, 1000);
 }
 
 // --- Particles Background ---
@@ -1091,12 +1357,22 @@ function init() {
         }
     }, 500);
     
-    console.log("INFINITY Player v2.1 initialized");
-    console.log("Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info");
-    console.log("New Features: Auto-load from URL, Share functionality");
+    console.log("INFINITY Player v2.2 initialized");
+    console.log("Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info, AdSense Integration");
+    console.log("AdSense: " + (adsEnabled ? "Enabled" : "Disabled"));
     console.log("Theme: " + (isDarkMode ? "Dark" : "Light"));
     console.log("History Items: " + (JSON.parse(localStorage.getItem('videoHistory') || '[]').length));
     console.log("Menu: Closed by default");
+    
+    // Initialize ads after a delay
+    if (adsEnabled) {
+        setTimeout(() => {
+            if (typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
+                loadAdSenseAds();
+                startAdRefreshInterval();
+            }
+        }, 3000);
+    }
 }
 
 // Start the application

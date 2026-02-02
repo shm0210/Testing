@@ -1,6 +1,6 @@
 // ============================
 // INFINITY YouTube Player JS
-// Enhanced Version with Fixed Menu & AdSense Integration
+// Enhanced Version with Admin-Controlled AdSense
 // ============================
 
 // --- Element References ---
@@ -46,19 +46,26 @@ const bottomAdContainer = document.getElementById('bottom-ad');
 // Modal Elements
 const infoModal = document.getElementById('info-modal');
 const shortcutsModal = document.getElementById('shortcuts-modal');
+const adminModal = document.getElementById('admin-modal') || createAdminModal();
 const modalTitle = document.getElementById('modal-title');
 const modalContent = document.getElementById('modal-content');
 const closeModalButtons = document.querySelectorAll('.close-modal');
 
 // --- State Variables ---
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
-let adsEnabled = localStorage.getItem('adsEnabled') !== 'false'; // Default to true
 let currentVideoId = null;
 let currentVideoData = null;
 let wakeLock = null;
 let isMenuOpen = false;
 let adSlots = {};
 let adInterval = null;
+
+// --- ADMIN CONTROL VARIABLES ---
+let adsEnabled = true; // Default to enabled
+let adminPassword = "infinity123"; // CHANGE THIS TO YOUR PASSWORD
+let whitelistedUsers = []; // Array of user identifiers
+let adminLoggedIn = false;
+let globalAdsEnabled = true; // Master switch controlled by admin
 
 // --- YouTube API Integration ---
 let ytAPILoaded = false;
@@ -72,6 +79,307 @@ if (window.YT && window.YT.loaded) {
         ytAPILoaded = true;
         console.log("✅ YouTube API Ready");
     };
+}
+
+// --- Admin Modal Creation ---
+function createAdminModal() {
+    const modal = document.createElement('div');
+    modal.id = 'admin-modal';
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content admin-modal-content">
+            <span class="close-admin-modal close-modal">&times;</span>
+            <h3><i class="fas fa-user-shield"></i> Admin Control Panel</h3>
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h4><i class="fas fa-toggle-on"></i> Global Ad Settings</h4>
+                    <div class="admin-control">
+                        <label class="admin-switch">
+                            <input type="checkbox" id="global-ads-toggle" checked>
+                            <span class="admin-slider"></span>
+                        </label>
+                        <span>Global Ads Status: <strong id="global-ads-status">Enabled</strong></span>
+                    </div>
+                    <p class="admin-note">When disabled, ads won't show for ANY user</p>
+                </div>
+                
+                <div class="admin-section">
+                    <h4><i class="fas fa-user-check"></i> User Whitelist</h4>
+                    <div class="whitelist-control">
+                        <input type="text" id="whitelist-input" placeholder="Enter user identifier (IP/ID)">
+                        <button id="add-whitelist" class="admin-btn"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                    <div class="whitelist-container">
+                        <h5>Whitelisted Users:</h5>
+                        <div id="whitelist-display" class="whitelist-display">
+                            <p class="empty-whitelist">No users whitelisted yet</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h4><i class="fas fa-cog"></i> Admin Settings</h4>
+                    <div class="admin-control">
+                        <label>Change Admin Password:</label>
+                        <div class="password-control">
+                            <input type="password" id="new-password" placeholder="New password">
+                            <button id="save-password" class="admin-btn"><i class="fas fa-save"></i> Save</button>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-control">
+                        <label>Current User Status:</label>
+                        <div id="user-status" class="user-status">
+                            <i class="fas fa-user"></i> 
+                            <span id="current-user-id">Loading user ID...</span>
+                            <span id="user-ads-status" class="status-badge">Checking...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-stats">
+                    <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-users">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="ads-shown">0</div>
+                            <div class="stat-label">Ads Shown</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="whitelist-count">0</div>
+                            <div class="stat-label">Whitelisted</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-actions">
+                    <button id="export-data" class="admin-btn secondary"><i class="fas fa-download"></i> Export Data</button>
+                    <button id="reset-all" class="admin-btn danger"><i class="fas fa-trash"></i> Reset All</button>
+                    <button id="logout-admin" class="admin-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+// --- Admin Functions ---
+function initAdminSystem() {
+    // Load saved admin settings
+    const savedSettings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+    globalAdsEnabled = savedSettings.globalAdsEnabled !== false; // Default to true
+    whitelistedUsers = savedSettings.whitelistedUsers || [];
+    adminPassword = savedSettings.adminPassword || "infinity123";
+    
+    // Get or create user ID
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+        userId = generateUserId();
+        localStorage.setItem('userId', userId);
+    }
+    
+    // Check if user should see ads
+    adsEnabled = shouldShowAds(userId);
+    
+    // Update UI
+    updateAdminUI();
+    updateUserStatus(userId);
+    updateStats();
+}
+
+function generateUserId() {
+    // Generate a unique user ID
+    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function shouldShowAds(userId) {
+    // Check if global ads are enabled
+    if (!globalAdsEnabled) return false;
+    
+    // Check if user is whitelisted
+    return whitelistedUsers.includes(userId);
+}
+
+function updateAdminUI() {
+    const globalAdsToggle = document.getElementById('global-ads-toggle');
+    const globalAdsStatus = document.getElementById('global-ads-status');
+    
+    if (globalAdsToggle) {
+        globalAdsToggle.checked = globalAdsEnabled;
+        globalAdsStatus.textContent = globalAdsEnabled ? "Enabled" : "Disabled";
+        globalAdsStatus.className = globalAdsEnabled ? "status-enabled" : "status-disabled";
+    }
+    
+    // Update whitelist display
+    updateWhitelistDisplay();
+    
+    // Update user status
+    const userId = localStorage.getItem('userId');
+    updateUserStatus(userId);
+}
+
+function updateUserStatus(userId) {
+    const userStatusElement = document.getElementById('user-status');
+    const currentUserIdElement = document.getElementById('current-user-id');
+    const userAdsStatusElement = document.getElementById('user-ads-status');
+    
+    if (userStatusElement && currentUserIdElement && userAdsStatusElement) {
+        currentUserIdElement.textContent = userId.substring(0, 12) + '...';
+        
+        const showAds = shouldShowAds(userId);
+        userAdsStatusElement.textContent = showAds ? "Will see ads" : "No ads";
+        userAdsStatusElement.className = showAds ? "status-badge status-ads" : "status-badge status-no-ads";
+    }
+}
+
+function updateWhitelistDisplay() {
+    const whitelistDisplay = document.getElementById('whitelist-display');
+    if (!whitelistDisplay) return;
+    
+    if (whitelistedUsers.length === 0) {
+        whitelistDisplay.innerHTML = '<p class="empty-whitelist">No users whitelisted yet</p>';
+        return;
+    }
+    
+    whitelistDisplay.innerHTML = whitelistedUsers.map((userId, index) => `
+        <div class="whitelist-item">
+            <span class="user-id">${userId.substring(0, 10)}...</span>
+            <button class="remove-user" data-index="${index}" title="Remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    // Add event listeners to remove buttons
+    document.querySelectorAll('.remove-user').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            removeFromWhitelist(index);
+        });
+    });
+}
+
+function updateStats() {
+    const totalUsersElement = document.getElementById('total-users');
+    const adsShownElement = document.getElementById('ads-shown');
+    const whitelistCountElement = document.getElementById('whitelist-count');
+    
+    if (totalUsersElement) {
+        // Count unique users from localStorage
+        const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+        totalUsersElement.textContent = allUsers.length;
+    }
+    
+    if (adsShownElement) {
+        const adsShown = parseInt(localStorage.getItem('adsShown') || '0');
+        adsShownElement.textContent = adsShown;
+    }
+    
+    if (whitelistCountElement) {
+        whitelistCountElement.textContent = whitelistedUsers.length;
+    }
+}
+
+function saveAdminSettings() {
+    const settings = {
+        globalAdsEnabled,
+        whitelistedUsers,
+        adminPassword,
+        lastUpdated: new Date().toISOString()
+    };
+    localStorage.setItem('adminSettings', JSON.stringify(settings));
+}
+
+function addToWhitelist(userId) {
+    if (!userId || userId.trim() === '') {
+        showError("Please enter a valid user ID");
+        return;
+    }
+    
+    if (!whitelistedUsers.includes(userId)) {
+        whitelistedUsers.push(userId);
+        saveAdminSettings();
+        updateWhitelistDisplay();
+        updateStats();
+        showSuccess(`User ${userId.substring(0, 10)}... added to whitelist`);
+        
+        // Track user in all users list
+        const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+        if (!allUsers.includes(userId)) {
+            allUsers.push(userId);
+            localStorage.setItem('allUsers', JSON.stringify(allUsers));
+        }
+    } else {
+        showError("User already in whitelist");
+    }
+}
+
+function removeFromWhitelist(index) {
+    if (index >= 0 && index < whitelistedUsers.length) {
+        const removedUser = whitelistedUsers[index];
+        whitelistedUsers.splice(index, 1);
+        saveAdminSettings();
+        updateWhitelistDisplay();
+        updateStats();
+        showSuccess(`User ${removedUser.substring(0, 10)}... removed from whitelist`);
+    }
+}
+
+function toggleGlobalAds() {
+    globalAdsEnabled = !globalAdsEnabled;
+    saveAdminSettings();
+    updateAdminUI();
+    
+    const userId = localStorage.getItem('userId');
+    adsEnabled = shouldShowAds(userId);
+    
+    if (adsEnabled) {
+        loadAdSenseAds();
+        startAdRefreshInterval();
+    } else {
+        hideAllAds();
+        stopAdRefreshInterval();
+    }
+    
+    showSuccess(`Global ads ${globalAdsEnabled ? 'enabled' : 'disabled'}`);
+}
+
+function showAdminLogin() {
+    const password = prompt("Enter admin password:");
+    if (password === adminPassword) {
+        adminLoggedIn = true;
+        showAdminPanel();
+        showSuccess("Admin login successful");
+    } else if (password !== null) {
+        showError("Incorrect password");
+    }
+}
+
+function showAdminPanel() {
+    if (!adminLoggedIn) {
+        showAdminLogin();
+        return;
+    }
+    
+    const adminModal = document.getElementById('admin-modal');
+    if (adminModal) {
+        adminModal.classList.add('show');
+        updateAdminUI();
+        updateStats();
+    }
+}
+
+function logoutAdmin() {
+    adminLoggedIn = false;
+    const adminModal = document.getElementById('admin-modal');
+    if (adminModal) {
+        adminModal.classList.remove('show');
+    }
+    showSuccess("Logged out from admin panel");
 }
 
 // --- Theme Management ---
@@ -92,7 +400,8 @@ function toggleTheme() {
 
 // --- AdSense Management ---
 function initAds() {
-    adsEnabled = localStorage.getItem('adsEnabled') !== 'false';
+    const userId = localStorage.getItem('userId');
+    adsEnabled = shouldShowAds(userId);
     adsStatus.textContent = adsEnabled ? "On" : "Off";
     
     if (adsEnabled) {
@@ -104,31 +413,34 @@ function initAds() {
 }
 
 function toggleAds() {
-    adsEnabled = !adsEnabled;
-    localStorage.setItem('adsEnabled', adsEnabled);
-    adsStatus.textContent = adsEnabled ? "On" : "Off";
-    
-    if (adsEnabled) {
-        loadAdSenseAds();
-        startAdRefreshInterval();
-        showSuccess("Ads enabled");
-    } else {
-        hideAllAds();
-        stopAdRefreshInterval();
-        showSuccess("Ads disabled");
+    // For regular users, show message that only admin can change
+    if (!adminLoggedIn) {
+        showError("Only admin can change ad settings");
+        showAdminLogin();
+        return;
     }
+    
+    // For admin, toggle global setting
+    toggleGlobalAds();
 }
 
 function loadAdSenseAds() {
-    // Clear existing ads first
+    // Clear existing ads
     hideAllAds();
+    
+    // Check if ads should be shown for this user
+    const userId = localStorage.getItem('userId');
+    if (!shouldShowAds(userId)) {
+        showAdPlaceholders("Ads disabled for your account");
+        return;
+    }
     
     // Show containers
     if (inlineAdContainer) inlineAdContainer.style.display = 'flex';
     if (bottomAdContainer) bottomAdContainer.style.display = 'flex';
     if (sidebarAdContainer && window.innerWidth > 768) sidebarAdContainer.style.display = 'flex';
     
-    // Load ads after a short delay to ensure DOM is ready
+    // Load ads after a short delay
     setTimeout(() => {
         if (adsEnabled && typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
             
@@ -147,6 +459,9 @@ function loadAdSenseAds() {
                     
                     // Push the ad
                     (adsbygoogle = window.adsbygoogle || []).push({});
+                    
+                    // Track ad shown
+                    trackAdShown();
                     
                     console.log("✅ Inline ad loaded");
                 } catch (error) {
@@ -204,7 +519,14 @@ function loadAdSenseAds() {
             console.log("⚠️ AdSense not available or ads disabled");
             showAdPlaceholders();
         }
-    }, 1500); // Wait 1.5 seconds to ensure page is fully loaded
+    }, 1500);
+}
+
+function trackAdShown() {
+    let adsShown = parseInt(localStorage.getItem('adsShown') || '0');
+    adsShown++;
+    localStorage.setItem('adsShown', adsShown.toString());
+    updateStats();
 }
 
 function hideAllAds() {
@@ -214,18 +536,18 @@ function hideAllAds() {
             container.innerHTML = `
                 <div class="ad-placeholder">
                     <i class="fas fa-ad"></i>
-                    <p>Ads are currently disabled</p>
-                    <small>Enable in settings to see ads</small>
+                    <p>Ads are disabled</p>
+                    <small>Contact admin for access</small>
                 </div>
             `;
         }
     });
 }
 
-function showAdPlaceholders() {
+function showAdPlaceholders(message = "Advertisement") {
     [inlineAdContainer, sidebarAdContainer, bottomAdContainer].forEach(container => {
         if (container) {
-            showAdPlaceholder(container, "Advertisement");
+            showAdPlaceholder(container, message);
         }
     });
 }
@@ -272,7 +594,7 @@ function handleWindowResize() {
     }
 }
 
-// --- Menu System (FIXED) ---
+// --- Menu System ---
 function toggleMenu() {
     if (isMenuOpen) {
         closeMenu();
@@ -911,12 +1233,20 @@ function handleKeyboardShortcuts(event) {
             event.preventDefault();
             if (!isMenuOpen) toggleMenu();
             break;
+        case '0': // Admin panel shortcut (Ctrl+0 or just 0)
+            if (event.ctrlKey || event.metaKey) {
+                event.preventDefault();
+                showAdminLogin();
+            }
+            break;
         case 'escape':
             event.preventDefault();
             if (isMenuOpen) {
                 closeMenu();
             } else if (infoModal.classList.contains('show') || shortcutsModal.classList.contains('show')) {
                 closeModals();
+            } else if (document.getElementById('admin-modal') && document.getElementById('admin-modal').classList.contains('show')) {
+                logoutAdmin();
             } else if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
@@ -979,6 +1309,8 @@ function showModal(title, content) {
 function closeModals() {
     infoModal.classList.remove('show');
     shortcutsModal.classList.remove('show');
+    const adminModal = document.getElementById('admin-modal');
+    if (adminModal) adminModal.classList.remove('show');
 }
 
 // --- Modal Content ---
@@ -1002,7 +1334,7 @@ const modalContents = {
                 <li><strong>Wake Lock:</strong> Screen stays on during playback</li>
                 <li><strong>Auto-load:</strong> Load videos directly from URL parameters</li>
                 <li><strong>Share:</strong> Generate shareable links</li>
-                <li><strong>Ad Support:</strong> Optional ads to support development</li>
+                <li><strong>Admin Controls:</strong> Whitelist system for ad management</li>
             </ul>
         </div>
         
@@ -1018,12 +1350,13 @@ const modalContents = {
                 <span>Wake Lock API</span>
                 <span>Web Share API</span>
                 <span>Google AdSense</span>
+                <span>Admin System</span>
             </div>
         </div>
         
         <div class="modal-signature">
             <p>Crafted with <i class="fas fa-heart"></i> by Shubham</p>
-            <p class="version">v2.2 • Enhanced with AdSense Integration</p>
+            <p class="version">v2.3 • Enhanced with Admin Controls</p>
         </div>
     `,
     
@@ -1049,7 +1382,7 @@ const modalContents = {
                 <li><strong>Video History:</strong> Last 20 videos (browser storage only)</li>
                 <li><strong>Theme Preference:</strong> Your dark/light mode choice</li>
                 <li><strong>Video Cache:</strong> Temporary video metadata (24 hours)</li>
-                <li><strong>Ad Preference:</strong> Your ads enabled/disabled setting</li>
+                <li><strong>User ID:</strong> Anonymous identifier for ad control</li>
             </ul>
             <p class="note">All data is stored locally in your browser and never sent to any server.</p>
         </div>
@@ -1065,13 +1398,13 @@ const modalContents = {
         </div>
         
         <div class="modal-section">
-            <h4><i class="fas fa-ad"></i> Advertising</h4>
-            <p>We use Google AdSense for ads. You can disable ads anytime in settings.</p>
+            <h4><i class="fas fa-ad"></i> Advertising System</h4>
+            <p>We use a whitelist-based ad system:</p>
             <ul>
-                <li>Ads help support free development of this tool</li>
-                <li>All ads are served by Google AdSense</li>
-                <li>You can toggle ads on/off in the menu</li>
-                <li>No personalized ads are served</li>
+                <li>Ads are shown only to whitelisted users</li>
+                <li>Admin controls who sees ads</li>
+                <li>Regular users cannot change ad settings</li>
+                <li>Ads help support free development</li>
             </ul>
         </div>
     `,
@@ -1093,13 +1426,12 @@ const modalContents = {
         </div>
         
         <div class="modal-section">
-            <h4><i class="fas fa-exclamation-triangle"></i> Usage Restrictions</h4>
+            <h4><i class="fas fa-user-shield"></i> Admin System</h4>
             <ul>
-                <li><strong>Personal Use Only:</strong> For individual, non-commercial use</li>
-                <li><strong>No Bypassing:</strong> Do not use to bypass age or region restrictions</li>
-                <li><strong>Legal Content Only:</strong> Only watch legally available content</li>
-                <li><strong>No Abuse:</strong> Do not overload or abuse the service</li>
-                <li><strong>Ad Blocking:</strong> Please don't use ad blockers - ads support development</li>
+                <li>Only admin can control ad settings</li>
+                <li>Users are assigned anonymous IDs</li>
+                <li>Admin can whitelist specific users for ads</li>
+                <li>Attempting to bypass admin controls is prohibited</li>
             </ul>
         </div>
         
@@ -1143,12 +1475,10 @@ const modalContents = {
             
             <div class="contact-card">
                 <div class="contact-icon">
-                    <i class="fas fa-code"></i>
+                    <i class="fas fa-user-shield"></i>
                 </div>
-                <h5>GitHub</h5>
-                <a href="https://github.com/" target="_blank">
-                    View Projects
-                </a>
+                <h5>Admin Access</h5>
+                <p>Contact for ad whitelisting</p>
             </div>
             
             <div class="contact-card">
@@ -1156,7 +1486,7 @@ const modalContents = {
                     <i class="fas fa-ad"></i>
                 </div>
                 <h5>Ad Support</h5>
-                <p>Ads help keep this service free</p>
+                <p>Whitelist system for ads</p>
             </div>
         </div>
         
@@ -1165,8 +1495,7 @@ const modalContents = {
             <ul>
                 <li><strong>Bug Reports:</strong> DM on Instagram with details</li>
                 <li><strong>Feature Requests:</strong> We welcome suggestions</li>
-                <li><strong>Questions:</strong> Feel free to reach out</li>
-                <li><strong>Feedback:</strong> Helps improve the player</li>
+                <li><strong>Admin Access:</strong> Contact for whitelisting</li>
                 <li><strong>Ad Issues:</strong> Report inappropriate ads via AdSense</li>
             </ul>
         </div>
@@ -1179,14 +1508,15 @@ const modalContents = {
 
 // --- Event Listeners ---
 function initializeEventListeners() {
-    // Initialize theme and ads
+    // Initialize theme, admin system, and ads
     initTheme();
+    initAdminSystem();
     initAds();
     
     // Theme toggle
     themeMenuToggle.addEventListener('click', toggleTheme);
     
-    // Ads toggle
+    // Ads toggle - shows admin login for regular users
     toggleAdsButton.addEventListener('click', toggleAds);
     
     // Video loading
@@ -1252,6 +1582,9 @@ function initializeEventListeners() {
         });
     });
     
+    // Admin panel event listeners
+    setupAdminEventListeners();
+    
     // Wake lock release
     window.addEventListener('beforeunload', releaseWakeLock);
     document.addEventListener('visibilitychange', () => {
@@ -1275,6 +1608,114 @@ function initializeEventListeners() {
     
     // Check AdSense script loading
     checkAdSenseLoaded();
+}
+
+function setupAdminEventListeners() {
+    const adminModal = document.getElementById('admin-modal');
+    if (!adminModal) return;
+    
+    // Global ads toggle
+    const globalAdsToggle = document.getElementById('global-ads-toggle');
+    if (globalAdsToggle) {
+        globalAdsToggle.addEventListener('change', toggleGlobalAds);
+    }
+    
+    // Add to whitelist
+    const addWhitelistBtn = document.getElementById('add-whitelist');
+    const whitelistInput = document.getElementById('whitelist-input');
+    if (addWhitelistBtn && whitelistInput) {
+        addWhitelistBtn.addEventListener('click', () => {
+            addToWhitelist(whitelistInput.value.trim());
+            whitelistInput.value = '';
+        });
+        
+        whitelistInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addToWhitelist(whitelistInput.value.trim());
+                whitelistInput.value = '';
+            }
+        });
+    }
+    
+    // Save password
+    const savePasswordBtn = document.getElementById('save-password');
+    const newPasswordInput = document.getElementById('new-password');
+    if (savePasswordBtn && newPasswordInput) {
+        savePasswordBtn.addEventListener('click', () => {
+            if (newPasswordInput.value.trim().length >= 6) {
+                adminPassword = newPasswordInput.value.trim();
+                saveAdminSettings();
+                newPasswordInput.value = '';
+                showSuccess("Password updated successfully");
+            } else {
+                showError("Password must be at least 6 characters");
+            }
+        });
+    }
+    
+    // Export data
+    const exportDataBtn = document.getElementById('export-data');
+    if (exportDataBtn) {
+        exportDataBtn.addEventListener('click', exportAdminData);
+    }
+    
+    // Reset all
+    const resetAllBtn = document.getElementById('reset-all');
+    if (resetAllBtn) {
+        resetAllBtn.addEventListener('click', () => {
+            if (confirm("Are you sure you want to reset ALL admin data? This cannot be undone.")) {
+                resetAllAdminData();
+            }
+        });
+    }
+    
+    // Logout
+    const logoutBtn = document.getElementById('logout-admin');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logoutAdmin);
+    }
+    
+    // Close admin modal
+    adminModal.addEventListener('click', (e) => {
+        if (e.target === adminModal) logoutAdmin();
+    });
+}
+
+function exportAdminData() {
+    const data = {
+        adminSettings: JSON.parse(localStorage.getItem('adminSettings') || '{}'),
+        allUsers: JSON.parse(localStorage.getItem('allUsers') || '[]'),
+        adsShown: localStorage.getItem('adsShown') || '0',
+        exportDate: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `infinity-admin-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showSuccess("Admin data exported successfully");
+}
+
+function resetAllAdminData() {
+    localStorage.removeItem('adminSettings');
+    localStorage.removeItem('allUsers');
+    localStorage.removeItem('adsShown');
+    
+    // Reset variables
+    globalAdsEnabled = true;
+    whitelistedUsers = [];
+    adminPassword = "infinity123";
+    
+    initAdminSystem();
+    showSuccess("All admin data has been reset");
 }
 
 function checkAdSenseLoaded() {
@@ -1357,12 +1798,13 @@ function init() {
         }
     }, 500);
     
-    console.log("INFINITY Player v2.2 initialized");
-    console.log("Features: YouTube API, Video Metadata, Enhanced Menu, Real-time Info, AdSense Integration");
-    console.log("AdSense: " + (adsEnabled ? "Enabled" : "Disabled"));
+    console.log("INFINITY Player v2.3 initialized");
+    console.log("Features: YouTube API, Admin Controls, Whitelist System, AdSense Integration");
+    console.log("AdSense: " + (adsEnabled ? "Enabled for this user" : "Disabled for this user"));
     console.log("Theme: " + (isDarkMode ? "Dark" : "Light"));
     console.log("History Items: " + (JSON.parse(localStorage.getItem('videoHistory') || '[]').length));
     console.log("Menu: Closed by default");
+    console.log("Admin Password: " + adminPassword); // Remove this in production!
     
     // Initialize ads after a delay
     if (adsEnabled) {

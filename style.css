@@ -1242,3 +1242,352 @@ body {
         padding: 15px;
     }
 }
+/* Admin Panel Styles */
+.admin-modal-content {
+    max-width: 700px;
+    width: 95%;
+}
+
+.admin-panel {
+    margin-top: 20px;
+}
+
+.admin-section {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-section h4 {
+    color: var(--button-bg);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.admin-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.admin-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.admin-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.admin-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.admin-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .admin-slider {
+    background-color: var(--button-bg);
+}
+
+input:checked + .admin-slider:before {
+    transform: translateX(30px);
+}
+
+.admin-note {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.whitelist-control {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.whitelist-control input {
+    flex: 1;
+    padding: 10px 15px;
+    background: var(--input-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    color: var(--text-color);
+    outline: none;
+}
+
+.admin-btn {
+    background: var(--button-bg);
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-speed);
+}
+
+.admin-btn:hover {
+    background: var(--button-hover-bg);
+    transform: translateY(-2px);
+}
+
+.admin-btn.secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.admin-btn.danger {
+    background: #dc3545;
+    color: white;
+}
+
+.whitelist-container {
+    margin-top: 15px;
+}
+
+.whitelist-container h5 {
+    margin-bottom: 10px;
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.whitelist-display {
+    max-height: 150px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.empty-whitelist {
+    text-align: center;
+    padding: 20px;
+    opacity: 0.5;
+    font-size: 0.9rem;
+}
+
+.whitelist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.whitelist-item:last-child {
+    margin-bottom: 0;
+}
+
+.user-id {
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.remove-user {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: var(--transition-speed);
+    padding: 5px;
+}
+
+.remove-user:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.password-control {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.password-control input {
+    flex: 1;
+    padding: 10px 15px;
+    background: var(--input-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    color: var(--text-color);
+    outline: none;
+}
+
+.user-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.status-ads {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.status-no-ads {
+    background: rgba(255, 71, 87, 0.2);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.3);
+}
+
+.status-enabled {
+    color: #2ecc71;
+}
+
+.status-disabled {
+    color: #ff4757;
+}
+
+.admin-stats {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--button-bg);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Admin menu item */
+.admin-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    background: var(--card-bg);
+    border: none;
+    border-radius: 8px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition-speed);
+    text-align: left;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.admin-menu-item:hover {
+    background: rgba(255, 193, 7, 0.1);
+    transform: translateX(5px);
+}
+
+.admin-menu-item i {
+    width: 20px;
+    color: #ffc107;
+}
+
+/* Responsive admin panel */
+@media (max-width: 768px) {
+    .admin-modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-control {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .whitelist-control {
+        flex-direction: column;
+    }
+    
+    .password-control {
+        flex-direction: column;
+    }
+    
+    .admin-actions {
+        flex-direction: column;
+    }
+    
+    .admin-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

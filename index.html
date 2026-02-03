@@ -1,360 +1,1358 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>INFINITY YouTube Player</title>
-    <meta name="description" content="A privacy-focused YouTube player with minimal interface for better focus and content viewing.">
-    <meta name="theme-color" content="#00e0ff">
-    <meta name="author" content="Shubham" />
-    <meta property="og:title" content="INFINITY YouTube Player — Minimal Interface" />
-    <meta property="og:description" content="A privacy-focused YouTube player using nocookie mode. Minimal interface for focused viewing." />
-    <meta property="og:image" content="https://static.pw.live/5b09189f7285894d9130ccd0/59794d57-bb52-4efb-aba4-f0519a16fc7e.png" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://shminfinity.fun/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Multiverse - Digital Universe Portfolio</title>
+    <meta name="description" content="Explore SHUBHAM's cosmic digital universe - 3D interactive portfolio with AR preview, achievements, and immersive web experiences">
     
-    <!-- Step 1: AdSense Auto Ads Script -->
-    <!-- REPLACE YOUR_PUBLISHER_ID with your actual AdSense Publisher ID -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- Updated Content Security Policy for AdSense -->
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self'; 
-        script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.youtube.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagmanager.com https://www.google-analytics.com; 
-        style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; 
-        img-src 'self' https: data: blob: https://googleads.g.doubleclick.net https://www.googlesyndication.com https://stats.g.doubleclick.net https://www.google.com https://ssl.gstatic.com; 
-        frame-src https://www.youtube-nocookie.com https://www.youtube.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://securepubads.g.doubleclick.net; 
-        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
-        connect-src 'self' https://www.youtube.com https://noembed.com https://img.youtube.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google-analytics.com;
-        media-src 'self' https:;
-    ">
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="Infinity Multiverse - Digital Universe Portfolio">
+    <meta property="og:description" content="3D interactive portfolio showcasing cosmic web creations across multiple dimensions">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=1471&q=80">
+    <meta property="og:url" content="https://infinitymultiverse.dev">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Infinity Multiverse">
+    <meta name="twitter:description" content="Cosmic digital portfolio by SHUBHAM (@I.SHUBHAM0210)">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=1471&q=80">
     
-    <!-- YouTube API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
     
-    <link rel="icon" href="https://www.youtube.com/s/desktop/5b55d6d2/img/favicon_32x32.png" type="image/png">
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" as="script">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'orbitron': ['Orbitron', 'monospace']
+                    },
+                    colors: {
+                        'cosmic-black': '#000000',
+                        'nebula-purple': '#3a0ca3',
+                        'star-yellow': '#ffd700',
+                        'quantum-blue': '#00e0ff',
+                        'supernova': '#ff6b6b',
+                        'warp-speed': '#00ff88',
+                        'dark-matter': '#1a1a2e',
+                        'cosmic-dust': '#2d3047',
+                        'stellar-white': '#f8fafc',
+                        'black-hole': '#0a0a0a',
+                        'galaxy-blue': '#1e40af',
+                        'quantum-purple': '#7c3aed'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+                        'twinkle': 'twinkle 3s infinite',
+                        'nebula': 'nebula 20s ease-in-out infinite',
+                        'orbit': 'orbit 60s linear infinite',
+                        'shooting-star': 'shooting-star 10s linear infinite',
+                        'hologram': 'hologram 3s ease-in-out infinite',
+                        'quantum-spin': 'quantum-spin 2s linear infinite',
+                        'warp': 'warp 1s linear infinite',
+                        'pulse-aurora': 'pulse-aurora 4s ease-in-out infinite',
+                        'gravity-pull': 'gravity-pull 0.5s ease-out',
+                        'dimension-flip': 'dimension-flip 0.8s ease-in-out',
+                        'particle-explosion': 'particle-explosion 0.6s ease-out',
+                        'cosmic-rift': 'cosmic-rift 2s ease-in-out infinite',
+                        'achievement-pop': 'achievement-pop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                        'wormhole': 'wormhole 3s ease-in-out infinite',
+                        'quantum-fluctuation': 'quantum-fluctuation 5s ease-in-out infinite',
+                        'stellar-pulse': 'stellar-pulse 2s ease-in-out infinite',
+                        'galaxy-rotate': 'galaxy-rotate 120s linear infinite',
+                        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'gradient-shift': 'gradient-shift 3s ease infinite',
+                        'typing': 'typing 3.5s steps(40, end)',
+                        'blink-caret': 'blink-caret .75s step-end infinite',
+                        'slide-up': 'slide-up 0.5s ease-out',
+                        'slide-down': 'slide-down 0.5s ease-out',
+                        'fade-in': 'fade-in 0.5s ease-out',
+                        'scale-up': 'scale-up 0.3s ease-out',
+                        'rotate-3d': 'rotate-3d 10s linear infinite',
+                        'particle-flow': 'particle-flow 20s linear infinite',
+                        'nebula-pulse': 'nebula-pulse 4s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(5deg)' }
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, filter: 'brightness(1)' },
+                            '50%': { opacity: 0.8, filter: 'brightness(1.2)' }
+                        },
+                        twinkle: {
+                            '0%, 100%': { opacity: 0.2 },
+                            '50%': { opacity: 1 }
+                        },
+                        nebula: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' }
+                        },
+                        orbit: {
+                            '0%': { transform: 'rotate(0deg) translateX(200px) rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg) translateX(200px) rotate(-360deg)' }
+                        },
+                        'shooting-star': {
+                            '0%': { transform: 'translateX(-100vw) translateY(-100vh) rotate(45deg)', opacity: 0 },
+                            '10%': { opacity: 1 },
+                            '90%': { opacity: 1 },
+                            '100%': { transform: 'translateX(100vw) translateY(100vh) rotate(45deg)', opacity: 0 }
+                        },
+                        hologram: {
+                            '0%, 100%': { 
+                                backgroundPosition: '0% 50%',
+                                opacity: 0.7,
+                                filter: 'hue-rotate(0deg)'
+                            },
+                            '50%': { 
+                                backgroundPosition: '100% 50%',
+                                opacity: 1,
+                                filter: 'hue-rotate(180deg)'
+                            }
+                        },
+                        'quantum-spin': {
+                            '0%': { 
+                                transform: 'rotate(0deg) scale(1)',
+                                filter: 'hue-rotate(0deg) brightness(1)'
+                            },
+                            '50%': { 
+                                transform: 'rotate(180deg) scale(1.1)',
+                                filter: 'hue-rotate(180deg) brightness(1.2)'
+                            },
+                            '100%': { 
+                                transform: 'rotate(360deg) scale(1)',
+                                filter: 'hue-rotate(360deg) brightness(1)'
+                            }
+                        },
+                        warp: {
+                            '0%': { transform: 'scale(1) translateX(0)', filter: 'blur(0px)' },
+                            '50%': { transform: 'scale(0.8) translateX(-50px)', filter: 'blur(2px)' },
+                            '100%': { transform: 'scale(1) translateX(0)', filter: 'blur(0px)' }
+                        },
+                        'pulse-aurora': {
+                            '0%, 100%': { 
+                                boxShadow: '0 0 20px rgba(0, 224, 255, 0.5), 0 0 40px rgba(138, 43, 226, 0.3)',
+                                transform: 'scale(1)'
+                            },
+                            '50%': { 
+                                boxShadow: '0 0 40px rgba(0, 224, 255, 0.8), 0 0 80px rgba(138, 43, 226, 0.5)',
+                                transform: 'scale(1.05)'
+                            }
+                        },
+                        'gravity-pull': {
+                            '0%': { transform: 'scale(1) translateY(0)' },
+                            '50%': { transform: 'scale(0.95) translateY(-5px)' },
+                            '100%': { transform: 'scale(1) translateY(0)' }
+                        },
+                        'dimension-flip': {
+                            '0%': { 
+                                transform: 'perspective(1000px) rotateY(0deg) scale(1)',
+                                opacity: 1
+                            },
+                            '50%': { 
+                                transform: 'perspective(1000px) rotateY(90deg) scale(0.9)',
+                                opacity: 0.5
+                            },
+                            '100%': { 
+                                transform: 'perspective(1000px) rotateY(0deg) scale(1)',
+                                opacity: 1
+                            }
+                        },
+                        'particle-explosion': {
+                            '0%': { 
+                                transform: 'scale(0) rotate(0deg) translate(0, 0)',
+                                opacity: 1
+                            },
+                            '100%': { 
+                                transform: 'scale(3) rotate(180deg) translate(var(--tx), var(--ty))',
+                                opacity: 0
+                            }
+                        },
+                        'cosmic-rift': {
+                            '0%, 100%': { 
+                                backgroundPosition: '0% 50%',
+                                filter: 'hue-rotate(0deg) brightness(1)'
+                            },
+                            '50%': { 
+                                backgroundPosition: '100% 50%',
+                                filter: 'hue-rotate(180deg) brightness(1.2)'
+                            }
+                        },
+                        'achievement-pop': {
+                            '0%': { 
+                                transform: 'scale(0) rotate(-180deg)',
+                                opacity: 0
+                            },
+                            '70%': { 
+                                transform: 'scale(1.2) rotate(10deg)',
+                                opacity: 1
+                            },
+                            '100%': { 
+                                transform: 'scale(1) rotate(0deg)',
+                                opacity: 1
+                            }
+                        },
+                        'wormhole': {
+                            '0%, 100%': { 
+                                transform: 'rotate(0deg) scale(1)',
+                                filter: 'blur(0px) brightness(1)'
+                            },
+                            '50%': { 
+                                transform: 'rotate(180deg) scale(1.5)',
+                                filter: 'blur(5px) brightness(1.5)'
+                            }
+                        },
+                        'quantum-fluctuation': {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg) scale(1)' },
+                            '25%': { transform: 'translateY(-10px) rotate(5deg) scale(1.02)' },
+                            '75%': { transform: 'translateY(10px) rotate(-5deg) scale(0.98)' }
+                        },
+                        'stellar-pulse': {
+                            '0%, 100%': { 
+                                boxShadow: '0 0 10px currentColor, 0 0 20px currentColor',
+                                transform: 'scale(1)'
+                            },
+                            '50%': { 
+                                boxShadow: '0 0 30px currentColor, 0 0 60px currentColor',
+                                transform: 'scale(1.1)'
+                            }
+                        },
+                        'galaxy-rotate': {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' }
+                        },
+                        pulse: {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: .5 }
+                        },
+                        spin: {
+                            'from': { transform: 'rotate(0deg)' },
+                            'to': { transform: 'rotate(360deg)' }
+                        },
+                        bounce: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-25%)' }
+                        },
+                        'gradient-shift': {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' }
+                        },
+                        typing: {
+                            'from': { width: '0' },
+                            'to': { width: '100%' }
+                        },
+                        'blink-caret': {
+                            'from, to': { borderColor: 'transparent' },
+                            '50%': { borderColor: 'var(--quantum-blue)' }
+                        },
+                        'slide-up': {
+                            'from': { transform: 'translateY(20px)', opacity: 0 },
+                            'to': { transform: 'translateY(0)', opacity: 1 }
+                        },
+                        'slide-down': {
+                            'from': { transform: 'translateY(-20px)', opacity: 0 },
+                            'to': { transform: 'translateY(0)', opacity: 1 }
+                        },
+                        'fade-in': {
+                            'from': { opacity: 0 },
+                            'to': { opacity: 1 }
+                        },
+                        'scale-up': {
+                            'from': { transform: 'scale(0.95)', opacity: 0 },
+                            'to': { transform: 'scale(1)', opacity: 1 }
+                        },
+                        'rotate-3d': {
+                            '0%': { transform: 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)' },
+                            '100%': { transform: 'rotateX(360deg) rotateY(360deg) rotateZ(360deg)' }
+                        },
+                        'particle-flow': {
+                            '0%': { transform: 'translateX(-100%) translateY(-100%)' },
+                            '100%': { transform: 'translateX(100%) translateY(100%)' }
+                        },
+                        'nebula-pulse': {
+                            '0%, 100%': { opacity: 0.1, transform: 'scale(1)' },
+                            '50%': { opacity: 0.3, transform: 'scale(1.1)' }
+                        }
+                    },
+                    backgroundImage: {
+                        'cosmic-gradient': 'linear-gradient(135deg, #000000 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%)',
+                        'nebula-gradient': 'linear-gradient(45deg, #0c0d13 0%, #1e0b36 25%, #0d1d31 50%, #0c1b2b 75%, #0c0d13 100%)',
+                        'stellar-gradient': 'radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(0, 224, 255, 0.15) 0%, transparent 50%)',
+                        'blackhole-gradient': 'radial-gradient(circle at center, rgba(10, 10, 10, 0.8) 0%, rgba(0, 0, 0, 0.9) 70%)',
+                        'quantum-gradient': 'linear-gradient(90deg, #00e0ff 0%, #3a0ca3 50%, #ff6b6b 100%)',
+                        'galaxy-texture': 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")'
+                    },
+                    backdropFilter: {
+                        'cosmic-blur': 'blur(20px) saturate(180%)',
+                        'nebula-blur': 'blur(40px) saturate(200%)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>">
+    
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "SHUBHAM",
+        "alternateName": "@I.SHUBHAM0210",
+        "url": "https://infinitymultiverse.dev",
+        "image": "https://api.dicebear.com/7.x/avataaars/svg?seed=Shubham",
+        "sameAs": [
+            "https://instagram.com/i.shubham0210",
+            "https://t.me/shubham0210"
+        ],
+        "jobTitle": "Web Developer & Designer",
+        "worksFor": {
+            "@type": "Organization",
+            "name": "Infinity Multiverse"
+        },
+        "description": "Creating cosmic digital experiences across the web universe",
+        "knowsAbout": ["Web Development", "UI/UX Design", "3D Graphics", "Interactive Design"]
+    }
+    </script>
 </head>
-
-<body>
-    <div class="background">
-        <div id="particles-js"></div>
+<body class="bg-cosmic-black font-poppins text-gray-100 overflow-x-hidden" data-theme="dark">
+    <!-- Skip to Content -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    
+    <!-- Achievement Notifications -->
+    <div id="achievement-toast" class="achievement-toast-container">
+        <div class="achievement-toast glass-card">
+            <div class="flex items-center space-x-3">
+                <div class="achievement-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div>
+                    <p class="achievement-title">Achievement Unlocked!</p>
+                    <p id="achievement-message" class="achievement-message">Cosmic Explorer</p>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Legal Disclaimer -->
-    <div class="legal-disclaimer">
-        <p><i class="fas fa-exclamation-triangle"></i> <strong>Disclaimer:</strong> This player uses YouTube's official embed feature. All videos are served directly from YouTube.</p>
-    </div>
-
-    <!-- Hamburger Menu Button -->
-    <button class="menu-toggle" id="menu-toggle" aria-label="Open Menu">
-        <i class="fas fa-bars"></i>
+    
+    <!-- Sound Toggle -->
+    <button id="sound-toggle" class="sound-toggle-btn" aria-label="Toggle sound">
+        <i class="fas fa-volume-up"></i>
     </button>
-
-    <!-- Sidebar Menu -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3><i class="fas fa-infinity"></i> INFINITY Player</h3>
-            <button class="close-menu" id="close-menu" aria-label="Close Menu">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="menu-section">
-            <h4><i class="fas fa-user"></i> Owner Profile</h4>
-            <div class="owner-profile-menu">
-                <img src="https://i.ibb.co/MkQF0vJ2/IMG-20250915-070304.jpg" alt="Shubham">
-                <div class="owner-info">
-                    <strong>Shubham</strong>
-                    <small>Developer</small>
+    
+    <!-- Easter Egg Modal -->
+    <div id="easter-egg-modal" class="easter-egg-modal">
+        <div class="easter-egg-content glass-card">
+            <button id="close-easter" class="close-modal-btn">&times;</button>
+            <div class="text-center">
+                <div class="easter-egg-icon">
+                    <i class="fas fa-egg"></i>
                 </div>
-                <a href="https://www.instagram.com/i.shubham0210/" target="_blank" class="social-link">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="menu-section">
-            <h4><i class="fas fa-history"></i> Recent Videos</h4>
-            <div id="menu-history" class="menu-history">
-                <!-- Recent videos will be loaded here -->
-                <div class="empty-state">
-                    <i class="fas fa-history"></i>
-                    <p>No recent videos yet</p>
+                <h3 class="easter-egg-title">Easter Egg Discovered!</h3>
+                <p class="easter-egg-text" id="easter-egg-message">You found a hidden dimension!</p>
+                <div class="easter-egg-code">
+                    <p>🎮 Secret Code: KONAMI</p>
+                    <p>↑ ↑ ↓ ↓ ← → ← → B A</p>
                 </div>
-            </div>
-        </div>
-
-        <div class="menu-section">
-            <h4><i class="fas fa-cog"></i> Settings</h4>
-            <div class="menu-options">
-                <button class="menu-option" id="theme-menu-toggle">
-                    <i class="fas fa-moon"></i>
-                    <span>Theme: <span id="theme-status">Dark</span></span>
+                <button class="easter-egg-claim-btn">
+                    Claim Reward
                 </button>
-                <button class="menu-option" id="clear-history">
-                    <i class="fas fa-trash"></i>
-                    <span>Clear History</span>
-                </button>
-                <button class="menu-option" id="shortcuts-help">
-                    <i class="fas fa-keyboard"></i>
-                    <span>Keyboard Shortcuts</span>
-                </button>
-                <!-- AdSense Toggle Option -->
-                <button class="menu-option" id="toggle-ads">
-                    <i class="fas fa-ad"></i>
-                    <span>Ads: <span id="ads-status">On</span></span>
-                </button>
-            </div>
-        </div>
-
-        <div class="menu-section">
-            <h4><i class="fas fa-info-circle"></i> Information</h4>
-            <div class="menu-options">
-                <button class="menu-option" id="about-menu">
-                    <i class="fas fa-info"></i>
-                    <span>About Player</span>
-                </button>
-                <button class="menu-option" id="privacy-menu">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Privacy Info</span>
-                </button>
-                <button class="menu-option" id="terms-menu">
-                    <i class="fas fa-file-contract"></i>
-                    <span>Terms of Use</span>
-                </button>
-                <button class="menu-option" id="contact-menu">
-                    <i class="fas fa-envelope"></i>
-                    <span>Contact & Support</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Sidebar Ad Container (Option C) -->
-        <div class="sidebar-ad" id="sidebar-ad">
-            <!-- Sidebar Ad will be loaded here -->
-            <div class="ad-placeholder">
-                <i class="fas fa-ad"></i>
-                <p>Ad loading...</p>
-            </div>
-        </div>
-
-        <div class="menu-footer">
-            <p>Crafted with <i class="fas fa-heart"></i> by Shubham</p>
-            <div class="menu-social">
-                <a href="https://www.instagram.com/i.shubham0210/" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
             </div>
         </div>
     </div>
-
-    <!-- Overlay for menu -->
-    <div class="menu-overlay" id="menu-overlay"></div>
-
-    <div class="video-container">
-        <!-- YouTube Player -->
-        <div id="youtube-player">
-            <iframe id="youtube-iframe" src=""
-                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                allowfullscreen frameborder="0">
-            </iframe>
-        </div>
-
-        <!-- YouTube API Loading -->
-        <div id="api-loading" class="message info-message">
-            <i class="fas fa-sync-alt fa-spin"></i>
-            <span>Loading video information...</span>
-        </div>
-
-        <!-- Video Info Display -->
-        <div id="video-info" class="video-info">
-            <div class="video-info-header">
-                <div class="video-thumbnail" id="video-thumbnail">
-                    <i class="fas fa-play"></i>
-                </div>
-                <div class="video-details">
-                    <h3 id="video-title">No video loaded</h3>
-                    <div class="video-meta">
-                        <span id="video-channel">YouTube</span>
-                        <span class="separator">•</span>
-                        <span id="video-duration">0:00</span>
-                        <span class="separator">•</span>
-                        <span id="video-views">0 views</span>
+    
+    <!-- Universe Background -->
+    <div class="universe-bg">
+        <div class="stars"></div>
+        <div class="stars stars2"></div>
+        <div class="stars stars3"></div>
+        
+        <!-- Shooting Stars -->
+        <div class="shooting-star" style="top:10%; left:10%;"></div>
+        <div class="shooting-star" style="top:30%; left:80%; animation-delay: 2s"></div>
+        <div class="shooting-star" style="top:70%; left:20%; animation-delay: 5s"></div>
+        
+        <!-- Parallax Planets -->
+        <div class="parallax-planet planet-1"></div>
+        <div class="parallax-planet planet-2"></div>
+        <div class="parallax-planet planet-3"></div>
+        
+        <!-- Nebula Effect -->
+        <div class="nebula-effect"></div>
+        
+        <!-- Particle System -->
+        <canvas id="particle-canvas" class="particle-canvas"></canvas>
+        
+        <!-- Warp Tunnel Effect -->
+        <div class="warp-tunnel" id="warp-tunnel"></div>
+    </div>
+    
+    <!-- Header -->
+    <header class="header glass-nav">
+        <nav class="nav-container">
+            <div class="nav-content">
+                <!-- Logo -->
+                <a href="#" class="logo-link">
+                    <div class="logo-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <span class="logo-text">
+                        InfinityMultiverse
+                    </span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="desktop-nav">
+                    <a href="#home" class="nav-link group">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                        <div class="nav-underline"></div>
+                    </a>
+                    <a href="#websites" class="nav-link group">
+                        <i class="fas fa-globe"></i>
+                        <span>Websites</span>
+                        <div class="nav-underline"></div>
+                    </a>
+                    <a href="#universe-viewer" class="nav-link group">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>3D Universe</span>
+                        <div class="nav-underline"></div>
+                    </a>
+                    <a href="#achievements" class="nav-link group">
+                        <i class="fas fa-trophy"></i>
+                        <span>Achievements</span>
+                        <div class="nav-underline"></div>
+                    </a>
+                    <a href="#contact" class="nav-link group">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Contact</span>
+                        <div class="nav-underline"></div>
+                    </a>
+                    
+                    <!-- Live Visitor Counter -->
+                    <div class="visitor-counter">
+                        <div class="live-indicator"></div>
+                        <span id="visitor-count">42</span>
+                        <span class="visitor-label">explorers</span>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <div class="theme-toggle-container">
+                        <button id="theme-toggle-desktop" class="theme-toggle-btn">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="theme-dropdown">
+                            <button class="theme-option" data-theme="light">Light</button>
+                            <button class="theme-option" data-theme="dark">Dark</button>
+                            <button class="theme-option" data-theme="dark-matter">Dark Matter</button>
+                        </div>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="user-profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Shubham" 
+                             alt="SHUBHAM" class="user-avatar">
+                        <span class="user-name">SHUBHAM</span>
                     </div>
                 </div>
-                <button class="copy-link" id="copy-link" aria-label="Copy video link">
-                    <i class="fas fa-link"></i>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="mobile-menu">
+                <div class="mobile-visitor-counter">
+                    <div class="live-indicator"></div>
+                    <span>Live Explorers:</span>
+                    <span id="visitor-count-mobile">42</span>
+                </div>
+                
+                <div class="mobile-nav-links">
+                    <a href="#home" class="mobile-nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="#websites" class="mobile-nav-link">
+                        <i class="fas fa-globe"></i> Websites
+                    </a>
+                    <a href="#universe-viewer" class="mobile-nav-link">
+                        <i class="fas fa-vr-cardboard"></i> 3D Universe
+                    </a>
+                    <a href="#achievements" class="mobile-nav-link">
+                        <i class="fas fa-trophy"></i> Achievements
+                    </a>
+                    <a href="#contact" class="mobile-nav-link">
+                        <i class="fas fa-comment-dots"></i> Contact
+                    </a>
+                </div>
+                
+                <!-- Mobile User & Theme -->
+                <div class="mobile-user-section">
+                    <div class="mobile-user-info">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Shubham" 
+                             alt="SHUBHAM" class="mobile-user-avatar">
+                        <div>
+                            <p class="mobile-user-name">SHUBHAM</p>
+                            <p class="mobile-user-handle">@I.SHUBHAM0210</p>
+                        </div>
+                        <button id="theme-toggle-mobile" class="mobile-theme-btn">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mobile-theme-options">
+                        <button class="theme-option-mobile" data-theme="light">Light</button>
+                        <button class="theme-option-mobile" data-theme="dark">Dark</button>
+                        <button class="theme-option-mobile" data-theme="dark-matter">Dark Matter</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-container">
+                <div class="hero-grid">
+                    <!-- Hero Text -->
+                    <div class="hero-text" data-aos="fade-right">
+                        <div class="hero-badges">
+                            <div class="hero-badge">
+                                <i class="fas fa-star"></i>
+                                <span>Exploring Digital Universe</span>
+                            </div>
+                            <div class="hero-badge visitors-badge">
+                                <i class="fas fa-users"></i>
+                                <span id="hero-visitors">42</span>
+                                <span>explorers online</span>
+                            </div>
+                        </div>
+                        
+                        <h1 class="hero-title">
+                            <span class="hero-title-line">Infinity of</span>
+                            <span class="hero-title-line">Web Creations</span>
+                        </h1>
+                        
+                        <p class="hero-description">
+                            Welcome to my cosmic portfolio. Each website is a star in this digital universe, 
+                            crafted with cutting-edge technologies and infinite creativity.
+                        </p>
+                        
+                        <!-- Stats -->
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <p class="stat-number">24+</p>
+                                <p class="stat-label">Websites Launched</p>
+                            </div>
+                            <div class="hero-stat">
+                                <p class="stat-number">18K</p>
+                                <p class="stat-label">Active Users</p>
+                            </div>
+                            <div class="hero-stat">
+                                <p class="stat-number">4.9</p>
+                                <p class="stat-label">Avg. Rating</p>
+                            </div>
+                            <div class="hero-stat">
+                                <p class="stat-number">12</p>
+                                <p class="stat-label">Dimensions</p>
+                            </div>
+                        </div>
+                        
+                        <!-- CTA Buttons -->
+                        <div class="hero-cta">
+                            <a href="#websites" class="cta-btn primary-cta">
+                                <i class="fas fa-rocket"></i> Explore Websites
+                            </a>
+                            <a href="#universe-viewer" class="cta-btn secondary-cta">
+                                <i class="fas fa-vr-cardboard"></i> 3D Universe
+                            </a>
+                            <button id="live-collab" class="cta-btn tertiary-cta">
+                                <i class="fas fa-code-branch"></i> Live Review
+                                <span class="ping-animation"></span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hero Visual -->
+                    <div class="hero-visual" data-aos="fade-left">
+                        <div class="hero-card-container">
+                            <!-- Floating Planet -->
+                            <div class="floating-planet"></div>
+                            
+                            <!-- Main Card -->
+                            <div class="hero-card glass-card">
+                                <div class="card-header">
+                                    <div class="traffic-lights">
+                                        <div class="traffic-light red"></div>
+                                        <div class="traffic-light yellow"></div>
+                                        <div class="traffic-light green"></div>
+                                    </div>
+                                    <div class="server-status">
+                                        <i class="fas fa-satellite"></i> LIVE SERVER
+                                    </div>
+                                </div>
+                                
+                                <!-- Code Animation -->
+                                <div class="code-animation">
+                                    <div class="code-line"></div>
+                                    <div class="code-line w-4/5"></div>
+                                    <div class="code-line w-2/3"></div>
+                                </div>
+                                
+                                <!-- Tech Stack -->
+                                <div class="tech-stack">
+                                    <div class="tech-stack-item">
+                                        <i class="fas fa-code"></i>
+                                    </div>
+                                    <div class="tech-stack-item">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div class="tech-stack-item">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- Orbit Animation -->
+                                <div class="orbit-animation">
+                                    <div class="orbit-ring ring-1"></div>
+                                    <div class="orbit-ring ring-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 3D Universe Viewer -->
+        <section id="universe-viewer" class="universe-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        3D Interactive Universe
+                    </h2>
+                    <p class="section-description">
+                        Navigate through my digital cosmos in 3D. Each planet represents a website.
+                    </p>
+                </div>
+                
+                <div class="universe-viewer-container">
+                    <div id="three-container" class="three-container">
+                        <div class="loading-screen">
+                            <div class="loading-quantum"></div>
+                            <p>Initializing cosmic simulation...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="universe-controls">
+                        <button id="orbit-control" class="control-btn active">
+                            <i class="fas fa-satellite"></i>
+                        </button>
+                        <button id="fly-control" class="control-btn">
+                            <i class="fas fa-rocket"></i>
+                        </button>
+                        <button id="auto-rotate" class="control-btn">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Info Panel -->
+                    <div class="universe-info">
+                        <h4>Universe Controls</h4>
+                        <p>Use mouse to orbit, scroll to zoom, drag to rotate</p>
+                        <div class="info-stats">
+                            <div class="info-stat">
+                                <span>Planets:</span>
+                                <span class="stat-value">24</span>
+                            </div>
+                            <div class="info-stat">
+                                <span>Current System:</span>
+                                <span class="stat-value">E-Commerce</span>
+                            </div>
+                            <div class="info-stat">
+                                <span>Warp Speed:</span>
+                                <span class="stat-value">1x</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Website Selection -->
+                <div class="system-selection">
+                    <button class="system-btn active" data-system="all">
+                        <i class="fas fa-infinity"></i> All Systems
+                    </button>
+                    <button class="system-btn" data-system="ecommerce">
+                        <i class="fas fa-shopping-cart"></i> E-Commerce
+                    </button>
+                    <button class="system-btn" data-system="portfolio">
+                        <i class="fas fa-briefcase"></i> Portfolio
+                    </button>
+                    <button class="system-btn" data-system="webapp">
+                        <i class="fas fa-cube"></i> Web Apps
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        Cosmic Development
+                    </h2>
+                    <p class="section-description">
+                        Harnessing stellar technologies to build websites that shine across the digital galaxy
+                    </p>
+                </div>
+                
+                <div class="features-grid">
+                    <!-- Feature 1 -->
+                    <div class="feature-card" data-aos="fade-up">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">Lightning Fast</h3>
+                        <p class="feature-description">Optimized for speed with cutting-edge performance techniques</p>
+                        <div class="feature-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Universal Responsive</h3>
+                        <p class="feature-description">Flawless experience across all devices and screen sizes</p>
+                        <div class="feature-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 98%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature 3 -->
+                    <div class="feature-card holographic-effect" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Secure Galaxy</h3>
+                        <p class="feature-description">Advanced security protocols protecting your digital presence</p>
+                        <div class="feature-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature 4 -->
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <h3 class="feature-title">Infinite Scalability</h3>
+                        <p class="feature-description">Built to grow with your needs across the entire universe</p>
+                        <div class="feature-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Website Showcase -->
+        <section id="websites" class="websites-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        My Web Galaxy
+                    </h2>
+                    <p class="section-description">
+                        Explore my collection of websites, each a unique star in the digital cosmos.
+                        <span class="interaction-hint">
+                            <i class="fas fa-magic"></i> Try hovering and clicking for cosmic effects!
+                        </span>
+                    </p>
+                </div>
+                
+                <!-- AR Preview Badge -->
+                <div class="ar-badge-container">
+                    <div class="ar-badge">
+                        <i class="fas fa-vr-cardboard"></i>
+                        <span>AR Preview Available on Mobile</span>
+                    </div>
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="category-filter" data-aos="fade-up">
+                    <button class="category-btn active" data-filter="all">
+                        <i class="fas fa-infinity"></i> All Websites
+                        <span class="category-count">6</span>
+                    </button>
+                    <button class="category-btn" data-filter="ecommerce">
+                        <i class="fas fa-shopping-cart"></i> E-Commerce
+                        <span class="category-count">2</span>
+                    </button>
+                    <button class="category-btn" data-filter="portfolio">
+                        <i class="fas fa-briefcase"></i> Portfolio
+                        <span class="category-count">2</span>
+                    </button>
+                    <button class="category-btn" data-filter="webapp">
+                        <i class="fas fa-cube"></i> Web Apps
+                        <span class="category-count">1</span>
+                    </button>
+                    <button class="category-btn" data-filter="landing">
+                        <i class="fas fa-flag"></i> Landing Pages
+                        <span class="category-count">1</span>
+                    </button>
+                </div>
+                
+                <!-- Website Grid -->
+                <div class="website-grid" id="website-grid">
+                    <!-- Website Card 1 -->
+                    <div class="website-card" data-category="ecommerce" data-aos="fade-up">
+                        <div class="website-image">
+                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Cosmic Store" loading="lazy">
+                            <div class="website-status available">
+                                <i class="fas fa-satellite-dish"></i> LIVE
+                            </div>
+                            <div class="website-like">
+                                <i class="far fa-heart"></i>
+                                <span>128</span>
+                            </div>
+                            <!-- AR Badge -->
+                            <div class="ar-mini-badge">AR</div>
+                        </div>
+                        <div class="website-content">
+                            <div class="website-header">
+                                <div>
+                                    <h3>Cosmic Store</h3>
+                                    <p class="website-category">
+                                        <i class="fas fa-shopping-cart"></i> E-Commerce
+                                    </p>
+                                </div>
+                                <div class="website-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.8</span>
+                                </div>
+                            </div>
+                            <p class="website-description">
+                                Next-gen e-commerce platform with AR product preview and AI recommendations
+                            </p>
+                            <div class="website-footer">
+                                <a href="#" class="website-link">
+                                    Visit Site <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <button class="clone-btn" data-repo="cosmic-store">
+                                    <i class="fab fa-github"></i> Clone
+                                </button>
+                            </div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">Node.js</span>
+                                <span class="tech-tag">MongoDB</span>
+                                <span class="tech-tag ar-tag">WebXR</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Website Card 2 -->
+                    <div class="website-card" data-category="portfolio" data-aos="fade-up" data-aos-delay="100">
+                        <div class="website-image">
+                            <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
+                                 alt="Stellar Portfolio" loading="lazy">
+                            <div class="website-status available">
+                                <i class="fas fa-satellite-dish"></i> LIVE
+                            </div>
+                            <div class="website-like">
+                                <i class="far fa-heart"></i>
+                                <span>96</span>
+                            </div>
+                        </div>
+                        <div class="website-content">
+                            <div class="website-header">
+                                <div>
+                                    <h3>Stellar Portfolio</h3>
+                                    <p class="website-category">
+                                        <i class="fas fa-briefcase"></i> Portfolio
+                                    </p>
+                                </div>
+                                <div class="website-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>5.0</span>
+                                </div>
+                            </div>
+                            <p class="website-description">
+                                3D interactive portfolio with particle effects and immersive storytelling
+                            </p>
+                            <div class="website-footer">
+                                <a href="#" class="website-link">
+                                    Visit Site <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <button class="clone-btn" data-repo="stellar-portfolio">
+                                    <i class="fab fa-github"></i> Clone
+                                </button>
+                            </div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Three.js</span>
+                                <span class="tech-tag">GSAP</span>
+                                <span class="tech-tag">WebGL</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Website Card 3 -->
+                    <div class="website-card holographic-effect" data-category="webapp" data-aos="fade-up" data-aos-delay="200">
+                        <div class="website-image">
+                            <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80" 
+                                 alt="Nebula Dashboard" loading="lazy">
+                            <div class="website-status coming-soon">
+                                <i class="fas fa-clock"></i> SOON
+                            </div>
+                            <div class="website-like">
+                                <i class="far fa-heart"></i>
+                                <span>204</span>
+                            </div>
+                        </div>
+                        <div class="website-content">
+                            <div class="website-header">
+                                <div>
+                                    <h3>Nebula Dashboard</h3>
+                                    <p class="website-category">
+                                        <i class="fas fa-cube"></i> Web App
+                                    </p>
+                                </div>
+                                <div class="website-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>-</span>
+                                </div>
+                            </div>
+                            <p class="website-description">
+                                Real-time analytics dashboard with cosmic visualizations and predictive AI
+                            </p>
+                            <div class="website-footer">
+                                <span class="coming-soon-text">Coming Soon</span>
+                                <button class="clone-btn disabled" data-repo="nebula-dashboard" disabled>
+                                    <i class="fab fa-github"></i> Soon
+                                </button>
+                            </div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Vue.js</span>
+                                <span class="tech-tag">Firebase</span>
+                                <span class="tech-tag">D3.js</span>
+                                <span class="tech-tag ai-tag">AI</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wallpaper Download -->
+                <div class="wallpaper-section">
+                    <div class="wallpaper-card glass-card">
+                        <h3>🎨 Cosmic Wallpaper Pack</h3>
+                        <p>Download high-resolution wallpapers inspired by this universe</p>
+                        <button id="download-wallpapers" class="wallpaper-btn">
+                            <i class="fas fa-download"></i> Download Pack (12 Designs)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Achievements Section -->
+        <section id="achievements" class="achievements-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        Cosmic Achievements
+                    </h2>
+                    <p class="section-description">
+                        Unlock achievements as you explore the Infinity Multiverse
+                    </p>
+                </div>
+                
+                <div class="achievements-grid">
+                    <!-- Achievement 1 -->
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="achievement-content">
+                            <h4>Cosmic Explorer</h4>
+                            <p>First visit to the universe</p>
+                            <div class="achievement-xp">
+                                <i class="fas fa-star"></i>
+                                <span>+100 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Achievement 2 -->
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="achievement-content">
+                            <h4>Dark Matter Dweller</h4>
+                            <p>Enabled Dark Matter theme</p>
+                            <div class="achievement-xp">
+                                <i class="fas fa-star"></i>
+                                <span>+250 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Achievement 3 -->
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <div class="achievement-content">
+                            <h4>Galaxy Navigator</h4>
+                            <p>View all 24 websites</p>
+                            <div class="achievement-xp">
+                                <i class="fas fa-star"></i>
+                                <span>+500 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Achievement 4 -->
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="achievement-content">
+                            <h4>Signal Booster</h4>
+                            <p>Share on social media</p>
+                            <div class="achievement-xp">
+                                <i class="fas fa-star"></i>
+                                <span>+300 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- XP Progress -->
+                <div class="xp-progress glass-card">
+                    <div class="xp-header">
+                        <h3>Your Cosmic Journey</h3>
+                        <span class="xp-current">350/5000 XP</span>
+                    </div>
+                    <div class="xp-progress-bar">
+                        <div class="xp-progress-fill" style="width: 7%"></div>
+                    </div>
+                    <div class="xp-levels">
+                        <span>Level 1: Stargazer</span>
+                        <span>Level 10: Cosmic Emperor</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Timeline Section -->
+        <section id="timeline" class="timeline-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        Multiverse Timeline
+                    </h2>
+                    <p class="section-description">
+                        My journey through different dimensions of web development
+                    </p>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item" data-aos="fade-right">
+                        <div class="timeline-year">2020</div>
+                        <div class="timeline-content">
+                            <h3>Big Bang</h3>
+                            <p>Started my journey in web development</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-aos="fade-left">
+                        <div class="timeline-year">2021</div>
+                        <div class="timeline-content">
+                            <h3>First Galaxy</h3>
+                            <p>Launched my first portfolio website</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-aos="fade-right">
+                        <div class="timeline-year">2022</div>
+                        <div class="timeline-content">
+                            <h3>Cosmic Expansion</h3>
+                            <p>Built 10+ websites for clients</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-aos="fade-left">
+                        <div class="timeline-year">2023</div>
+                        <div class="timeline-content">
+                            <h3>Infinity Launch</h3>
+                            <p>Created Infinity Multiverse platform</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-aos="fade-right">
+                        <div class="timeline-year">2024</div>
+                        <div class="timeline-content">
+                            <h3>Quantum Leap</h3>
+                            <p>Implemented 3D universe and AR features</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        Connect Across the Cosmos
+                    </h2>
+                    <p class="section-description">
+                        Ready to launch your next digital project? Let's create something stellar together.
+                    </p>
+                </div>
+                
+                <div class="contact-grid">
+                    <!-- Contact Card 1 -->
+                    <div class="contact-card" data-aos="fade-up">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>Email</h3>
+                        <p>For formal inquiries and project discussions</p>
+                        <a href="mailto:shubham@infinitymultiverse.dev" class="contact-link">
+                            shubham@infinitymultiverse.dev
+                        </a>
+                    </div>
+                    
+                    <!-- Contact Card 2 -->
+                    <div class="contact-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="contact-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3>Telegram</h3>
+                        <p>Quick chat and instant communication</p>
+                        <a href="https://t.me/shubham0210" class="contact-link">
+                            @shubham0210
+                        </a>
+                    </div>
+                    
+                    <!-- Contact Card 3 -->
+                    <div class="contact-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="contact-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <h3>Instagram</h3>
+                        <p>Behind-the-scenes and updates</p>
+                        <a href="https://instagram.com/i.shubham0210" class="contact-link">
+                            @I.SHUBHAM0210
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-dribbble"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://instagram.com/i.shubham0210" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-codepen"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <!-- Logo & Copyright -->
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <span class="footer-logo-text">InfinityMultiverse</span>
+                    </div>
+                    <p class="footer-copyright">
+                        © 2024 Infinity Multiverse. Exploring the digital universe.
+                    </p>
+                    <p class="footer-owner">
+                        Owner: SHUBHAM (@I.SHUBHAM0210)
+                    </p>
+                </div>
+                
+                <!-- Footer Links -->
+                <div class="footer-links">
+                    <a href="#home" class="footer-link">Home</a>
+                    <a href="#websites" class="footer-link">Websites</a>
+                    <a href="#universe-viewer" class="footer-link">3D Universe</a>
+                    <a href="#achievements" class="footer-link">Achievements</a>
+                    <a href="#contact" class="footer-link">Contact</a>
+                    <button class="footer-link policy-btn" data-policy="privacy">Privacy Policy</button>
+                    <button class="footer-link policy-btn" data-policy="terms">Terms of Service</button>
+                </div>
+                
+                <!-- Crafted By -->
+                <div class="footer-crafted">
+                    <p class="footer-heart">
+                        Crafted with <i class="fas fa-heart"></i> in the digital cosmos
+                    </p>
+                    <p class="footer-stats">
+                        Powered by stardust and caffeine • <span id="visitor-total">1,234</span> explorers
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top -->
+    <button id="back-to-top" class="back-to-top-btn">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    
+    <!-- Warp Speed Effect -->
+    <div id="warp-effect" class="warp-effect">
+        <div class="warp-content">
+            <div class="warp-animation">
+                <div class="warp-ring"></div>
+                <div class="warp-ring"></div>
+                <div class="warp-center">
+                    <i class="fas fa-rocket"></i>
+                </div>
+            </div>
+            <p>Warp Speed Engaged!</p>
+        </div>
+    </div>
+    
+    <!-- Policy Popup -->
+    <div id="policy-popup" class="policy-popup">
+        <div class="policy-content glass-card">
+            <div class="policy-header">
+                <h3>Privacy Policy</h3>
+                <button id="close-policy" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="policy-body">
+                <p>Your privacy is important in this vast digital universe. This policy explains how we handle your data across the Infinity Multiverse platform.</p>
+                <h4>Data Collection</h4>
+                <p>We collect minimal data necessary to provide our services, including website analytics and contact information when you reach out.</p>
+                <h4>Cookies & Tracking</h4>
+                <p>We use cookies to improve your browsing experience and analyze website traffic. You can control cookie settings through your browser.</p>
+                <h4>Third-Party Services</h4>
+                <p>We may use third-party services for analytics, hosting, and communication. These services have their own privacy policies.</p>
+                <h4>Your Rights</h4>
+                <p>You have the right to access, correct, or delete your personal data. Contact us to exercise these rights.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Install PWA Prompt -->
+    <div id="pwa-prompt" class="pwa-prompt">
+        <div class="pwa-content glass-card">
+            <div class="pwa-header">
+                <div class="pwa-logo">
+                    <div class="pwa-logo-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <div>
+                        <p class="pwa-title">Install Infinity Multiverse</p>
+                        <p class="pwa-subtitle">Add to home screen</p>
+                    </div>
+                </div>
+                <button id="close-pwa" class="close-pwa-btn">&times;</button>
+            </div>
+            <div class="pwa-actions">
+                <button id="install-pwa" class="install-btn">
+                    Install
+                </button>
+                <button id="later-pwa" class="later-btn">
+                    Later
                 </button>
             </div>
         </div>
-
-        <!-- Input Section -->
-        <div class="input-group">
-            <input type="text" id="video-link" placeholder="Paste YouTube Video Link" aria-label="YouTube Link">
-            <button id="play-button" aria-label="Play Video">
-                <i class="fas fa-play"></i>
-                <span>Play</span>
-            </button>
-        </div>
-
-        <!-- Step 2: In-Content Ad (Option B) -->
-        <div class="ad-inline" id="inline-ad">
-            <!-- In-content Ad will be loaded here -->
-            <div class="ad-placeholder">
-                <i class="fas fa-ad"></i>
-                <p>Advertisement loading...</p>
-                <small>Ads help support our free service</small>
-            </div>
-        </div>
-
-        <!-- Loading State -->
-        <div id="loading">
-            <div class="loading-spinner"></div>
-            <span>Loading video...</span>
-        </div>
-
-        <!-- Messages -->
-        <div id="error-message" class="message error-message"></div>
-        <div id="success-message" class="message success-message"></div>
-
-        <!-- Main Controls -->
-        <div class="controls">
-            <button class="fullscreen-btn" id="fullscreen-button" aria-label="Toggle Fullscreen">
-                <i class="fas fa-expand"></i>
-                <span>Fullscreen</span>
-            </button>
-            <button class="reset-btn" id="reset-button" aria-label="Reset Player">
-                <i class="fas fa-redo"></i>
-                <span>Reset</span>
-            </button>
-            <button class="pip-btn" id="pip-button" aria-label="Picture-in-Picture" disabled>
-                <i class="fas fa-external-link-alt"></i>
-                <span>PiP</span>
-            </button>
-            <button class="share-btn" id="share-button" aria-label="Share Video">
-                <i class="fas fa-share-alt"></i>
-                <span>Share</span>
-            </button>
-        </div>
     </div>
-
-    <!-- Original Content Section for Better AdSense Approval -->
-    <div class="original-content">
-        <h3><i class="fas fa-lightbulb"></i> YouTube Tips & Guides</h3>
-        <div class="content-grid">
-            <div class="content-card">
-                <div class="content-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h4>YouTube Privacy Guide</h4>
-                <p>Learn how to protect your privacy on YouTube, manage viewing history, and control data collection.</p>
-            </div>
-            <div class="content-card">
-                <div class="content-icon">
-                    <i class="fas fa-download"></i>
-                </div>
-                <h4>Legal Video Downloading</h4>
-                <p>Official methods to save YouTube videos offline using YouTube Premium and legal alternatives.</p>
-            </div>
-            <div class="content-card">
-                <div class="content-icon">
-                    <i class="fas fa-cog"></i>
-                </div>
-                <h4>Player Settings Explained</h4>
-                <p>Understand YouTube player settings, quality options, playback speed, and subtitle management.</p>
-            </div>
-            <div class="content-card">
-                <div class="content-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <h4>Mobile Optimization Tips</h4>
-                <p>Optimize YouTube viewing on mobile devices for better battery life and data usage.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Banner Ad at Bottom -->
-    <div class="ad-container" id="bottom-ad">
-        <!-- Banner Ad will be loaded here -->
-        <div class="ad-placeholder">
-            <i class="fas fa-ad"></i>
-            <p>Advertisement</p>
-        </div>
-    </div>
-
-    <!-- Info Modal -->
-    <div id="info-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3 id="modal-title">Information</h3>
-            <div id="modal-content">
-                <p>Content will load here...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Keyboard Shortcuts Modal -->
-    <div id="shortcuts-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h3>
-            <div class="shortcuts-grid">
-                <div class="shortcut-item">
-                    <kbd>Enter</kbd>
-                    <span>Play Video</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>F</kbd>
-                    <span>Fullscreen</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>R</kbd>
-                    <span>Reset Player</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>T</kbd>
-                    <span>Toggle Theme</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>M</kbd>
-                    <span>Open Menu</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>C</kbd>
-                    <span>Copy Link</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>A</kbd>
-                    <span>Toggle Ads</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>H</kbd>
-                    <span>History (in menu)</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>/</kbd>
-                    <span>Focus Search</span>
-                </div>
-                <div class="shortcut-item">
-                    <kbd>ESC</kbd>
-                    <span>Close Menu/Modal</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom JavaScript -->
     <script src="script.js"></script>
+    
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: true,
+            disable: window.innerWidth < 768
+        });
+    </script>
 </body>
 </html>

@@ -1,1821 +1,1342 @@
-// ============================
-// INFINITY YouTube Player JS
-// Enhanced Version with Admin-Controlled AdSense
-// ============================
+// Infinity Multiverse - Cosmic JavaScript
 
-// --- Element References ---
-const videoLinkInput = document.getElementById('video-link');
-const playButton = document.getElementById('play-button');
-const youtubeIframe = document.getElementById('youtube-iframe');
-const loadingElement = document.getElementById('loading');
-const apiLoadingElement = document.getElementById('api-loading');
-const errorMessageElement = document.getElementById('error-message');
-const successMessageElement = document.getElementById('success-message');
-const fullscreenButton = document.getElementById('fullscreen-button');
-const resetButton = document.getElementById('reset-button');
-const copyLinkButton = document.getElementById('copy-link');
-const videoTitle = document.getElementById('video-title');
-const videoChannel = document.getElementById('video-channel');
-const videoDuration = document.getElementById('video-duration');
-const videoViews = document.getElementById('video-views');
-const videoThumbnail = document.getElementById('video-thumbnail');
-const shareButton = document.getElementById('share-button') || document.createElement('button');
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize all modules
+    initMobileMenu();
+    initThemeToggle();
+    initWebsiteFilter();
+    initAchievementSystem();
+    initEasterEggs();
+    initSoundSystem();
+    initVisitorCounter();
+    init3DUniverse();
+    initLiveCollaboration();
+    initWallpaperDownload();
+    initTimeline();
+    initContactForm();
+    initBackToTop();
+    initPolicyPopup();
+    initPWAPrompt();
+    initGravityEffects();
+    initARPreview();
+    initParticleSystem();
+    initKonamiCode();
+    
+    // Start animations
+    startCosmicAnimations();
+    
+    // Check for first visit achievement
+    setTimeout(() => {
+        unlockAchievement('cosmic_explorer');
+    }, 2000);
+});
 
-// Menu Elements
-const menuToggle = document.getElementById('menu-toggle');
-const closeMenuButton = document.getElementById('close-menu');
-const sidebar = document.getElementById('sidebar');
-const menuOverlay = document.getElementById('menu-overlay');
-const themeMenuToggle = document.getElementById('theme-menu-toggle');
-const themeStatus = document.getElementById('theme-status');
-const clearHistoryButton = document.getElementById('clear-history');
-const shortcutsHelpButton = document.getElementById('shortcuts-help');
-const aboutMenuButton = document.getElementById('about-menu');
-const privacyMenuButton = document.getElementById('privacy-menu');
-const termsMenuButton = document.getElementById('terms-menu');
-const contactMenuButton = document.getElementById('contact-menu');
-const menuHistory = document.getElementById('menu-history');
-
-// AdSense Elements
-const toggleAdsButton = document.getElementById('toggle-ads');
-const adsStatus = document.getElementById('ads-status');
-const inlineAdContainer = document.getElementById('inline-ad');
-const sidebarAdContainer = document.getElementById('sidebar-ad');
-const bottomAdContainer = document.getElementById('bottom-ad');
-
-// Modal Elements
-const infoModal = document.getElementById('info-modal');
-const shortcutsModal = document.getElementById('shortcuts-modal');
-const adminModal = document.getElementById('admin-modal') || createAdminModal();
-const modalTitle = document.getElementById('modal-title');
-const modalContent = document.getElementById('modal-content');
-const closeModalButtons = document.querySelectorAll('.close-modal');
-
-// --- State Variables ---
-let isDarkMode = localStorage.getItem('darkMode') === 'true';
-let currentVideoId = null;
-let currentVideoData = null;
-let wakeLock = null;
-let isMenuOpen = false;
-let adSlots = {};
-let adInterval = null;
-
-// --- ADMIN CONTROL VARIABLES ---
-let adsEnabled = true; // Default to enabled
-let adminPassword = "infinity123"; // CHANGE THIS TO YOUR PASSWORD
-let whitelistedUsers = []; // Array of user identifiers
-let adminLoggedIn = false;
-let globalAdsEnabled = true; // Master switch controlled by admin
-
-// --- YouTube API Integration ---
-let ytAPILoaded = false;
-
-// Check if YouTube API is already loaded
-if (window.YT && window.YT.loaded) {
-    ytAPILoaded = true;
-    console.log("✅ YouTube API already loaded");
-} else {
-    window.onYouTubeIframeAPIReady = function() {
-        ytAPILoaded = true;
-        console.log("✅ YouTube API Ready");
-    };
+// ===== Mobile Menu =====
+function initMobileMenu() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = mobileMenuButton.querySelector('i');
+    
+    mobileMenuButton.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('active');
+        menuIcon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+        document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+        
+        // Play sound
+        playSound('click');
+    });
+    
+    // Close menu when clicking on links
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = 'auto';
+        });
+    });
 }
 
-// --- Admin Modal Creation ---
-function createAdminModal() {
+// ===== Theme Toggle System =====
+function initThemeToggle() {
+    const themeToggleDesktop = document.getElementById('theme-toggle-desktop');
+    const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+    const themeOptions = document.querySelectorAll('.theme-option, .theme-option-mobile');
+    
+    // Load saved theme
+    const savedTheme = localStorage.getItem('infinity-theme') || 'dark';
+    setTheme(savedTheme);
+    
+    // Desktop toggle
+    themeToggleDesktop.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const themes = ['light', 'dark', 'dark-matter'];
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        setTheme(themes[nextIndex]);
+        
+        // Achievement for dark matter theme
+        if (themes[nextIndex] === 'dark-matter') {
+            unlockAchievement('dark_matter_dweller');
+        }
+    });
+    
+    // Mobile toggle
+    themeToggleMobile.addEventListener('click', () => {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const themes = ['light', 'dark', 'dark-matter'];
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        setTheme(themes[nextIndex]);
+    });
+    
+    // Theme options
+    themeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const theme = option.dataset.theme;
+            setTheme(theme);
+            
+            if (theme === 'dark-matter') {
+                unlockAchievement('dark_matter_dweller');
+            }
+        });
+    });
+}
+
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme !== 'light');
+    localStorage.setItem('infinity-theme', theme);
+    
+    // Update theme icons
+    const themeIcons = document.querySelectorAll('#theme-toggle-desktop i, #theme-toggle-mobile i');
+    themeIcons.forEach(icon => {
+        icon.className = theme === 'dark' ? 'fas fa-moon text-star-yellow' :
+                        theme === 'dark-matter' ? 'fas fa-moon text-quantum-blue' :
+                        'fas fa-sun text-yellow-500';
+    });
+    
+    // Update meta theme color
+    const color = theme === 'dark' ? '#0f172a' :
+                 theme === 'dark-matter' ? '#000000' :
+                 '#f8fafc';
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
+}
+
+// ===== Website Filter System =====
+function initWebsiteFilter() {
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const systemButtons = document.querySelectorAll('.system-btn');
+    const websiteCards = document.querySelectorAll('.website-card');
+    
+    // Category filter
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filter = button.dataset.filter;
+            
+            // Update active button
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Animate button
+            button.classList.add('animate-gravity-pull');
+            setTimeout(() => {
+                button.classList.remove('animate-gravity-pull');
+            }, 500);
+            
+            // Filter cards
+            filterWebsites(filter);
+            
+            // Play sound
+            playSound('click');
+        });
+    });
+    
+    // System filter for 3D universe
+    systemButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const system = button.dataset.system;
+            
+            // Update active button
+            systemButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Filter planets in 3D universe
+            if (window.universePlanets) {
+                window.universePlanets.forEach(planet => {
+                    if (system === 'all' || planet.category === system) {
+                        planet.mesh.material.emissiveIntensity = 0.5;
+                    } else {
+                        planet.mesh.material.emissiveIntensity = 0.1;
+                    }
+                });
+            }
+            
+            // Update info panel
+            const systemInfo = document.querySelector('.stat-value:nth-child(2)');
+            if (systemInfo) {
+                systemInfo.textContent = system === 'all' ? 'All Systems' : 
+                                       system.charAt(0).toUpperCase() + system.slice(1);
+            }
+        });
+    });
+}
+
+function filterWebsites(filter) {
+    const websiteCards = document.querySelectorAll('.website-card');
+    let visibleCount = 0;
+    
+    websiteCards.forEach((card, index) => {
+        const category = card.dataset.category;
+        const shouldShow = filter === 'all' || category === filter;
+        
+        if (shouldShow) {
+            card.style.display = 'block';
+            setTimeout(() => {
+                card.classList.add('animate-dimension-flip');
+                setTimeout(() => {
+                    card.classList.remove('animate-dimension-flip');
+                }, 800);
+            }, index * 100);
+            visibleCount++;
+        } else {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                card.style.display = 'none';
+            }, 300);
+        }
+    });
+    
+    // Update count
+    const countElement = document.querySelector('.category-count[data-filter="all"]');
+    if (countElement) {
+        countElement.textContent = visibleCount;
+    }
+}
+
+// ===== Achievement System =====
+const achievements = {
+    'cosmic_explorer': {
+        title: 'Cosmic Explorer',
+        message: 'First visit to the universe',
+        xp: 100,
+        unlocked: false
+    },
+    'dark_matter_dweller': {
+        title: 'Dark Matter Dweller',
+        message: 'Enabled Dark Matter theme',
+        xp: 250,
+        unlocked: false
+    },
+    'galaxy_navigator': {
+        title: 'Galaxy Navigator',
+        message: 'Viewed all website categories',
+        xp: 500,
+        unlocked: false
+    },
+    'ar_pioneer': {
+        title: 'AR Pioneer',
+        message: 'Tried AR preview feature',
+        xp: 400,
+        unlocked: false
+    },
+    'multiverse_master': {
+        title: 'Multiverse Master',
+        message: 'Unlocked all achievements',
+        xp: 1000,
+        unlocked: false
+    }
+};
+
+let userXP = 350;
+let viewedCategories = new Set();
+
+function initAchievementSystem() {
+    // Initialize from localStorage
+    const savedAchievements = localStorage.getItem('infinity-achievements');
+    if (savedAchievements) {
+        Object.assign(achievements, JSON.parse(savedAchievements));
+    }
+    
+    // Update achievement UI
+    updateAchievementUI();
+    updateXPProgress();
+}
+
+function unlockAchievement(achievementId) {
+    if (!achievements[achievementId] || achievements[achievementId].unlocked) return;
+    
+    achievements[achievementId].unlocked = true;
+    userXP += achievements[achievementId].xp;
+    
+    // Save to localStorage
+    localStorage.setItem('infinity-achievements', JSON.stringify(achievements));
+    
+    // Show toast
+    showAchievementToast(achievements[achievementId].title, achievements[achievementId].message);
+    
+    // Update UI
+    updateAchievementUI();
+    updateXPProgress();
+    
+    // Play sound
+    playSound('achievement');
+    
+    // Check for multiverse master
+    const allUnlocked = Object.values(achievements).every(a => a.unlocked);
+    if (allUnlocked && !achievements.multiverse_master.unlocked) {
+        unlockAchievement('multiverse_master');
+    }
+}
+
+function showAchievementToast(title, message) {
+    const toast = document.getElementById('achievement-toast');
+    const messageEl = document.getElementById('achievement-message');
+    
+    messageEl.textContent = `${title}: ${message}`;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 5000);
+}
+
+function updateAchievementUI() {
+    const achievementCards = document.querySelectorAll('.achievement-card');
+    
+    achievementCards.forEach(card => {
+        const title = card.querySelector('h4')?.textContent;
+        if (!title) return;
+        
+        Object.values(achievements).forEach(achievement => {
+            if (achievement.title === title) {
+                if (achievement.unlocked) {
+                    card.classList.add('unlocked');
+                    card.classList.remove('locked');
+                } else {
+                    card.classList.add('locked');
+                    card.classList.remove('unlocked');
+                }
+            }
+        });
+    });
+}
+
+function updateXPProgress() {
+    const xpElement = document.querySelector('.xp-current');
+    const progressFill = document.querySelector('.xp-progress-fill');
+    const totalXP = 5000;
+    const percentage = (userXP / totalXP) * 100;
+    
+    if (xpElement) {
+        xpElement.textContent = `${userXP}/${totalXP} XP`;
+    }
+    
+    if (progressFill) {
+        progressFill.style.width = `${percentage}%`;
+    }
+}
+
+// ===== Easter Eggs System =====
+function initEasterEggs() {
+    // Birthday detection (October 21)
+    const today = new Date();
+    if (today.getMonth() === 9 && today.getDate() === 21) {
+        showEasterEgg('Happy Birthday! The universe celebrates with you! 🎉');
+    }
+    
+    // Click on specific stars
+    const stars = document.querySelectorAll('.stars, .stars2, .stars3');
+    stars.forEach(star => {
+        star.addEventListener('click', (e) => {
+            if (e.offsetX < 50 && e.offsetY < 50) {
+                showEasterEgg('You found a hidden constellation! 🌟');
+            }
+        });
+    });
+}
+
+function showEasterEgg(message) {
+    const modal = document.getElementById('easter-egg-modal');
+    const messageEl = document.getElementById('easter-egg-message');
+    
+    messageEl.textContent = message;
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Play sound
+    playSound('discovery');
+    
+    // Close functionality
+    const closeBtn = document.getElementById('close-easter');
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+
+// ===== Sound System =====
+let soundEnabled = true;
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+function initSoundSystem() {
+    const soundToggle = document.getElementById('sound-toggle');
+    const soundIcon = soundToggle.querySelector('i');
+    
+    // Load saved preference
+    soundEnabled = localStorage.getItem('infinity-sound') !== 'false';
+    updateSoundIcon(soundIcon);
+    
+    soundToggle.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('infinity-sound', soundEnabled);
+        updateSoundIcon(soundIcon);
+        playSound('click');
+    });
+}
+
+function updateSoundIcon(icon) {
+    icon.className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+    soundEnabled ? icon.classList.remove('muted') : icon.classList.add('muted');
+}
+
+function playSound(type) {
+    if (!soundEnabled) return;
+    
+    try {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        let frequency, duration;
+        
+        switch(type) {
+            case 'click':
+                frequency = 800;
+                duration = 0.1;
+                break;
+            case 'achievement':
+                frequency = 1200;
+                duration = 0.3;
+                break;
+            case 'discovery':
+                frequency = 1500;
+                duration = 0.5;
+                break;
+            case 'hover':
+                frequency = 600;
+                duration = 0.2;
+                break;
+            default:
+                frequency = 1000;
+                duration = 0.1;
+        }
+        
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + duration);
+    } catch (e) {
+        console.log('Audio playback not supported:', e);
+    }
+}
+
+// ===== Visitor Counter =====
+function initVisitorCounter() {
+    const counters = ['visitor-count', 'visitor-count-mobile', 'hero-visitors', 'visitor-total'];
+    
+    // Simulate live updates
+    setInterval(() => {
+        const baseCount = 42;
+        const onlineCount = Math.max(baseCount, Math.floor(baseCount + Math.random() * 3 - 1));
+        const totalCount = 1234 + Math.floor(Math.random() * 2);
+        
+        counters.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                if (id === 'visitor-total') {
+                    element.textContent = totalCount.toLocaleString();
+                } else {
+                    element.textContent = onlineCount;
+                }
+            }
+        });
+    }, 10000);
+}
+
+// ===== 3D Universe =====
+function init3DUniverse() {
+    const container = document.getElementById('three-container');
+    if (!container || typeof THREE === 'undefined') {
+        console.warn('Three.js not available');
+        return;
+    }
+    
+    // Create scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    
+    // Create camera
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
+    
+    // Create renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
+    
+    // Create controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    
+    // Create stars background
+    createStarfield(scene);
+    
+    // Create planets
+    window.universePlanets = createPlanets(scene);
+    
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0x333333);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 3, 5);
+    scene.add(directionalLight);
+    
+    // Add nebula
+    createNebula(scene);
+    
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Rotate stars
+        if (window.starField) {
+            window.starField.rotation.y += 0.0005;
+        }
+        
+        // Animate planets
+        if (window.universePlanets) {
+            window.universePlanets.forEach(planet => {
+                planet.mesh.rotation.y += 0.01;
+                const time = Date.now() * 0.001;
+                planet.mesh.position.y = planet.originalPosition.y + Math.sin(time + planet.originalPosition.x) * 0.1;
+            });
+        }
+        
+        // Update nebula
+        if (window.nebula) {
+            window.nebula.rotation.y += 0.0002;
+            window.nebula.rotation.x += 0.0001;
+        }
+        
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    
+    // Setup controls
+    setupUniverseControls(controls);
+}
+
+function createStarfield(scene) {
+    const starGeometry = new THREE.BufferGeometry();
+    const starCount = 2000;
+    const starPositions = new Float32Array(starCount * 3);
+    
+    for (let i = 0; i < starCount * 3; i += 3) {
+        starPositions[i] = (Math.random() - 0.5) * 200;
+        starPositions[i + 1] = (Math.random() - 0.5) * 200;
+        starPositions[i + 2] = (Math.random() - 0.5) * 200;
+    }
+    
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    
+    const starMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.1,
+        transparent: true
+    });
+    
+    window.starField = new THREE.Points(starGeometry, starMaterial);
+    scene.add(window.starField);
+}
+
+function createPlanets(scene) {
+    const planets = [];
+    const categories = ['ecommerce', 'portfolio', 'webapp', 'landing'];
+    const colors = {
+        'ecommerce': 0x3b82f6,
+        'portfolio': 0x8b5cf6,
+        'webapp': 0x10b981,
+        'landing': 0xf59e0b
+    };
+    
+    // Create 24 planets
+    for (let i = 0; i < 24; i++) {
+        const radius = 3 + Math.random() * 2;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos((Math.random() * 2) - 1);
+        
+        const x = radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.sin(phi) * Math.sin(theta);
+        const z = radius * Math.cos(phi);
+        
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const color = colors[category];
+        
+        const geometry = new THREE.SphereGeometry(0.2 + Math.random() * 0.1, 32, 32);
+        const material = new THREE.MeshPhongMaterial({
+            color: color,
+            shininess: 100,
+            emissive: color,
+            emissiveIntensity: 0.2
+        });
+        
+        const planet = new THREE.Mesh(geometry, material);
+        planet.position.set(x, y, z);
+        
+        // Add ring for some planets
+        if (Math.random() > 0.7) {
+            const ringGeometry = new THREE.RingGeometry(0.3, 0.4, 32);
+            const ringMaterial = new THREE.MeshBasicMaterial({
+                color: color,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.5
+            });
+            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            ring.rotation.x = Math.PI / 2;
+            planet.add(ring);
+        }
+        
+        scene.add(planet);
+        planets.push({
+            mesh: planet,
+            category: category,
+            originalPosition: { x, y, z }
+        });
+    }
+    
+    return planets;
+}
+
+function createNebula(scene) {
+    const nebulaGeometry = new THREE.SphereGeometry(8, 32, 32);
+    const nebulaMaterial = new THREE.MeshBasicMaterial({
+        color: 0x8b5cf6,
+        transparent: true,
+        opacity: 0.05,
+        side: THREE.BackSide
+    });
+    
+    window.nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+    scene.add(window.nebula);
+}
+
+function setupUniverseControls(controls) {
+    const orbitControl = document.getElementById('orbit-control');
+    const flyControl = document.getElementById('fly-control');
+    const autoRotate = document.getElementById('auto-rotate');
+    
+    if (orbitControl) {
+        orbitControl.addEventListener('click', () => {
+            controls.enableRotate = true;
+            controls.enableZoom = true;
+            controls.enablePan = true;
+            controls.maxDistance = 10;
+            orbitControl.classList.add('active');
+            flyControl?.classList.remove('active');
+        });
+    }
+    
+    if (flyControl) {
+        flyControl.addEventListener('click', () => {
+            controls.enableRotate = true;
+            controls.enableZoom = true;
+            controls.enablePan = true;
+            controls.maxDistance = 20;
+            flyControl.classList.add('active');
+            orbitControl?.classList.remove('active');
+        });
+    }
+    
+    if (autoRotate) {
+        let rotating = false;
+        autoRotate.addEventListener('click', () => {
+            rotating = !rotating;
+            controls.autoRotate = rotating;
+            controls.autoRotateSpeed = 1.0;
+            autoRotate.classList.toggle('active', rotating);
+        });
+    }
+}
+
+// ===== Live Collaboration =====
+function initLiveCollaboration() {
+    const collabBtn = document.getElementById('live-collab');
+    
+    if (!collabBtn) return;
+    
+    collabBtn.addEventListener('click', () => {
+        const modal = document.createElement('div');
+        modal.className = 'easter-egg-modal show';
+        modal.innerHTML = `
+            <div class="easter-egg-content glass-card">
+                <button class="close-modal-btn">&times;</button>
+                <div class="text-center">
+                    <div class="easter-egg-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3 class="easter-egg-title">Live Code Review</h3>
+                    <p class="easter-egg-text">Start a live coding session with me. Share your screen and get real-time feedback.</p>
+                    <div class="space-y-4 mt-6">
+                        <button class="easter-egg-claim-btn w-full">
+                            <i class="fas fa-video mr-2"></i> Start Video Call
+                        </button>
+                        <button class="easter-egg-claim-btn w-full bg-gradient-to-r from-blue-500 to-cyan-600">
+                            <i class="fas fa-code mr-2"></i> Share Code Editor
+                        </button>
+                        <button class="easter-egg-claim-btn w-full border border-gray-700 text-gray-300">
+                            <i class="fas fa-clock mr-2"></i> Schedule Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+        
+        // Close modal
+        const closeBtn = modal.querySelector('.close-modal-btn');
+        closeBtn.addEventListener('click', () => {
+            modal.remove();
+            document.body.style.overflow = 'auto';
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Achievement check
+        unlockAchievement('ar_pioneer');
+    });
+}
+
+// ===== Wallpaper Download =====
+function initWallpaperDownload() {
+    const downloadBtn = document.getElementById('download-wallpapers');
+    
+    if (!downloadBtn) return;
+    
+    downloadBtn.addEventListener('click', () => {
+        // Create download simulation
+        const link = document.createElement('a');
+        link.href = '#';
+        link.download = 'Infinity_Multiverse_Wallpapers.zip';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Show success message
+        const modal = document.createElement('div');
+        modal.className = 'easter-egg-modal show';
+        modal.innerHTML = `
+            <div class="easter-egg-content glass-card">
+                <button class="close-modal-btn">&times;</button>
+                <div class="text-center">
+                    <div class="easter-egg-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="easter-egg-title">Download Started!</h3>
+                    <p class="easter-egg-text">Your cosmic wallpaper pack is downloading. Check your downloads folder.</p>
+                    <div class="grid grid-cols-3 gap-4 mt-6">
+                        ${Array(6).fill().map((_, i) => `
+                            <div class="aspect-square rounded-xl overflow-hidden border border-gray-700">
+                                <div class="w-full h-full bg-gradient-to-br from-cyan-${500 + i*100} to-purple-${500 + i*100}"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+        
+        const closeBtn = modal.querySelector('.close-modal-btn');
+        closeBtn.addEventListener('click', () => {
+            modal.remove();
+            document.body.style.overflow = 'auto';
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        });
+    });
+}
+
+// ===== Timeline Interactions =====
+function initTimeline() {
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    
+    timelineItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const year = item.querySelector('.timeline-year');
+            year.style.transform = 'scale(1.2)';
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            const year = item.querySelector('.timeline-year');
+            year.style.transform = 'scale(1)';
+        });
+        
+        item.addEventListener('click', () => {
+            const year = item.querySelector('.timeline-year').textContent;
+            const title = item.querySelector('h3').textContent;
+            showEasterEgg(`Year ${year}: ${title}`);
+        });
+    });
+}
+
+// ===== Contact Form =====
+function initContactForm() {
+    const contactLinks = document.querySelectorAll('.contact-link');
+    
+    contactLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (link.href.startsWith('mailto:')) {
+                // Track email clicks
+                console.log('Email contact initiated');
+            } else if (link.href.includes('instagram.com')) {
+                // Track Instagram clicks
+                console.log('Instagram profile opened');
+            } else if (link.href.includes('t.me')) {
+                // Track Telegram clicks
+                console.log('Telegram profile opened');
+            }
+        });
+    });
+}
+
+// ===== Back to Top =====
+function initBackToTop() {
+    const backToTopBtn = document.getElementById('back-to-top');
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    });
+    
+    backToTopBtn.addEventListener('click', () => {
+        // Show warp effect
+        const warpEffect = document.getElementById('warp-effect');
+        const warpTunnel = document.getElementById('warp-tunnel');
+        
+        warpEffect.classList.add('active');
+        warpTunnel.classList.add('active');
+        
+        // Scroll to top
+        setTimeout(() => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }, 500);
+        
+        // Hide warp effect
+        setTimeout(() => {
+            warpEffect.classList.remove('active');
+            warpTunnel.classList.remove('active');
+        }, 1500);
+        
+        // Play sound
+        playSound('discovery');
+    });
+}
+
+// ===== Policy Popup =====
+function initPolicyPopup() {
+    const policyBtns = document.querySelectorAll('.policy-btn');
+    const policyPopup = document.getElementById('policy-popup');
+    const closePolicyBtn = document.getElementById('close-policy');
+    
+    const policies = {
+        privacy: {
+            title: 'Privacy Policy',
+            content: `
+                <p>Your privacy is important in this vast digital universe. This policy explains how we handle your data across the Infinity Multiverse platform.</p>
+                <h4>Data Collection</h4>
+                <p>We collect minimal data necessary to provide our services, including website analytics and contact information when you reach out.</p>
+                <h4>Cookies & Tracking</h4>
+                <p>We use cookies to improve your browsing experience and analyze website traffic. You can control cookie settings through your browser.</p>
+                <h4>Third-Party Services</h4>
+                <p>We may use third-party services for analytics, hosting, and communication. These services have their own privacy policies.</p>
+                <h4>Your Rights</h4>
+                <p>You have the right to access, correct, or delete your personal data. Contact us to exercise these rights.</p>
+            `
+        },
+        terms: {
+            title: 'Terms of Service',
+            content: `
+                <p>By accessing and using Infinity Multiverse, you agree to these terms of service governing our digital universe.</p>
+                <h4>Usage Guidelines</h4>
+                <p>You may browse and interact with our websites for personal or commercial purposes, subject to these terms.</p>
+                <h4>Intellectual Property</h4>
+                <p>All website designs, code, and content are protected by copyright and other intellectual property laws.</p>
+                <h4>Limitations</h4>
+                <p>We are not liable for any indirect damages resulting from the use of our websites or services.</p>
+                <h4>Changes to Terms</h4>
+                <p>We may update these terms periodically. Continued use after changes constitutes acceptance.</p>
+            `
+        }
+    };
+    
+    policyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const policyType = btn.dataset.policy;
+            const policy = policies[policyType];
+            
+            if (policy) {
+                const title = policyPopup.querySelector('h3');
+                const body = policyPopup.querySelector('.policy-body');
+                
+                title.textContent = policy.title;
+                body.innerHTML = policy.content;
+                
+                policyPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+    
+    // Close policy popup
+    closePolicyBtn.addEventListener('click', () => {
+        policyPopup.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    });
+    
+    policyPopup.addEventListener('click', (e) => {
+        if (e.target === policyPopup) {
+            policyPopup.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+
+// ===== PWA Prompt =====
+function initPWAPrompt() {
+    const pwaPrompt = document.getElementById('pwa-prompt');
+    const installBtn = document.getElementById('install-pwa');
+    const laterBtn = document.getElementById('later-pwa');
+    const closePwaBtn = document.getElementById('close-pwa');
+    
+    let deferredPrompt;
+    
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        return;
+    }
+    
+    // Show prompt after delay
+    setTimeout(() => {
+        const lastPrompt = localStorage.getItem('pwa-prompt-last');
+        const oneWeek = 7 * 24 * 60 * 60 * 1000;
+        
+        if (!lastPrompt || Date.now() - parseInt(lastPrompt) > oneWeek) {
+            pwaPrompt.classList.add('show');
+        }
+    }, 5000);
+    
+    // Before install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+    
+    // Install button
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+            console.log('PWA installed');
+        }
+        
+        deferredPrompt = null;
+        pwaPrompt.classList.remove('show');
+    });
+    
+    // Later button
+    laterBtn.addEventListener('click', () => {
+        localStorage.setItem('pwa-prompt-last', Date.now());
+        pwaPrompt.classList.remove('show');
+    });
+    
+    // Close button
+    closePwaBtn.addEventListener('click', () => {
+        localStorage.setItem('pwa-prompt-last', Date.now());
+        pwaPrompt.classList.remove('show');
+    });
+}
+
+// ===== Gravity Hover Effects =====
+function initGravityEffects() {
+    const cards = document.querySelectorAll('.website-card, .feature-card, .contact-card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const tiltX = ((y / rect.height) - 0.5) * 10;
+            const tiltY = ((x / rect.width) - 0.5) * -10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
+            
+            playSound('hover');
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+        });
+    });
+}
+
+// ===== AR Preview =====
+function initARPreview() {
+    const arBadges = document.querySelectorAll('.ar-mini-badge, .ar-badge');
+    
+    arBadges.forEach(badge => {
+        badge.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Check for WebXR support
+            if ('xr' in navigator) {
+                navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
+                    if (supported) {
+                        showARModal();
+                        unlockAchievement('ar_pioneer');
+                    } else {
+                        alert('AR is not supported on your device. Try on a mobile device with AR capabilities.');
+                    }
+                });
+            } else {
+                alert('WebXR not supported. Try on a modern mobile browser.');
+            }
+        });
+    });
+}
+
+function showARModal() {
     const modal = document.createElement('div');
-    modal.id = 'admin-modal';
-    modal.className = 'modal';
+    modal.className = 'easter-egg-modal show';
     modal.innerHTML = `
-        <div class="modal-content admin-modal-content">
-            <span class="close-admin-modal close-modal">&times;</span>
-            <h3><i class="fas fa-user-shield"></i> Admin Control Panel</h3>
-            <div class="admin-panel">
-                <div class="admin-section">
-                    <h4><i class="fas fa-toggle-on"></i> Global Ad Settings</h4>
-                    <div class="admin-control">
-                        <label class="admin-switch">
-                            <input type="checkbox" id="global-ads-toggle" checked>
-                            <span class="admin-slider"></span>
-                        </label>
-                        <span>Global Ads Status: <strong id="global-ads-status">Enabled</strong></span>
-                    </div>
-                    <p class="admin-note">When disabled, ads won't show for ANY user</p>
+        <div class="easter-egg-content glass-card">
+            <button class="close-modal-btn">&times;</button>
+            <div class="text-center">
+                <div class="easter-egg-icon">
+                    <i class="fas fa-vr-cardboard"></i>
                 </div>
-                
-                <div class="admin-section">
-                    <h4><i class="fas fa-user-check"></i> User Whitelist</h4>
-                    <div class="whitelist-control">
-                        <input type="text" id="whitelist-input" placeholder="Enter user identifier (IP/ID)">
-                        <button id="add-whitelist" class="admin-btn"><i class="fas fa-plus"></i> Add</button>
-                    </div>
-                    <div class="whitelist-container">
-                        <h5>Whitelisted Users:</h5>
-                        <div id="whitelist-display" class="whitelist-display">
-                            <p class="empty-whitelist">No users whitelisted yet</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="admin-section">
-                    <h4><i class="fas fa-cog"></i> Admin Settings</h4>
-                    <div class="admin-control">
-                        <label>Change Admin Password:</label>
-                        <div class="password-control">
-                            <input type="password" id="new-password" placeholder="New password">
-                            <button id="save-password" class="admin-btn"><i class="fas fa-save"></i> Save</button>
-                        </div>
-                    </div>
-                    
-                    <div class="admin-control">
-                        <label>Current User Status:</label>
-                        <div id="user-status" class="user-status">
-                            <i class="fas fa-user"></i> 
-                            <span id="current-user-id">Loading user ID...</span>
-                            <span id="user-ads-status" class="status-badge">Checking...</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="admin-stats">
-                    <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-value" id="total-users">0</div>
-                            <div class="stat-label">Total Users</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="ads-shown">0</div>
-                            <div class="stat-label">Ads Shown</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="whitelist-count">0</div>
-                            <div class="stat-label">Whitelisted</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="admin-actions">
-                    <button id="export-data" class="admin-btn secondary"><i class="fas fa-download"></i> Export Data</button>
-                    <button id="reset-all" class="admin-btn danger"><i class="fas fa-trash"></i> Reset All</button>
-                    <button id="logout-admin" class="admin-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <h3 class="easter-egg-title">AR Preview</h3>
+                <p class="easter-egg-text">Point your camera at a flat surface to place the website in AR.</p>
+                <div class="space-y-4 mt-6">
+                    <button class="easter-egg-claim-btn w-full">
+                        <i class="fas fa-cube mr-2"></i> Launch AR View
+                    </button>
+                    <button class="easter-egg-claim-btn w-full border border-gray-700 text-gray-300">
+                        <i class="fas fa-question-circle mr-2"></i> View Instructions
+                    </button>
                 </div>
             </div>
         </div>
     `;
+    
     document.body.appendChild(modal);
-    return modal;
-}
-
-// --- Admin Functions ---
-function initAdminSystem() {
-    // Load saved admin settings
-    const savedSettings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
-    globalAdsEnabled = savedSettings.globalAdsEnabled !== false; // Default to true
-    whitelistedUsers = savedSettings.whitelistedUsers || [];
-    adminPassword = savedSettings.adminPassword || "infinity123";
-    
-    // Get or create user ID
-    let userId = localStorage.getItem('userId');
-    if (!userId) {
-        userId = generateUserId();
-        localStorage.setItem('userId', userId);
-    }
-    
-    // Check if user should see ads
-    adsEnabled = shouldShowAds(userId);
-    
-    // Update UI
-    updateAdminUI();
-    updateUserStatus(userId);
-    updateStats();
-}
-
-function generateUserId() {
-    // Generate a unique user ID
-    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-function shouldShowAds(userId) {
-    // Check if global ads are enabled
-    if (!globalAdsEnabled) return false;
-    
-    // Check if user is whitelisted
-    return whitelistedUsers.includes(userId);
-}
-
-function updateAdminUI() {
-    const globalAdsToggle = document.getElementById('global-ads-toggle');
-    const globalAdsStatus = document.getElementById('global-ads-status');
-    
-    if (globalAdsToggle) {
-        globalAdsToggle.checked = globalAdsEnabled;
-        globalAdsStatus.textContent = globalAdsEnabled ? "Enabled" : "Disabled";
-        globalAdsStatus.className = globalAdsEnabled ? "status-enabled" : "status-disabled";
-    }
-    
-    // Update whitelist display
-    updateWhitelistDisplay();
-    
-    // Update user status
-    const userId = localStorage.getItem('userId');
-    updateUserStatus(userId);
-}
-
-function updateUserStatus(userId) {
-    const userStatusElement = document.getElementById('user-status');
-    const currentUserIdElement = document.getElementById('current-user-id');
-    const userAdsStatusElement = document.getElementById('user-ads-status');
-    
-    if (userStatusElement && currentUserIdElement && userAdsStatusElement) {
-        currentUserIdElement.textContent = userId.substring(0, 12) + '...';
-        
-        const showAds = shouldShowAds(userId);
-        userAdsStatusElement.textContent = showAds ? "Will see ads" : "No ads";
-        userAdsStatusElement.className = showAds ? "status-badge status-ads" : "status-badge status-no-ads";
-    }
-}
-
-function updateWhitelistDisplay() {
-    const whitelistDisplay = document.getElementById('whitelist-display');
-    if (!whitelistDisplay) return;
-    
-    if (whitelistedUsers.length === 0) {
-        whitelistDisplay.innerHTML = '<p class="empty-whitelist">No users whitelisted yet</p>';
-        return;
-    }
-    
-    whitelistDisplay.innerHTML = whitelistedUsers.map((userId, index) => `
-        <div class="whitelist-item">
-            <span class="user-id">${userId.substring(0, 10)}...</span>
-            <button class="remove-user" data-index="${index}" title="Remove">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `).join('');
-    
-    // Add event listeners to remove buttons
-    document.querySelectorAll('.remove-user').forEach(button => {
-        button.addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            removeFromWhitelist(index);
-        });
-    });
-}
-
-function updateStats() {
-    const totalUsersElement = document.getElementById('total-users');
-    const adsShownElement = document.getElementById('ads-shown');
-    const whitelistCountElement = document.getElementById('whitelist-count');
-    
-    if (totalUsersElement) {
-        // Count unique users from localStorage
-        const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
-        totalUsersElement.textContent = allUsers.length;
-    }
-    
-    if (adsShownElement) {
-        const adsShown = parseInt(localStorage.getItem('adsShown') || '0');
-        adsShownElement.textContent = adsShown;
-    }
-    
-    if (whitelistCountElement) {
-        whitelistCountElement.textContent = whitelistedUsers.length;
-    }
-}
-
-function saveAdminSettings() {
-    const settings = {
-        globalAdsEnabled,
-        whitelistedUsers,
-        adminPassword,
-        lastUpdated: new Date().toISOString()
-    };
-    localStorage.setItem('adminSettings', JSON.stringify(settings));
-}
-
-function addToWhitelist(userId) {
-    if (!userId || userId.trim() === '') {
-        showError("Please enter a valid user ID");
-        return;
-    }
-    
-    if (!whitelistedUsers.includes(userId)) {
-        whitelistedUsers.push(userId);
-        saveAdminSettings();
-        updateWhitelistDisplay();
-        updateStats();
-        showSuccess(`User ${userId.substring(0, 10)}... added to whitelist`);
-        
-        // Track user in all users list
-        const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
-        if (!allUsers.includes(userId)) {
-            allUsers.push(userId);
-            localStorage.setItem('allUsers', JSON.stringify(allUsers));
-        }
-    } else {
-        showError("User already in whitelist");
-    }
-}
-
-function removeFromWhitelist(index) {
-    if (index >= 0 && index < whitelistedUsers.length) {
-        const removedUser = whitelistedUsers[index];
-        whitelistedUsers.splice(index, 1);
-        saveAdminSettings();
-        updateWhitelistDisplay();
-        updateStats();
-        showSuccess(`User ${removedUser.substring(0, 10)}... removed from whitelist`);
-    }
-}
-
-function toggleGlobalAds() {
-    globalAdsEnabled = !globalAdsEnabled;
-    saveAdminSettings();
-    updateAdminUI();
-    
-    const userId = localStorage.getItem('userId');
-    adsEnabled = shouldShowAds(userId);
-    
-    if (adsEnabled) {
-        loadAdSenseAds();
-        startAdRefreshInterval();
-    } else {
-        hideAllAds();
-        stopAdRefreshInterval();
-    }
-    
-    showSuccess(`Global ads ${globalAdsEnabled ? 'enabled' : 'disabled'}`);
-}
-
-function showAdminLogin() {
-    const password = prompt("Enter admin password:");
-    if (password === adminPassword) {
-        adminLoggedIn = true;
-        showAdminPanel();
-        showSuccess("Admin login successful");
-    } else if (password !== null) {
-        showError("Incorrect password");
-    }
-}
-
-function showAdminPanel() {
-    if (!adminLoggedIn) {
-        showAdminLogin();
-        return;
-    }
-    
-    const adminModal = document.getElementById('admin-modal');
-    if (adminModal) {
-        adminModal.classList.add('show');
-        updateAdminUI();
-        updateStats();
-    }
-}
-
-function logoutAdmin() {
-    adminLoggedIn = false;
-    const adminModal = document.getElementById('admin-modal');
-    if (adminModal) {
-        adminModal.classList.remove('show');
-    }
-    showSuccess("Logged out from admin panel");
-}
-
-// --- Theme Management ---
-function initTheme() {
-    document.body.classList.toggle('dark-mode', isDarkMode);
-    themeStatus.textContent = isDarkMode ? "Dark" : "Light";
-    
-    const icon = themeMenuToggle.querySelector('i');
-    icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
-}
-
-function toggleTheme() {
-    isDarkMode = !isDarkMode;
-    localStorage.setItem('darkMode', isDarkMode);
-    initTheme();
-    showSuccess(isDarkMode ? "Dark theme enabled" : "Light theme enabled");
-}
-
-// --- AdSense Management ---
-function initAds() {
-    const userId = localStorage.getItem('userId');
-    adsEnabled = shouldShowAds(userId);
-    adsStatus.textContent = adsEnabled ? "On" : "Off";
-    
-    if (adsEnabled) {
-        loadAdSenseAds();
-        startAdRefreshInterval();
-    } else {
-        hideAllAds();
-    }
-}
-
-function toggleAds() {
-    // For regular users, show message that only admin can change
-    if (!adminLoggedIn) {
-        showError("Only admin can change ad settings");
-        showAdminLogin();
-        return;
-    }
-    
-    // For admin, toggle global setting
-    toggleGlobalAds();
-}
-
-function loadAdSenseAds() {
-    // Clear existing ads
-    hideAllAds();
-    
-    // Check if ads should be shown for this user
-    const userId = localStorage.getItem('userId');
-    if (!shouldShowAds(userId)) {
-        showAdPlaceholders("Ads disabled for your account");
-        return;
-    }
-    
-    // Show containers
-    if (inlineAdContainer) inlineAdContainer.style.display = 'flex';
-    if (bottomAdContainer) bottomAdContainer.style.display = 'flex';
-    if (sidebarAdContainer && window.innerWidth > 768) sidebarAdContainer.style.display = 'flex';
-    
-    // Load ads after a short delay
-    setTimeout(() => {
-        if (adsEnabled && typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
-            
-            // Inline Ad (Option B - In-Content)
-            if (inlineAdContainer) {
-                try {
-                    inlineAdContainer.innerHTML = `
-                        <ins class="adsbygoogle"
-                             style="display:block; text-align:center;"
-                             data-ad-layout="in-article"
-                             data-ad-format="fluid"
-                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                             data-ad-slot="YOUR_INLINE_AD_SLOT">
-                        </ins>
-                    `;
-                    
-                    // Push the ad
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    
-                    // Track ad shown
-                    trackAdShown();
-                    
-                    console.log("✅ Inline ad loaded");
-                } catch (error) {
-                    console.error("❌ Error loading inline ad:", error);
-                    showAdPlaceholder(inlineAdContainer, "Inline Ad");
-                }
-            }
-            
-            // Bottom Banner Ad
-            if (bottomAdContainer) {
-                try {
-                    bottomAdContainer.innerHTML = `
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                             data-ad-slot="YOUR_BANNER_AD_SLOT"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true">
-                        </ins>
-                    `;
-                    
-                    // Push the ad
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    
-                    console.log("✅ Bottom banner ad loaded");
-                } catch (error) {
-                    console.error("❌ Error loading bottom ad:", error);
-                    showAdPlaceholder(bottomAdContainer, "Banner Ad");
-                }
-            }
-            
-            // Sidebar Ad (only on desktop)
-            if (sidebarAdContainer && window.innerWidth > 768) {
-                try {
-                    sidebarAdContainer.innerHTML = `
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
-                             data-ad-slot="YOUR_SIDEBAR_AD_SLOT"
-                             data-ad-format="rectangle">
-                        </ins>
-                    `;
-                    
-                    // Push the ad
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                    
-                    console.log("✅ Sidebar ad loaded");
-                } catch (error) {
-                    console.error("❌ Error loading sidebar ad:", error);
-                    showAdPlaceholder(sidebarAdContainer, "Sidebar Ad");
-                }
-            }
-            
-        } else {
-            console.log("⚠️ AdSense not available or ads disabled");
-            showAdPlaceholders();
-        }
-    }, 1500);
-}
-
-function trackAdShown() {
-    let adsShown = parseInt(localStorage.getItem('adsShown') || '0');
-    adsShown++;
-    localStorage.setItem('adsShown', adsShown.toString());
-    updateStats();
-}
-
-function hideAllAds() {
-    [inlineAdContainer, sidebarAdContainer, bottomAdContainer].forEach(container => {
-        if (container) {
-            container.style.display = 'none';
-            container.innerHTML = `
-                <div class="ad-placeholder">
-                    <i class="fas fa-ad"></i>
-                    <p>Ads are disabled</p>
-                    <small>Contact admin for access</small>
-                </div>
-            `;
-        }
-    });
-}
-
-function showAdPlaceholders(message = "Advertisement") {
-    [inlineAdContainer, sidebarAdContainer, bottomAdContainer].forEach(container => {
-        if (container) {
-            showAdPlaceholder(container, message);
-        }
-    });
-}
-
-function showAdPlaceholder(container, type = "Ad") {
-    if (container) {
-        container.style.display = 'flex';
-        container.innerHTML = `
-            <div class="ad-placeholder">
-                <i class="fas fa-ad"></i>
-                <p>${type}</p>
-                <small>Advertisement</small>
-            </div>
-        `;
-    }
-}
-
-function startAdRefreshInterval() {
-    // Refresh ads every 30 seconds if enabled
-    stopAdRefreshInterval(); // Clear any existing interval
-    
-    if (adsEnabled) {
-        adInterval = setInterval(() => {
-            if (adsEnabled && document.visibilityState === 'visible') {
-                console.log("🔄 Refreshing ads...");
-                loadAdSenseAds();
-            }
-        }, 30000); // 30 seconds
-    }
-}
-
-function stopAdRefreshInterval() {
-    if (adInterval) {
-        clearInterval(adInterval);
-        adInterval = null;
-    }
-}
-
-// Handle window resize for responsive ads
-function handleWindowResize() {
-    if (adsEnabled) {
-        // Reload ads on resize to ensure proper formatting
-        setTimeout(loadAdSenseAds, 300);
-    }
-}
-
-// --- Menu System ---
-function toggleMenu() {
-    if (isMenuOpen) {
-        closeMenu();
-    } else {
-        openMenu();
-    }
-}
-
-function openMenu() {
-    isMenuOpen = true;
-    
-    // First set display to block for overlay
-    menuOverlay.style.display = 'block';
-    sidebar.style.display = 'flex';
-    
-    // Force reflow to ensure CSS transition works
-    void sidebar.offsetWidth;
-    
-    // Add show classes to trigger animations
-    setTimeout(() => {
-        sidebar.classList.add('show');
-        menuOverlay.classList.add('show');
-        menuToggle.classList.add('open');
-        menuToggle.innerHTML = '<i class="fas fa-times"></i>';
-        menuToggle.setAttribute('aria-label', 'Close Menu');
-    }, 10);
-    
-    updateMenuHistory();
     document.body.style.overflow = 'hidden';
     
-    checkNewVideosInHistory();
-}
-
-function closeMenu() {
-    if (!isMenuOpen) return;
+    const closeBtn = modal.querySelector('.close-modal-btn');
+    closeBtn.addEventListener('click', () => {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    });
     
-    isMenuOpen = false;
-    
-    // Remove show classes to trigger closing animations
-    sidebar.classList.remove('show');
-    menuOverlay.classList.remove('show');
-    menuToggle.classList.remove('open');
-    
-    // Wait for animation to complete before hiding
-    setTimeout(() => {
-        sidebar.style.display = 'none';
-        menuOverlay.style.display = 'none';
-        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-        menuToggle.setAttribute('aria-label', 'Open Menu');
-        document.body.style.overflow = '';
-    }, 300);
-}
-
-function checkNewVideosInHistory() {
-    const lastOpenTime = localStorage.getItem('lastMenuOpen');
-    const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
-    
-    if (!lastOpenTime) {
-        localStorage.setItem('lastMenuOpen', new Date().toISOString());
-        return;
-    }
-    
-    const newVideos = history.filter(video => 
-        new Date(video.timestamp) > new Date(lastOpenTime)
-    ).length;
-    
-    if (newVideos > 0) {
-        showSuccess(`${newVideos} new video${newVideos > 1 ? 's' : ''} in history`);
-    }
-    
-    localStorage.setItem('lastMenuOpen', new Date().toISOString());
-}
-
-// --- Video Metadata Fetching ---
-async function fetchVideoMetadata(videoId) {
-    if (!videoId) return;
-    
-    try {
-        apiLoadingElement.style.display = 'flex';
-        
-        const cachedData = getCachedVideoData(videoId);
-        if (cachedData) {
-            updateVideoInfoUI(cachedData);
-            apiLoadingElement.style.display = 'none';
-            return;
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+            document.body.style.overflow = 'auto';
         }
-        
-        const response = await fetch(
-            `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
-        );
-        
-        if (!response.ok) throw new Error('Failed to fetch video info');
-        
-        const data = await response.json();
-        const videoData = {
-            id: videoId,
-            title: data.title,
-            author: data.author_name,
-            thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-            thumbnail_small: `https://img.youtube.com/vi/${videoId}/default.jpg`,
-            duration: null,
-            views: null
-        };
-        
-        cacheVideoData(videoId, videoData);
-        updateVideoInfoUI(videoData);
-        await fetchVideoDuration(videoId);
-        
-    } catch (error) {
-        console.error("Error fetching video metadata:", error);
-        updateVideoInfoUI({
-            title: "Video loaded",
-            author: "YouTube",
-            thumbnail: "",
-            duration: "N/A",
-            views: "N/A"
-        });
-    } finally {
-        apiLoadingElement.style.display = 'none';
-    }
+    });
 }
 
-async function fetchVideoDuration(videoId) {
-    try {
-        const response = await fetch(
-            `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`
-        );
+// ===== Particle System =====
+function initParticleSystem() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    // Set canvas size
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    // Create particles
+    function createParticles() {
+        particles = [];
+        const particleCount = Math.floor((canvas.width * canvas.height) / 10000);
         
-        if (response.ok) {
-            const data = await response.json();
-            if (data.duration) {
-                updateCachedVideoDuration(videoId, data.duration);
-                videoDuration.textContent = formatDuration(data.duration);
-            }
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 0.5,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5,
+                color: Math.random() > 0.5 ? 'rgba(0, 224, 255, 0.5)' : 'rgba(139, 92, 246, 0.5)'
+            });
         }
-    } catch (error) {
-        console.log("Could not fetch duration:", error);
-    }
-}
-
-function updateVideoInfoUI(videoData) {
-    currentVideoData = videoData;
-    
-    videoTitle.textContent = videoData.title || "Video loaded";
-    videoChannel.textContent = videoData.author || "YouTube";
-    
-    if (videoData.thumbnail) {
-        videoThumbnail.innerHTML = `<img src="${videoData.thumbnail}" alt="${videoData.title}" loading="lazy">`;
-    } else {
-        videoThumbnail.innerHTML = '<i class="fas fa-play"></i>';
     }
     
-    videoDuration.textContent = videoData.duration ? formatDuration(videoData.duration) : "Loading...";
-    videoViews.textContent = videoData.views ? formatViews(videoData.views) : "Loading views...";
-}
-
-function formatDuration(seconds) {
-    if (!seconds) return "0:00";
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
-
-function formatViews(views) {
-    if (!views) return "0 views";
-    if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M views';
-    if (views >= 1000) return (views / 1000).toFixed(1) + 'K views';
-    return views.toLocaleString() + ' views';
-}
-
-// --- Cache Management ---
-function cacheVideoData(videoId, data) {
-    try {
-        const cache = JSON.parse(localStorage.getItem('videoCache') || '{}');
-        cache[videoId] = { ...data, cachedAt: new Date().toISOString() };
+    // Animate particles
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        const keys = Object.keys(cache);
-        if (keys.length > 50) delete cache[keys[0]];
-        
-        localStorage.setItem('videoCache', JSON.stringify(cache));
-    } catch (error) {
-        console.error("Error caching video data:", error);
-    }
-}
-
-function getCachedVideoData(videoId) {
-    try {
-        const cache = JSON.parse(localStorage.getItem('videoCache') || '{}');
-        const cached = cache[videoId];
-        if (cached && new Date(cached.cachedAt) > new Date(Date.now() - 24 * 60 * 60 * 1000)) {
-            return cached;
-        }
-    } catch (error) {
-        console.error("Error reading cache:", error);
-    }
-    return null;
-}
-
-function updateCachedVideoDuration(videoId, duration) {
-    try {
-        const cache = JSON.parse(localStorage.getItem('videoCache') || '{}');
-        if (cache[videoId]) {
-            cache[videoId].duration = duration;
-            localStorage.setItem('videoCache', JSON.stringify(cache));
-        }
-    } catch (error) {
-        console.error("Error updating cache:", error);
-    }
-}
-
-// --- Menu History Management ---
-function updateMenuHistory() {
-    const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
-    menuHistory.innerHTML = '';
-    
-    if (history.length === 0) {
-        menuHistory.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-history"></i>
-                <p>No recent videos yet</p>
-            </div>
-        `;
-        return;
-    }
-    
-    history.slice(0, 10).forEach((item) => {
-        const historyItem = document.createElement('div');
-        historyItem.className = 'history-item-menu';
-        historyItem.innerHTML = `
-            <div class="history-thumb">
-                ${item.thumbnail ? 
-                    `<img src="${item.thumbnail}" alt="${item.title}" loading="lazy">` :
-                    `<div style="background: linear-gradient(45deg, #00e0ff, #00c4ff); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-play" style="color: #000;"></i>
-                    </div>`
+        particles.forEach(particle => {
+            // Update position
+            particle.x += particle.speedX;
+            particle.y += particle.speedY;
+            
+            // Bounce off edges
+            if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+            if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+            
+            // Draw particle
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fillStyle = particle.color;
+            ctx.fill();
+            
+            // Draw connections
+            particles.forEach(otherParticle => {
+                const dx = particle.x - otherParticle.x;
+                const dy = particle.y - otherParticle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(0, 224, 255, ${0.2 * (1 - distance/100)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(particle.x, particle.y);
+                    ctx.lineTo(otherParticle.x, otherParticle.y);
+                    ctx.stroke();
                 }
-            </div>
-            <div class="history-details">
-                <div class="history-title">${item.title || 'Unknown Video'}</div>
-                <div class="history-time">${formatTimeAgo(item.timestamp)}</div>
+            });
+        });
+        
+        requestAnimationFrame(animateParticles);
+    }
+    
+    // Initialize
+    resizeCanvas();
+    createParticles();
+    animateParticles();
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles();
+    });
+}
+
+// ===== Konami Code Easter Egg =====
+function initKonamiCode() {
+    const konamiCode = [
+        'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+        'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+        'KeyB', 'KeyA'
+    ];
+    let konamiIndex = 0;
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.code === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            
+            if (konamiIndex === konamiCode.length) {
+                // Konami code completed
+                showEasterEgg('Secret Konami code activated! Welcome to the hidden dimension!');
+                konamiIndex = 0;
+                
+                // Special effect
+                document.body.classList.add('animate-cosmic-rift');
+                setTimeout(() => {
+                    document.body.classList.remove('animate-cosmic-rift');
+                }, 3000);
+                
+                // Play sound
+                playSound('achievement');
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
+}
+
+// ===== Cosmic Animations =====
+function startCosmicAnimations() {
+    // Add animation to hero badges
+    const heroBadges = document.querySelectorAll('.hero-badge');
+    heroBadges.forEach((badge, index) => {
+        badge.style.animationDelay = `${index * 0.2}s`;
+    });
+    
+    // Add animation to stats
+    const stats = document.querySelectorAll('.hero-stat');
+    stats.forEach((stat, index) => {
+        stat.style.animationDelay = `${index * 0.1}s`;
+    });
+    
+    // Add animation to CTA buttons
+    const ctaButtons = document.querySelectorAll('.cta-btn');
+    ctaButtons.forEach((btn, index) => {
+        btn.style.animationDelay = `${index * 0.1}s`;
+    });
+}
+
+// ===== Keyboard Shortcuts =====
+document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + K for search focus
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        // Focus search if implemented
+        console.log('Search shortcut activated');
+    }
+    
+    // Escape to close modals
+    if (e.key === 'Escape') {
+        const modals = document.querySelectorAll('.easter-egg-modal.show, .policy-popup.show');
+        modals.forEach(modal => {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close mobile menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu && mobileMenu.classList.contains('active')) {
+            mobileMenu.classList.remove('active');
+            const menuIcon = document.querySelector('#mobile-menu-button i');
+            if (menuIcon) menuIcon.className = 'fas fa-bars';
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    // T for theme cycling
+    if (e.key === 't' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        const currentTheme = document.body.getAttribute('data-theme');
+        const themes = ['light', 'dark', 'dark-matter'];
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        setTheme(themes[nextIndex]);
+    }
+});
+
+// ===== Service Worker Registration =====
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('ServiceWorker registered:', registration);
+        }).catch(error => {
+            console.log('ServiceWorker registration failed:', error);
+        });
+    });
+}
+
+// ===== Performance Optimization =====
+if ('hardwareConcurrency' in navigator && navigator.hardwareConcurrency < 4) {
+    // Reduce animations on low-end devices
+    document.documentElement.style.setProperty('--animation-speed', '0.5s');
+    
+    // Reduce blur effects
+    document.querySelectorAll('.glass-card, .glass-nav').forEach(el => {
+        el.style.backdropFilter = 'blur(8px)';
+    });
+    
+    // Disable 3D universe
+    const threeContainer = document.getElementById('three-container');
+    if (threeContainer) {
+        threeContainer.innerHTML = `
+            <div class="loading-screen">
+                <p>3D view optimized for performance</p>
+                <p class="text-sm text-gray-400 mt-2">Try on a device with better graphics capabilities</p>
             </div>
         `;
-        
-        historyItem.addEventListener('click', () => {
-            videoLinkInput.value = item.url;
-            loadVideo();
-            closeMenu();
-        });
-        
-        menuHistory.appendChild(historyItem);
-    });
-}
-
-function formatTimeAgo(timestamp) {
-    const now = new Date();
-    const past = new Date(timestamp);
-    const diffMs = now - past;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-    
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return past.toLocaleDateString();
-}
-
-// --- Status Handlers ---
-function showError(message) {
-    errorMessageElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-    errorMessageElement.style.display = 'block';
-    setTimeout(() => (errorMessageElement.style.display = 'none'), 5000);
-}
-
-function showSuccess(message) {
-    successMessageElement.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-    successMessageElement.style.display = 'block';
-    setTimeout(() => (successMessageElement.style.display = 'none'), 3000);
-}
-
-// --- Video Handling ---
-function getYouTubeVideoId(url) {
-    const patterns = [
-        /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|live\/|shorts\/))([^&\n?#]+)/,
-        /youtube\.com\/playlist\?list=([^&\n?#]+)/,
-        /youtube\.com\/watch\?v=([^&\n?#]+)/
-    ];
-    
-    for (const pattern of patterns) {
-        const match = url.match(pattern);
-        if (match) return match[1];
-    }
-    return null;
-}
-
-function isYouTubeLink(url) {
-    return url.includes('youtube.com') || url.includes('youtu.be');
-}
-
-async function loadVideo() {
-    const link = videoLinkInput.value.trim();
-    if (!link) {
-        showError("Please enter a YouTube link");
-        return;
-    }
-    
-    if (!isYouTubeLink(link)) {
-        showError("Only YouTube links are supported");
-        return;
-    }
-
-    const videoId = getYouTubeVideoId(link);
-    if (!videoId) {
-        showError("Invalid YouTube URL");
-        return;
-    }
-
-    currentVideoId = videoId;
-    loadingElement.style.display = 'flex';
-    
-    videoTitle.textContent = "Loading...";
-    videoChannel.textContent = "YouTube";
-    videoDuration.textContent = "0:00";
-    videoViews.textContent = "0 views";
-    videoThumbnail.innerHTML = '<div class="loading-spinner" style="width: 30px; height: 30px;"></div>';
-    
-    try {
-        await saveToHistory(videoId, link);
-        updateMenuHistory();
-        await fetchVideoMetadata(videoId);
-        
-        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=1`;
-        youtubeIframe.src = embedUrl;
-        
-        showSuccess("Video loaded successfully");
-        requestWakeLock();
-        updatePageURL(link);
-        
-        menuToggle.classList.add('has-notification');
-        setTimeout(() => menuToggle.classList.remove('has-notification'), 3000);
-        
-        // Refresh ads after video load (if enabled)
-        if (adsEnabled) {
-            setTimeout(loadAdSenseAds, 2000);
-        }
-        
-    } catch (error) {
-        showError("Failed to load video");
-        console.error(error);
-    } finally {
-        loadingElement.style.display = 'none';
     }
 }
 
-// --- History Management ---
-async function saveToHistory(videoId, url) {
-    try {
-        const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
-        const existingIndex = history.findIndex(item => item.id === videoId);
-        
-        if (existingIndex > -1) {
-            const existingItem = history.splice(existingIndex, 1)[0];
-            existingItem.timestamp = new Date().toISOString();
-            history.unshift(existingItem);
-        } else {
-            history.unshift({
-                id: videoId,
-                url: url,
-                title: "Loading...",
-                thumbnail: `https://img.youtube.com/vi/${videoId}/default.jpg`,
-                timestamp: new Date().toISOString()
-            });
-        }
-        
-        if (history.length > 20) history.length = 20;
-        localStorage.setItem('videoHistory', JSON.stringify(history));
-        
-        if (currentVideoData) {
-            setTimeout(() => updateHistoryItemTitle(videoId, currentVideoData.title), 1000);
-        }
-        
-    } catch (error) {
-        console.error("Failed to save history:", error);
-    }
-}
+// ===== Error Handling =====
+window.addEventListener('error', (e) => {
+    console.error('Infinity Multiverse error:', e.error);
+    // You could send this to an error tracking service
+});
 
-function updateHistoryItemTitle(videoId, title) {
-    try {
-        const history = JSON.parse(localStorage.getItem('videoHistory') || '[]');
-        const itemIndex = history.findIndex(item => item.id === videoId);
-        
-        if (itemIndex > -1) {
-            history[itemIndex].title = title;
-            localStorage.setItem('videoHistory', JSON.stringify(history));
-            if (isMenuOpen) updateMenuHistory();
-        }
-    } catch (error) {
-        console.error("Failed to update history title:", error);
-    }
-}
-
-function clearHistory() {
-    if (confirm("Are you sure you want to clear all video history?")) {
-        localStorage.removeItem('videoHistory');
-        updateMenuHistory();
-        showSuccess("History cleared successfully");
-    }
-}
-
-// --- Copy Link Function ---
-async function copyVideoLink() {
-    if (!currentVideoId) {
-        showError("No video loaded");
-        return;
-    }
-    
-    try {
-        const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-        await navigator.clipboard.writeText(videoUrl);
-        showSuccess("Video link copied to clipboard");
-    } catch (error) {
-        const textArea = document.createElement('textarea');
-        textArea.value = `https://www.youtube.com/watch?v=${currentVideoId}`;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showSuccess("Link copied!");
-    }
-}
-
-// --- Share Video Function ---
-async function shareVideo() {
-    if (!currentVideoId) {
-        showError("No video loaded to share");
-        return;
-    }
-    
-    try {
-        const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
-        const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(videoUrl)}`;
-        const shareText = currentVideoData ? 
-            `Watch "${currentVideoData.title}" on INFINITY Player` : 
-            "Watch this video on INFINITY Player";
-        
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: 'INFINITY YouTube Player',
-                    text: shareText,
-                    url: shareUrl,
-                });
-                showSuccess("Shared successfully");
-                return;
-            } catch (shareError) {
-                console.log('Web Share API failed:', shareError);
-            }
-        }
-        
-        await copyToClipboard(shareUrl);
-        
-    } catch (error) {
-        console.error("Error sharing video:", error);
-        showError("Failed to share video");
-    }
-}
-
-// --- Helper for Clipboard ---
-async function copyToClipboard(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        showSuccess("Share link copied to clipboard");
-        return true;
-    } catch (error) {
-        try {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            const result = document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            if (result) {
-                showSuccess("Share link copied!");
-                return true;
-            } else {
-                showError("Failed to copy link");
-                return false;
-            }
-        } catch (fallbackError) {
-            showError("Failed to copy link");
-            return false;
-        }
-    }
-}
-
-// --- Auto-load from URL ---
-function autoLoadFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const videoParam = params.get('v') || params.get('video') || params.get('url') || params.get('link');
-    
-    if (videoParam) {
-        try {
-            const decodedUrl = decodeURIComponent(videoParam);
-            if (isYouTubeLink(decodedUrl)) {
-                videoLinkInput.value = decodedUrl;
-                loadingElement.style.display = 'flex';
-                
-                setTimeout(() => {
-                    loadVideo();
-                    showSuccess("Video auto-loaded from URL");
-                }, 800);
-                
-                return true;
-            }
-        } catch (error) {
-            console.error("Error parsing URL parameter:", error);
-        }
-    }
-    
-    const videoIdParam = params.get('id') || params.get('vid');
-    if (videoIdParam) {
-        const youtubeUrl = `https://www.youtube.com/watch?v=${videoIdParam}`;
-        videoLinkInput.value = youtubeUrl;
-        loadingElement.style.display = 'flex';
-        
-        setTimeout(() => {
-            loadVideo();
-            showSuccess("Video auto-loaded from ID");
-        }, 800);
-        
-        return true;
-    }
-    
-    return false;
-}
-
-// --- Update Page URL for Sharing ---
-function updatePageURL(url) {
-    try {
-        const videoId = getYouTubeVideoId(url);
-        if (videoId) {
-            const newUrl = new URL(window.location.href);
-            const paramsToRemove = ['v', 'video', 'url', 'link', 'id', 'vid'];
-            paramsToRemove.forEach(param => newUrl.searchParams.delete(param));
-            newUrl.searchParams.set('v', url);
-            window.history.replaceState({}, document.title, newUrl.toString());
-            
-            if (currentVideoData && currentVideoData.title) {
-                document.title = `${currentVideoData.title} | INFINITY Player`;
-            }
-        }
-    } catch (error) {
-        console.error("Error updating URL:", error);
-    }
-}
-
-// --- Wake Lock ---
-async function requestWakeLock() {
-    if ('wakeLock' in navigator && !wakeLock) {
-        try {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log("Wake Lock activated");
-            
-            wakeLock.addEventListener('release', () => {
-                console.log("Wake Lock released");
-                wakeLock = null;
-            });
-            
-        } catch (err) {
-            console.warn(`Wake Lock failed: ${err.message}`);
-        }
-    }
-}
-
-function releaseWakeLock() {
-    if (wakeLock) {
-        wakeLock.release();
-        wakeLock = null;
-    }
-}
-
-// --- Keyboard Shortcuts ---
-function handleKeyboardShortcuts(event) {
-    if (event.target.tagName === 'INPUT' || event.target.isContentEditable) return;
-    
-    switch (event.key.toLowerCase()) {
-        case 'm':
-            event.preventDefault();
-            toggleMenu();
-            break;
-        case 'f':
-            event.preventDefault();
-            toggleFullscreen();
-            break;
-        case 'r':
-            event.preventDefault();
-            resetPlayer();
-            break;
-        case 't':
-            event.preventDefault();
-            toggleTheme();
-            break;
-        case 'c':
-            event.preventDefault();
-            copyVideoLink();
-            break;
-        case 's':
-            event.preventDefault();
-            if (shareButton) shareVideo();
-            break;
-        case 'a':
-            event.preventDefault();
-            toggleAds();
-            break;
-        case 'enter':
-            if (document.activeElement !== videoLinkInput) {
-                event.preventDefault();
-                loadVideo();
-            }
-            break;
-        case '/':
-            event.preventDefault();
-            if (!isMenuOpen) {
-                videoLinkInput.focus();
-                videoLinkInput.select();
-            }
-            break;
-        case 'h':
-            event.preventDefault();
-            if (!isMenuOpen) toggleMenu();
-            break;
-        case '0': // Admin panel shortcut (Ctrl+0 or just 0)
-            if (event.ctrlKey || event.metaKey) {
-                event.preventDefault();
-                showAdminLogin();
-            }
-            break;
-        case 'escape':
-            event.preventDefault();
-            if (isMenuOpen) {
-                closeMenu();
-            } else if (infoModal.classList.contains('show') || shortcutsModal.classList.contains('show')) {
-                closeModals();
-            } else if (document.getElementById('admin-modal') && document.getElementById('admin-modal').classList.contains('show')) {
-                logoutAdmin();
-            } else if (document.fullscreenElement) {
-                document.exitFullscreen();
-            }
-            break;
-    }
-}
-
-// --- Fullscreen ---
-function toggleFullscreen() {
-    if (!currentVideoId) {
-        showError("Load a video first");
-        return;
-    }
-    
-    if (!document.fullscreenElement) {
-        const elem = youtubeIframe;
-        if (elem.requestFullscreen) elem.requestFullscreen();
-        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-        else if (elem.mozRequestFullScreen) elem.mozRequestFullScreen();
-        else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-    } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-        else if (document.msExitFullscreen) document.msExitFullscreen();
-    }
-}
-
-// --- Reset Player ---
-function resetPlayer() {
-    youtubeIframe.src = '';
-    videoLinkInput.value = '';
-    currentVideoId = null;
-    currentVideoData = null;
-    
-    videoTitle.textContent = "No video loaded";
-    videoChannel.textContent = "YouTube";
-    videoDuration.textContent = "0:00";
-    videoViews.textContent = "0 views";
-    videoThumbnail.innerHTML = '<i class="fas fa-play"></i>';
-    
-    document.title = "INFINITY YouTube Player";
-    
-    const newUrl = new URL(window.location.href);
-    const paramsToRemove = ['v', 'video', 'url', 'link', 'id', 'vid'];
-    paramsToRemove.forEach(param => newUrl.searchParams.delete(param));
-    window.history.replaceState({}, document.title, newUrl.toString());
-    
-    releaseWakeLock();
-    showSuccess("Player reset");
-}
-
-// --- Modal System ---
-function showModal(title, content) {
-    modalTitle.textContent = title;
-    modalContent.innerHTML = content;
-    infoModal.classList.add('show');
-}
-
-function closeModals() {
-    infoModal.classList.remove('show');
-    shortcutsModal.classList.remove('show');
-    const adminModal = document.getElementById('admin-modal');
-    if (adminModal) adminModal.classList.remove('show');
-}
-
-// --- Modal Content ---
-const modalContents = {
-    about: `
-        <div class="modal-section">
-            <h4><i class="fas fa-infinity"></i> About INFINITY Player</h4>
-            <p>A privacy-focused YouTube player designed for distraction-free viewing experience.</p>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-star"></i> Features</h4>
-            <ul>
-                <li><strong>Privacy First:</strong> Uses YouTube's nocookie domain</li>
-                <li><strong>Clean Interface:</strong> Minimal design, no distractions</li>
-                <li><strong>Video History:</strong> Track your recent videos</li>
-                <li><strong>Smart Menu:</strong> Quick access to all features</li>
-                <li><strong>Keyboard Shortcuts:</strong> Faster navigation</li>
-                <li><strong>Themes:</strong> Dark/Light mode support</li>
-                <li><strong>Video Info:</strong> Real-time metadata display</li>
-                <li><strong>Wake Lock:</strong> Screen stays on during playback</li>
-                <li><strong>Auto-load:</strong> Load videos directly from URL parameters</li>
-                <li><strong>Share:</strong> Generate shareable links</li>
-                <li><strong>Admin Controls:</strong> Whitelist system for ad management</li>
-            </ul>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-code"></i> Technology</h4>
-            <p>Built with modern web technologies:</p>
-            <div class="tech-tags">
-                <span>HTML5</span>
-                <span>CSS3</span>
-                <span>JavaScript</span>
-                <span>YouTube API</span>
-                <span>LocalStorage</span>
-                <span>Wake Lock API</span>
-                <span>Web Share API</span>
-                <span>Google AdSense</span>
-                <span>Admin System</span>
-            </div>
-        </div>
-        
-        <div class="modal-signature">
-            <p>Crafted with <i class="fas fa-heart"></i> by Shubham</p>
-            <p class="version">v2.3 • Enhanced with Admin Controls</p>
-        </div>
-    `,
-    
-    privacy: `
-        <div class="modal-section">
-            <h4><i class="fas fa-shield-alt"></i> Privacy Information</h4>
-            <p>Your privacy is our priority. Here's how we handle your data:</p>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-ban"></i> What We DON'T Collect</h4>
-            <ul>
-                <li><strong>No Personal Data:</strong> We don't collect names, emails, or personal info</li>
-                <li><strong>No Tracking:</strong> No cookies, analytics, or tracking scripts</li>
-                <li><strong>No History Sharing:</strong> Your watch history stays on your device</li>
-                <li><strong>No IP Logging:</strong> We don't store IP addresses or location data</li>
-            </ul>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-database"></i> What We Store Locally</h4>
-            <ul>
-                <li><strong>Video History:</strong> Last 20 videos (browser storage only)</li>
-                <li><strong>Theme Preference:</strong> Your dark/light mode choice</li>
-                <li><strong>Video Cache:</strong> Temporary video metadata (24 hours)</li>
-                <li><strong>User ID:</strong> Anonymous identifier for ad control</li>
-            </ul>
-            <p class="note">All data is stored locally in your browser and never sent to any server.</p>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fab fa-youtube"></i> YouTube Integration</h4>
-            <p>Videos load from <code>youtube-nocookie.com</code> which:</p>
-            <ul>
-                <li>Doesn't set tracking cookies until you interact</li>
-                <li>Respects YouTube's privacy settings</li>
-                <li>Follows Google's privacy guidelines</li>
-            </ul>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-ad"></i> Advertising System</h4>
-            <p>We use a whitelist-based ad system:</p>
-            <ul>
-                <li>Ads are shown only to whitelisted users</li>
-                <li>Admin controls who sees ads</li>
-                <li>Regular users cannot change ad settings</li>
-                <li>Ads help support free development</li>
-            </ul>
-        </div>
-    `,
-    
-    terms: `
-        <div class="modal-section">
-            <h4><i class="fas fa-file-contract"></i> Terms of Use</h4>
-            <p>By using INFINITY YouTube Player, you agree to these terms:</p>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fab fa-youtube"></i> YouTube Compliance</h4>
-            <ul>
-                <li>This is a third-party YouTube viewer using official embeds</li>
-                <li>All videos are served directly from YouTube's servers</li>
-                <li>You must comply with <a href="https://www.youtube.com/t/terms" target="_blank">YouTube's Terms of Service</a></li>
-                <li>Some videos may be restricted by uploaders from embedding</li>
-            </ul>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-user-shield"></i> Admin System</h4>
-            <ul>
-                <li>Only admin can control ad settings</li>
-                <li>Users are assigned anonymous IDs</li>
-                <li>Admin can whitelist specific users for ads</li>
-                <li>Attempting to bypass admin controls is prohibited</li>
-            </ul>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-balance-scale"></i> Legal Disclaimer</h4>
-            <p>INFINITY Player is an independent project and is not affiliated with YouTube, Google, or Alphabet Inc.</p>
-            <p>The service is provided "as is" without warranties. We are not responsible for:</p>
-            <ul>
-                <li>Content availability or restrictions</li>
-                <li>YouTube policy changes</li>
-                <li>Video takedowns or copyright issues</li>
-                <li>Browser compatibility issues</li>
-                <li>Ad content served by Google AdSense</li>
-            </ul>
-        </div>
-    `,
-    
-    contact: `
-        <div class="modal-section">
-            <h4><i class="fas fa-address-card"></i> Contact Information</h4>
-        </div>
-        
-        <div class="contact-cards">
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fas fa-user"></i>
-                </div>
-                <h5>Developer</h5>
-                <p>Shubham</p>
-            </div>
-            
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fab fa-instagram"></i>
-                </div>
-                <h5>Instagram</h5>
-                <a href="https://www.instagram.com/i.shubham0210/" target="_blank">
-                    @i.shubham0210
-                </a>
-            </div>
-            
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                <h5>Admin Access</h5>
-                <p>Contact for ad whitelisting</p>
-            </div>
-            
-            <div class="contact-card">
-                <div class="contact-icon">
-                    <i class="fas fa-ad"></i>
-                </div>
-                <h5>Ad Support</h5>
-                <p>Whitelist system for ads</p>
-            </div>
-        </div>
-        
-        <div class="modal-section">
-            <h4><i class="fas fa-life-ring"></i> Support & Feedback</h4>
-            <ul>
-                <li><strong>Bug Reports:</strong> DM on Instagram with details</li>
-                <li><strong>Feature Requests:</strong> We welcome suggestions</li>
-                <li><strong>Admin Access:</strong> Contact for whitelisting</li>
-                <li><strong>Ad Issues:</strong> Report inappropriate ads via AdSense</li>
-            </ul>
-        </div>
-        
-        <div class="modal-section">
-            <p class="thank-you">Thank you for using INFINITY Player!</p>
-        </div>
-    `
-};
-
-// --- Event Listeners ---
-function initializeEventListeners() {
-    // Initialize theme, admin system, and ads
-    initTheme();
-    initAdminSystem();
-    initAds();
-    
-    // Theme toggle
-    themeMenuToggle.addEventListener('click', toggleTheme);
-    
-    // Ads toggle - shows admin login for regular users
-    toggleAdsButton.addEventListener('click', toggleAds);
-    
-    // Video loading
-    playButton.addEventListener('click', loadVideo);
-    videoLinkInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') loadVideo();
-    });
-    
-    // Menu system
-    menuToggle.addEventListener('click', toggleMenu);
-    closeMenuButton.addEventListener('click', closeMenu);
-    menuOverlay.addEventListener('click', closeMenu);
-    
-    // Menu buttons
-    clearHistoryButton.addEventListener('click', clearHistory);
-    shortcutsHelpButton.addEventListener('click', () => {
-        shortcutsModal.classList.add('show');
-        closeMenu();
-    });
-    
-    // Info menu buttons
-    aboutMenuButton.addEventListener('click', () => {
-        showModal('About INFINITY Player', modalContents.about);
-        closeMenu();
-    });
-    
-    privacyMenuButton.addEventListener('click', () => {
-        showModal('Privacy Information', modalContents.privacy);
-        closeMenu();
-    });
-    
-    termsMenuButton.addEventListener('click', () => {
-        showModal('Terms of Use', modalContents.terms);
-        closeMenu();
-    });
-    
-    contactMenuButton.addEventListener('click', () => {
-        showModal('Contact & Support', modalContents.contact);
-        closeMenu();
-    });
-    
-    // Main controls
-    fullscreenButton.addEventListener('click', toggleFullscreen);
-    resetButton.addEventListener('click', resetPlayer);
-    copyLinkButton.addEventListener('click', copyVideoLink);
-    
-    // Share button (if exists)
-    if (shareButton && shareButton.id === 'share-button') {
-        shareButton.addEventListener('click', shareVideo);
-    }
-    
-    // Keyboard shortcuts
-    document.addEventListener('keydown', handleKeyboardShortcuts);
-    
-    // Modal controls
-    closeModalButtons.forEach(btn => {
-        btn.addEventListener('click', closeModals);
-    });
-    
-    [infoModal, shortcutsModal].forEach(modal => {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModals();
-        });
-    });
-    
-    // Admin panel event listeners
-    setupAdminEventListeners();
-    
-    // Wake lock release
-    window.addEventListener('beforeunload', releaseWakeLock);
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
-            releaseWakeLock();
-            stopAdRefreshInterval();
-        } else if (document.visibilityState === 'visible' && adsEnabled) {
-            startAdRefreshInterval();
-        }
-    });
-    
-    // Auto-focus input on page load
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            if (!videoLinkInput.value) videoLinkInput.focus();
-        }, 500);
-    });
-    
-    // Window resize for responsive ads
-    window.addEventListener('resize', handleWindowResize);
-    
-    // Check AdSense script loading
-    checkAdSenseLoaded();
-}
-
-function setupAdminEventListeners() {
-    const adminModal = document.getElementById('admin-modal');
-    if (!adminModal) return;
-    
-    // Global ads toggle
-    const globalAdsToggle = document.getElementById('global-ads-toggle');
-    if (globalAdsToggle) {
-        globalAdsToggle.addEventListener('change', toggleGlobalAds);
-    }
-    
-    // Add to whitelist
-    const addWhitelistBtn = document.getElementById('add-whitelist');
-    const whitelistInput = document.getElementById('whitelist-input');
-    if (addWhitelistBtn && whitelistInput) {
-        addWhitelistBtn.addEventListener('click', () => {
-            addToWhitelist(whitelistInput.value.trim());
-            whitelistInput.value = '';
-        });
-        
-        whitelistInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                addToWhitelist(whitelistInput.value.trim());
-                whitelistInput.value = '';
-            }
-        });
-    }
-    
-    // Save password
-    const savePasswordBtn = document.getElementById('save-password');
-    const newPasswordInput = document.getElementById('new-password');
-    if (savePasswordBtn && newPasswordInput) {
-        savePasswordBtn.addEventListener('click', () => {
-            if (newPasswordInput.value.trim().length >= 6) {
-                adminPassword = newPasswordInput.value.trim();
-                saveAdminSettings();
-                newPasswordInput.value = '';
-                showSuccess("Password updated successfully");
-            } else {
-                showError("Password must be at least 6 characters");
-            }
-        });
-    }
-    
-    // Export data
-    const exportDataBtn = document.getElementById('export-data');
-    if (exportDataBtn) {
-        exportDataBtn.addEventListener('click', exportAdminData);
-    }
-    
-    // Reset all
-    const resetAllBtn = document.getElementById('reset-all');
-    if (resetAllBtn) {
-        resetAllBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to reset ALL admin data? This cannot be undone.")) {
-                resetAllAdminData();
-            }
-        });
-    }
-    
-    // Logout
-    const logoutBtn = document.getElementById('logout-admin');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', logoutAdmin);
-    }
-    
-    // Close admin modal
-    adminModal.addEventListener('click', (e) => {
-        if (e.target === adminModal) logoutAdmin();
-    });
-}
-
-function exportAdminData() {
-    const data = {
-        adminSettings: JSON.parse(localStorage.getItem('adminSettings') || '{}'),
-        allUsers: JSON.parse(localStorage.getItem('allUsers') || '[]'),
-        adsShown: localStorage.getItem('adsShown') || '0',
-        exportDate: new Date().toISOString()
+// ===== Share Functionality =====
+function initShare() {
+    const shareData = {
+        title: 'Infinity Multiverse',
+        text: 'Check out this amazing cosmic portfolio!',
+        url: window.location.href
     };
     
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    const url = URL.createObjectURL(dataBlob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `infinity-admin-data-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    showSuccess("Admin data exported successfully");
-}
-
-function resetAllAdminData() {
-    localStorage.removeItem('adminSettings');
-    localStorage.removeItem('allUsers');
-    localStorage.removeItem('adsShown');
-    
-    // Reset variables
-    globalAdsEnabled = true;
-    whitelistedUsers = [];
-    adminPassword = "infinity123";
-    
-    initAdminSystem();
-    showSuccess("All admin data has been reset");
-}
-
-function checkAdSenseLoaded() {
-    let checkCount = 0;
-    const maxChecks = 10;
-    
-    const checkInterval = setInterval(() => {
-        checkCount++;
-        
-        if (typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
-            console.log("✅ AdSense script loaded");
-            clearInterval(checkInterval);
-            
-            if (adsEnabled) {
-                setTimeout(loadAdSenseAds, 2000);
+    document.querySelectorAll('.social-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (navigator.share) {
+                e.preventDefault();
+                navigator.share(shareData).then(() => {
+                    console.log('Shared successfully');
+                });
             }
-        } else if (checkCount >= maxChecks) {
-            console.log("⚠️ AdSense script not loaded after multiple attempts");
-            clearInterval(checkInterval);
-            
-            if (adsEnabled) {
-                showAdPlaceholders();
-            }
-        }
-    }, 1000);
-}
-
-// --- Particles Background ---
-function initParticles() {
-    if (typeof particlesJS !== 'undefined') {
-        particlesJS('particles-js', {
-            particles: {
-                number: { 
-                    value: window.innerWidth < 768 ? 25 : 40,
-                    density: { enable: true, value_area: 800 }
-                },
-                color: { value: '#00e0ff' },
-                opacity: { value: 0.2, random: true },
-                size: { value: 2, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: '#00e0ff',
-                    opacity: 0.1,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 0.5,
-                    direction: 'none',
-                    random: true
-                }
-            },
-            interactivity: {
-                events: {
-                    onhover: { enable: true, mode: 'repulse' },
-                    resize: true
-                }
-            },
-            retina_detect: true
         });
-    }
+    });
 }
 
-// --- Initialization ---
-function init() {
-    initializeEventListeners();
-    initParticles();
-    updateMenuHistory();
-    
-    // Make sure menu starts closed
-    sidebar.style.display = 'none';
-    menuOverlay.style.display = 'none';
-    
-    // Auto-load from URL
-    setTimeout(() => {
-        const loaded = autoLoadFromURL();
-        if (!loaded) {
-            console.log("No auto-load parameter found");
-        }
-    }, 500);
-    
-    console.log("INFINITY Player v2.3 initialized");
-    console.log("Features: YouTube API, Admin Controls, Whitelist System, AdSense Integration");
-    console.log("AdSense: " + (adsEnabled ? "Enabled for this user" : "Disabled for this user"));
-    console.log("Theme: " + (isDarkMode ? "Dark" : "Light"));
-    console.log("History Items: " + (JSON.parse(localStorage.getItem('videoHistory') || '[]').length));
-    console.log("Menu: Closed by default");
-    console.log("Admin Password: " + adminPassword); // Remove this in production!
-    
-    // Initialize ads after a delay
-    if (adsEnabled) {
-        setTimeout(() => {
-            if (typeof (adsbygoogle = window.adsbygoogle || []).push === 'function') {
-                loadAdSenseAds();
-                startAdRefreshInterval();
-            }
-        }, 3000);
-    }
-}
-
-// Start the application
-init();
+// Initialize share functionality
+setTimeout(initShare, 2000);

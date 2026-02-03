@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinity Multiverse - Digital Universe Portfolio</title>
-    <meta name="description" content="Explore SHUBHAM's cosmic digital universe - 3D interactive portfolio with AR preview, achievements, and immersive web experiences">
+    <title>Infinity Multiverse - Cosmic Digital Universe</title>
+    <meta name="description" content="Explore SHUBHAM's cosmic digital universe with infinite web tools - YouTube Ad-free player, PDF viewer, PW notes, chatbot, games, and more">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
@@ -12,14 +12,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <!-- SEO Meta Tags -->
-    <meta property="og:title" content="Infinity Multiverse - Digital Universe Portfolio">
-    <meta property="og:description" content="3D interactive portfolio showcasing cosmic web creations across multiple dimensions">
+    <meta property="og:title" content="Infinity Multiverse - Cosmic Digital Universe">
+    <meta property="og:description" content="Universe of infinite web tools by SHUBHAM - YouTube Ad-free, PDF viewer, PW notes, chatbot, games & more">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=1471&q=80">
     <meta property="og:url" content="https://infinitymultiverse.dev">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Infinity Multiverse">
-    <meta name="twitter:description" content="Cosmic digital portfolio by SHUBHAM (@I.SHUBHAM0210)">
+    <meta name="twitter:description" content="Cosmic digital universe by SHUBHAM (@I.SHUBHAM0210)">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&auto=format&fit=crop&w=1471&q=80">
     
     <!-- Theme Color -->
@@ -103,7 +103,8 @@
                         'scale-up': 'scale-up 0.3s ease-out',
                         'rotate-3d': 'rotate-3d 10s linear infinite',
                         'particle-flow': 'particle-flow 20s linear infinite',
-                        'nebula-pulse': 'nebula-pulse 4s ease-in-out infinite'
+                        'nebula-pulse': 'nebula-pulse 4s ease-in-out infinite',
+                        'text-glow': 'text-glow 2s ease-in-out infinite'
                     },
                     keyframes: {
                         float: {
@@ -306,6 +307,10 @@
                         'nebula-pulse': {
                             '0%, 100%': { opacity: 0.1, transform: 'scale(1)' },
                             '50%': { opacity: 0.3, transform: 'scale(1.1)' }
+                        },
+                        'text-glow': {
+                            '0%, 100%': { textShadow: '0 0 10px currentColor, 0 0 20px currentColor' },
+                            '50%': { textShadow: '0 0 20px currentColor, 0 0 40px currentColor' }
                         }
                     },
                     backgroundImage: {
@@ -344,13 +349,13 @@
             "https://instagram.com/i.shubham0210",
             "https://t.me/shubham0210"
         ],
-        "jobTitle": "Web Developer & Designer",
+        "jobTitle": "Web Developer & Aspirant",
         "worksFor": {
             "@type": "Organization",
             "name": "Infinity Multiverse"
         },
-        "description": "Creating cosmic digital experiences across the web universe",
-        "knowsAbout": ["Web Development", "UI/UX Design", "3D Graphics", "Interactive Design"]
+        "description": "Creating infinite web tools and cosmic digital experiences across the web universe",
+        "knowsAbout": ["Web Development", "UI/UX Design", "3D Graphics", "Interactive Design", "Full Stack Development"]
     }
     </script>
 </head>
@@ -446,9 +451,9 @@
                         <span>Home</span>
                         <div class="nav-underline"></div>
                     </a>
-                    <a href="#websites" class="nav-link group">
-                        <i class="fas fa-globe"></i>
-                        <span>Websites</span>
+                    <a href="#tools" class="nav-link group">
+                        <i class="fas fa-tools"></i>
+                        <span>Web Tools</span>
                         <div class="nav-underline"></div>
                     </a>
                     <a href="#universe-viewer" class="nav-link group">
@@ -456,9 +461,14 @@
                         <span>3D Universe</span>
                         <div class="nav-underline"></div>
                     </a>
-                    <a href="#achievements" class="nav-link group">
-                        <i class="fas fa-trophy"></i>
-                        <span>Achievements</span>
+                    <a href="#profile" class="nav-link group">
+                        <i class="fas fa-user-astronaut"></i>
+                        <span>My Profile</span>
+                        <div class="nav-underline"></div>
+                    </a>
+                    <a href="#knowledge" class="nav-link group">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Knowledge</span>
                         <div class="nav-underline"></div>
                     </a>
                     <a href="#contact" class="nav-link group">
@@ -497,7 +507,7 @@
                 <!-- Mobile Menu Button -->
                 <button id="mobile-menu-button" class="mobile-menu-btn">
                     <i class="fas fa-bars"></i>
-                    <span class="notification-badge">3</span>
+                    <span class="notification-badge">5</span>
                 </button>
             </div>
             
@@ -513,14 +523,17 @@
                     <a href="#home" class="mobile-nav-link">
                         <i class="fas fa-home"></i> Home
                     </a>
-                    <a href="#websites" class="mobile-nav-link">
-                        <i class="fas fa-globe"></i> Websites
+                    <a href="#tools" class="mobile-nav-link">
+                        <i class="fas fa-tools"></i> Web Tools
                     </a>
                     <a href="#universe-viewer" class="mobile-nav-link">
                         <i class="fas fa-vr-cardboard"></i> 3D Universe
                     </a>
-                    <a href="#achievements" class="mobile-nav-link">
-                        <i class="fas fa-trophy"></i> Achievements
+                    <a href="#profile" class="mobile-nav-link">
+                        <i class="fas fa-user-astronaut"></i> My Profile
+                    </a>
+                    <a href="#knowledge" class="mobile-nav-link">
+                        <i class="fas fa-graduation-cap"></i> Knowledge
                     </a>
                     <a href="#contact" class="mobile-nav-link">
                         <i class="fas fa-comment-dots"></i> Contact
@@ -561,8 +574,8 @@
                     <div class="hero-text" data-aos="fade-right">
                         <div class="hero-badges">
                             <div class="hero-badge">
-                                <i class="fas fa-star"></i>
-                                <span>Exploring Digital Universe</span>
+                                <i class="fas fa-infinity"></i>
+                                <span>Infinite Web Tools Universe</span>
                             </div>
                             <div class="hero-badge visitors-badge">
                                 <i class="fas fa-users"></i>
@@ -572,28 +585,28 @@
                         </div>
                         
                         <h1 class="hero-title">
-                            <span class="hero-title-line">Infinity of</span>
-                            <span class="hero-title-line">Web Creations</span>
+                            <span class="hero-title-line">Welcome to</span>
+                            <span class="hero-title-line">Infinity Multiverse</span>
                         </h1>
                         
                         <p class="hero-description">
-                            Welcome to my cosmic portfolio. Each website is a star in this digital universe, 
-                            crafted with cutting-edge technologies and infinite creativity.
+                            A cosmic universe of infinite web tools crafted by SHUBHAM. Explore YouTube Ad-free player, 
+                            PDF viewer, PW notes maker, AI chatbot, games, and many more cosmic creations.
                         </p>
                         
                         <!-- Stats -->
                         <div class="hero-stats">
                             <div class="hero-stat">
-                                <p class="stat-number">24+</p>
-                                <p class="stat-label">Websites Launched</p>
+                                <p class="stat-number">∞</p>
+                                <p class="stat-label">Infinite Tools</p>
                             </div>
                             <div class="hero-stat">
-                                <p class="stat-number">18K</p>
-                                <p class="stat-label">Active Users</p>
+                                <p class="stat-number">24/7</p>
+                                <p class="stat-label">Active Universe</p>
                             </div>
                             <div class="hero-stat">
                                 <p class="stat-number">4.9</p>
-                                <p class="stat-label">Avg. Rating</p>
+                                <p class="stat-label">Cosmic Rating</p>
                             </div>
                             <div class="hero-stat">
                                 <p class="stat-number">12</p>
@@ -603,14 +616,14 @@
                         
                         <!-- CTA Buttons -->
                         <div class="hero-cta">
-                            <a href="#websites" class="cta-btn primary-cta">
-                                <i class="fas fa-rocket"></i> Explore Websites
+                            <a href="#tools" class="cta-btn primary-cta">
+                                <i class="fas fa-rocket"></i> Explore Tools
                             </a>
-                            <a href="#universe-viewer" class="cta-btn secondary-cta">
-                                <i class="fas fa-vr-cardboard"></i> 3D Universe
+                            <a href="#profile" class="cta-btn secondary-cta">
+                                <i class="fas fa-user-astronaut"></i> Meet SHUBHAM
                             </a>
-                            <button id="live-collab" class="cta-btn tertiary-cta">
-                                <i class="fas fa-code-branch"></i> Live Review
+                            <button id="live-demo" class="cta-btn tertiary-cta">
+                                <i class="fas fa-play"></i> Live Demo
                                 <span class="ping-animation"></span>
                             </button>
                         </div>
@@ -631,27 +644,42 @@
                                         <div class="traffic-light green"></div>
                                     </div>
                                     <div class="server-status">
-                                        <i class="fas fa-satellite"></i> LIVE SERVER
+                                        <i class="fas fa-satellite"></i> COSMIC SERVER
                                     </div>
                                 </div>
                                 
-                                <!-- Code Animation -->
-                                <div class="code-animation">
-                                    <div class="code-line"></div>
-                                    <div class="code-line w-4/5"></div>
-                                    <div class="code-line w-2/3"></div>
+                                <!-- Active Tools -->
+                                <div class="active-tools">
+                                    <h4 class="text-quantum-blue font-orbitron mb-4">Active Tools</h4>
+                                    <div class="space-y-3">
+                                        <div class="tool-item">
+                                            <i class="fas fa-play-circle text-red-400"></i>
+                                            <span>YouTube Ad-free</span>
+                                            <span class="live-dot"></span>
+                                        </div>
+                                        <div class="tool-item">
+                                            <i class="fas fa-file-pdf text-blue-400"></i>
+                                            <span>PDF Viewer</span>
+                                            <span class="live-dot"></span>
+                                        </div>
+                                        <div class="tool-item">
+                                            <i class="fas fa-sticky-note text-green-400"></i>
+                                            <span>PW Notes Maker</span>
+                                            <span class="live-dot"></span>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <!-- Tech Stack -->
                                 <div class="tech-stack">
                                     <div class="tech-stack-item">
-                                        <i class="fas fa-code"></i>
+                                        <i class="fab fa-js"></i>
                                     </div>
                                     <div class="tech-stack-item">
-                                        <i class="fas fa-palette"></i>
+                                        <i class="fab fa-react"></i>
                                     </div>
                                     <div class="tech-stack-item">
-                                        <i class="fas fa-bolt"></i>
+                                        <i class="fab fa-node-js"></i>
                                     </div>
                                 </div>
                                 
@@ -667,6 +695,286 @@
             </div>
         </section>
         
+        <!-- Web Tools Section -->
+        <section id="tools" class="tools-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title">
+                        Infinite Web Tools
+                    </h2>
+                    <p class="section-description">
+                        Explore my collection of cosmic web tools, each designed to solve real-world problems with stellar performance.
+                    </p>
+                </div>
+                
+                <!-- Tool Categories -->
+                <div class="category-filter" data-aos="fade-up">
+                    <button class="category-btn active" data-filter="all">
+                        <i class="fas fa-infinity"></i> All Tools
+                        <span class="category-count">8</span>
+                    </button>
+                    <button class="category-btn" data-filter="media">
+                        <i class="fas fa-play-circle"></i> Media Tools
+                        <span class="category-count">3</span>
+                    </button>
+                    <button class="category-btn" data-filter="productivity">
+                        <i class="fas fa-tasks"></i> Productivity
+                        <span class="category-count">3</span>
+                    </button>
+                    <button class="category-btn" data-filter="ai">
+                        <i class="fas fa-robot"></i> AI Tools
+                        <span class="category-count">2</span>
+                    </button>
+                    <button class="category-btn" data-filter="games">
+                        <i class="fas fa-gamepad"></i> Games
+                        <span class="category-count">2</span>
+                    </button>
+                </div>
+                
+                <!-- Tools Grid -->
+                <div class="tools-grid" id="tools-grid">
+                    <!-- Tool 1: YouTube Ad-free Player -->
+                    <div class="tool-card" data-category="media" data-aos="fade-up">
+                        <div class="tool-badge premium">
+                            <i class="fas fa-crown"></i> Premium
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3 class="tool-title">Infinity YouTube</h3>
+                        <p class="tool-description">
+                            Ad-free YouTube experience with background play, download support, and enhanced controls.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>1.2K+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.9/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="youtube">
+                            <i class="fas fa-play"></i> Launch Tool
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 2: PDF Viewer -->
+                    <div class="tool-card holographic-effect" data-category="productivity" data-aos="fade-up" data-aos-delay="100">
+                        <div class="tool-badge new">
+                            <i class="fas fa-bolt"></i> New
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h3 class="tool-title">Cosmic PDF Viewer</h3>
+                        <p class="tool-description">
+                            Advanced PDF viewer with annotation, text extraction, and cloud synchronization.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>800+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.8/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="pdf">
+                            <i class="fas fa-external-link-alt"></i> Launch Tool
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 3: PW Notes Maker -->
+                    <div class="tool-card" data-category="productivity" data-aos="fade-up" data-aos-delay="200">
+                        <div class="tool-badge popular">
+                            <i class="fas fa-fire"></i> Popular
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <h3 class="tool-title">Infinity Notes</h3>
+                        <p class="tool-description">
+                            Beautiful notes maker with Markdown support, cloud sync, and AI-powered organization.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>2.1K+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>5.0/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="notes">
+                            <i class="fas fa-edit"></i> Launch Tool
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 4: AI Chatbot -->
+                    <div class="tool-card" data-category="ai" data-aos="fade-up" data-aos-delay="300">
+                        <div class="tool-badge ai">
+                            <i class="fas fa-brain"></i> AI
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="tool-title">Cosmic AI Assistant</h3>
+                        <p class="tool-description">
+                            Intelligent chatbot with voice recognition, code generation, and learning capabilities.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>1.5K+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.7/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="ai">
+                            <i class="fas fa-comment"></i> Chat Now
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 5: Games Collection -->
+                    <div class="tool-card" data-category="games" data-aos="fade-up" data-aos-delay="400">
+                        <div class="tool-badge fun">
+                            <i class="fas fa-gamepad"></i> Fun
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-dice"></i>
+                        </div>
+                        <h3 class="tool-title">Infinity Games</h3>
+                        <p class="tool-description">
+                            Collection of addictive browser games with multiplayer support and achievements.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>3.2K+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.9/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="games">
+                            <i class="fas fa-play"></i> Play Now
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 6: Code Editor -->
+                    <div class="tool-card" data-category="productivity" data-aos="fade-up" data-aos-delay="500">
+                        <div class="tool-badge developer">
+                            <i class="fas fa-code"></i> Dev
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h3 class="tool-title">Quantum Code Editor</h3>
+                        <p class="tool-description">
+                            Browser-based code editor with live preview, syntax highlighting, and collaboration.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>900+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.6/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="editor">
+                            <i class="fas fa-code"></i> Start Coding
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 7: Image Editor -->
+                    <div class="tool-card" data-category="media" data-aos="fade-up" data-aos-delay="600">
+                        <div class="tool-badge creative">
+                            <i class="fas fa-palette"></i> Creative
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <h3 class="tool-title">Stellar Image Editor</h3>
+                        <p class="tool-description">
+                            Powerful image editing tool with filters, AI enhancements, and batch processing.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>1.1K+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.8/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="image">
+                            <i class="fas fa-crop"></i> Edit Now
+                        </button>
+                    </div>
+                    
+                    <!-- Tool 8: File Converter -->
+                    <div class="tool-card" data-category="productivity" data-aos="fade-up" data-aos-delay="700">
+                        <div class="tool-badge utility">
+                            <i class="fas fa-exchange-alt"></i> Utility
+                        </div>
+                        <div class="tool-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <h3 class="tool-title">Universal File Converter</h3>
+                        <p class="tool-description">
+                            Convert between 50+ file formats including PDF, images, documents, and audio.
+                        </p>
+                        <div class="tool-stats">
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span>2.4K+ Users</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-star"></i>
+                                <span>4.9/5</span>
+                            </div>
+                        </div>
+                        <button class="tool-launch-btn" data-tool="converter">
+                            <i class="fas fa-sync"></i> Convert Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Coming Soon Tools -->
+                <div class="coming-soon-section">
+                    <h3 class="text-center text-2xl font-orbitron mb-6 gradient-text">Tools in Development</h3>
+                    <div class="coming-soon-grid">
+                        <div class="coming-soon-card">
+                            <i class="fas fa-video"></i>
+                            <span>Video Editor</span>
+                        </div>
+                        <div class="coming-soon-card">
+                            <i class="fas fa-chart-network"></i>
+                            <span>AI Analytics</span>
+                        </div>
+                        <div class="coming-soon-card">
+                            <i class="fas fa-cloud-moon"></i>
+                            <span>Weather App</span>
+                        </div>
+                        <div class="coming-soon-card">
+                            <i class="fas fa-wallet"></i>
+                            <span>Crypto Tracker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
         <!-- 3D Universe Viewer -->
         <section id="universe-viewer" class="universe-section">
             <div class="section-container">
@@ -675,7 +983,7 @@
                         3D Interactive Universe
                     </h2>
                     <p class="section-description">
-                        Navigate through my digital cosmos in 3D. Each planet represents a website.
+                        Navigate through the Infinity Multiverse in 3D. Each planet represents a web tool or project.
                     </p>
                 </div>
                 
@@ -698,532 +1006,479 @@
                         <button id="auto-rotate" class="control-btn">
                             <i class="fas fa-sync"></i>
                         </button>
+                        <button id="explosion-effect" class="control-btn">
+                            <i class="fas fa-fire"></i>
+                        </button>
                     </div>
                     
                     <!-- Info Panel -->
                     <div class="universe-info">
-                        <h4>Universe Controls</h4>
-                        <p>Use mouse to orbit, scroll to zoom, drag to rotate</p>
+                        <h4>Multiverse Navigation</h4>
+                        <p>Click on planets to explore tools</p>
                         <div class="info-stats">
                             <div class="info-stat">
                                 <span>Planets:</span>
                                 <span class="stat-value">24</span>
                             </div>
                             <div class="info-stat">
-                                <span>Current System:</span>
-                                <span class="stat-value">E-Commerce</span>
+                                <span>Active Tools:</span>
+                                <span class="stat-value">8</span>
                             </div>
                             <div class="info-stat">
                                 <span>Warp Speed:</span>
                                 <span class="stat-value">1x</span>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Website Selection -->
-                <div class="system-selection">
-                    <button class="system-btn active" data-system="all">
-                        <i class="fas fa-infinity"></i> All Systems
-                    </button>
-                    <button class="system-btn" data-system="ecommerce">
-                        <i class="fas fa-shopping-cart"></i> E-Commerce
-                    </button>
-                    <button class="system-btn" data-system="portfolio">
-                        <i class="fas fa-briefcase"></i> Portfolio
-                    </button>
-                    <button class="system-btn" data-system="webapp">
-                        <i class="fas fa-cube"></i> Web Apps
-                    </button>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Features Section -->
-        <section class="features-section">
-            <div class="section-container">
-                <div class="section-header" data-aos="fade-up">
-                    <h2 class="section-title">
-                        Cosmic Development
-                    </h2>
-                    <p class="section-description">
-                        Harnessing stellar technologies to build websites that shine across the digital galaxy
-                    </p>
-                </div>
-                
-                <div class="features-grid">
-                    <!-- Feature 1 -->
-                    <div class="feature-card" data-aos="fade-up">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h3 class="feature-title">Lightning Fast</h3>
-                        <p class="feature-description">Optimized for speed with cutting-edge performance techniques</p>
-                        <div class="feature-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 95%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Feature 2 -->
-                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="feature-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h3 class="feature-title">Universal Responsive</h3>
-                        <p class="feature-description">Flawless experience across all devices and screen sizes</p>
-                        <div class="feature-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 98%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Feature 3 -->
-                    <div class="feature-card holographic-effect" data-aos="fade-up" data-aos-delay="200">
-                        <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3 class="feature-title">Secure Galaxy</h3>
-                        <p class="feature-description">Advanced security protocols protecting your digital presence</p>
-                        <div class="feature-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Feature 4 -->
-                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                        <div class="feature-icon">
-                            <i class="fas fa-infinity"></i>
-                        </div>
-                        <h3 class="feature-title">Infinite Scalability</h3>
-                        <p class="feature-description">Built to grow with your needs across the entire universe</p>
-                        <div class="feature-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 90%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Website Showcase -->
-        <section id="websites" class="websites-section">
-            <div class="section-container">
-                <div class="section-header" data-aos="fade-up">
-                    <h2 class="section-title">
-                        My Web Galaxy
-                    </h2>
-                    <p class="section-description">
-                        Explore my collection of websites, each a unique star in the digital cosmos.
-                        <span class="interaction-hint">
-                            <i class="fas fa-magic"></i> Try hovering and clicking for cosmic effects!
-                        </span>
-                    </p>
-                </div>
-                
-                <!-- AR Preview Badge -->
-                <div class="ar-badge-container">
-                    <div class="ar-badge">
-                        <i class="fas fa-vr-cardboard"></i>
-                        <span>AR Preview Available on Mobile</span>
-                    </div>
-                </div>
-                
-                <!-- Category Filter -->
-                <div class="category-filter" data-aos="fade-up">
-                    <button class="category-btn active" data-filter="all">
-                        <i class="fas fa-infinity"></i> All Websites
-                        <span class="category-count">6</span>
-                    </button>
-                    <button class="category-btn" data-filter="ecommerce">
-                        <i class="fas fa-shopping-cart"></i> E-Commerce
-                        <span class="category-count">2</span>
-                    </button>
-                    <button class="category-btn" data-filter="portfolio">
-                        <i class="fas fa-briefcase"></i> Portfolio
-                        <span class="category-count">2</span>
-                    </button>
-                    <button class="category-btn" data-filter="webapp">
-                        <i class="fas fa-cube"></i> Web Apps
-                        <span class="category-count">1</span>
-                    </button>
-                    <button class="category-btn" data-filter="landing">
-                        <i class="fas fa-flag"></i> Landing Pages
-                        <span class="category-count">1</span>
-                    </button>
-                </div>
-                
-                <!-- Website Grid -->
-                <div class="website-grid" id="website-grid">
-                    <!-- Website Card 1 -->
-                    <div class="website-card" data-category="ecommerce" data-aos="fade-up">
-                        <div class="website-image">
-                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
-                                 alt="Cosmic Store" loading="lazy">
-                            <div class="website-status available">
-                                <i class="fas fa-satellite-dish"></i> LIVE
-                            </div>
-                            <div class="website-like">
-                                <i class="far fa-heart"></i>
-                                <span>128</span>
-                            </div>
-                            <!-- AR Badge -->
-                            <div class="ar-mini-badge">AR</div>
-                        </div>
-                        <div class="website-content">
-                            <div class="website-header">
-                                <div>
-                                    <h3>Cosmic Store</h3>
-                                    <p class="website-category">
-                                        <i class="fas fa-shopping-cart"></i> E-Commerce
-                                    </p>
-                                </div>
-                                <div class="website-rating">
-                                    <i class="fas fa-star"></i>
-                                    <span>4.8</span>
-                                </div>
-                            </div>
-                            <p class="website-description">
-                                Next-gen e-commerce platform with AR product preview and AI recommendations
-                            </p>
-                            <div class="website-footer">
-                                <a href="#" class="website-link">
-                                    Visit Site <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <button class="clone-btn" data-repo="cosmic-store">
-                                    <i class="fab fa-github"></i> Clone
-                                </button>
-                            </div>
-                            <div class="tech-tags">
-                                <span class="tech-tag">React</span>
-                                <span class="tech-tag">Node.js</span>
-                                <span class="tech-tag">MongoDB</span>
-                                <span class="tech-tag ar-tag">WebXR</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Website Card 2 -->
-                    <div class="website-card" data-category="portfolio" data-aos="fade-up" data-aos-delay="100">
-                        <div class="website-image">
-                            <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
-                                 alt="Stellar Portfolio" loading="lazy">
-                            <div class="website-status available">
-                                <i class="fas fa-satellite-dish"></i> LIVE
-                            </div>
-                            <div class="website-like">
-                                <i class="far fa-heart"></i>
-                                <span>96</span>
-                            </div>
-                        </div>
-                        <div class="website-content">
-                            <div class="website-header">
-                                <div>
-                                    <h3>Stellar Portfolio</h3>
-                                    <p class="website-category">
-                                        <i class="fas fa-briefcase"></i> Portfolio
-                                    </p>
-                                </div>
-                                <div class="website-rating">
-                                    <i class="fas fa-star"></i>
-                                    <span>5.0</span>
-                                </div>
-                            </div>
-                            <p class="website-description">
-                                3D interactive portfolio with particle effects and immersive storytelling
-                            </p>
-                            <div class="website-footer">
-                                <a href="#" class="website-link">
-                                    Visit Site <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <button class="clone-btn" data-repo="stellar-portfolio">
-                                    <i class="fab fa-github"></i> Clone
-                                </button>
-                            </div>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Three.js</span>
-                                <span class="tech-tag">GSAP</span>
-                                <span class="tech-tag">WebGL</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Website Card 3 -->
-                    <div class="website-card holographic-effect" data-category="webapp" data-aos="fade-up" data-aos-delay="200">
-                        <div class="website-image">
-                            <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80" 
-                                 alt="Nebula Dashboard" loading="lazy">
-                            <div class="website-status coming-soon">
-                                <i class="fas fa-clock"></i> SOON
-                            </div>
-                            <div class="website-like">
-                                <i class="far fa-heart"></i>
-                                <span>204</span>
-                            </div>
-                        </div>
-                        <div class="website-content">
-                            <div class="website-header">
-                                <div>
-                                    <h3>Nebula Dashboard</h3>
-                                    <p class="website-category">
-                                        <i class="fas fa-cube"></i> Web App
-                                    </p>
-                                </div>
-                                <div class="website-rating">
-                                    <i class="fas fa-star"></i>
-                                    <span>-</span>
-                                </div>
-                            </div>
-                            <p class="website-description">
-                                Real-time analytics dashboard with cosmic visualizations and predictive AI
-                            </p>
-                            <div class="website-footer">
-                                <span class="coming-soon-text">Coming Soon</span>
-                                <button class="clone-btn disabled" data-repo="nebula-dashboard" disabled>
-                                    <i class="fab fa-github"></i> Soon
-                                </button>
-                            </div>
-                            <div class="tech-tags">
-                                <span class="tech-tag">Vue.js</span>
-                                <span class="tech-tag">Firebase</span>
-                                <span class="tech-tag">D3.js</span>
-                                <span class="tech-tag ai-tag">AI</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Wallpaper Download -->
-                <div class="wallpaper-section">
-                    <div class="wallpaper-card glass-card">
-                        <h3>🎨 Cosmic Wallpaper Pack</h3>
-                        <p>Download high-resolution wallpapers inspired by this universe</p>
-                        <button id="download-wallpapers" class="wallpaper-btn">
-                            <i class="fas fa-download"></i> Download Pack (12 Designs)
+                        <button class="warp-jump-btn">
+                            <i class="fas fa-jump"></i> Random Jump
                         </button>
                     </div>
                 </div>
+                
+                <!-- Tool Selection -->
+                <div class="system-selection">
+                    <button class="system-btn active" data-system="all">
+                        <i class="fas fa-infinity"></i> All Tools
+                    </button>
+                    <button class="system-btn" data-system="media">
+                        <i class="fas fa-play-circle"></i> Media
+                    </button>
+                    <button class="system-btn" data-system="productivity">
+                        <i class="fas fa-tasks"></i> Productivity
+                    </button>
+                    <button class="system-btn" data-system="ai">
+                        <i class="fas fa-robot"></i> AI Tools
+                    </button>
+                </div>
             </div>
         </section>
         
-        <!-- Achievements Section -->
-        <section id="achievements" class="achievements-section">
+        <!-- Interactive Profile Section -->
+        <section id="profile" class="profile-section">
             <div class="section-container">
                 <div class="section-header" data-aos="fade-up">
                     <h2 class="section-title">
-                        Cosmic Achievements
+                        Cosmic Creator Profile
                     </h2>
                     <p class="section-description">
-                        Unlock achievements as you explore the Infinity Multiverse
+                        Meet SHUBHAM - The creator behind Infinity Multiverse
                     </p>
                 </div>
                 
-                <div class="achievements-grid">
-                    <!-- Achievement 1 -->
-                    <div class="achievement-card unlocked">
-                        <div class="achievement-icon">
-                            <i class="fas fa-rocket"></i>
+                <div class="profile-grid">
+                    <!-- Profile Card -->
+                    <div class="profile-card" data-aos="fade-right">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Shubham" alt="SHUBHAM">
+                                <div class="online-status"></div>
+                            </div>
+                            <div class="profile-info">
+                                <h3 class="profile-name">SHUBHAM</h3>
+                                <p class="profile-handle">@I.SHUBHAM0210</p>
+                                <div class="profile-tags">
+                                    <span class="profile-tag">Web Developer</span>
+                                    <span class="profile-tag">Aspirant</span>
+                                    <span class="profile-tag">Creator</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="achievement-content">
-                            <h4>Cosmic Explorer</h4>
-                            <p>First visit to the universe</p>
-                            <div class="achievement-xp">
-                                <i class="fas fa-star"></i>
-                                <span>+100 XP</span>
+                        
+                        <div class="profile-bio">
+                            <p>
+                                Hello Explorer! I'm SHUBHAM, a passionate web developer and aspirant 
+                                creating infinite web tools to solve real-world problems. Welcome to 
+                                my cosmic digital universe!
+                            </p>
+                        </div>
+                        
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <span class="stat-number">∞</span>
+                                <span class="stat-label">Tools Created</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-number">2+</span>
+                                <span class="stat-label">Years Experience</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-number">10K+</span>
+                                <span class="stat-label">Users Served</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-skills">
+                            <h4>Cosmic Skills</h4>
+                            <div class="skills-grid">
+                                <div class="skill">
+                                    <span>HTML/CSS</span>
+                                    <div class="skill-bar">
+                                        <div class="skill-level" style="width: 95%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill">
+                                    <span>JavaScript</span>
+                                    <div class="skill-bar">
+                                        <div class="skill-level" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill">
+                                    <span>React.js</span>
+                                    <div class="skill-bar">
+                                        <div class="skill-level" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="skill">
+                                    <span>Node.js</span>
+                                    <div class="skill-bar">
+                                        <div class="skill-level" style="width: 80%"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Achievement 2 -->
-                    <div class="achievement-card unlocked">
-                        <div class="achievement-icon">
-                            <i class="fas fa-moon"></i>
-                        </div>
-                        <div class="achievement-content">
-                            <h4>Dark Matter Dweller</h4>
-                            <p>Enabled Dark Matter theme</p>
-                            <div class="achievement-xp">
-                                <i class="fas fa-star"></i>
-                                <span>+250 XP</span>
+                    <!-- Interactive Timeline -->
+                    <div class="timeline-card" data-aos="fade-left">
+                        <h3 class="timeline-title">My Cosmic Journey</h3>
+                        <div class="interactive-timeline">
+                            <div class="timeline-item active" data-year="2022">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h4>Big Bang</h4>
+                                    <p>Started web development journey</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item" data-year="2023">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h4>First Tools</h4>
+                                    <p>Created YouTube Ad-free & PDF Viewer</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item" data-year="2024">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h4>Multiverse Launch</h4>
+                                    <p>Launched Infinity Multiverse platform</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item" data-year="2025">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h4>AI Integration</h4>
+                                    <p>Added AI-powered tools and features</p>
+                                </div>
                             </div>
                         </div>
+                        
+                        <!-- Daily Quote -->
+                        <div class="daily-quote">
+                            <i class="fas fa-quote-left"></i>
+                            <p class="quote-text">"In the vast digital cosmos, every line of code creates a new star."</p>
+                            <p class="quote-author">- SHUBHAM</p>
+                        </div>
                     </div>
-                    
-                    <!-- Achievement 3 -->
-                    <div class="achievement-card locked">
-                        <div class="achievement-icon">
+                </div>
+                
+                <!-- Achievements -->
+                <div class="achievements-showcase">
+                    <h3 class="text-center text-2xl font-orbitron mb-6">Cosmic Achievements</h3>
+                    <div class="achievements-grid">
+                        <div class="achievement">
                             <i class="fas fa-infinity"></i>
+                            <span>Infinite Creator</span>
                         </div>
-                        <div class="achievement-content">
-                            <h4>Galaxy Navigator</h4>
-                            <p>View all 24 websites</p>
-                            <div class="achievement-xp">
-                                <i class="fas fa-star"></i>
-                                <span>+500 XP</span>
-                            </div>
+                        <div class="achievement">
+                            <i class="fas fa-rocket"></i>
+                            <span>Launch Master</span>
                         </div>
-                    </div>
-                    
-                    <!-- Achievement 4 -->
-                    <div class="achievement-card locked">
-                        <div class="achievement-icon">
-                            <i class="fas fa-share-alt"></i>
+                        <div class="achievement">
+                            <i class="fas fa-code"></i>
+                            <span>Code Wizard</span>
                         </div>
-                        <div class="achievement-content">
-                            <h4>Signal Booster</h4>
-                            <p>Share on social media</p>
-                            <div class="achievement-xp">
-                                <i class="fas fa-star"></i>
-                                <span>+300 XP</span>
-                            </div>
+                        <div class="achievement">
+                            <i class="fas fa-users"></i>
+                            <span>Community Builder</span>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- XP Progress -->
-                <div class="xp-progress glass-card">
-                    <div class="xp-header">
-                        <h3>Your Cosmic Journey</h3>
-                        <span class="xp-current">350/5000 XP</span>
-                    </div>
-                    <div class="xp-progress-bar">
-                        <div class="xp-progress-fill" style="width: 7%"></div>
-                    </div>
-                    <div class="xp-levels">
-                        <span>Level 1: Stargazer</span>
-                        <span>Level 10: Cosmic Emperor</span>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- Timeline Section -->
-        <section id="timeline" class="timeline-section">
+        <!-- Knowledge & Articles Section -->
+        <section id="knowledge" class="knowledge-section">
             <div class="section-container">
                 <div class="section-header" data-aos="fade-up">
                     <h2 class="section-title">
-                        Multiverse Timeline
+                        Cosmic Knowledge Base
                     </h2>
                     <p class="section-description">
-                        My journey through different dimensions of web development
+                        Explore technology articles, tutorials, and insights from the creator.
                     </p>
                 </div>
                 
-                <div class="timeline">
-                    <div class="timeline-item" data-aos="fade-right">
-                        <div class="timeline-year">2020</div>
-                        <div class="timeline-content">
-                            <h3>Big Bang</h3>
-                            <p>Started my journey in web development</p>
+                <!-- Article Categories -->
+                <div class="knowledge-categories" data-aos="fade-up">
+                    <button class="knowledge-category active" data-category="all">
+                        <i class="fas fa-globe"></i> All Topics
+                    </button>
+                    <button class="knowledge-category" data-category="webdev">
+                        <i class="fas fa-code"></i> Web Development
+                    </button>
+                    <button class="knowledge-category" data-category="ai">
+                        <i class="fas fa-robot"></i> AI & Machine Learning
+                    </button>
+                    <button class="knowledge-category" data-category="tools">
+                        <i class="fas fa-tools"></i> Tool Tutorials
+                    </button>
+                    <button class="knowledge-category" data-category="tips">
+                        <i class="fas fa-lightbulb"></i> Tips & Tricks
+                    </button>
+                </div>
+                
+                <!-- Featured Article -->
+                <div class="featured-article" data-aos="fade-up">
+                    <div class="article-image">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" alt="Featured Article">
+                        <div class="article-badge">
+                            <i class="fas fa-star"></i> Featured
                         </div>
                     </div>
-                    <div class="timeline-item" data-aos="fade-left">
-                        <div class="timeline-year">2021</div>
-                        <div class="timeline-content">
-                            <h3>First Galaxy</h3>
-                            <p>Launched my first portfolio website</p>
+                    <div class="article-content">
+                        <span class="article-category">Web Development</span>
+                        <h3 class="article-title">Building Infinite Web Tools: A Cosmic Approach</h3>
+                        <p class="article-excerpt">
+                            Discover how I built the Infinity Multiverse platform using modern web technologies, 
+                            scalable architecture, and cosmic design principles...
+                        </p>
+                        <div class="article-meta">
+                            <span class="article-date">
+                                <i class="far fa-calendar"></i> March 15, 2024
+                            </span>
+                            <span class="article-read-time">
+                                <i class="far fa-clock"></i> 8 min read
+                            </span>
+                        </div>
+                        <button class="article-read-btn">
+                            <i class="fas fa-book-open"></i> Read Article
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Articles Grid -->
+                <div class="articles-grid">
+                    <!-- Article 1 -->
+                    <div class="article-card" data-category="webdev" data-aos="fade-up">
+                        <div class="article-card-header">
+                            <span class="article-card-category">Web Development</span>
+                            <span class="article-card-date">Mar 10, 2024</span>
+                        </div>
+                        <h4 class="article-card-title">Creating 3D Web Experiences with Three.js</h4>
+                        <p class="article-card-excerpt">
+                            Learn how to build interactive 3D universes in the browser...
+                        </p>
+                        <div class="article-card-footer">
+                            <button class="article-card-btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <span class="article-card-stats">
+                                <i class="far fa-eye"></i> 1.2K
+                            </span>
                         </div>
                     </div>
-                    <div class="timeline-item" data-aos="fade-right">
-                        <div class="timeline-year">2022</div>
-                        <div class="timeline-content">
-                            <h3>Cosmic Expansion</h3>
-                            <p>Built 10+ websites for clients</p>
+                    
+                    <!-- Article 2 -->
+                    <div class="article-card" data-category="ai" data-aos="fade-up" data-aos-delay="100">
+                        <div class="article-card-header">
+                            <span class="article-card-category">AI & ML</span>
+                            <span class="article-card-date">Mar 5, 2024</span>
+                        </div>
+                        <h4 class="article-card-title">Building Smart Chatbots with JavaScript</h4>
+                        <p class="article-card-excerpt">
+                            Create intelligent chatbots using natural language processing...
+                        </p>
+                        <div class="article-card-footer">
+                            <button class="article-card-btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <span class="article-card-stats">
+                                <i class="far fa-eye"></i> 2.3K
+                            </span>
                         </div>
                     </div>
-                    <div class="timeline-item" data-aos="fade-left">
-                        <div class="timeline-year">2023</div>
-                        <div class="timeline-content">
-                            <h3>Infinity Launch</h3>
-                            <p>Created Infinity Multiverse platform</p>
+                    
+                    <!-- Article 3 -->
+                    <div class="article-card" data-category="tools" data-aos="fade-up" data-aos-delay="200">
+                        <div class="article-card-header">
+                            <span class="article-card-category">Tool Tutorials</span>
+                            <span class="article-card-date">Feb 28, 2024</span>
+                        </div>
+                        <h4 class="article-card-title">Mastering the Infinity PDF Viewer</h4>
+                        <p class="article-card-excerpt">
+                            Complete guide to using all features of our PDF viewer...
+                        </p>
+                        <div class="article-card-footer">
+                            <button class="article-card-btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <span class="article-card-stats">
+                                <i class="far fa-eye"></i> 3.1K
+                            </span>
                         </div>
                     </div>
-                    <div class="timeline-item" data-aos="fade-right">
-                        <div class="timeline-year">2024</div>
-                        <div class="timeline-content">
-                            <h3>Quantum Leap</h3>
-                            <p>Implemented 3D universe and AR features</p>
+                    
+                    <!-- Article 4 -->
+                    <div class="article-card" data-category="tips" data-aos="fade-up" data-aos-delay="300">
+                        <div class="article-card-header">
+                            <span class="article-card-category">Tips & Tricks</span>
+                            <span class="article-card-date">Feb 20, 2024</span>
+                        </div>
+                        <h4 class="article-card-title">10 Productivity Hacks for Developers</h4>
+                        <p class="article-card-excerpt">
+                            Boost your coding efficiency with these cosmic tips...
+                        </p>
+                        <div class="article-card-footer">
+                            <button class="article-card-btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <span class="article-card-stats">
+                                <i class="far fa-eye"></i> 4.5K
+                            </span>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Load More -->
+                <div class="text-center mt-10">
+                    <button class="load-more-btn">
+                        <i class="fas fa-sync"></i> Load More Articles
+                    </button>
                 </div>
             </div>
         </section>
         
-        <!-- Contact Section -->
+        <!-- Interactive Contact Section -->
         <section id="contact" class="contact-section">
             <div class="section-container">
                 <div class="section-header" data-aos="fade-up">
                     <h2 class="section-title">
-                        Connect Across the Cosmos
+                        Connect Across Cosmos
                     </h2>
                     <p class="section-description">
-                        Ready to launch your next digital project? Let's create something stellar together.
+                        Ready to collaborate, ask questions, or just say hello? Let's connect!
                     </p>
                 </div>
                 
                 <div class="contact-grid">
-                    <!-- Contact Card 1 -->
-                    <div class="contact-card" data-aos="fade-up">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <h3>Email</h3>
-                        <p>For formal inquiries and project discussions</p>
-                        <a href="mailto:shubham@infinitymultiverse.dev" class="contact-link">
-                            shubham@infinitymultiverse.dev
-                        </a>
+                    <!-- Direct Message -->
+                    <div class="direct-message-card" data-aos="fade-right">
+                        <h3 class="contact-title">Direct Message</h3>
+                        <p class="contact-subtitle">Send me a cosmic message</p>
+                        
+                        <form class="message-form">
+                            <div class="form-group">
+                                <label for="name">Your Name</label>
+                                <input type="text" id="name" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Your Message</label>
+                                <textarea id="message" rows="4" placeholder="Type your message here..." required></textarea>
+                            </div>
+                            <button type="submit" class="send-message-btn">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
                     </div>
                     
-                    <!-- Contact Card 2 -->
-                    <div class="contact-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="contact-icon">
-                            <i class="fab fa-telegram"></i>
+                    <!-- Quick Contact -->
+                    <div class="quick-contact-card" data-aos="fade-left">
+                        <h3 class="contact-title">Quick Connect</h3>
+                        <p class="contact-subtitle">Connect with me instantly</p>
+                        
+                        <div class="contact-methods">
+                            <a href="mailto:shubham@infinitymultiverse.dev" class="contact-method">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p>shubham@infinitymultiverse.dev</p>
+                                </div>
+                            </a>
+                            
+                            <a href="https://instagram.com/i.shubham0210" class="contact-method">
+                                <div class="contact-icon">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <div>
+                                    <h4>Instagram</h4>
+                                    <p>@I.SHUBHAM0210</p>
+                                </div>
+                            </a>
+                            
+                            <a href="https://t.me/shubham0210" class="contact-method">
+                                <div class="contact-icon">
+                                    <i class="fab fa-telegram"></i>
+                                </div>
+                                <div>
+                                    <h4>Telegram</h4>
+                                    <p>@shubham0210</p>
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="contact-method">
+                                <div class="contact-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div>
+                                    <h4>WhatsApp</h4>
+                                    <p>+91 XXXXX XXXXX</p>
+                                </div>
+                            </a>
                         </div>
-                        <h3>Telegram</h3>
-                        <p>Quick chat and instant communication</p>
-                        <a href="https://t.me/shubham0210" class="contact-link">
-                            @shubham0210
-                        </a>
-                    </div>
-                    
-                    <!-- Contact Card 3 -->
-                    <div class="contact-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="contact-icon">
-                            <i class="fab fa-instagram"></i>
+                        
+                        <!-- Status -->
+                        <div class="contact-status">
+                            <div class="status-indicator online"></div>
+                            <span>Usually replies within 24 hours</span>
                         </div>
-                        <h3>Instagram</h3>
-                        <p>Behind-the-scenes and updates</p>
-                        <a href="https://instagram.com/i.shubham0210" class="contact-link">
-                            @I.SHUBHAM0210
-                        </a>
                     </div>
                 </div>
                 
                 <!-- Social Links -->
-                <div class="social-links">
-                    <a href="#" class="social-link">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="#" class="social-link">
-                        <i class="fab fa-dribbble"></i>
-                    </a>
-                    <a href="#" class="social-link">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="social-link">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="https://instagram.com/i.shubham0210" class="social-link">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="social-link">
-                        <i class="fab fa-codepen"></i>
-                    </a>
+                <div class="social-links-showcase">
+                    <h3 class="text-center text-xl font-orbitron mb-6">Follow My Journey</h3>
+                    <div class="social-links-grid">
+                        <a href="https://instagram.com/i.shubham0210" class="social-link instagram">
+                            <i class="fab fa-instagram"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="#" class="social-link github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="#" class="social-link twitter">
+                            <i class="fab fa-twitter"></i>
+                            <span>Twitter</span>
+                        </a>
+                        <a href="#" class="social-link linkedin">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="#" class="social-link youtube">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </a>
+                        <a href="#" class="social-link discord">
+                            <i class="fab fa-discord"></i>
+                            <span>Discord</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1242,32 +1497,55 @@
                         <span class="footer-logo-text">InfinityMultiverse</span>
                     </div>
                     <p class="footer-copyright">
-                        © 2024 Infinity Multiverse. Exploring the digital universe.
+                        © 2024 Infinity Multiverse. Exploring infinite possibilities in the digital cosmos.
                     </p>
                     <p class="footer-owner">
-                        Owner: SHUBHAM (@I.SHUBHAM0210)
+                        Created with ❤️ by SHUBHAM (@I.SHUBHAM0210)
                     </p>
                 </div>
                 
-                <!-- Footer Links -->
+                <!-- Quick Links -->
                 <div class="footer-links">
+                    <h4 class="footer-heading">Quick Links</h4>
                     <a href="#home" class="footer-link">Home</a>
-                    <a href="#websites" class="footer-link">Websites</a>
-                    <a href="#universe-viewer" class="footer-link">3D Universe</a>
-                    <a href="#achievements" class="footer-link">Achievements</a>
+                    <a href="#tools" class="footer-link">Web Tools</a>
+                    <a href="#profile" class="footer-link">My Profile</a>
+                    <a href="#knowledge" class="footer-link">Knowledge</a>
                     <a href="#contact" class="footer-link">Contact</a>
-                    <button class="footer-link policy-btn" data-policy="privacy">Privacy Policy</button>
-                    <button class="footer-link policy-btn" data-policy="terms">Terms of Service</button>
                 </div>
                 
-                <!-- Crafted By -->
-                <div class="footer-crafted">
-                    <p class="footer-heart">
-                        Crafted with <i class="fas fa-heart"></i> in the digital cosmos
-                    </p>
-                    <p class="footer-stats">
-                        Powered by stardust and caffeine • <span id="visitor-total">1,234</span> explorers
-                    </p>
+                <!-- Tools -->
+                <div class="footer-links">
+                    <h4 class="footer-heading">Popular Tools</h4>
+                    <a href="#" class="footer-link">YouTube Ad-free</a>
+                    <a href="#" class="footer-link">PDF Viewer</a>
+                    <a href="#" class="footer-link">Notes Maker</a>
+                    <a href="#" class="footer-link">AI Chatbot</a>
+                    <a href="#" class="footer-link">Games</a>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="newsletter">
+                    <h4 class="footer-heading">Cosmic Newsletter</h4>
+                    <p class="newsletter-text">Get updates on new tools and articles</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email" required>
+                        <button type="submit">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="footer-bottom">
+                <p class="footer-stats">
+                    <span id="visitor-total">1,234</span> explorers in the multiverse
+                </p>
+                <div class="footer-policies">
+                    <button class="policy-btn" data-policy="privacy">Privacy Policy</button>
+                    <button class="policy-btn" data-policy="terms">Terms of Service</button>
+                    <button class="policy-btn" data-policy="cookies">Cookies</button>
                 </div>
             </div>
         </div>
@@ -1292,23 +1570,35 @@
         </div>
     </div>
     
+    <!-- Tool Preview Modal -->
+    <div id="tool-preview-modal" class="tool-preview-modal">
+        <div class="tool-preview-content glass-card">
+            <button id="close-tool-preview" class="close-modal-btn">&times;</button>
+            <div class="tool-preview-body">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Article Reader Modal -->
+    <div id="article-modal" class="article-modal">
+        <div class="article-modal-content glass-card">
+            <button id="close-article" class="close-modal-btn">&times;</button>
+            <div class="article-modal-body">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+    
     <!-- Policy Popup -->
     <div id="policy-popup" class="policy-popup">
         <div class="policy-content glass-card">
             <div class="policy-header">
-                <h3>Privacy Policy</h3>
+                <h3 id="policy-title">Privacy Policy</h3>
                 <button id="close-policy" class="close-modal-btn">&times;</button>
             </div>
-            <div class="policy-body">
-                <p>Your privacy is important in this vast digital universe. This policy explains how we handle your data across the Infinity Multiverse platform.</p>
-                <h4>Data Collection</h4>
-                <p>We collect minimal data necessary to provide our services, including website analytics and contact information when you reach out.</p>
-                <h4>Cookies & Tracking</h4>
-                <p>We use cookies to improve your browsing experience and analyze website traffic. You can control cookie settings through your browser.</p>
-                <h4>Third-Party Services</h4>
-                <p>We may use third-party services for analytics, hosting, and communication. These services have their own privacy policies.</p>
-                <h4>Your Rights</h4>
-                <p>You have the right to access, correct, or delete your personal data. Contact us to exercise these rights.</p>
+            <div class="policy-body" id="policy-body">
+                <!-- Content will be loaded dynamically -->
             </div>
         </div>
     </div>

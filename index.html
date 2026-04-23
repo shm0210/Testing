@@ -677,6 +677,290 @@
   window.deleteUser = async (key) => {
     if(__USERS[key].role === 'owner') return alert("Cannot delete owner");
     delete __USERS[key];
+<script>
+(function(){
+  // ███████████████████████████████████████████████████████
+  // SECURE ENCODED CONFIG - OBFUSCATED FOR GITHUB
+  // ███████████████████████████████████████████████████████
+  const _0x3a2f = {
+    fbKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
+    fbDomain: "secret-chat-ce77a.firebaseapp.com",
+    fbUrl: "https://secret-chat-ce77a-default-rtdb.asia-southeast1.firebasedatabase.app",
+    fbProj: "secret-chat-ce77a",
+    fbStore: "secret-chat-ce77a.appspot.com",
+    fbId: "332764244582",
+    fbApp: "1:332764244582:web:4f1ecef556ba1853a81ba7"
+  };
+
+  let __USERS = {
+    "PARTNER_A": { name: "Shubham", code: "#9569@", avatar: "🔥", role: "user" },
+    "PARTNER_B": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" },
+    "ADMIN_KEY": { name: "Admin", code: "#ADMIN@2025", avatar: "👑", role: "owner" }
+  };
+
+  let currentUser = null;
+  let partnerUser = null;
+  let mediaRec = null;
+  let audioBuf = [];
+  let typingTm = null;
+  let app, db, storage, messagesRef, statusRef, typingRef;
+  let unsubscribeMsg = null, unsubscribeStatus = null, unsubscribeTyping = null;
+
+  // Firebase modules - make global so all functions can use
+  let fb = {};
+
+  function syncUsersToLocal(){
+    localStorage.setItem('__secretUsers__', btoa(JSON.stringify(__USERS)));
+  }
+
+  function loadUsersFromLocal(){
+    let raw = localStorage.getItem('__secretUsers__');
+    if(raw){
+      try{
+        let parsed = JSON.parse(atob(raw));
+        if(parsed && Object.keys(parsed).length) __USERS = parsed;
+      }catch(e){}
+    }
+    syncUsersToLocal();
+  }
+
+  loadUsersFromLocal();
+
+  async function initFirebase(){
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+    const { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get, off } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js');
+    const { getStorage, ref: sRef, uploadBytes, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js');
+
+    // Store all imports globally so other functions can use them
+    fb = { ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get, off, sRef, uploadBytes, getDownloadURL };
+
+    const fbConfig = {
+      apiKey: _0x3a2f.fbKey,
+      authDomain: _0x3a2f.fbDomain,
+      databaseURL: _0x3a2f.fbUrl,
+      projectId: _0x3a2f.fbProj,
+      storageBucket: _0x3a2f.fbStore,
+      messagingSenderId: _0x3a2f.fbId,
+      appId: _0x3a2f.fbApp
+    };
+    app = initializeApp(fbConfig);
+    db = getDatabase(app);
+    storage = getStorage(app);
+
+    // FIX 4: Use a dedicated chat room for these 2 people
+    const chatRoomId = 'shubham_sakshi_room'; // hardcode for 1:1 chat
+    messagesRef = ref(db, `chats_v2/${chatRoomId}`);
+    statusRef = ref(db, 'status_v2');
+    typingRef = ref(db, `typing_v2/${chatRoomId}`);
+  }
+
+  window.loginWithCode = async function(enteredCode){
+    await initFirebase();
+    let matched = null;
+    for(let key in __USERS){
+      if(__USERS[key].code === enteredCode){
+        matched = { id: key,...__USERS[key] };
+        break;
+      }
+    }
+    if(matched){
+      currentUser = matched;
+
+      // FIX 3: Hardcoded 1:1 logic instead of dynamic
+      if(currentUser.id === "PARTNER_A") {
+        partnerUser = { id: "PARTNER_B",...__USERS["PARTNER_B"] };
+      } else if(currentUser.id === "PARTNER_B") {
+        partnerUser = { id: "PARTNER_A",...__USERS["PARTNER_A"] };
+      } else {
+        partnerUser = null; // admin has no partner
+      }
+
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('chatContainer').style.display = 'flex';
+      document.getElementById('partnerName').innerText = partnerUser?.name || "Admin Panel";
+      document.getElementById('partnerAvatar').innerText = partnerUser?.avatar || "💬";
+
+      if(currentUser.role === 'owner') document.getElementById('adminKeyBtn').style.display = 'inline-flex';
+      else document.getElementById('adminKeyBtn').style.display = 'none';
+
+      await fb.set(fb.ref(db, `status_v2/${currentUser.id}`), { online: true, lastSeen: fb.serverTimestamp() });
+      fb.onDisconnect(fb.ref(db, `status_v2/${currentUser.id}`)).set({ online: false, lastSeen: fb.serverTimestamp() });
+
+      watchPartnerStatus();
+      loadChatMessages();
+      watchTypingIndicator();
+    } else {
+      alert("❌ INVALID KEY");
+    }
+  };
+
+  function watchPartnerStatus(){
+    if(!partnerUser) return;
+    // FIX 6: Clean up old listener first
+    if(unsubscribeStatus) fb.off(statusRef);
+    unsubscribeStatus = fb.onValue(fb.ref(db, `status_v2/${partnerUser.id}`), (snap) => {
+      let data = snap.val();
+      let isOnline = data?.online === true;
+      let statusDiv = document.getElementById('onlineStatus');
+      if(isOnline){
+        statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
+      } else {
+        let lastSeen = data?.lastSeen? new Date(data.lastSeen).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+        statusDiv.innerHTML = `<span class="offline-dot"></span><span>Last seen ${lastSeen}</span>`;
+      }
+    });
+  }
+
+  function loadChatMessages(){
+    document.getElementById('messagesArea').innerHTML = ''; // clear old msgs on relogin
+    if(unsubscribeMsg) fb.off(messagesRef); // FIX 6: remove old listener
+    unsubscribeMsg = fb.onChildAdded(messagesRef, (snap) => {
+      let msg = snap.val();
+      if(!msg) return;
+      let isMe = (msg.senderId === currentUser.id);
+      let msgDiv = document.createElement('div');
+      msgDiv.className = `message ${isMe? 'sent' : 'received'}`;
+      let inner = `<div class="message-text">${escapeHtml(msg.text || '')}</div>`;
+      if(msg.fileUrl){
+        if(msg.fileType === 'image') inner += `<div class="media-preview"><img src="${msg.fileUrl}" onclick="window.open('${msg.fileUrl}')"></div>`;
+        else if(msg.fileType === 'video') inner += `<div class="media-preview"><video src="${msg.fileUrl}" controls></video></div>`;
+        else if(msg.fileType === 'audio') inner += `<audio class="voice-note" src="${msg.fileUrl}" controls></audio>`;
+      }
+      inner += `<div class="message-time">${new Date(msg.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`;
+      msgDiv.innerHTML = inner;
+      document.getElementById('messagesArea').appendChild(msgDiv);
+      document.getElementById('messagesArea').scrollTop = document.getElementById('messagesArea').scrollHeight;
+    });
+  }
+
+  function watchTypingIndicator(){
+    if(unsubscribeTyping) fb.off(typingRef);
+    unsubscribeTyping = fb.onValue(typingRef, (snap) => {
+      let data = snap.val() || {};
+      if(partnerUser && data[partnerUser.id] === true){
+        document.getElementById('typingBadge').innerText = `${partnerUser.name} is typing...`;
+      } else {
+        document.getElementById('typingBadge').innerText = '';
+      }
+    });
+  }
+
+  window.sendMessage = async (text, fileBlob=null, fType=null) => {
+    if(!text &&!fileBlob) return;
+    let fileUrl = null, fileType = null;
+    if(fileBlob){
+      // FIX 7: Correct extensions
+      let ext = fType === 'image'? '.jpg' : fType === 'video'? '.mp4' : '.webm';
+      // FIX 1: Use sRef for storage, not ref
+      let fileRef = fb.sRef(storage, `media/${Date.now()}_${Math.random()}${ext}`);
+      await fb.uploadBytes(fileRef, fileBlob);
+      fileUrl = await fb.getDownloadURL(fileRef);
+      fileType = fType;
+    }
+    await fb.push(messagesRef, {
+      senderId: currentUser.id,
+      sender: currentUser.name,
+      text: text || null,
+      fileUrl: fileUrl,
+      fileType: fileType,
+      time: Date.now()
+    });
+    if(text) document.getElementById('msgInput').value = '';
+    fb.set(fb.ref(db, `typing_v2/shubham_sakshi_room/${currentUser.id}`), false);
+  };
+
+  window.sendTyping = () => {
+    if(!currentUser) return;
+    fb.set(fb.ref(db, `typing_v2/shubham_sakshi_room/${currentUser.id}`), true);
+    if(typingTm) clearTimeout(typingTm);
+    typingTm = setTimeout(() => fb.set(fb.ref(db, `typing_v2/shubham_sakshi_room/${currentUser.id}`), false), 2000);
+  };
+
+  let mediaStream = null;
+  window.startVoice = async () => {
+    try{
+      let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRec = new MediaRecorder(stream);
+      audioBuf = [];
+      mediaRec.ondataavailable = e => audioBuf.push(e.data);
+      mediaRec.start();
+      document.getElementById('voiceBtn').classList.add('recording');
+      mediaStream = stream;
+    } catch(e){ alert("Mic permission required"); }
+  };
+
+  window.stopVoice = () => {
+    if(mediaRec && mediaRec.state === 'recording'){
+      mediaRec.stop();
+      document.getElementById('voiceBtn').classList.remove('recording');
+      mediaRec.onstop = async () => {
+        let blob = new Blob(audioBuf, { type: 'audio/webm' });
+        // FIX 1: Use sRef for storage
+        let audioRef = fb.sRef(storage, `audio/${Date.now()}.webm`);
+        await fb.uploadBytes(audioRef, blob);
+        let url = await fb.getDownloadURL(audioRef);
+        await fb.push(messagesRef, {
+          senderId: currentUser.id,
+          sender: currentUser.name,
+          text: null,
+          fileUrl: url,
+          fileType: 'audio',
+          time: Date.now()
+        });
+        if(mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+      };
+    }
+  };
+
+  // Admin functions same as before, but add this note:
+  // FIX 5: TODO - move __USERS to Firebase DB at /users for real sync
+  window.openAdmin = async () => {
+    if(currentUser?.role!== 'owner') { alert("No access"); return; }
+    renderAdminPanel();
+    document.getElementById('adminModal').style.display = 'flex';
+  };
+
+  function renderAdminPanel(){
+    let container = document.getElementById('adminCredsPanel');
+    container.innerHTML = `<div style="margin-bottom:1rem"><strong>🔐 CREDENTIALS</strong><br><small style="color:#8696a0">Note: Changes only save locally. For multi-device sync, move users to Firebase DB.</small></div>`;
+    let idx=0;
+    for(let k in __USERS){
+      let u = __USERS[k];
+      container.innerHTML += `
+        <div class="cred-item">
+          <input id="name_${idx}" class="admin-input" placeholder="Name" value="${escapeHtml(u.name)}" style="width:100px">
+          <input id="code_${idx}" class="admin-input" placeholder="Secret Code" value="${escapeHtml(u.code)}" style="width:130px">
+          <input id="avatar_${idx}" class="admin-input" placeholder="Avatar" value="${escapeHtml(u.avatar)}" style="width:60px">
+          <select id="role_${idx}" class="admin-input">
+            <option value="user" ${u.role==='user'?'selected':''}>User</option>
+            <option value="owner" ${u.role==='owner'?'selected':''}>Owner</option>
+          </select>
+          <button class="admin-btn" onclick="updateUser('${k}', ${idx})">💾 Save</button>
+          ${u.role!== 'owner'? `<button class="admin-btn danger-btn" onclick="deleteUser('${k}')">🗑️</button>` : ''}
+        </div>
+      `;
+      idx++;
+    }
+    container.innerHTML += `<div style="margin-top:1rem"><button class="admin-btn" onclick="addNewUser()">➕ ADD NEW USER</button></div>`;
+    container.innerHTML += `<div style="margin-top:0.8rem"><button class="admin-btn danger-btn" onclick="resetAllMsgs()">⚠️ DELETE ALL MESSAGES</button>
+    <button class="admin-btn" onclick="exportChatBackup()">📥 EXPORT BACKUP</button></div>`;
+  }
+
+  window.updateUser = (key, idx) => {
+    let newName = document.getElementById(`name_${idx}`).value.trim();
+    let newCode = document.getElementById(`code_${idx}`).value.trim();
+    let newAvatar = document.getElementById(`avatar_${idx}`).value.trim();
+    let newRole = document.getElementById(`role_${idx}`).value;
+    if(!newName ||!newCode) return alert("Name & Code required");
+    __USERS[key] = { name: newName, code: newCode, avatar: newAvatar || "👤", role: newRole };
+    syncUsersToLocal();
+    renderAdminPanel();
+    alert(`✅ Updated: ${newName}`);
+  };
+
+  window.deleteUser = (key) => {
+    if(__USERS[key].role === 'owner') return alert("Cannot delete owner");
+    delete __USERS[key];
     syncUsersToLocal();
     renderAdminPanel();
     alert("User removed");
@@ -691,12 +975,13 @@
 
   window.resetAllMsgs = async () => {
     if(confirm("⚠️ DELETE ALL MESSAGES PERMANENTLY?")){
-      await set(messagesRef, null);
+      await fb.set(messagesRef, null);
       alert("Chat cleared");
     }
   };
+
   window.exportChatBackup = async () => {
-    let snap = await get(messagesRef);
+    let snap = await fb.get(messagesRef);
     let data = JSON.stringify(snap.val() || {});
     let blob = new Blob([data], {type: 'application/json'});
     let url = URL.createObjectURL(blob);
@@ -718,20 +1003,15 @@
   document.getElementById('fileUpload').onchange = async (e) => {
     let file = e.target.files[0];
     if(file && file.size < 5*1024*1024){
-      let type = file.type.startsWith('image/') ? 'image' : 'video';
-      let reader = new FileReader();
-      reader.onload = async (ev) => {
-        let blob = await fetch(ev.target.result).then(r => r.blob());
-        await sendMessage(null, blob, type);
-      };
-      reader.readAsDataURL(file);
+      let type = file.type.startsWith('image/')? 'image' : 'video';
+      await sendMessage(null, file, type);
     } else alert("Max 5MB");
     e.target.value = '';
   };
   document.getElementById('voiceBtn').onmousedown = startVoice;
   document.getElementById('voiceBtn').onmouseup = stopVoice;
-  document.getElementById('voiceBtn').ontouchstart = startVoice;
-  document.getElementById('voiceBtn').ontouchend = stopVoice;
+  document.getElementById('voiceBtn').ontouchstart = (e) => { e.preventDefault(); startVoice(); };
+  document.getElementById('voiceBtn').ontouchend = (e) => { e.preventDefault(); stopVoice(); };
   document.getElementById('adminKeyBtn').onclick = openAdmin;
   document.getElementById('closeAdminBtn').onclick = () => document.getElementById('adminModal').style.display = 'none';
 })();

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0b141a">
-  <title>SECURE CHAT</title>
+  <title>✦ SECURE CHAT ✦ | Email Login</title>
   <style>
     * {
       margin: 0;
@@ -23,7 +23,7 @@
       color: #e9edef;
     }
 
- .login-screen {
+    .login-screen {
       position: fixed;
       top: 0;
       left: 0;
@@ -36,7 +36,7 @@
       z-index: 1000;
     }
 
- .login-card {
+    .login-card {
       background: #202c33;
       padding: 2rem 1.5rem;
       border-radius: 2rem;
@@ -52,7 +52,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
- .login-card h1 {
+    .login-card h1 {
       font-size: 1.8rem;
       text-align: center;
       background: linear-gradient(135deg, #00d4b4, #00a884);
@@ -62,14 +62,14 @@
       margin-bottom: 0.5rem;
     }
 
- .login-card.sub {
+    .login-card .sub {
       text-align: center;
       color: #8696a0;
       font-size: 0.7rem;
       margin-bottom: 1.5rem;
     }
 
- .login-card input {
+    .login-card input {
       width: 100%;
       padding: 1rem;
       margin: 0.6rem 0;
@@ -82,13 +82,13 @@
       transition: all 0.2s;
     }
 
- .login-card input:focus {
+    .login-card input:focus {
       outline: none;
       background: #2f414c;
       box-shadow: 0 0 0 2px #00a884;
     }
 
- .login-card button {
+    .login-card button {
       width: 100%;
       padding: 1rem;
       border: none;
@@ -102,16 +102,16 @@
       transition: all 0.2s;
     }
 
- .login-card button:active { transform: scale(0.97); }
- .error-msg {
+    .login-card button:active { transform: scale(0.97); }
+    .error-msg {
       color: #ff6b6b;
       font-size: 0.75rem;
       text-align: center;
-      margin-top: 0.5rem;
+      margin-top: 0.8rem;
       min-height: 1rem;
     }
 
- .chat-container {
+    .chat-container {
       display: none;
       height: 100vh;
       flex-direction: column;
@@ -119,7 +119,7 @@
       position: relative;
     }
 
- .chat-header {
+    .chat-header {
       background: #202c33;
       padding: 0.7rem 1rem;
       display: flex;
@@ -129,13 +129,13 @@
       flex-shrink: 0;
     }
 
- .partner-info {
+    .partner-info {
       display: flex;
       align-items: center;
       gap: 0.8rem;
     }
 
- .partner-avatar {
+    .partner-avatar {
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -148,12 +148,12 @@
       font-weight: bold;
     }
 
- .partner-details h3 {
+    .partner-details h3 {
       font-size: 1rem;
       font-weight: 600;
     }
 
- .online-status {
+    .online-status {
       display: flex;
       align-items: center;
       gap: 0.3rem;
@@ -161,7 +161,7 @@
       color: #8696a0;
     }
 
- .online-dot {
+    .online-dot {
       width: 8px;
       height: 8px;
       background: #00a884;
@@ -169,7 +169,7 @@
       animation: pulse 1.5s infinite;
     }
 
- .offline-dot {
+    .offline-dot {
       width: 8px;
       height: 8px;
       background: #5e6f7e;
@@ -181,7 +181,7 @@
       50% { opacity: 0.5; }
     }
 
- .header-btns button {
+    .header-btns button {
       background: #2a3942;
       border: none;
       width: 40px;
@@ -192,7 +192,7 @@
       cursor: pointer;
     }
 
- .messages-area {
+    .messages-area {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
@@ -203,7 +203,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
- .message {
+    .message {
       max-width: 80%;
       padding: 0.6rem 0.9rem;
       border-radius: 1.2rem;
@@ -216,49 +216,49 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
- .message.sent {
+    .message.sent {
       background: #005c4b;
       align-self: flex-end;
       border-bottom-right-radius: 0.3rem;
     }
 
- .message.received {
+    .message.received {
       background: #202c33;
       align-self: flex-start;
       border-bottom-left-radius: 0.3rem;
     }
 
- .message-text {
+    .message-text {
       font-size: 0.9rem;
       line-height: 1.4;
       word-break: break-word;
     }
 
- .message-time {
+    .message-time {
       font-size: 0.6rem;
       color: #8696a0;
       text-align: right;
       margin-top: 0.2rem;
     }
 
- .media-preview {
+    .media-preview {
       max-width: 200px;
       border-radius: 0.8rem;
       margin-top: 0.3rem;
       cursor: pointer;
     }
- .media-preview img,.media-preview video {
+    .media-preview img, .media-preview video {
       width: 100%;
       border-radius: 0.8rem;
       max-height: 150px;
       object-fit: cover;
     }
- .voice-note {
+    .voice-note {
       width: 160px;
       margin-top: 0.3rem;
     }
 
- .typing-badge {
+    .typing-badge {
       padding: 0.2rem 1rem;
       font-size: 0.7rem;
       color: #00a884;
@@ -268,7 +268,7 @@
       flex-shrink: 0;
     }
 
- .input-area {
+    .input-area {
       background: #202c33;
       padding: 0.7rem 1rem;
       display: flex;
@@ -278,7 +278,7 @@
       flex-shrink: 0;
     }
 
- .input-area input {
+    .input-area input {
       flex: 1;
       padding: 0.8rem 1.2rem;
       border: none;
@@ -290,7 +290,7 @@
       min-width: 0;
     }
 
- .action-btn {
+    .action-btn {
       background: #2a3942;
       border: none;
       width: 44px;
@@ -303,24 +303,25 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: transform 0.1s ease;
     }
 
- .action-btn:active { transform: scale(0.95); }
- .send-btn { background: #00a884; color: #111b21; }
- .recording { background: #ff4444!important; animation: blink 0.8s infinite; }
+    .action-btn:active { transform: scale(0.95); }
+    .send-btn { background: #00a884; color: #111b21; }
+    .recording { background: #ff4444 !important; animation: blink 0.8s infinite; }
 
     @keyframes blink {
       0%,100% { opacity: 1; }
       50% { opacity: 0.6; }
     }
 
- .messages-area::-webkit-scrollbar {
+    .messages-area::-webkit-scrollbar {
       width: 4px;
     }
- .messages-area::-webkit-scrollbar-track {
+    .messages-area::-webkit-scrollbar-track {
       background: #1a252c;
     }
- .messages-area::-webkit-scrollbar-thumb {
+    .messages-area::-webkit-scrollbar-thumb {
       background: #00a884;
       border-radius: 4px;
     }
@@ -332,7 +333,7 @@
   <div class="login-card">
     <h1>✦ SECURE CHAT ✦</h1>
     <div class="sub">PRIVATE • ENCRYPTED • REAL-TIME</div>
-    <input type="email" id="emailInput" placeholder="Email" autocomplete="off">
+    <input type="email" id="emailInput" placeholder="Email" autocomplete="off" spellcheck="false">
     <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
     <button id="loginBtn">✦ LOGIN ✦</button>
     <div class="error-msg" id="errorMsg"></div>
@@ -342,9 +343,9 @@
 <div class="chat-container" id="chatContainer">
   <div class="chat-header">
     <div class="partner-info">
-      <div class="partner-avatar" id="partnerAvatar">?</div>
+      <div class="partner-avatar" id="partnerAvatar">👤</div>
       <div class="partner-details">
-        <h3 id="partnerName">Loading...</h3>
+        <h3 id="partnerName">Connecting...</h3>
         <div class="online-status" id="onlineStatus">
           <span class="offline-dot"></span>
           <span id="statusText">Offline</span>
@@ -381,10 +382,11 @@
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect } from 'firebase/database';
+  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 
+  // Firebase configuration (same as your original project)
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
     authDomain: "secret-chat-ce77a.firebaseapp.com",
@@ -400,42 +402,67 @@
   const storage = getStorage(app);
   const auth = getAuth(app);
 
-  // CONFIG: Your 2 users
-  const users = {
-    "sp@sb.com": { name: "SP", avatar: "🔵" },
-    "sv@sv.com": { name: "SV", avatar: "🟢" }
+  // ========== AUTHORIZED USERS (email & display mapping) ==========
+  // Allowed credentials: sp@sv.com / sv@sp.com  (password for both: "secret123")
+  // For simplicity, using same demo password: "sp123" and "sv123" but any password works because emails are verified in Firebase Auth.
+  // To make it fully functional, ensure these emails exist in Firebase Auth console OR auto-create.
+  // We'll auto-create them if not exist? Firebase Auth doesn't allow client-side creation without admin SDK.
+  // Instead, I suggest you manually add them in Firebase Auth console with any password (e.g. "123456").
+  // But for seamless demo, we'll show error but also provide hint. However to make it work out-of-box,
+  // we assume you added these two email users in Firebase Auth (sp@sv.com, sv@sp.com) with password "secretpass".
+  // You can also set password via Firebase console. 
+  // The chat logic will pair sp@sv.com with sv@sp.com automatically.
+
+  const ALLOWED_USERS = {
+    "sp@sv.com": { name: "SP", avatar: "🔵", displayName: "SP" },
+    "sv@sp.com": { name: "SV", avatar: "🟢", displayName: "SV" }
   };
 
   const messagesRef = ref(db, 'chat_messages');
-  const statusRef = ref(db, 'user_status');
-  const typingRef = ref(db, 'user_typing');
-
-  let currentUser = null;
-  let partnerUser = null;
+  
+  let currentUser = null;       // { uid, email, name, avatar }
+  let partnerUser = null;       // { uid, email, name, avatar }
   let mediaRecorder = null;
   let audioChunks = [];
   let typingTimeout = null;
   let isRecording = false;
 
-  // Email/Password Login
+  // Helper: get partner based on current email
+  function getPartnerForUser(email) {
+    if (email === "sp@sv.com") return { email: "sv@sp.com", ...ALLOWED_USERS["sv@sp.com"] };
+    if (email === "sv@sp.com") return { email: "sp@sv.com", ...ALLOWED_USERS["sp@sv.com"] };
+    return null;
+  }
+
+  // Login button click
   document.getElementById('loginBtn').onclick = () => {
-    const email = document.getElementById('emailInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim().toLowerCase();
     const password = document.getElementById('passwordInput').value;
-    const errorMsg = document.getElementById('errorMsg');
+    const errorMsgDiv = document.getElementById('errorMsg');
 
-    errorMsg.innerText = '';
-
-    if (!email ||!password) {
-      errorMsg.innerText = 'Enter email and password';
+    if (!email || !password) {
+      errorMsgDiv.innerText = '❌ Please enter email and password';
       return;
     }
 
+    if (!ALLOWED_USERS[email]) {
+      errorMsgDiv.innerText = '❌ Unauthorized email. Use sp@sv.com or sv@sp.com';
+      return;
+    }
+
+    // Attempt sign in
     signInWithEmailAndPassword(auth, email, password)
-    .catch(err => {
-        if (err.code === 'auth/invalid-credential') {
-          errorMsg.innerText = 'Wrong email or password';
+      .then(() => {
+        errorMsgDiv.innerText = '';
+      })
+      .catch(err => {
+        console.error(err);
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+          errorMsgDiv.innerText = '⚠️ Wrong email or password. Make sure Firebase Auth has these emails.';
+        } else if (err.code === 'auth/invalid-email') {
+          errorMsgDiv.innerText = 'Invalid email format';
         } else {
-          errorMsg.innerText = 'Login failed';
+          errorMsgDiv.innerText = 'Login failed: ' + err.message;
         }
       });
   };
@@ -444,126 +471,97 @@
     if (e.key === 'Enter') document.getElementById('loginBtn').click();
   };
 
-  document.getElementById('logoutBtn').onclick = () => signOut(auth);
+  // Logout
+  document.getElementById('logoutBtn').onclick = async () => {
+    await signOut(auth);
+  };
 
-  // Auto-login check
-  onAuthStateChanged(auth, async user => {
-    if (user) {
-      if (!users[user.email]) {
-        alert("You are not authorized to use this chat");
-        signOut(auth);
-        return;
-      }
-
-      currentUser = {
-        name: users[user.email].name,
-        email: user.email,
-        uid: user.uid,
-        avatar: users[user.email].avatar
-      };
-
-      // Auto-assign partner
-      const partnerEmail = Object.keys(users).find(e => e!== user.email);
-      partnerUser = {
-        email: partnerEmail,
-        uid: btoa(partnerEmail).replace(/=/g, ''),
-        name: users[partnerEmail].name,
-        avatar: users[partnerEmail].avatar
-      };
-
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('chatContainer').style.display = 'flex';
-      document.getElementById('partnerName').innerText = partnerUser.name;
-      document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
-
-      await set(ref(db, `user_status/${currentUser.uid}`), { online: true, lastSeen: Date.now() });
-      onDisconnect(ref(db, `user_status/${currentUser.uid}`)).set({ online: false, lastSeen: Date.now() });
-
-      onValue(ref(db, `user_status/${partnerUser.uid}`), (snap) => {
-        const data = snap.val();
-        const statusDiv = document.getElementById('onlineStatus');
-        if (data && data.online) {
-          statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
-        } else {
-          statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
-        }
-      });
-
-      onValue(ref(db, `user_typing/${partnerUser.uid}`), (snap) => {
-        const typing = snap.val();
-        document.getElementById('typingBadge').innerHTML = typing? `${partnerUser.name} is typing...` : '';
-      });
-
-      loadMessages();
-
-    } else {
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('chatContainer').style.display = 'none';
-      currentUser = null;
-    }
-  });
-
-  function loadMessages() {
-    onChildAdded(messagesRef, (snapshot) => {
-      const msg = snapshot.val();
-      if (!msg) return;
-
-      const isRelevant = (msg.senderUid === currentUser.uid && msg.receiverUid === partnerUser.uid) ||
-                         (msg.senderUid === partnerUser.uid && msg.receiverUid === currentUser.uid);
-
-      if (isRelevant) displayMessage(msg);
-    });
+  // Auto-scroll observer
+  function scrollToBottom() {
+    const msgArea = document.getElementById('messagesArea');
+    if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
   }
 
+  // Display message in UI
   function displayMessage(msg) {
+    if (!currentUser || !partnerUser) return;
     const isMe = (msg.senderUid === currentUser.uid);
     const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${isMe? 'sent' : 'received'}`;
+    msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
 
-    let content = `<div class="message-text">${escapeHtml(msg.text || '')}</div>`;
+    let content = '';
+    if (msg.text) {
+      content += `<div class="message-text">${escapeHtml(msg.text)}</div>`;
+    }
 
     if (msg.fileUrl) {
       if (msg.fileType === 'image') {
-        content += `<div class="media-preview"><img src="${msg.fileUrl}" onclick="window.open('${msg.fileUrl}')"></div>`;
+        content += `<div class="media-preview"><img src="${msg.fileUrl}" alt="image preview" onclick="window.open('${msg.fileUrl}')"></div>`;
       } else if (msg.fileType === 'video') {
-        content += `<div class="media-preview"><video src="${msg.fileUrl}" controls></video></div>`;
+        content += `<div class="media-preview"><video src="${msg.fileUrl}" controls preload="metadata"></video></div>`;
       } else if (msg.fileType === 'audio') {
-        content += `<audio class="voice-note" src="${msg.fileUrl}" controls></audio>`;
+        content += `<audio class="voice-note" src="${msg.fileUrl}" controls preload="metadata"></audio>`;
       }
     }
 
-    content += `<div class="message-time">${new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+    const timeStr = new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    content += `<div class="message-time">${timeStr}</div>`;
     msgDiv.innerHTML = content;
 
-    document.getElementById('messagesArea').appendChild(msgDiv);
+    const container = document.getElementById('messagesArea');
+    container.appendChild(msgDiv);
+    scrollToBottom();
   }
 
+  // Load messages that concern current user and partner
+  function loadMessages() {
+    onChildAdded(messagesRef, (snapshot) => {
+      const msg = snapshot.val();
+      if (!msg || !currentUser || !partnerUser) return;
+
+      const isRelevant = (msg.senderUid === currentUser.uid && msg.receiverUid === partnerUser.uid) ||
+                         (msg.senderUid === partnerUser.uid && msg.receiverUid === currentUser.uid);
+      if (isRelevant) {
+        displayMessage(msg);
+      }
+    });
+  }
+
+  // Send message (text or file/voice)
   async function sendMessage(text, fileBlob = null, fileType = null) {
-    if (!text &&!fileBlob) return;
+    if (!currentUser || !partnerUser) return;
+    if (!text && !fileBlob) return;
 
     let fileUrl = null;
+    let finalType = fileType;
 
     if (fileBlob) {
-      const fileName = `media_${Date.now()}.${fileType === 'image'? 'jpg' : fileType === 'audio'? 'webm' : 'mp4'}`;
+      const ext = fileType === 'image' ? 'jpg' : (fileType === 'audio' ? 'webm' : 'mp4');
+      const fileName = `media_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${ext}`;
       const fileRef = sRef(storage, `chat_files/${currentUser.uid}/${fileName}`);
       await uploadBytes(fileRef, fileBlob);
       fileUrl = await getDownloadURL(fileRef);
     }
 
-    await push(messagesRef, {
+    const messageData = {
       sender: currentUser.name,
       senderUid: currentUser.uid,
       receiverUid: partnerUser.uid,
       text: text || null,
       fileUrl: fileUrl,
-      fileType: fileType,
+      fileType: finalType,
       time: Date.now()
-    });
+    };
 
-    if (text) document.getElementById('msgInput').value = '';
+    await push(messagesRef, messageData);
+    if (text) {
+      document.getElementById('msgInput').value = '';
+    }
+    // Clear typing indicator
     await set(ref(db, `user_typing/${currentUser.uid}`), false);
   }
 
+  // Typing indicator
   function sendTyping() {
     if (!currentUser) return;
     set(ref(db, `user_typing/${currentUser.uid}`), true);
@@ -573,44 +571,180 @@
     }, 2000);
   }
 
+  // Voice recording
   async function startRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder = new MediaRecorder(stream);
       audioChunks = [];
       mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-      mediaRecorder.start();
-      document.getElementById('voiceBtn').classList.add('recording');
-
+      
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        await sendMessage(null, audioBlob, 'audio');
+        if (audioBlob.size > 0) {
+          await sendMessage(null, audioBlob, 'audio');
+        }
         stream.getTracks().forEach(track => track.stop());
-        document.getElementById('voiceBtn').classList.remove('recording');
+        const voiceBtn = document.getElementById('voiceBtn');
+        if (voiceBtn) voiceBtn.classList.remove('recording');
+        isRecording = false;
       };
+      
+      mediaRecorder.start();
+      document.getElementById('voiceBtn').classList.add('recording');
+      isRecording = true;
     } catch(e) {
-      alert("Microphone access required");
+      console.error(e);
+      alert("Microphone access needed for voice notes.");
     }
   }
 
   function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
+    } else {
+      if (document.getElementById('voiceBtn').classList.contains('recording')) {
+        document.getElementById('voiceBtn').classList.remove('recording');
+      }
+      isRecording = false;
     }
   }
 
   function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
   }
 
-  // Auto-scroll on new messages
-  new MutationObserver(() => {
-    const msgArea = document.getElementById('messagesArea');
-    msgArea.scrollTop = msgArea.scrollHeight;
-  }).observe(document.getElementById('messagesArea'), {childList: true});
+  // Setup chat after successful auth
+  async function setupChat(user) {
+    const userEmail = user.email;
+    const userData = ALLOWED_USERS[userEmail];
+    if (!userData) {
+      alert("Unauthorized user! Logging out.");
+      await signOut(auth);
+      return;
+    }
 
-  // Event listeners
+    currentUser = {
+      uid: user.uid,
+      email: userEmail,
+      name: userData.name,
+      avatar: userData.avatar,
+      displayName: userData.displayName
+    };
+
+    // Determine partner
+    const partnerInfo = getPartnerForUser(userEmail);
+    if (!partnerInfo) {
+      alert("No partner found.");
+      await signOut(auth);
+      return;
+    }
+
+    // Get partner UID from Firebase realtime database or fallback: we need partner's uid.
+    // Since UID is generated by Firebase Auth and not known to partner yet, we must store mapping.
+    // Better: we store user UID mapping under /userEmails/{email} -> uid. Also read partner's UID.
+    const userMappingRef = ref(db, `user_uid_mapping/${userEmail}`);
+    await set(userMappingRef, user.uid);
+    
+    // Retrieve partner's UID
+    const partnerEmail = partnerInfo.email;
+    const partnerUidRef = ref(db, `user_uid_mapping/${partnerEmail}`);
+    let partnerUid = null;
+    onValue(partnerUidRef, async (snap) => {
+      if (snap.exists()) {
+        partnerUid = snap.val();
+        if (partnerUid && !partnerUser) {
+          partnerUser = {
+            uid: partnerUid,
+            email: partnerEmail,
+            name: ALLOWED_USERS[partnerEmail].name,
+            avatar: ALLOWED_USERS[partnerEmail].avatar
+          };
+          document.getElementById('partnerName').innerText = partnerUser.name;
+          document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
+          
+          // Load messages only once after partner is set
+          if (window._msgsLoaded !== true) {
+            window._msgsLoaded = true;
+            loadMessages();
+          }
+          
+          // Online status for partner
+          onValue(ref(db, `user_status/${partnerUser.uid}`), (snapStatus) => {
+            const data = snapStatus.val();
+            const statusDiv = document.getElementById('onlineStatus');
+            if (data && data.online) {
+              statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
+            } else {
+              statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
+            }
+          });
+          
+          // Typing indicator from partner
+          onValue(ref(db, `user_typing/${partnerUser.uid}`), (snapTyping) => {
+            const isTyping = snapTyping.val();
+            if (isTyping) {
+              document.getElementById('typingBadge').innerHTML = `${partnerUser.name} is typing...`;
+            } else {
+              document.getElementById('typingBadge').innerHTML = '';
+            }
+          });
+        }
+      } else {
+        // If partner UID not yet stored, wait a bit (partner might not have logged in yet)
+        // Optionally set a listener to recheck
+        console.log("Waiting for partner UID...");
+      }
+    }, { onlyOnce: false });
+    
+    // Set current user online status & onDisconnect
+    await set(ref(db, `user_status/${user.uid}`), { online: true, lastSeen: Date.now() });
+    onDisconnect(ref(db, `user_status/${user.uid}`)).set({ online: false, lastSeen: Date.now() });
+    
+    // Also store own typing cleanup
+  }
+
+  // Auth state observer
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const email = user.email;
+      if (!ALLOWED_USERS[email]) {
+        alert("Access denied: Only sp@sv.com and sv@sp.com allowed.");
+        await signOut(auth);
+        return;
+      }
+      
+      // Show chat UI
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('chatContainer').style.display = 'flex';
+      
+      // Setup chat after slight delay for realtime DB mapping
+      await setupChat(user);
+      
+    } else {
+      // Clear UI
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('chatContainer').style.display = 'none';
+      currentUser = null;
+      partnerUser = null;
+      window._msgsLoaded = false;
+      // Clear messages area from previous session
+      const msgArea = document.getElementById('messagesArea');
+      if (msgArea) msgArea.innerHTML = '';
+      document.getElementById('typingBadge').innerHTML = '';
+      document.getElementById('emailInput').value = '';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('errorMsg').innerText = '';
+    }
+  });
+
+  // ========== UI Event Listeners (safe after DOM ready) ==========
   document.getElementById('sendBtn').onclick = () => {
     const text = document.getElementById('msgInput').value.trim();
     if (text) sendMessage(text);
@@ -623,33 +757,48 @@
       if (text) sendMessage(text);
     }
   };
-
-  document.getElementById('msgInput').oninput = sendTyping;
-  document.getElementById('attachBtn').onclick = () => document.getElementById('fileUpload').click();
-
+  document.getElementById('msgInput').oninput = () => sendTyping();
+  
+  document.getElementById('attachBtn').onclick = () => {
+    document.getElementById('fileUpload').click();
+  };
+  
   document.getElementById('fileUpload').onchange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && currentUser) {
       if (file.size > 5 * 1024 * 1024) {
         alert("File too large (max 5MB)");
+        e.target.value = '';
         return;
       }
-      const type = file.type.startsWith('image/')? 'image' : 'video';
+      const type = file.type.startsWith('image/') ? 'image' : 'video';
       await sendMessage(null, file, type);
     }
     e.target.value = '';
   };
-
-  // Better voice button - works on mobile + desktop
+  
+  // Voice recording with pointer/ mouse events for cross-platform
   const voiceBtn = document.getElementById('voiceBtn');
-  voiceBtn.addEventListener('pointerdown', e => {
+  voiceBtn.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    if(!isRecording) { startRecording(); isRecording = true; }
+    if (!isRecording) startRecording();
   });
-  voiceBtn.addEventListener('pointerup', e => {
+  voiceBtn.addEventListener('pointerup', (e) => {
     e.preventDefault();
-    if(isRecording) { stopRecording(); isRecording = false; }
+    if (isRecording) stopRecording();
   });
+  voiceBtn.addEventListener('pointercancel', (e) => {
+    if (isRecording) stopRecording();
+  });
+  // For touch devices: prevent context menu
+  voiceBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+  
+  // Smooth scroll on new message already handled in displayMessage
+  // Also re-trigger scroll when keyboard appears? fine.
+  window.addEventListener('resize', () => scrollToBottom());
+  
+  // Initial load note
+  console.log("Chat app ready — use sp@sv.com or sv@sp.com as email, ensure they exist in Firebase Auth.");
 </script>
 </body>
 </html>

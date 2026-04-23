@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *{box-sizing:border-box;margin:0;font-family:sans-serif}
+    body{background:#0b141a;color:#e9edef;padding:20px}
+    #login{display:flex;height:100vh;justify-content:center;align-items:center}
+  .box{background:#202c33;padding:30px;border-radius:12px;text-align:center;min-width:320px}
+  .box input{width:100%;padding:14px;margin:12px 0;border:none;border-radius:8px;background:#2a3942;color:#fff}
+  .box button{width:100%;padding:14px;border:none;border-radius:8px;background:#00a884;color:#111b21;font-weight:600}
+    #panel{display:none}
+    h1{margin-bottom:20px}
+   .card{background:#202c33;padding:20px;border-radius:12px;margin:15px 0}
+   .card button{background:#00a884;border:none;color:#111b21;padding:10px 20px;border-radius:6px;font-weight:600;margin:5px;cursor:pointer}
+   .danger{background:#ff4444!important}
+  .msg-item{background:#2a3942;padding:10px;margin:8px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
+  .msg-item button{background:#ff4444;border:none;color:white;padding:4px 10px;border-radius:4px}
+   pre{background:#111b21;padding:15px;border-radius:8px;overflow-x:auto}
+  </style>
+</head>
+<body>
+  <div id="login">
+    <div class="box">
+      <h2>🔐 Owner Login</h2>
+      <input id="ownerCode" type="password" placeholder="Owner Code">
+      <button onclick="checkOwner()">Enter Admin</button>
+    </div>
+  </div>
+
+  <div id="panel">
+    <h1>🔧 Secret Chat Admin</h1>
+
+    <div class="card">
+      <h3>Chat Controls</h3>
+      <button class="danger" onclick="clearAll()">Delete All Chats</button>
+      <button onclick="exportChats()">Export Chats</button>
+      <button onclick="location.href='index.html'">Open User Chat</button>
+    </div>
+
+    <div class="card">
+      <h3>Active Users</h3>
+      <div id="userList"></div>
+    </div>
+
+    <div class="card">
+      <h3>Recent Messages - Click to Delete</h3>
+      <div id="msgList"></div>
+    </div>
+
+    <div class="card">
+      <h3>Database Link</h3>
+      <a href="https://console.firebase.google.com/project/secret-chat-ce77a/database" target="_blank" style="color:#53bdeb">Open Firebase Console</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
+    import { getDatabase, ref, onValue, remove, set, get } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
+      authDomain: "secret-chat-ce77a.firebaseapp.com",
+      databaseURL: "https://secret-chat-ce77a-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "secret-chat-ce77a",
+      storageBucket: "secret-chat-ce77a.appspot.com",
+      messagingSenderId: "332764244582",
+      appId: "1:332764244582:web:4f1ecef556ba1853a81ba7"
+    };
+
+    const OWNER_CODE = "#OWNER@"; // Owner ka code
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.checkOwner = () => {
+      if(document.getElementById('ownerCode').value === OWNER_CODE) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('panel').style.display = 'block';
+        loadData();
+      } else alert("Galat Code");
+    }
+
+    function loadData() {
+      // Load users status
+      onValue(ref(db, 'status'), (snap) => {
+        const users = snap.val() || {};
+        document.getElementById('userList').innerHTML = Object.keys(users).map(u =>
+          `<div class="msg-item">${u} - ${users[u].online? '🟢 Online' : '⚫ Last: ' + new Date(users[u].lastSeen).toLocaleString()}</div>`
+        ).join('');
+      });
+
+      // Load recent 20 messages
+      onValue(ref(db, 'chats'), (snap) => {
+        const msgs = snap.val() || {};
+        const arr = Object.keys(msgs).map(k => ({key: k,...msgs[k]})).slice(-20).reverse();
+        document.getElementById('msgList').innerHTML = arr.map(m =>
+          `<div class="msg-item">
+            <span><b>${m.user}:</b> ${m.text || m.fileType || 'File'} - ${new Date(m.time).toLocaleTimeString()}</span>
+            <button onclick="deleteMsg('${m.key}')">Delete</button>
+          </div>`
+        ).join('');
+      });
+    }
+
+    window.deleteMsg = (key) => {
+      if(confirm("Delete this message?")) remove(ref(db, 'chats/' + key));
+    }
+
+    window.clearAll = () => {
+      if(confirm("SARE CHATS DELETE HO JAYENGE. Pakka?")) set(ref(db, 'chats'), null);
+    }
+
+    window.exportChats = async () => {
+      const snap = await get(ref(db, 'chats'));
+      const data = JSON.stringify(snap.val(), null, 2);
+      const blob = new Blob([data], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'chats-backup.json'; a.click();
+    }
+  </script>
+</body>
+</html>

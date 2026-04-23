@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>◈ REAL-TIME CHAT ◈</title>
+  <title>💬 PRIVATE CHAT • 2 PERSON ONLY</title>
   <style>
     * {
       margin: 0;
@@ -191,6 +191,11 @@
       50% { opacity: 0.5; }
     }
 
+    .header-btns {
+      display: flex;
+      gap: 10px;
+    }
+    
     .header-btns button {
       background: #2a3942;
       border: none;
@@ -298,7 +303,6 @@
     .action-btn:active { transform: scale(0.95); }
     .send-btn { background: #00a884; color: #111b21; }
     .recording { background: #ff4444 !important; animation: blink 0.8s infinite; }
-    .logout-btn { background: #d32f2f; }
 
     @keyframes blink {
       0%,100% { opacity: 1; }
@@ -308,14 +312,21 @@
     .messages-area::-webkit-scrollbar { width: 4px; }
     .messages-area::-webkit-scrollbar-track { background: #1a252c; }
     .messages-area::-webkit-scrollbar-thumb { background: #00a884; border-radius: 4px; }
+    
+    .system-badge {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8696a0;
+      padding: 0.5rem;
+    }
   </style>
 </head>
 <body>
 
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
-    <h1>✦ REAL-TIME CHAT ✦</h1>
-    <div class="sub">AUTHENTICATED • SECURE • PRIVATE</div>
+    <h1>✦ PRIVATE CHAT ✦</h1>
+    <div class="sub">2-PERSON SECURE CHAT</div>
     
     <div id="authError" style="display:none;" class="error-msg"></div>
     
@@ -324,18 +335,18 @@
       <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
       <button id="loginBtn">✦ LOGIN ✦</button>
       <div class="switch-mode">
-        Don't have an account? <a id="showSignup">Create Account</a>
+        New user? <a id="showSignup">Create Account</a>
       </div>
     </div>
     
     <div id="signupForm" style="display:none;">
-      <input type="text" id="signupName" placeholder="Full Name">
+      <input type="text" id="signupName" placeholder="Your Full Name">
       <input type="email" id="signupEmail" placeholder="Email">
       <input type="password" id="signupPassword" placeholder="Password (min 6 chars)">
       <input type="text" id="signupAvatar" placeholder="Avatar Emoji (optional)" maxlength="2" value="👤">
       <button id="signupBtn">✦ REGISTER ✦</button>
       <div class="switch-mode">
-        Already have an account? <a id="showLogin">Back to Login</a>
+        Already have account? <a id="showLogin">Back to Login</a>
       </div>
     </div>
   </div>
@@ -346,7 +357,7 @@
     <div class="partner-info">
       <div class="partner-avatar" id="partnerAvatar">👤</div>
       <div class="partner-details">
-        <h3 id="partnerName">Loading...</h3>
+        <h3 id="partnerName">Your Special Person</h3>
         <div class="online-status" id="onlineStatus">
           <span class="offline-dot"></span>
           <span id="statusText">Offline</span>
@@ -355,7 +366,7 @@
     </div>
     <div class="header-btns">
       <button id="adminBtn" style="display:none;">⚙️</button>
-      <button id="logoutBtn" class="logout-btn">🚪</button>
+      <button id="logoutBtn" style="background:#d32f2f;">🚪</button>
     </div>
   </div>
   <div class="messages-area" id="messagesArea"></div>
@@ -382,7 +393,7 @@
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get, query, orderByChild, limitToLast } from 'firebase/database';
+  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, query, orderByChild, limitToLast, get } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
@@ -400,9 +411,6 @@
   const db = getDatabase(app);
   const storage = getStorage(app);
   const auth = getAuth(app);
-  
-  const messagesRef = ref(db, 'chat_messages');
-  const usersRef = ref(db, 'app_users');
   
   let currentUser = null;
   let currentUserData = null;
@@ -431,7 +439,7 @@
     document.getElementById('authError').style.display = 'none';
   };
 
-  // Login with email/password
+  // Login
   document.getElementById('loginBtn').onclick = async () => {
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -442,23 +450,16 @@
     }
     
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Logged in:", userCredential.user.email);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      console.error(error);
-      if (error.code === 'auth/user-not-found') {
-        showError("No account found with this email");
-      } else if (error.code === 'auth/wrong-password') {
-        showError("Incorrect password");
-      } else if (error.code === 'auth/invalid-email') {
-        showError("Invalid email format");
-      } else {
-        showError("Login failed: " + error.message);
-      }
+      if (error.code === 'auth/user-not-found') showError("No account found");
+      else if (error.code === 'auth/wrong-password') showError("Incorrect password");
+      else if (error.code === 'auth/invalid-email') showError("Invalid email");
+      else showError("Login failed: " + error.message);
     }
   };
 
-  // Signup with email/password
+  // Signup - Only allows 2 total users (you + partner)
   document.getElementById('signupBtn').onclick = async () => {
     const name = document.getElementById('signupName').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
@@ -475,10 +476,19 @@
       return;
     }
     
+    // Check if already 2 users exist (limit to 2 people)
+    const usersSnap = await get(ref(db, 'app_users'));
+    const existingUsers = usersSnap.val() || {};
+    const userCount = Object.keys(existingUsers).filter(uid => existingUsers[uid].role !== 'owner').length;
+    
+    if (userCount >= 2) {
+      showError("❌ Chat is full! Only 2 people allowed (You + Your Partner). Contact admin to reset.");
+      return;
+    }
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Save user data to Realtime Database
       const userData = {
         uid: userCredential.user.uid,
         name: name,
@@ -489,30 +499,31 @@
       };
       
       await set(ref(db, `app_users/${userCredential.user.uid}`), userData);
-      console.log("User registered and saved");
+      showError("✅ Account created! Please login.");
+      
+      // Switch to login form
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('signupEmail').value = '';
+      document.getElementById('signupPassword').value = '';
       
     } catch (error) {
-      console.error(error);
       if (error.code === 'auth/email-already-in-use') {
         showError("Email already registered");
-      } else if (error.code === 'auth/invalid-email') {
-        showError("Invalid email format");
-      } else if (error.code === 'auth/weak-password') {
-        showError("Password too weak");
       } else {
         showError("Signup failed: " + error.message);
       }
     }
   };
 
-  // Logout function
+  // Logout
   document.getElementById('logoutBtn').onclick = async () => {
     try {
       if (currentUserData) {
         await set(ref(db, `user_status/${currentUserData.uid}`), { online: false, lastSeen: Date.now() });
       }
       await signOut(auth);
-      window.location.reload();
+      location.reload();
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -520,31 +531,22 @@
 
   // Initialize chat after auth
   async function initChat(user) {
-    // Load user data from Firebase
     const userSnap = await get(ref(db, `app_users/${user.uid}`));
     
     if (!userSnap.exists()) {
-      // Create user data if it doesn't exist (for manually created auth users)
-      const newUserData = {
-        uid: user.uid,
-        name: user.email.split('@')[0],
-        email: user.email,
-        avatar: "👤",
-        role: "user",
-        createdAt: Date.now()
-      };
-      await set(ref(db, `app_users/${user.uid}`), newUserData);
-      currentUserData = newUserData;
-    } else {
-      currentUserData = userSnap.val();
+      await signOut(auth);
+      showError("User not authorized. Please contact admin.");
+      return;
     }
     
+    currentUserData = userSnap.val();
     currentUser = user;
     
-    // Find partner (another user, not admin)
-    const allUsersSnap = await get(usersRef);
+    // Get all users (only 2 regular users + admin)
+    const allUsersSnap = await get(ref(db, 'app_users'));
     const allUsers = allUsersSnap.val() || {};
     
+    // Find partner (the OTHER regular user, not admin, not self)
     for (let uid in allUsers) {
       if (uid !== currentUser.uid && allUsers[uid].role === 'user') {
         partnerUser = { ...allUsers[uid], uid: uid };
@@ -552,8 +554,8 @@
       }
     }
     
-    // Check if owner (admin)
-    const isOwner = currentUser.email === "owner@secretchat.com" || currentUserData.role === 'owner';
+    // Check if current user is admin/owner
+    const isOwner = currentUserData.role === 'owner';
     
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('chatContainer').style.display = 'flex';
@@ -561,9 +563,12 @@
     if (partnerUser) {
       document.getElementById('partnerName').innerText = partnerUser.name;
       document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
+    } else if (isOwner) {
+      document.getElementById('partnerName').innerText = "Admin Mode";
+      document.getElementById('partnerAvatar').innerText = "👑";
     } else {
-      document.getElementById('partnerName').innerText = "Chat Partner";
-      document.getElementById('partnerAvatar').innerText = "👤";
+      document.getElementById('partnerName').innerText = "Waiting for Partner...";
+      document.getElementById('partnerAvatar').innerText = "⏳";
     }
     
     if (isOwner) {
@@ -573,7 +578,7 @@
       };
     }
     
-    // Set online status using UID
+    // Set online status
     await set(ref(db, `user_status/${currentUser.uid}`), { online: true, lastSeen: Date.now(), name: currentUserData.name });
     onDisconnect(ref(db, `user_status/${currentUser.uid}`)).set({ online: false, lastSeen: Date.now(), name: currentUserData.name });
     
@@ -588,6 +593,9 @@
           statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
         }
       });
+    } else if (!isOwner) {
+      // No partner yet - show waiting message
+      document.getElementById('onlineStatus').innerHTML = '<span class="offline-dot"></span><span>Waiting for second user...</span>';
     }
     
     loadMessages();
@@ -611,18 +619,22 @@
       const msg = snapshot.val();
       if (!msg) return;
       
-      // Show messages between current user and partner
-      if (!partnerUser) return;
-      
-      if ((msg.sender === currentUser.uid && msg.receiver === partnerUser.uid) ||
-          (msg.sender === partnerUser.uid && msg.receiver === currentUser.uid)) {
+      // For regular users: only show messages between them
+      if (currentUserData.role !== 'owner' && partnerUser) {
+        if ((msg.sender === currentUser.uid && msg.receiver === partnerUser.uid) ||
+            (msg.sender === partnerUser.uid && msg.receiver === currentUser.uid)) {
+          displayMessage(msg);
+        }
+      } 
+      // For admin: show all messages
+      else if (currentUserData.role === 'owner') {
         displayMessage(msg);
       }
     });
   }
   
   function displayMessage(msg) {
-    const isMe = (msg.sender === currentUser.uid);
+    const isMe = (msg.sender === currentUser?.uid);
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
     
@@ -638,8 +650,8 @@
       }
     }
     
-    // Show sender name for received messages (if multiple users)
-    if (!isMe && msg.senderName) {
+    // Show sender name for received messages in admin view
+    if (!isMe && currentUserData?.role === 'owner' && msg.senderName) {
       content = `<div style="font-size:0.7rem; color:#00a884; margin-bottom:3px;">${escapeHtml(msg.senderName)}</div>` + content;
     }
     
@@ -652,8 +664,8 @@
 
   async function sendMessage(text, fileBlob = null, fileType = null) {
     if (!text && !fileBlob) return;
-    if (!partnerUser) {
-      alert("No chat partner available");
+    if (!partnerUser && currentUserData.role !== 'owner') {
+      alert("Waiting for your partner to join...");
       return;
     }
     
@@ -671,7 +683,7 @@
     const messageData = {
       sender: currentUser.uid,
       senderName: currentUserData.name,
-      receiver: partnerUser.uid,
+      receiver: partnerUser ? partnerUser.uid : null,
       text: text || null,
       fileUrl: fileUrl,
       fileType: type,
@@ -684,11 +696,15 @@
       document.getElementById('msgInput').value = '';
     }
     
-    await set(ref(db, `user_typing/${currentUser.uid}`), false);
+    if (currentUserData.role !== 'owner') {
+      await set(ref(db, `user_typing/${currentUser.uid}`), false);
+    }
   }
 
   function sendTyping() {
     if (!currentUser || !partnerUser) return;
+    if (currentUserData.role === 'owner') return;
+    
     set(ref(db, `user_typing/${currentUser.uid}`), true);
     if (typingTimeout) clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => {
@@ -714,7 +730,7 @@
         await push(ref(db, 'chat_messages'), {
           sender: currentUser.uid,
           senderName: currentUserData.name,
-          receiver: partnerUser.uid,
+          receiver: partnerUser ? partnerUser.uid : null,
           text: null,
           fileUrl: audioUrl,
           fileType: 'audio',

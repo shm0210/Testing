@@ -1,125 +1,494 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Panel</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Secret Chat</title>
   <style>
-    *{box-sizing:border-box;margin:0;font-family:sans-serif}
-    body{background:#0b141a;color:#e9edef;padding:20px}
-    #login{display:flex;height:100vh;justify-content:center;align-items:center}
-  .box{background:#202c33;padding:30px;border-radius:12px;text-align:center;min-width:320px}
-  .box input{width:100%;padding:14px;margin:12px 0;border:none;border-radius:8px;background:#2a3942;color:#fff}
-  .box button{width:100%;padding:14px;border:none;border-radius:8px;background:#00a884;color:#111b21;font-weight:600}
-    #panel{display:none}
-    h1{margin-bottom:20px}
-   .card{background:#202c33;padding:20px;border-radius:12px;margin:15px 0}
-   .card button{background:#00a884;border:none;color:#111b21;padding:10px 20px;border-radius:6px;font-weight:600;margin:5px;cursor:pointer}
-   .danger{background:#ff4444!important}
-  .msg-item{background:#2a3942;padding:10px;margin:8px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
-  .msg-item button{background:#ff4444;border:none;color:white;padding:4px 10px;border-radius:4px}
-   pre{background:#111b21;padding:15px;border-radius:8px;overflow-x:auto}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #0b141a;
+      color: #e9edef;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #00a884;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      border-left: 4px solid #00a884;
+      padding-left: 15px;
+    }
+
+    .card {
+      background: #202c33;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      color: #00a884;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background: #2a3942;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00a884;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #8696a0;
+      margin-top: 5px;
+    }
+
+    .user-item, .msg-item {
+      background: #2a3942;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    input, select {
+      background: #111b21;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #e9edef;
+      font-size: 0.9rem;
+    }
+
+    button {
+      background: #00a884;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: #111b21;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #00c3a2;
+      transform: scale(1.02);
+    }
+
+    .danger-btn {
+      background: #d32f2f;
+      color: white;
+    }
+
+    .danger-btn:hover {
+      background: #f44336;
+    }
+
+    .add-user-area {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .add-user-area input {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .msg-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .delete-msg {
+      background: #d32f2f;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+    }
+
+    .owner-badge {
+      background: #00a884;
+      color: #111b21;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .online-badge {
+      color: #00a884;
+    }
+
+    .offline-badge {
+      color: #8696a0;
+    }
+
+    .code-display {
+      font-family: monospace;
+      background: #111b21;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
   </style>
 </head>
 <body>
-  <div id="login">
-    <div class="box">
-      <h2>🔐 Owner Login</h2>
-      <input id="ownerCode" type="password" placeholder="Owner Code">
-      <button onclick="checkOwner()">Enter Admin</button>
+<div class="container">
+  <h1>🔧 ADMIN CONTROL PANEL</h1>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-number" id="totalUsers">0</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="onlineUsers">0</div>
+      <div class="stat-label">Online Now</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="totalMsgs">0</div>
+      <div class="stat-label">Total Messages</div>
     </div>
   </div>
 
-  <div id="panel">
-    <h1>🔧 Secret Chat Admin</h1>
-
-    <div class="card">
-      <h3>Chat Controls</h3>
-      <button class="danger" onclick="clearAll()">Delete All Chats</button>
-      <button onclick="exportChats()">Export Chats</button>
-      <button onclick="location.href='index.html'">Open User Chat</button>
+  <div class="card">
+    <h2>👥 Manage Users (2 Person Chat)</h2>
+    <div id="usersList"></div>
+    <div class="add-user-area">
+      <input type="text" id="newUserName" placeholder="Name">
+      <input type="text" id="newUserCode" placeholder="Secret Code (e.g., #123@)">
+      <input type="text" id="newUserAvatar" placeholder="Avatar Emoji" maxlength="2" value="👤">
+      <button id="addUserBtn">➕ Add User</button>
     </div>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">⚠️ For 2-person chat, keep exactly 2 regular users + Owner</p>
+  </div>
 
-    <div class="card">
-      <h3>Active Users</h3>
-      <div id="userList"></div>
+  <div class="card">
+    <h2>🔑 Owner Access Code</h2>
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <input type="text" id="ownerCodeInput" style="flex:1; font-family: monospace;">
+      <button id="updateOwnerBtn">Update Owner Code</button>
     </div>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Current Owner Code: <span id="currentOwnerCode" class="code-display"></span></p>
+  </div>
 
-    <div class="card">
-      <h3>Recent Messages - Click to Delete</h3>
-      <div id="msgList"></div>
-    </div>
-
-    <div class="card">
-      <h3>Database Link</h3>
-      <a href="https://console.firebase.google.com/project/secret-chat-ce77a/database" target="_blank" style="color:#53bdeb">Open Firebase Console</a>
+  <div class="card">
+    <h2>📨 Recent Messages</h2>
+    <div id="messagesList" class="msg-list">Loading...</div>
+    <div style="margin-top: 15px; display: flex; gap: 10px;">
+      <button id="exportChatBtn">📥 Export All Chats</button>
+      <button id="clearAllBtn" class="danger-btn">⚠️ Delete All Messages</button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
-    import { getDatabase, ref, onValue, remove, set, get } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
+  <div class="card">
+    <h2>📊 Database Actions</h2>
+    <button id="refreshBtn">🔄 Refresh Data</button>
+    <button id="resetUsersBtn" class="danger-btn" style="margin-left: 10px;">🔄 Reset to Default Users</button>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
-      authDomain: "secret-chat-ce77a.firebaseapp.com",
-      databaseURL: "https://secret-chat-ce77a-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "secret-chat-ce77a",
-      storageBucket: "secret-chat-ce77a.appspot.com",
-      messagingSenderId: "332764244582",
-      appId: "1:332764244582:web:4f1ecef556ba1853a81ba7"
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+      "firebase/database": "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from 'firebase/app';
+  import { getDatabase, ref, get, set, remove, onValue, push } from 'firebase/database';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
+    authDomain: "secret-chat-ce77a.firebaseapp.com",
+    databaseURL: "https://secret-chat-ce77a-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "secret-chat-ce77a",
+    storageBucket: "secret-chat-ce77a.appspot.com",
+    messagingSenderId: "332764244582",
+    appId: "1:332764244582:web:4f1ecef556ba1853a81ba7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const messagesRef = ref(db, 'chat_messages');
+  const statusRef = ref(db, 'user_status');
+
+  let USERS = {};
+  let OWNER_CODE = "#ADMIN@2025";
+
+  function loadLocalUsers() {
+    const saved = localStorage.getItem('chat_users');
+    if (saved) {
+      try {
+        USERS = JSON.parse(saved);
+      } catch(e) {}
+    }
+    if (Object.keys(USERS).length === 0) {
+      USERS = {
+        "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
+        "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
+      };
+    }
+  }
+
+  function saveLocalUsers() {
+    localStorage.setItem('chat_users', JSON.stringify(USERS));
+  }
+
+  function loadOwnerCode() {
+    const saved = localStorage.getItem('owner_code');
+    if (saved) OWNER_CODE = saved;
+  }
+
+  function saveOwnerCode() {
+    localStorage.setItem('owner_code', OWNER_CODE);
+  }
+
+  loadLocalUsers();
+  loadOwnerCode();
+
+  async function refreshStats() {
+    const usersSnap = await get(statusRef);
+    const usersStatus = usersSnap.val() || {};
+    let online = 0;
+    for (let u in usersStatus) {
+      if (usersStatus[u]?.online) online++;
+    }
+    document.getElementById('totalUsers').innerText = Object.keys(USERS).length + 1;
+    document.getElementById('onlineUsers').innerText = online;
+    
+    const msgsSnap = await get(messagesRef);
+    const msgs = msgsSnap.val() || {};
+    document.getElementById('totalMsgs').innerText = Object.keys(msgs).length;
+  }
+
+  function renderUsers() {
+    const container = document.getElementById('usersList');
+    container.innerHTML = '';
+    
+    for (let [id, user] of Object.entries(USERS)) {
+      const div = document.createElement('div');
+      div.className = 'user-item';
+      div.innerHTML = `
+        <div style="flex:1">
+          <strong>${escapeHtml(user.avatar)} ${escapeHtml(user.name)}</strong>
+          <div class="code-display" style="margin-top: 4px;">${escapeHtml(user.code)}</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button onclick="window.editUser('${id}')">✏️ Edit</button>
+          <button class="danger-btn" onclick="window.deleteUser('${id}')">🗑️ Delete</button>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+    
+    document.getElementById('currentOwnerCode').innerText = OWNER_CODE;
+  }
+
+  window.editUser = (id) => {
+    const user = USERS[id];
+    const newName = prompt("Enter new name:", user.name);
+    const newCode = prompt("Enter new secret code:", user.code);
+    const newAvatar = prompt("Enter avatar emoji (1-2 chars):", user.avatar);
+    if (newName && newCode) {
+      USERS[id] = { ...user, name: newName, code: newCode, avatar: newAvatar || user.avatar };
+      saveLocalUsers();
+      renderUsers();
+      alert("User updated!");
+    }
+  };
+
+  window.deleteUser = (id) => {
+    if (confirm(`Delete ${USERS[id].name}?`)) {
+      delete USERS[id];
+      saveLocalUsers();
+      renderUsers();
+      alert("User deleted");
+    }
+  };
+
+  async function loadMessages() {
+    const msgsSnap = await get(messagesRef);
+    const msgs = msgsSnap.val() || {};
+    const msgArray = Object.entries(msgs).sort((a,b) => b[1].time - a[1].time).slice(0, 30);
+    const container = document.getElementById('messagesList');
+    container.innerHTML = '';
+    
+    for (let [key, msg] of msgArray) {
+      const div = document.createElement('div');
+      div.className = 'msg-item';
+      div.innerHTML = `
+        <div style="flex:1">
+          <strong>${escapeHtml(msg.sender)}</strong> → ${escapeHtml(msg.receiver || 'all')}<br>
+          <span style="font-size:0.8rem">${escapeHtml(msg.text || msg.fileType || 'Media')}</span>
+          <div style="font-size:0.7rem; color:#8696a0">${new Date(msg.time).toLocaleString()}</div>
+        </div>
+        <button class="delete-msg" onclick="window.deleteMessage('${key}')">Delete</button>
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  window.deleteMessage = async (key) => {
+    if (confirm("Delete this message?")) {
+      await remove(ref(db, `chat_messages/${key}`));
+      await loadMessages();
+      await refreshStats();
+      alert("Message deleted");
+    }
+  };
+
+  async function exportChats() {
+    const msgsSnap = await get(messagesRef);
+    const data = msgsSnap.val() || {};
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      users: USERS,
+      messages: data
     };
+    const jsonStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat_export_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
-    const OWNER_CODE = "#OWNER@"; // Owner ka code
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    window.checkOwner = () => {
-      if(document.getElementById('ownerCode').value === OWNER_CODE) {
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('panel').style.display = 'block';
-        loadData();
-      } else alert("Galat Code");
+  async function clearAllMessages() {
+    if (confirm("⚠️ DANGER: Delete ALL messages from database? This cannot be undone!")) {
+      await set(messagesRef, null);
+      await loadMessages();
+      await refreshStats();
+      alert("All messages deleted");
     }
+  }
 
-    function loadData() {
-      // Load users status
-      onValue(ref(db, 'status'), (snap) => {
-        const users = snap.val() || {};
-        document.getElementById('userList').innerHTML = Object.keys(users).map(u =>
-          `<div class="msg-item">${u} - ${users[u].online? '🟢 Online' : '⚫ Last: ' + new Date(users[u].lastSeen).toLocaleString()}</div>`
-        ).join('');
-      });
-
-      // Load recent 20 messages
-      onValue(ref(db, 'chats'), (snap) => {
-        const msgs = snap.val() || {};
-        const arr = Object.keys(msgs).map(k => ({key: k,...msgs[k]})).slice(-20).reverse();
-        document.getElementById('msgList').innerHTML = arr.map(m =>
-          `<div class="msg-item">
-            <span><b>${m.user}:</b> ${m.text || m.fileType || 'File'} - ${new Date(m.time).toLocaleTimeString()}</span>
-            <button onclick="deleteMsg('${m.key}')">Delete</button>
-          </div>`
-        ).join('');
-      });
+  function resetToDefaultUsers() {
+    if (confirm("Reset to default users (Shubham & Sakshi)?")) {
+      USERS = {
+        "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
+        "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
+      };
+      saveLocalUsers();
+      renderUsers();
+      alert("Users reset to default");
     }
+  }
 
-    window.deleteMsg = (key) => {
-      if(confirm("Delete this message?")) remove(ref(db, 'chats/' + key));
+  function addNewUser() {
+    const name = document.getElementById('newUserName').value.trim();
+    const code = document.getElementById('newUserCode').value.trim();
+    const avatar = document.getElementById('newUserAvatar').value.trim() || "👤";
+    
+    if (!name || !code) {
+      alert("Please enter name and secret code");
+      return;
     }
+    
+    if (!code.match(/^#.*@$/)) {
+      alert("Secret code must start with # and end with @ (example: #code@)");
+      return;
+    }
+    
+    const newId = `user_${Date.now()}`;
+    USERS[newId] = { name, code, avatar, role: "user" };
+    saveLocalUsers();
+    renderUsers();
+    
+    document.getElementById('newUserName').value = '';
+    document.getElementById('newUserCode').value = '';
+    
+    alert(`✅ User "${name}" added with code: ${code}`);
+  }
 
-    window.clearAll = () => {
-      if(confirm("SARE CHATS DELETE HO JAYENGE. Pakka?")) set(ref(db, 'chats'), null);
+  function updateOwnerCode() {
+    const newCode = document.getElementById('ownerCodeInput').value.trim();
+    if (!newCode) {
+      alert("Enter a new owner code");
+      return;
     }
+    if (!newCode.match(/^#.*@$/)) {
+      alert("Owner code must start with # and end with @");
+      return;
+    }
+    OWNER_CODE = newCode;
+    saveOwnerCode();
+    document.getElementById('ownerCodeInput').value = '';
+    renderUsers();
+    alert(`Owner code updated to: ${OWNER_CODE}`);
+  }
 
-    window.exportChats = async () => {
-      const snap = await get(ref(db, 'chats'));
-      const data = JSON.stringify(snap.val(), null, 2);
-      const blob = new Blob([data], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'chats-backup.json'; a.click();
-    }
-  </script>
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // Event listeners
+  document.getElementById('addUserBtn').onclick = addNewUser;
+  document.getElementById('updateOwnerBtn').onclick = updateOwnerCode;
+  document.getElementById('exportChatBtn').onclick = exportChats;
+  document.getElementById('clearAllBtn').onclick = clearAllMessages;
+  document.getElementById('refreshBtn').onclick = async () => {
+    await refreshStats();
+    await loadMessages();
+    alert("Refreshed");
+  };
+  document.getElementById('resetUsersBtn').onclick = resetToDefaultUsers;
+
+  // Initial load
+  refreshStats();
+  loadMessages();
+  renderUsers();
+
+  // Real-time status updates
+  onValue(statusRef, () => refreshStats());
+  onValue(messagesRef, () => {
+    refreshStats();
+    loadMessages();
+  });
+</script>
 </body>
 </html>

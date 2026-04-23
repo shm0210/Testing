@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0b141a">
-  <title>✦ SECURE CHAT ✦ | Working Chat</title>
+  <title>◈ SECURE CHAT ◈</title>
   <style>
     * {
       margin: 0;
@@ -20,7 +19,6 @@
       overflow: hidden;
       position: fixed;
       width: 100%;
-      color: #e9edef;
     }
 
     .login-screen {
@@ -38,10 +36,10 @@
 
     .login-card {
       background: #202c33;
-      padding: 2rem 1.5rem;
+      padding: 2.5rem 1.8rem;
       border-radius: 2rem;
       width: 90%;
-      max-width: 340px;
+      max-width: 360px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       border: 1px solid rgba(0,168,132,0.3);
       animation: fadeInUp 0.4s ease;
@@ -53,7 +51,7 @@
     }
 
     .login-card h1 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       text-align: center;
       background: linear-gradient(135deg, #00d4b4, #00a884);
       -webkit-background-clip: text;
@@ -66,19 +64,20 @@
       text-align: center;
       color: #8696a0;
       font-size: 0.7rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
     }
 
     .login-card input {
       width: 100%;
-      padding: 1rem;
-      margin: 0.6rem 0;
+      padding: 1rem 1.2rem;
+      margin: 0.8rem 0;
       border: none;
       border-radius: 2rem;
       background: #2a3942;
       color: #e9edef;
       font-size: 1rem;
       text-align: center;
+      letter-spacing: 2px;
       transition: all 0.2s;
     }
 
@@ -97,24 +96,12 @@
       color: #111b21;
       font-weight: 800;
       font-size: 1rem;
-      margin-top: 0.8rem;
+      margin-top: 1rem;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .login-card button:active { transform: scale(0.97); }
-    .error-msg {
-      color: #ff6b6b;
-      font-size: 0.75rem;
-      text-align: center;
-      margin-top: 0.8rem;
-    }
-    .success-msg {
-      color: #00a884;
-      font-size: 0.75rem;
-      text-align: center;
-      margin-top: 0.5rem;
-    }
 
     .chat-container {
       display: none;
@@ -125,12 +112,11 @@
 
     .chat-header {
       background: #202c33;
-      padding: 0.7rem 1rem;
+      padding: 0.8rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #2e3b42;
-      flex-shrink: 0;
     }
 
     .partner-info {
@@ -140,16 +126,14 @@
     }
 
     .partner-avatar {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: linear-gradient(145deg, #00d4b4, #00a884);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      color: #111b21;
-      font-weight: bold;
+      font-size: 1.8rem;
     }
 
     .partner-details h3 {
@@ -202,7 +186,7 @@
       padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.3rem;
     }
 
     .message {
@@ -230,16 +214,12 @@
       border-bottom-left-radius: 0.3rem;
     }
 
-    .message-text {
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-
+    .message-text { font-size: 0.9rem; line-height: 1.4; }
     .message-time {
       font-size: 0.6rem;
       color: #8696a0;
       text-align: right;
-      margin-top: 0.3rem;
+      margin-top: 0.2rem;
     }
 
     .media-preview {
@@ -248,16 +228,8 @@
       margin-top: 0.3rem;
       cursor: pointer;
     }
-    .media-preview img, .media-preview video {
-      width: 100%;
-      border-radius: 0.8rem;
-      max-height: 150px;
-      object-fit: cover;
-    }
-    .voice-note {
-      width: 180px;
-      margin-top: 0.3rem;
-    }
+    .media-preview img, .media-preview video { width: 100%; border-radius: 0.8rem; max-height: 150px; object-fit: cover; }
+    .voice-note { width: 160px; margin-top: 0.3rem; }
 
     .typing-badge {
       padding: 0.2rem 1rem;
@@ -265,8 +237,6 @@
       color: #00a884;
       font-style: italic;
       height: 28px;
-      background: #0b141a;
-      flex-shrink: 0;
     }
 
     .input-area {
@@ -276,7 +246,6 @@
       gap: 0.6rem;
       align-items: center;
       border-top: 1px solid #2e3b42;
-      flex-shrink: 0;
     }
 
     .input-area input {
@@ -286,7 +255,7 @@
       border-radius: 2rem;
       background: #2a3942;
       color: #e9edef;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
     }
 
@@ -302,7 +271,6 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.1s ease;
     }
 
     .action-btn:active { transform: scale(0.95); }
@@ -314,16 +282,9 @@
       50% { opacity: 0.6; }
     }
 
-    .messages-area::-webkit-scrollbar {
-      width: 4px;
-    }
-    .messages-area::-webkit-scrollbar-track {
-      background: #1a252c;
-    }
-    .messages-area::-webkit-scrollbar-thumb {
-      background: #00a884;
-      border-radius: 4px;
-    }
+    .messages-area::-webkit-scrollbar { width: 4px; }
+    .messages-area::-webkit-scrollbar-track { background: #1a252c; }
+    .messages-area::-webkit-scrollbar-thumb { background: #00a884; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -332,11 +293,8 @@
   <div class="login-card">
     <h1>✦ SECURE CHAT ✦</h1>
     <div class="sub">PRIVATE • ENCRYPTED • REAL-TIME</div>
-    <input type="email" id="emailInput" placeholder="Email" autocomplete="off">
-    <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
-    <button id="loginBtn">✦ LOGIN ✦</button>
-    <div class="error-msg" id="errorMsg"></div>
-    <div class="success-msg" id="successMsg"></div>
+    <input type="password" id="secretInput" placeholder="ENTER SECRET CODE" autocomplete="off">
+    <button id="unlockBtn">✦ UNLOCK ✦</button>
   </div>
 </div>
 
@@ -345,24 +303,22 @@
     <div class="partner-info">
       <div class="partner-avatar" id="partnerAvatar">👤</div>
       <div class="partner-details">
-        <h3 id="partnerName">Connecting...</h3>
+        <h3 id="partnerName">Loading...</h3>
         <div class="online-status" id="onlineStatus">
           <span class="offline-dot"></span>
-          <span>Offline</span>
+          <span id="statusText">Offline</span>
         </div>
       </div>
     </div>
     <div class="header-btns">
-      <button id="logoutBtn">🚪</button>
+      <button id="adminBtn" style="display:none;">⚙️</button>
     </div>
   </div>
-
   <div class="messages-area" id="messagesArea"></div>
   <div class="typing-badge" id="typingBadge"></div>
-
   <div class="input-area">
     <button id="attachBtn" class="action-btn">📎</button>
-    <input type="text" id="msgInput" placeholder="Type a message..." autocomplete="off">
+    <input type="text" id="msgInput" placeholder="Message..." autocomplete="off">
     <button id="voiceBtn" class="action-btn">🎤</button>
     <button id="sendBtn" class="action-btn send-btn">➤</button>
   </div>
@@ -374,17 +330,15 @@
     "imports": {
       "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
       "firebase/database": "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js",
-      "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js",
-      "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"
+      "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
     }
   }
 </script>
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, push, onChildAdded, set, onDisconnect, onValue } from 'firebase/database';
+  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
@@ -399,383 +353,284 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const storage = getStorage(app);
-  const auth = getAuth(app);
-
-  // User profiles
-  const PROFILES = {
-    "sp@sv.com": { name: "Shubham", avatar: "😎" },
-    "sv@sp.com": { name: "Sakshi", avatar: "🌸" }
-  };
+  const messagesRef = ref(db, 'chat_messages');
+  const statusRef = ref(db, 'user_status');
+  const typingRef = ref(db, 'user_typing');
+  const usersRef = ref(db, 'app_users');
+  const ownerCodeRef = ref(db, 'app_settings/owner_code');
 
   let currentUser = null;
-  let partnerEmail = null;
+  let partnerUser = null;
   let mediaRecorder = null;
   let audioChunks = [];
   let typingTimeout = null;
-  let isRecording = false;
 
-  async function loginOrCreate(email, password) {
-    const errorMsg = document.getElementById('errorMsg');
-    const successMsg = document.getElementById('successMsg');
-    
-    errorMsg.innerText = '';
-    successMsg.innerText = '';
-    
-    const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail || !password) {
-      errorMsg.innerText = '❌ Please enter email and password';
-      return false;
-    }
-    
-    if (!PROFILES[cleanEmail]) {
-      errorMsg.innerText = '❌ Use sp@sv.com or sv@sp.com';
-      return false;
-    }
-    
-    try {
-      try {
-        await signInWithEmailAndPassword(auth, cleanEmail, password);
-        successMsg.innerText = '✓ Login successful!';
-        setTimeout(() => successMsg.innerText = '', 1500);
-        return true;
-      } catch (err) {
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
-          successMsg.innerText = '🔄 Creating account...';
-          await createUserWithEmailAndPassword(auth, cleanEmail, password);
-          successMsg.innerText = '✓ Account created! Logging in...';
-          await signInWithEmailAndPassword(auth, cleanEmail, password);
-          successMsg.innerText = '✓ Login successful!';
-          setTimeout(() => successMsg.innerText = '', 1500);
-          return true;
-        } else {
-          throw err;
-        }
-      }
-    } catch (err) {
-      if (err.code === 'auth/weak-password') {
-        errorMsg.innerText = '❌ Password must be at least 6 characters';
-      } else if (err.code === 'auth/wrong-password') {
-        errorMsg.innerText = '❌ Wrong password';
-      } else {
-        errorMsg.innerText = `❌ ${err.message}`;
-      }
-      return false;
+  // Load users from Firebase
+  async function loadUsersFromFirebase() {
+    const snap = await get(usersRef);
+    if (snap.exists()) {
+      return snap.val();
+    } else {
+      // Default users
+      const defaultUsers = {
+        "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
+        "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
+      };
+      await set(usersRef, defaultUsers);
+      return defaultUsers;
     }
   }
 
-  async function setupChat(user) {
-    const userEmail = user.email;
-    const profile = PROFILES[userEmail];
-    
-    if (!profile) {
-      await signOut(auth);
-      return;
+  async function getOwnerCode() {
+    const snap = await get(ownerCodeRef);
+    if (snap.exists()) {
+      return snap.val();
+    } else {
+      const defaultCode = "#ADMIN@2025";
+      await set(ownerCodeRef, defaultCode);
+      return defaultCode;
     }
+  }
+
+  // Login function
+  window.login = async function(code) {
+    const users = await loadUsersFromFirebase();
+    const ownerCode = await getOwnerCode();
     
-    currentUser = {
-      uid: user.uid,
-      email: userEmail,
-      name: profile.name,
-      avatar: profile.avatar
-    };
+    let foundUser = null;
+    let userId = null;
     
-    // Set partner email
-    partnerEmail = userEmail === "sp@sv.com" ? "sv@sp.com" : "sp@sv.com";
-    const partnerProfile = PROFILES[partnerEmail];
-    
-    // Update UI
-    document.getElementById('partnerName').innerText = partnerProfile.name;
-    document.getElementById('partnerAvatar').innerText = partnerProfile.avatar;
-    
-    // Set online status
-    const userStatusRef = ref(db, `status/${currentUser.uid}`);
-    await set(userStatusRef, {
-      email: currentUser.email,
-      name: currentUser.name,
-      online: true,
-      lastSeen: Date.now()
-    });
-    
-    onDisconnect(userStatusRef).set({
-      email: currentUser.email,
-      name: currentUser.name,
-      online: false,
-      lastSeen: Date.now()
-    });
-    
-    // Monitor partner's online status
-    const allStatusRef = ref(db, 'status');
-    onValue(allStatusRef, (snapshot) => {
-      const statuses = snapshot.val();
-      let isPartnerOnline = false;
+    // Check if owner
+    if (code === ownerCode) {
+      foundUser = { name: "OWNER", avatar: "👑", role: "owner", code: code };
+      userId = "owner";
+    } else {
+      for (let [id, user] of Object.entries(users)) {
+        if (user.code === code) {
+          foundUser = { ...user, id: id };
+          userId = id;
+          break;
+        }
+      }
+    }
+
+    if (foundUser) {
+      currentUser = foundUser;
       
-      if (statuses) {
-        for (const [uid, data] of Object.entries(statuses)) {
-          if (data.email === partnerEmail && data.online === true) {
-            isPartnerOnline = true;
+      // Find partner (the other regular user)
+      if (currentUser.role !== 'owner') {
+        for (let [id, user] of Object.entries(users)) {
+          if (id !== userId && user.role === 'user') {
+            partnerUser = { ...user, id: id };
             break;
           }
         }
       }
       
-      const statusDiv = document.getElementById('onlineStatus');
-      if (isPartnerOnline) {
-        statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('chatContainer').style.display = 'flex';
+      
+      if (partnerUser) {
+        document.getElementById('partnerName').innerText = partnerUser.name;
+        document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
       } else {
-        statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
+        document.getElementById('partnerName').innerText = "Admin Mode";
+        document.getElementById('partnerAvatar').innerText = "👑";
       }
-    });
-    
-    // Monitor partner typing
-    const typingRef = ref(db, `typing/${partnerEmail}`);
-    onValue(typingRef, (snapshot) => {
-      const isTyping = snapshot.val();
-      const typingBadge = document.getElementById('typingBadge');
-      if (isTyping) {
-        typingBadge.innerText = `${partnerProfile.name} is typing...`;
-      } else {
-        typingBadge.innerText = '';
+      
+      if (currentUser.role === 'owner') {
+        document.getElementById('adminBtn').style.display = 'block';
+        document.getElementById('adminBtn').onclick = () => {
+          window.open('admin.html', '_blank');
+        };
       }
-    });
-    
-    // Load messages
-    const messagesRef = ref(db, 'messages');
+      
+      // Set online status
+      await set(ref(db, `user_status/${currentUser.name}`), { online: true, lastSeen: Date.now() });
+      onDisconnect(ref(db, `user_status/${currentUser.name}`)).set({ online: false, lastSeen: Date.now() });
+      
+      // Watch partner status
+      if (partnerUser) {
+        onValue(ref(db, `user_status/${partnerUser.name}`), (snap) => {
+          const data = snap.val();
+          const statusDiv = document.getElementById('onlineStatus');
+          if (data && data.online) {
+            statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
+          } else {
+            statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
+          }
+        });
+      }
+      
+      loadMessages();
+      
+      if (partnerUser) {
+        onValue(ref(db, `user_typing/${partnerUser.name}`), (snap) => {
+          const typing = snap.val();
+          if (typing) {
+            document.getElementById('typingBadge').innerText = `${partnerUser.name} is typing...`;
+          } else {
+            document.getElementById('typingBadge').innerText = '';
+          }
+        });
+      }
+      
+    } else {
+      alert("❌ Invalid Secret Code!");
+    }
+  };
+
+  function loadMessages() {
     onChildAdded(messagesRef, (snapshot) => {
       const msg = snapshot.val();
       if (!msg) return;
       
-      // Check if message is between current user and partner
-      const isBetween = (msg.from === currentUser.email && msg.to === partnerEmail) ||
-                        (msg.from === partnerEmail && msg.to === currentUser.email);
-      
-      if (isBetween) {
+      if (currentUser.role === 'owner') {
+        displayMessage(msg);
+      } else if ((msg.sender === currentUser.name && msg.receiver === partnerUser.name) ||
+                 (msg.sender === partnerUser.name && msg.receiver === currentUser.name)) {
         displayMessage(msg);
       }
     });
-    
-    // Clear messages area and show existing messages
-    const messagesArea = document.getElementById('messagesArea');
-    messagesArea.innerHTML = '';
   }
   
   function displayMessage(msg) {
-    const isMe = msg.from === currentUser.email;
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${isMe ? 'sent' : 'received'}`;
+    const isMe = (msg.sender === currentUser.name);
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
     
-    let content = '';
+    let content = `<div class="message-text">${escapeHtml(msg.text || '')}</div>`;
     
-    if (msg.text) {
-      content += `<div class="message-text">${escapeHtml(msg.text)}</div>`;
+    if (msg.fileUrl) {
+      if (msg.fileType === 'image') {
+        content += `<div class="media-preview"><img src="${msg.fileUrl}" onclick="window.open('${msg.fileUrl}')"></div>`;
+      } else if (msg.fileType === 'video') {
+        content += `<div class="media-preview"><video src="${msg.fileUrl}" controls></video></div>`;
+      } else if (msg.fileType === 'audio') {
+        content += `<audio class="voice-note" src="${msg.fileUrl}" controls></audio>`;
+      }
     }
     
-    if (msg.imageUrl) {
-      content += `<div class="media-preview"><img src="${msg.imageUrl}" alt="image" onclick="window.open('${msg.imageUrl}')"></div>`;
-    }
+    content += `<div class="message-time">${new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+    msgDiv.innerHTML = content;
     
-    if (msg.videoUrl) {
-      content += `<div class="media-preview"><video src="${msg.videoUrl}" controls></video></div>`;
-    }
-    
-    if (msg.audioUrl) {
-      content += `<audio class="voice-note" src="${msg.audioUrl}" controls></audio>`;
-    }
-    
-    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    content += `<div class="message-time">${time}</div>`;
-    
-    messageDiv.innerHTML = content;
-    
-    const messagesArea = document.getElementById('messagesArea');
-    messagesArea.appendChild(messageDiv);
-    messagesArea.scrollTop = messagesArea.scrollHeight;
+    document.getElementById('messagesArea').appendChild(msgDiv);
+    document.getElementById('messagesArea').scrollTop = document.getElementById('messagesArea').scrollHeight;
   }
-  
-  async function sendTextMessage(text) {
-    if (!text.trim() || !currentUser || !partnerEmail) return;
+
+  async function sendMessage(text, fileBlob = null, fileType = null) {
+    if (!text && !fileBlob) return;
     
-    const message = {
-      from: currentUser.email,
-      to: partnerEmail,
-      text: text.trim(),
-      timestamp: Date.now()
+    let fileUrl = null;
+    let type = null;
+    
+    if (fileBlob) {
+      const fileName = `media_${Date.now()}.${fileType === 'image' ? 'jpg' : 'mp4'}`;
+      const fileRef = sRef(storage, `chat_files/${fileName}`);
+      await uploadBytes(fileRef, fileBlob);
+      fileUrl = await getDownloadURL(fileRef);
+      type = fileType;
+    }
+    
+    const messageData = {
+      sender: currentUser.name,
+      receiver: partnerUser ? partnerUser.name : null,
+      text: text || null,
+      fileUrl: fileUrl,
+      fileType: type,
+      time: Date.now()
     };
     
-    const messagesRef = ref(db, 'messages');
-    await push(messagesRef, message);
+    await push(messagesRef, messageData);
     
-    // Clear input
-    document.getElementById('msgInput').value = '';
-    
-    // Stop typing indicator
-    await set(ref(db, `typing/${currentUser.email}`), false);
-  }
-  
-  async function sendFile(file, type) {
-    if (!currentUser || !partnerEmail) return;
-    
-    try {
-      const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-      const fileRef = sRef(storage, `files/${fileName}`);
-      await uploadBytes(fileRef, file);
-      const fileUrl = await getDownloadURL(fileRef);
-      
-      const message = {
-        from: currentUser.email,
-        to: partnerEmail,
-        timestamp: Date.now()
-      };
-      
-      if (type === 'image') {
-        message.imageUrl = fileUrl;
-      } else if (type === 'video') {
-        message.videoUrl = fileUrl;
-      }
-      
-      const messagesRef = ref(db, 'messages');
-      await push(messagesRef, message);
-      
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("Failed to send file: " + err.message);
+    if (text) {
+      document.getElementById('msgInput').value = '';
     }
-  }
-  
-  async function sendAudio(audioBlob) {
-    if (!currentUser || !partnerEmail) return;
     
-    try {
-      const fileName = `audio_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.webm`;
-      const audioRef = sRef(storage, `audio/${fileName}`);
-      await uploadBytes(audioRef, audioBlob);
-      const audioUrl = await getDownloadURL(audioRef);
-      
-      const message = {
-        from: currentUser.email,
-        to: partnerEmail,
-        audioUrl: audioUrl,
-        timestamp: Date.now()
-      };
-      
-      const messagesRef = ref(db, 'messages');
-      await push(messagesRef, message);
-      
-    } catch (err) {
-      console.error("Audio upload error:", err);
-      alert("Failed to send voice message");
-    }
+    await set(ref(db, `user_typing/${currentUser.name}`), false);
   }
-  
+
   function sendTyping() {
     if (!currentUser) return;
-    
-    const typingRef = ref(db, `typing/${currentUser.email}`);
-    set(typingRef, true);
-    
+    set(ref(db, `user_typing/${currentUser.name}`), true);
     if (typingTimeout) clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => {
-      set(typingRef, false);
+      set(ref(db, `user_typing/${currentUser.name}`), false);
     }, 2000);
   }
-  
-  async function startVoiceRecording() {
+
+  async function startRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder = new MediaRecorder(stream);
       audioChunks = [];
-      
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunks.push(event.data);
-        }
-      };
+      mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+      mediaRecorder.start();
+      document.getElementById('voiceBtn').classList.add('recording');
       
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        if (audioBlob.size > 0) {
-          await sendAudio(audioBlob);
-        }
+        const audioRef = sRef(storage, `audio/voice_${Date.now()}.webm`);
+        await uploadBytes(audioRef, audioBlob);
+        const audioUrl = await getDownloadURL(audioRef);
+        
+        await push(messagesRef, {
+          sender: currentUser.name,
+          receiver: partnerUser ? partnerUser.name : null,
+          text: null,
+          fileUrl: audioUrl,
+          fileType: 'audio',
+          time: Date.now()
+        });
+        
         stream.getTracks().forEach(track => track.stop());
-        const voiceBtn = document.getElementById('voiceBtn');
-        voiceBtn.classList.remove('recording');
-        isRecording = false;
+        document.getElementById('voiceBtn').classList.remove('recording');
       };
-      
-      mediaRecorder.start();
-      document.getElementById('voiceBtn').classList.add('recording');
-      isRecording = true;
-      
-      // Auto-stop after 60 seconds
-      setTimeout(() => {
-        if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
-          stopVoiceRecording();
-        }
-      }, 60000);
-      
-    } catch (err) {
-      console.error("Microphone error:", err);
-      alert("Please allow microphone access to send voice messages");
+    } catch(e) {
+      alert("Microphone access required");
     }
   }
   
-  function stopVoiceRecording() {
+  function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
-    } else {
-      document.getElementById('voiceBtn').classList.remove('recording');
-      isRecording = false;
     }
   }
-  
+
   function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
   }
-  
-  // Auth state listener
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('chatContainer').style.display = 'flex';
-      await setupChat(user);
-    } else {
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('chatContainer').style.display = 'none';
-      currentUser = null;
-      partnerEmail = null;
-      document.getElementById('messagesArea').innerHTML = '';
-      document.getElementById('msgInput').value = '';
-    }
-  });
-  
+
   // Event listeners
-  document.getElementById('loginBtn').onclick = async () => {
-    const email = document.getElementById('emailInput').value;
-    const password = document.getElementById('passwordInput').value;
-    await loginOrCreate(email, password);
+  document.getElementById('unlockBtn').onclick = () => {
+    const code = document.getElementById('secretInput').value;
+    login(code);
   };
   
-  document.getElementById('passwordInput').onkeypress = (e) => {
+  document.getElementById('secretInput').onkeypress = (e) => {
     if (e.key === 'Enter') {
-      document.getElementById('loginBtn').click();
+      login(e.target.value);
     }
   };
   
   document.getElementById('sendBtn').onclick = () => {
-    const input = document.getElementById('msgInput');
-    sendTextMessage(input.value);
+    const text = document.getElementById('msgInput').value.trim();
+    if (text) sendMessage(text);
   };
   
   document.getElementById('msgInput').onkeypress = (e) => {
     if (e.key === 'Enter') {
-      sendTextMessage(e.target.value);
+      sendMessage(e.target.value.trim());
     }
   };
   
-  document.getElementById('msgInput').oninput = () => {
-    sendTyping();
-  };
+  document.getElementById('msgInput').oninput = () => sendTyping();
   
   document.getElementById('attachBtn').onclick = () => {
     document.getElementById('fileUpload').click();
@@ -786,58 +641,23 @@
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         alert("File too large (max 5MB)");
-        e.target.value = '';
         return;
       }
-      
-      if (file.type.startsWith('image/')) {
-        await sendFile(file, 'image');
-      } else if (file.type.startsWith('video/')) {
-        await sendFile(file, 'video');
-      } else {
-        alert("Only images and videos are supported");
-      }
+      const type = file.type.startsWith('image/') ? 'image' : 'video';
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const blob = await fetch(ev.target.result).then(r => r.blob());
+        await sendMessage(null, blob, type);
+      };
+      reader.readAsDataURL(file);
     }
     e.target.value = '';
   };
   
-  const voiceBtn = document.getElementById('voiceBtn');
-  voiceBtn.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    if (!isRecording && currentUser) {
-      startVoiceRecording();
-    }
-  });
-  voiceBtn.addEventListener('mouseup', () => {
-    if (isRecording) {
-      stopVoiceRecording();
-    }
-  });
-  voiceBtn.addEventListener('mouseleave', () => {
-    if (isRecording) {
-      stopVoiceRecording();
-    }
-  });
-  voiceBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    if (!isRecording && currentUser) {
-      startVoiceRecording();
-    }
-  });
-  voiceBtn.addEventListener('touchend', () => {
-    if (isRecording) {
-      stopVoiceRecording();
-    }
-  });
-  
-  document.getElementById('logoutBtn').onclick = async () => {
-    if (currentUser) {
-      await set(ref(db, `status/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
-    }
-    await signOut(auth);
-  };
-  
-  console.log("✅ Chat ready! Use sp@sv.com or sv@sp.com");
+  document.getElementById('voiceBtn').onmousedown = startRecording;
+  document.getElementById('voiceBtn').onmouseup = stopRecording;
+  document.getElementById('voiceBtn').ontouchstart = startRecording;
+  document.getElementById('voiceBtn').ontouchend = stopRecording;
 </script>
 </body>
 </html>

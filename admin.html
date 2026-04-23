@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel | Secret Chat</title>
+  <title>Admin Panel | Firebase Sync</title>
   <style>
     * {
       margin: 0;
@@ -19,7 +19,7 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
@@ -139,29 +139,36 @@
       font-size: 0.8rem;
     }
 
-    .owner-badge {
-      background: #00a884;
-      color: #111b21;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: bold;
-    }
-
-    .online-badge {
-      color: #00a884;
-    }
-
-    .offline-badge {
-      color: #8696a0;
-    }
-
     .code-display {
       font-family: monospace;
       background: #111b21;
       padding: 4px 8px;
       border-radius: 6px;
       font-size: 0.8rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #8696a0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #00a884;
+      color: #111b21;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      animation: slideIn 0.3s ease;
+      z-index: 1000;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
   </style>
 </head>
@@ -185,30 +192,30 @@
   </div>
 
   <div class="card">
-    <h2>👥 Manage Users (2 Person Chat)</h2>
-    <div id="usersList"></div>
+    <h2>👥 Manage Users (Saved to Firebase)</h2>
+    <div id="usersList" class="loading">Loading users...</div>
     <div class="add-user-area">
       <input type="text" id="newUserName" placeholder="Name">
       <input type="text" id="newUserCode" placeholder="Secret Code (e.g., #123@)">
       <input type="text" id="newUserAvatar" placeholder="Avatar Emoji" maxlength="2" value="👤">
       <button id="addUserBtn">➕ Add User</button>
     </div>
-    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">⚠️ For 2-person chat, keep exactly 2 regular users + Owner</p>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">✅ Changes save automatically to Firebase (all devices sync)</p>
   </div>
 
   <div class="card">
     <h2>🔑 Owner Access Code</h2>
     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-      <input type="text" id="ownerCodeInput" style="flex:1; font-family: monospace;">
+      <input type="text" id="ownerCodeInput" placeholder="New Owner Code" style="flex:1; font-family: monospace;">
       <button id="updateOwnerBtn">Update Owner Code</button>
     </div>
-    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Current Owner Code: <span id="currentOwnerCode" class="code-display"></span></p>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Current Owner Code: <span id="currentOwnerCode" class="code-display">Loading...</span></p>
   </div>
 
   <div class="card">
     <h2>📨 Recent Messages</h2>
-    <div id="messagesList" class="msg-list">Loading...</div>
-    <div style="margin-top: 15px; display: flex; gap: 10px;">
+    <div id="messagesList" class="msg-list loading">Loading messages...</div>
+    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
       <button id="exportChatBtn">📥 Export All Chats</button>
       <button id="clearAllBtn" class="danger-btn">⚠️ Delete All Messages</button>
     </div>
@@ -232,7 +239,7 @@
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, get, set, remove, onValue, push } from 'firebase/database';
+  import { getDatabase, ref, get, set, remove, onValue, push, update } from 'firebase/database';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
@@ -248,40 +255,49 @@
   const db = getDatabase(app);
   const messagesRef = ref(db, 'chat_messages');
   const statusRef = ref(db, 'user_status');
+  const usersRef = ref(db, 'app_users');
+  const ownerCodeRef = ref(db, 'app_settings/owner_code');
 
   let USERS = {};
-  let OWNER_CODE = "#ADMIN@2025";
 
-  function loadLocalUsers() {
-    const saved = localStorage.getItem('chat_users');
-    if (saved) {
-      try {
-        USERS = JSON.parse(saved);
-      } catch(e) {}
-    }
-    if (Object.keys(USERS).length === 0) {
-      USERS = {
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  async function loadUsersFromFirebase() {
+    const snap = await get(usersRef);
+    if (snap.exists()) {
+      USERS = snap.val();
+      renderUsers();
+      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+    } else {
+      // Initialize default users
+      const defaultUsers = {
         "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
         "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
       };
+      await set(usersRef, defaultUsers);
+      USERS = defaultUsers;
+      renderUsers();
+      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+      showToast("Default users created in Firebase");
     }
   }
 
-  function saveLocalUsers() {
-    localStorage.setItem('chat_users', JSON.stringify(USERS));
+  async function loadOwnerCode() {
+    const snap = await get(ownerCodeRef);
+    if (snap.exists()) {
+      document.getElementById('currentOwnerCode').innerText = snap.val();
+    } else {
+      const defaultCode = "#ADMIN@2025";
+      await set(ownerCodeRef, defaultCode);
+      document.getElementById('currentOwnerCode').innerText = defaultCode;
+    }
   }
-
-  function loadOwnerCode() {
-    const saved = localStorage.getItem('owner_code');
-    if (saved) OWNER_CODE = saved;
-  }
-
-  function saveOwnerCode() {
-    localStorage.setItem('owner_code', OWNER_CODE);
-  }
-
-  loadLocalUsers();
-  loadOwnerCode();
 
   async function refreshStats() {
     const usersSnap = await get(statusRef);
@@ -290,7 +306,6 @@
     for (let u in usersStatus) {
       if (usersStatus[u]?.online) online++;
     }
-    document.getElementById('totalUsers').innerText = Object.keys(USERS).length + 1;
     document.getElementById('onlineUsers').innerText = online;
     
     const msgsSnap = await get(messagesRef);
@@ -317,29 +332,29 @@
       `;
       container.appendChild(div);
     }
-    
-    document.getElementById('currentOwnerCode').innerText = OWNER_CODE;
   }
 
-  window.editUser = (id) => {
+  window.editUser = async (id) => {
     const user = USERS[id];
     const newName = prompt("Enter new name:", user.name);
     const newCode = prompt("Enter new secret code:", user.code);
     const newAvatar = prompt("Enter avatar emoji (1-2 chars):", user.avatar);
     if (newName && newCode) {
-      USERS[id] = { ...user, name: newName, code: newCode, avatar: newAvatar || user.avatar };
-      saveLocalUsers();
+      const updatedUser = { ...user, name: newName, code: newCode, avatar: newAvatar || user.avatar };
+      await update(ref(db, `app_users/${id}`), updatedUser);
+      USERS[id] = updatedUser;
       renderUsers();
-      alert("User updated!");
+      showToast("User updated in Firebase!");
     }
   };
 
-  window.deleteUser = (id) => {
+  window.deleteUser = async (id) => {
     if (confirm(`Delete ${USERS[id].name}?`)) {
+      await remove(ref(db, `app_users/${id}`));
       delete USERS[id];
-      saveLocalUsers();
       renderUsers();
-      alert("User deleted");
+      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+      showToast("User deleted from Firebase");
     }
   };
 
@@ -349,6 +364,11 @@
     const msgArray = Object.entries(msgs).sort((a,b) => b[1].time - a[1].time).slice(0, 30);
     const container = document.getElementById('messagesList');
     container.innerHTML = '';
+    
+    if (msgArray.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:20px;">No messages yet</div>';
+      return;
+    }
     
     for (let [key, msg] of msgArray) {
       const div = document.createElement('div');
@@ -370,50 +390,57 @@
       await remove(ref(db, `chat_messages/${key}`));
       await loadMessages();
       await refreshStats();
-      alert("Message deleted");
+      showToast("Message deleted");
     }
   };
 
   async function exportChats() {
     const msgsSnap = await get(messagesRef);
-    const data = msgsSnap.val() || {};
-    const exportData = {
+    const usersSnap = await get(usersRef);
+    const ownerSnap = await get(ownerCodeRef);
+    
+    const data = {
       exportedAt: new Date().toISOString(),
-      users: USERS,
-      messages: data
+      users: usersSnap.val() || {},
+      ownerCode: ownerSnap.val() || "#ADMIN@2025",
+      messages: msgsSnap.val() || {}
     };
-    const jsonStr = JSON.stringify(exportData, null, 2);
+    
+    const jsonStr = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `chat_export_${Date.now()}.json`;
+    a.download = `firebase_chat_export_${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast("Chat exported!");
   }
 
   async function clearAllMessages() {
-    if (confirm("⚠️ DANGER: Delete ALL messages from database? This cannot be undone!")) {
+    if (confirm("⚠️ DANGER: Delete ALL messages from Firebase? This cannot be undone!")) {
       await set(messagesRef, null);
       await loadMessages();
       await refreshStats();
-      alert("All messages deleted");
+      showToast("All messages deleted from Firebase");
     }
   }
 
-  function resetToDefaultUsers() {
-    if (confirm("Reset to default users (Shubham & Sakshi)?")) {
-      USERS = {
+  async function resetToDefaultUsers() {
+    if (confirm("Reset to default users (Shubham & Sakshi) in Firebase?")) {
+      const defaultUsers = {
         "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
         "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
       };
-      saveLocalUsers();
+      await set(usersRef, defaultUsers);
+      USERS = defaultUsers;
       renderUsers();
-      alert("Users reset to default");
+      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+      showToast("Users reset to default in Firebase");
     }
   }
 
-  function addNewUser() {
+  async function addNewUser() {
     const name = document.getElementById('newUserName').value.trim();
     const code = document.getElementById('newUserCode').value.trim();
     const avatar = document.getElementById('newUserAvatar').value.trim() || "👤";
@@ -429,17 +456,19 @@
     }
     
     const newId = `user_${Date.now()}`;
-    USERS[newId] = { name, code, avatar, role: "user" };
-    saveLocalUsers();
+    const newUser = { name, code, avatar, role: "user" };
+    await set(ref(db, `app_users/${newId}`), newUser);
+    USERS[newId] = newUser;
     renderUsers();
+    document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
     
     document.getElementById('newUserName').value = '';
     document.getElementById('newUserCode').value = '';
     
-    alert(`✅ User "${name}" added with code: ${code}`);
+    showToast(`✅ User "${name}" added with code: ${code}`);
   }
 
-  function updateOwnerCode() {
+  async function updateOwnerCode() {
     const newCode = document.getElementById('ownerCodeInput').value.trim();
     if (!newCode) {
       alert("Enter a new owner code");
@@ -449,11 +478,10 @@
       alert("Owner code must start with # and end with @");
       return;
     }
-    OWNER_CODE = newCode;
-    saveOwnerCode();
+    await set(ownerCodeRef, newCode);
+    document.getElementById('currentOwnerCode').innerText = newCode;
     document.getElementById('ownerCodeInput').value = '';
-    renderUsers();
-    alert(`Owner code updated to: ${OWNER_CODE}`);
+    showToast(`Owner code updated to: ${newCode}`);
   }
 
   function escapeHtml(str) {
@@ -472,23 +500,32 @@
   document.getElementById('exportChatBtn').onclick = exportChats;
   document.getElementById('clearAllBtn').onclick = clearAllMessages;
   document.getElementById('refreshBtn').onclick = async () => {
+    await loadUsersFromFirebase();
+    await loadOwnerCode();
     await refreshStats();
     await loadMessages();
-    alert("Refreshed");
+    showToast("Data refreshed from Firebase");
   };
   document.getElementById('resetUsersBtn').onclick = resetToDefaultUsers;
 
   // Initial load
-  refreshStats();
-  loadMessages();
-  renderUsers();
+  await loadUsersFromFirebase();
+  await loadOwnerCode();
+  await refreshStats();
+  await loadMessages();
 
-  // Real-time status updates
+  // Real-time listeners
+  onValue(usersRef, async () => {
+    await loadUsersFromFirebase();
+    await refreshStats();
+  });
+  
   onValue(statusRef, () => refreshStats());
   onValue(messagesRef, () => {
     refreshStats();
     loadMessages();
   });
+  onValue(ownerCodeRef, () => loadOwnerCode());
 </script>
 </body>
 </html>

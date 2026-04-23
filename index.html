@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>◈ SECURE CHAT ◈</title>
+  <meta name="theme-color" content="#0b141a">
+  <title>SECURE CHAT</title>
   <style>
     * {
       margin: 0;
@@ -21,6 +22,7 @@
       width: 100%;
     }
 
+    /* LOGIN SCREEN */
     .login-screen {
       position: fixed;
       top: 0;
@@ -36,10 +38,10 @@
 
     .login-card {
       background: #202c33;
-      padding: 2.5rem 1.8rem;
+      padding: 2rem 1.5rem;
       border-radius: 2rem;
       width: 90%;
-      max-width: 360px;
+      max-width: 340px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       border: 1px solid rgba(0,168,132,0.3);
       animation: fadeInUp 0.4s ease;
@@ -51,7 +53,7 @@
     }
 
     .login-card h1 {
-      font-size: 2rem;
+      font-size: 1.8rem;
       text-align: center;
       background: linear-gradient(135deg, #00d4b4, #00a884);
       -webkit-background-clip: text;
@@ -64,13 +66,13 @@
       text-align: center;
       color: #8696a0;
       font-size: 0.7rem;
-      margin-bottom: 1.8rem;
+      margin-bottom: 1.5rem;
     }
 
     .login-card input {
       width: 100%;
-      padding: 1rem 1.2rem;
-      margin: 0.8rem 0;
+      padding: 1rem;
+      margin: 0.6rem 0;
       border: none;
       border-radius: 2rem;
       background: #2a3942;
@@ -96,27 +98,31 @@
       color: #111b21;
       font-weight: 800;
       font-size: 1rem;
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .login-card button:active { transform: scale(0.97); }
 
+    /* CHAT CONTAINER */
     .chat-container {
       display: none;
       height: 100vh;
       flex-direction: column;
       background: #0b141a;
+      position: relative;
     }
 
+    /* HEADER */
     .chat-header {
       background: #202c33;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #2e3b42;
+      flex-shrink: 0;
     }
 
     .partner-info {
@@ -126,14 +132,14 @@
     }
 
     .partner-avatar {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: linear-gradient(145deg, #00d4b4, #00a884);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
     }
 
     .partner-details h3 {
@@ -180,18 +186,21 @@
       cursor: pointer;
     }
 
+    /* MESSAGES AREA - FIXED SCROLLING */
     .messages-area {
       flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       padding: 1rem;
       display: flex;
       flex-direction: column;
       gap: 0.3rem;
+      -webkit-overflow-scrolling: touch;
     }
 
     .message {
-      max-width: 75%;
-      padding: 0.6rem 1rem;
+      max-width: 80%;
+      padding: 0.6rem 0.9rem;
       border-radius: 1.2rem;
       animation: fadeMsg 0.2s ease;
       word-wrap: break-word;
@@ -214,7 +223,12 @@
       border-bottom-left-radius: 0.3rem;
     }
 
-    .message-text { font-size: 0.9rem; line-height: 1.4; }
+    .message-text { 
+      font-size: 0.9rem; 
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    
     .message-time {
       font-size: 0.6rem;
       color: #8696a0;
@@ -228,17 +242,29 @@
       margin-top: 0.3rem;
       cursor: pointer;
     }
-    .media-preview img, .media-preview video { width: 100%; border-radius: 0.8rem; max-height: 150px; object-fit: cover; }
-    .voice-note { width: 160px; margin-top: 0.3rem; }
+    .media-preview img, .media-preview video { 
+      width: 100%; 
+      border-radius: 0.8rem; 
+      max-height: 150px; 
+      object-fit: cover;
+    }
+    .voice-note { 
+      width: 160px; 
+      margin-top: 0.3rem;
+    }
 
+    /* TYPING INDICATOR */
     .typing-badge {
       padding: 0.2rem 1rem;
       font-size: 0.7rem;
       color: #00a884;
       font-style: italic;
       height: 28px;
+      background: #0b141a;
+      flex-shrink: 0;
     }
 
+    /* INPUT AREA - FIXED AT BOTTOM */
     .input-area {
       background: #202c33;
       padding: 0.7rem 1rem;
@@ -246,6 +272,7 @@
       gap: 0.6rem;
       align-items: center;
       border-top: 1px solid #2e3b42;
+      flex-shrink: 0;
     }
 
     .input-area input {
@@ -257,6 +284,7 @@
       color: #e9edef;
       font-size: 0.9rem;
       outline: none;
+      min-width: 0;
     }
 
     .action-btn {
@@ -271,6 +299,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .action-btn:active { transform: scale(0.95); }
@@ -282,9 +311,41 @@
       50% { opacity: 0.6; }
     }
 
-    .messages-area::-webkit-scrollbar { width: 4px; }
-    .messages-area::-webkit-scrollbar-track { background: #1a252c; }
-    .messages-area::-webkit-scrollbar-thumb { background: #00a884; border-radius: 4px; }
+    /* CUSTOM SCROLLBAR */
+    .messages-area::-webkit-scrollbar {
+      width: 4px;
+    }
+    .messages-area::-webkit-scrollbar-track {
+      background: #1a252c;
+    }
+    .messages-area::-webkit-scrollbar-thumb {
+      background: #00a884;
+      border-radius: 4px;
+    }
+
+    /* MOBILE OPTIMIZATIONS */
+    @media (max-width: 480px) {
+      .message {
+        max-width: 85%;
+      }
+      .action-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+      }
+      .input-area {
+        padding: 0.5rem 0.8rem;
+      }
+      .input-area input {
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
+      }
+      .partner-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.4rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -314,8 +375,10 @@
       <button id="adminBtn" style="display:none;">⚙️</button>
     </div>
   </div>
+  
   <div class="messages-area" id="messagesArea"></div>
   <div class="typing-badge" id="typingBadge"></div>
+  
   <div class="input-area">
     <button id="attachBtn" class="action-btn">📎</button>
     <input type="text" id="msgInput" placeholder="Message..." autocomplete="off">
@@ -337,7 +400,7 @@
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get } from 'firebase/database';
+  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, get } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
   const firebaseConfig = {
@@ -365,13 +428,11 @@
   let audioChunks = [];
   let typingTimeout = null;
 
-  // Load users from Firebase
   async function loadUsersFromFirebase() {
     const snap = await get(usersRef);
     if (snap.exists()) {
       return snap.val();
     } else {
-      // Default users
       const defaultUsers = {
         "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
         "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
@@ -392,7 +453,6 @@
     }
   }
 
-  // Login function
   window.login = async function(code) {
     const users = await loadUsersFromFirebase();
     const ownerCode = await getOwnerCode();
@@ -400,7 +460,6 @@
     let foundUser = null;
     let userId = null;
     
-    // Check if owner
     if (code === ownerCode) {
       foundUser = { name: "OWNER", avatar: "👑", role: "owner", code: code };
       userId = "owner";
@@ -417,7 +476,6 @@
     if (foundUser) {
       currentUser = foundUser;
       
-      // Find partner (the other regular user)
       if (currentUser.role !== 'owner') {
         for (let [id, user] of Object.entries(users)) {
           if (id !== userId && user.role === 'user') {
@@ -445,11 +503,9 @@
         };
       }
       
-      // Set online status
       await set(ref(db, `user_status/${currentUser.name}`), { online: true, lastSeen: Date.now() });
       onDisconnect(ref(db, `user_status/${currentUser.name}`)).set({ online: false, lastSeen: Date.now() });
       
-      // Watch partner status
       if (partnerUser) {
         onValue(ref(db, `user_status/${partnerUser.name}`), (snap) => {
           const data = snap.val();
@@ -468,12 +524,23 @@
         onValue(ref(db, `user_typing/${partnerUser.name}`), (snap) => {
           const typing = snap.val();
           if (typing) {
-            document.getElementById('typingBadge').innerText = `${partnerUser.name} is typing...`;
+            document.getElementById('typingBadge').innerHTML = `${partnerUser.name} is typing...`;
           } else {
-            document.getElementById('typingBadge').innerText = '';
+            document.getElementById('typingBadge').innerHTML = '';
           }
         });
       }
+      
+      // Auto-scroll to bottom function
+      function scrollToBottom() {
+        const msgArea = document.getElementById('messagesArea');
+        if (msgArea) {
+          msgArea.scrollTop = msgArea.scrollHeight;
+        }
+      }
+      
+      // Trigger scroll after messages load
+      setTimeout(scrollToBottom, 100);
       
     } else {
       alert("❌ Invalid Secret Code!");
@@ -514,8 +581,13 @@
     content += `<div class="message-time">${new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
     msgDiv.innerHTML = content;
     
-    document.getElementById('messagesArea').appendChild(msgDiv);
-    document.getElementById('messagesArea').scrollTop = document.getElementById('messagesArea').scrollHeight;
+    const messagesArea = document.getElementById('messagesArea');
+    messagesArea.appendChild(msgDiv);
+    
+    // Auto-scroll to bottom
+    setTimeout(() => {
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }, 50);
   }
 
   async function sendMessage(text, fileBlob = null, fileType = null) {
@@ -548,6 +620,12 @@
     }
     
     await set(ref(db, `user_typing/${currentUser.name}`), false);
+    
+    // Force scroll after sending
+    setTimeout(() => {
+      const msgArea = document.getElementById('messagesArea');
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }, 100);
   }
 
   function sendTyping() {
@@ -585,9 +663,14 @@
         
         stream.getTracks().forEach(track => track.stop());
         document.getElementById('voiceBtn').classList.remove('recording');
+        
+        setTimeout(() => {
+          const msgArea = document.getElementById('messagesArea');
+          msgArea.scrollTop = msgArea.scrollHeight;
+        }, 100);
       };
     } catch(e) {
-      alert("Microphone access required");
+      alert("Microphone access required for voice messages");
     }
   }
   
@@ -606,6 +689,14 @@
       return m;
     });
   }
+
+  // Focus management for mobile
+  document.getElementById('msgInput').addEventListener('focus', () => {
+    setTimeout(() => {
+      const msgArea = document.getElementById('messagesArea');
+      msgArea.scrollTop = msgArea.scrollHeight;
+    }, 300);
+  });
 
   // Event listeners
   document.getElementById('unlockBtn').onclick = () => {
@@ -626,7 +717,9 @@
   
   document.getElementById('msgInput').onkeypress = (e) => {
     if (e.key === 'Enter') {
-      sendMessage(e.target.value.trim());
+      e.preventDefault();
+      const text = e.target.value.trim();
+      if (text) sendMessage(text);
     }
   };
   

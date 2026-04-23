@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>◈ 2020~TILL NOW ◈</title>
+  <title>◈ SECURE CHAT ◈</title>
   <style>
     * {
       margin: 0;
@@ -21,7 +21,6 @@
       width: 100%;
     }
 
-    /* LOGIN SCREEN */
     .login-screen {
       position: fixed;
       top: 0;
@@ -104,7 +103,6 @@
 
     .login-card button:active { transform: scale(0.97); }
 
-    /* CHAT INTERFACE */
     .chat-container {
       display: none;
       height: 100vh;
@@ -293,8 +291,8 @@
 
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
-    <h1>✦ ✦ ✦ ✦</h1>
-    <div class="sub">PRIVATE • SECURE • ENCRYPTED</div>
+    <h1>✦ SECURE CHAT ✦</h1>
+    <div class="sub">PRIVATE • ENCRYPTED • REAL-TIME</div>
     <input type="password" id="secretInput" placeholder="ENTER SECRET CODE" autocomplete="off">
     <button id="unlockBtn">✦ UNLOCK ✦</button>
   </div>
@@ -342,7 +340,6 @@
   import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
-  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
     authDomain: "secret-chat-ce77a.firebaseapp.com",
@@ -359,6 +356,8 @@
   const messagesRef = ref(db, 'chat_messages');
   const statusRef = ref(db, 'user_status');
   const typingRef = ref(db, 'user_typing');
+  const usersRef = ref(db, 'app_users');
+  const ownerCodeRef = ref(db, 'app_settings/owner_code');
 
   let currentUser = null;
   let partnerUser = null;
@@ -366,40 +365,47 @@
   let audioChunks = [];
   let typingTimeout = null;
 
-  // Load users from localStorage or default
-  let USERS = {
-    "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
-    "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
-  };
-
-  let OWNER_CODE = "#ADMIN@2025";
-
-  function loadUsers() {
-    const saved = localStorage.getItem('chat_users');
-    if (saved) {
-      try {
-        USERS = JSON.parse(saved);
-      } catch(e) {}
+  // Load users from Firebase
+  async function loadUsersFromFirebase() {
+    const snap = await get(usersRef);
+    if (snap.exists()) {
+      return snap.val();
+    } else {
+      // Default users
+      const defaultUsers = {
+        "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
+        "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
+      };
+      await set(usersRef, defaultUsers);
+      return defaultUsers;
     }
   }
 
-  function saveUsers() {
-    localStorage.setItem('chat_users', JSON.stringify(USERS));
+  async function getOwnerCode() {
+    const snap = await get(ownerCodeRef);
+    if (snap.exists()) {
+      return snap.val();
+    } else {
+      const defaultCode = "#ADMIN@2025";
+      await set(ownerCodeRef, defaultCode);
+      return defaultCode;
+    }
   }
-
-  loadUsers();
 
   // Login function
   window.login = async function(code) {
+    const users = await loadUsersFromFirebase();
+    const ownerCode = await getOwnerCode();
+    
     let foundUser = null;
     let userId = null;
     
     // Check if owner
-    if (code === OWNER_CODE) {
+    if (code === ownerCode) {
       foundUser = { name: "OWNER", avatar: "👑", role: "owner", code: code };
       userId = "owner";
     } else {
-      for (let [id, user] of Object.entries(USERS)) {
+      for (let [id, user] of Object.entries(users)) {
         if (user.code === code) {
           foundUser = { ...user, id: id };
           userId = id;
@@ -411,17 +417,16 @@
     if (foundUser) {
       currentUser = foundUser;
       
-      // Find partner (the other user)
+      // Find partner (the other regular user)
       if (currentUser.role !== 'owner') {
-        for (let [id, user] of Object.entries(USERS)) {
-          if (id !== userId) {
+        for (let [id, user] of Object.entries(users)) {
+          if (id !== userId && user.role === 'user') {
             partnerUser = { ...user, id: id };
             break;
           }
         }
       }
       
-      // Update UI
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('chatContainer').style.display = 'flex';
       
@@ -433,7 +438,6 @@
         document.getElementById('partnerAvatar').innerText = "👑";
       }
       
-      // Show admin button only for owner
       if (currentUser.role === 'owner') {
         document.getElementById('adminBtn').style.display = 'block';
         document.getElementById('adminBtn').onclick = () => {
@@ -458,10 +462,8 @@
         });
       }
       
-      // Load messages
       loadMessages();
       
-      // Watch typing
       if (partnerUser) {
         onValue(ref(db, `user_typing/${partnerUser.name}`), (snap) => {
           const typing = snap.val();
@@ -483,9 +485,7 @@
       const msg = snapshot.val();
       if (!msg) return;
       
-      // Only show messages between current user and partner
       if (currentUser.role === 'owner') {
-        // Owner sees all messages
         displayMessage(msg);
       } else if ((msg.sender === currentUser.name && msg.receiver === partnerUser.name) ||
                  (msg.sender === partnerUser.name && msg.receiver === currentUser.name)) {
@@ -547,7 +547,6 @@
       document.getElementById('msgInput').value = '';
     }
     
-    // Clear typing
     await set(ref(db, `user_typing/${currentUser.name}`), false);
   }
 

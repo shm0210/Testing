@@ -385,8 +385,10 @@
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  // PUT YOUR EMAILS HERE - CHANGE THESE 2 LINES
-  const allowedEmails = ["shubhampc7084@gmail.com", "shubhambro7084@gmail.com"];
+  const users = {
+  "sp@sp.com": { name: "Shubham", avatar: "😎" },
+  "sv@sv.com": { name: "Sakshi", avatar: "🌸" }
+};
 
   const messagesRef = ref(db, 'chat_messages');
   const statusRef = ref(db, 'user_status');

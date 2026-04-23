@@ -23,8 +23,7 @@
       color: #e9edef;
     }
 
-    /* LOGIN SCREEN */
-   .login-screen {
+ .login-screen {
       position: fixed;
       top: 0;
       left: 0;
@@ -37,7 +36,7 @@
       z-index: 1000;
     }
 
-   .login-card {
+ .login-card {
       background: #202c33;
       padding: 2rem 1.5rem;
       border-radius: 2rem;
@@ -53,7 +52,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-   .login-card h1 {
+ .login-card h1 {
       font-size: 1.8rem;
       text-align: center;
       background: linear-gradient(135deg, #00d4b4, #00a884);
@@ -63,14 +62,33 @@
       margin-bottom: 0.5rem;
     }
 
-   .login-card.sub {
+ .login-card.sub {
       text-align: center;
       color: #8696a0;
       font-size: 0.7rem;
       margin-bottom: 1.5rem;
     }
 
-   .login-card button {
+ .login-card input {
+      width: 100%;
+      padding: 1rem;
+      margin: 0.6rem 0;
+      border: none;
+      border-radius: 2rem;
+      background: #2a3942;
+      color: #e9edef;
+      font-size: 1rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+ .login-card input:focus {
+      outline: none;
+      background: #2f414c;
+      box-shadow: 0 0 0 2px #00a884;
+    }
+
+ .login-card button {
       width: 100%;
       padding: 1rem;
       border: none;
@@ -82,16 +100,18 @@
       margin-top: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
 
-   .login-card button:active { transform: scale(0.97); }
+ .login-card button:active { transform: scale(0.97); }
+ .error-msg {
+      color: #ff6b6b;
+      font-size: 0.75rem;
+      text-align: center;
+      margin-top: 0.5rem;
+      min-height: 1rem;
+    }
 
-    /* CHAT CONTAINER */
-   .chat-container {
+ .chat-container {
       display: none;
       height: 100vh;
       flex-direction: column;
@@ -99,8 +119,7 @@
       position: relative;
     }
 
-    /* HEADER */
-   .chat-header {
+ .chat-header {
       background: #202c33;
       padding: 0.7rem 1rem;
       display: flex;
@@ -110,13 +129,13 @@
       flex-shrink: 0;
     }
 
-   .partner-info {
+ .partner-info {
       display: flex;
       align-items: center;
       gap: 0.8rem;
     }
 
-   .partner-avatar {
+ .partner-avatar {
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -129,12 +148,12 @@
       font-weight: bold;
     }
 
-   .partner-details h3 {
+ .partner-details h3 {
       font-size: 1rem;
       font-weight: 600;
     }
 
-   .online-status {
+ .online-status {
       display: flex;
       align-items: center;
       gap: 0.3rem;
@@ -142,7 +161,7 @@
       color: #8696a0;
     }
 
-   .online-dot {
+ .online-dot {
       width: 8px;
       height: 8px;
       background: #00a884;
@@ -150,7 +169,7 @@
       animation: pulse 1.5s infinite;
     }
 
-   .offline-dot {
+ .offline-dot {
       width: 8px;
       height: 8px;
       background: #5e6f7e;
@@ -162,7 +181,7 @@
       50% { opacity: 0.5; }
     }
 
-   .header-btns button {
+ .header-btns button {
       background: #2a3942;
       border: none;
       width: 40px;
@@ -173,8 +192,7 @@
       cursor: pointer;
     }
 
-    /* MESSAGES AREA */
-   .messages-area {
+ .messages-area {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
@@ -185,7 +203,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
-   .message {
+ .message {
       max-width: 80%;
       padding: 0.6rem 0.9rem;
       border-radius: 1.2rem;
@@ -198,50 +216,49 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-   .message.sent {
+ .message.sent {
       background: #005c4b;
       align-self: flex-end;
       border-bottom-right-radius: 0.3rem;
     }
 
-   .message.received {
+ .message.received {
       background: #202c33;
       align-self: flex-start;
       border-bottom-left-radius: 0.3rem;
     }
 
-   .message-text {
+ .message-text {
       font-size: 0.9rem;
       line-height: 1.4;
       word-break: break-word;
     }
 
-   .message-time {
+ .message-time {
       font-size: 0.6rem;
       color: #8696a0;
       text-align: right;
       margin-top: 0.2rem;
     }
 
-   .media-preview {
+ .media-preview {
       max-width: 200px;
       border-radius: 0.8rem;
       margin-top: 0.3rem;
       cursor: pointer;
     }
-   .media-preview img,.media-preview video {
+ .media-preview img,.media-preview video {
       width: 100%;
       border-radius: 0.8rem;
       max-height: 150px;
       object-fit: cover;
     }
-   .voice-note {
+ .voice-note {
       width: 160px;
       margin-top: 0.3rem;
     }
 
-    /* TYPING INDICATOR */
-   .typing-badge {
+ .typing-badge {
       padding: 0.2rem 1rem;
       font-size: 0.7rem;
       color: #00a884;
@@ -251,8 +268,7 @@
       flex-shrink: 0;
     }
 
-    /* INPUT AREA */
-   .input-area {
+ .input-area {
       background: #202c33;
       padding: 0.7rem 1rem;
       display: flex;
@@ -262,7 +278,7 @@
       flex-shrink: 0;
     }
 
-   .input-area input {
+ .input-area input {
       flex: 1;
       padding: 0.8rem 1.2rem;
       border: none;
@@ -274,7 +290,7 @@
       min-width: 0;
     }
 
-   .action-btn {
+ .action-btn {
       background: #2a3942;
       border: none;
       width: 44px;
@@ -289,23 +305,22 @@
       flex-shrink: 0;
     }
 
-   .action-btn:active { transform: scale(0.95); }
-   .send-btn { background: #00a884; color: #111b21; }
-   .recording { background: #ff4444!important; animation: blink 0.8s infinite; }
+ .action-btn:active { transform: scale(0.95); }
+ .send-btn { background: #00a884; color: #111b21; }
+ .recording { background: #ff4444!important; animation: blink 0.8s infinite; }
 
     @keyframes blink {
       0%,100% { opacity: 1; }
       50% { opacity: 0.6; }
     }
 
-    /* CUSTOM SCROLLBAR */
-   .messages-area::-webkit-scrollbar {
+ .messages-area::-webkit-scrollbar {
       width: 4px;
     }
-   .messages-area::-webkit-scrollbar-track {
+ .messages-area::-webkit-scrollbar-track {
       background: #1a252c;
     }
-   .messages-area::-webkit-scrollbar-thumb {
+ .messages-area::-webkit-scrollbar-thumb {
       background: #00a884;
       border-radius: 4px;
     }
@@ -317,10 +332,10 @@
   <div class="login-card">
     <h1>✦ SECURE CHAT ✦</h1>
     <div class="sub">PRIVATE • ENCRYPTED • REAL-TIME</div>
-    <button id="googleLoginBtn">
-      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#111b21" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#111b21" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#111b21" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 7.18l2.67-2.07z"/><path fill="#111b21" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z"/></svg>
-      Login with Google
-    </button>
+    <input type="email" id="emailInput" placeholder="Email" autocomplete="off">
+    <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+    <button id="loginBtn">✦ LOGIN ✦</button>
+    <div class="error-msg" id="errorMsg"></div>
   </div>
 </div>
 
@@ -335,6 +350,7 @@
           <span id="statusText">Offline</span>
         </div>
       </div>
+    </div>
     <div class="header-btns">
       <button id="logoutBtn">🚪</button>
     </div>
@@ -367,7 +383,7 @@
   import { initializeApp } from 'firebase/app';
   import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth';
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
@@ -383,12 +399,12 @@
   const db = getDatabase(app);
   const storage = getStorage(app);
   const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
 
+  // CONFIG: Your 2 users
   const users = {
-  "sp@sp.com": { name: "Shubham", avatar: "😎" },
-  "sv@sv.com": { name: "Sakshi", avatar: "🌸" }
-};
+    "sp@sb.com": { name: "SP", avatar: "🔵" },
+    "sv@sv.com": { name: "SV", avatar: "🟢" }
+  };
 
   const messagesRef = ref(db, 'chat_messages');
   const statusRef = ref(db, 'user_status');
@@ -401,11 +417,31 @@
   let typingTimeout = null;
   let isRecording = false;
 
-  // Google Login
-  document.getElementById('googleLoginBtn').onclick = () => {
-    signInWithPopup(auth, provider).catch(err => {
-      alert("Login failed: " + err.message);
-    });
+  // Email/Password Login
+  document.getElementById('loginBtn').onclick = () => {
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    const errorMsg = document.getElementById('errorMsg');
+
+    errorMsg.innerText = '';
+
+    if (!email ||!password) {
+      errorMsg.innerText = 'Enter email and password';
+      return;
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+    .catch(err => {
+        if (err.code === 'auth/invalid-credential') {
+          errorMsg.innerText = 'Wrong email or password';
+        } else {
+          errorMsg.innerText = 'Login failed';
+        }
+      });
+  };
+
+  document.getElementById('passwordInput').onkeypress = (e) => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
   };
 
   document.getElementById('logoutBtn').onclick = () => signOut(auth);
@@ -413,31 +449,32 @@
   // Auto-login check
   onAuthStateChanged(auth, async user => {
     if (user) {
-      if (!allowedEmails.includes(user.email)) {
+      if (!users[user.email]) {
         alert("You are not authorized to use this chat");
         signOut(auth);
         return;
       }
 
       currentUser = {
-        name: user.displayName.split(' ')[0], // First name only
+        name: users[user.email].name,
         email: user.email,
         uid: user.uid,
-        avatar: user.displayName[0]
+        avatar: users[user.email].avatar
       };
 
       // Auto-assign partner
-      const partnerEmail = allowedEmails.find(e => e!== user.email);
+      const partnerEmail = Object.keys(users).find(e => e!== user.email);
       partnerUser = {
         email: partnerEmail,
-        uid: btoa(partnerEmail), // Simple UID from email
-        name: partnerEmail === allowedEmails[0]? "Partner1" : "Partner2"
+        uid: btoa(partnerEmail).replace(/=/g, ''),
+        name: users[partnerEmail].name,
+        avatar: users[partnerEmail].avatar
       };
 
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('chatContainer').style.display = 'flex';
       document.getElementById('partnerName').innerText = partnerUser.name;
-      document.getElementById('partnerAvatar').innerText = partnerUser.name[0];
+      document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
 
       await set(ref(db, `user_status/${currentUser.uid}`), { online: true, lastSeen: Date.now() });
       onDisconnect(ref(db, `user_status/${currentUser.uid}`)).set({ online: false, lastSeen: Date.now() });

@@ -1,73 +1,544 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Secret Chat Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>2020~FIRST TIME | Secret Chat Pro</title>
   <style>
-    *{box-sizing:border-box;margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
-    body{background:#0b141a;color:#e9edef;height:100vh}
-    #login{display:flex;height:100vh;justify-content:center;align-items:center;background:#111b21}
-  .box{background:#202c33;padding:30px;border-radius:12px;text-align:center;min-width:320px}
-  .box input{width:100%;padding:14px;margin:12px 0;border:none;border-radius:8px;background:#2a3942;color:#fff;font-size:16px}
-  .box button{width:100%;padding:14px;border:none;border-radius:8px;background:#00a884;color:#111b21;font-weight:600;font-size:16px}
-    #chat{display:none;height:100vh;flex-direction:column}
-    #header{background:#202c33;padding:10px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
-    #userInfo{display:flex;align-items:center;gap:10px}
-   .avatar{width:40px;height:40px;border-radius:50%;background:#00a884;display:flex;align-items:center;justify-content:center;font-weight:600;color:#111b21}
-    #status{font-size:12px;color:#8696a0}
-   .online{width:10px;height:10px;background:#00a884;border-radius:50%;display:inline-block;margin-right:4px}
-    #messages{flex:1;overflow-y:auto;padding:10px 20px;background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')}
-  .msg{margin:6px 0;padding:8px 12px;border-radius:8px;max-width:75%;word-wrap:break-word;position:relative}
-  .me{background:#005c4b;margin-left:auto}
-  .other{background:#202c33}
-  .name{font-size:12px;color:#53bdeb;margin-bottom:2px;font-weight:500}
-  .time{font-size:11px;color:#8696a0;margin-top:4px;text-align:right}
-  .msg img,.msg video{max-width:100%;border-radius:6px;margin-top:4px}
-  .msg audio{width:100%;margin-top:4px}
-   #typing{padding:0 20px;font-size:12px;color:#8696a0;font-style:italic;height:18px}
-    #input-area{display:flex;padding:8px 12px;background:#202c33;align-items:center;gap:8px}
-    #input-area input[type=text]{flex:1;padding:12px;border:none;border-radius:24px;background:#2a3942;color:#fff;outline:none}
-    #input-area button{border:none;border-radius:50%;width:45px;height:45px;background:#00a884;color:#111b21;font-size:18px;display:flex;align-items:center;justify-content:center}
-    #fileInput{display:none}
-  .file-btn{background:#2a3942!important}
-  .recording{background:#ff4444!important;animation:pulse 1s infinite}
-   @keyframes pulse{0%{opacity:1}50%{opacity:0.5}100%{opacity:1}}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #0b141a;
+      color: #e9edef;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Login Screen */
+    #login {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #111b21 0%, #0a1117 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #login::before {
+      content: '2020~FIRST TIME';
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.1);
+      letter-spacing: 2px;
+    }
+
+    .box {
+      background: #202c33;
+      padding: 40px 35px;
+      border-radius: 24px;
+      text-align: center;
+      min-width: 340px;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+      border: 1px solid rgba(0,168,132,0.3);
+      backdrop-filter: blur(10px);
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .box h2 {
+      margin-bottom: 10px;
+      font-size: 28px;
+      background: linear-gradient(135deg, #00a884, #00d4b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .box .sub {
+      color: #8696a0;
+      font-size: 13px;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    .box input {
+      width: 100%;
+      padding: 14px 18px;
+      margin: 12px 0;
+      border: none;
+      border-radius: 12px;
+      background: #2a3942;
+      color: #fff;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .box input:focus {
+      outline: none;
+      background: #2f414c;
+      box-shadow: 0 0 0 2px #00a884;
+    }
+
+    .box button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #00a884;
+      color: #111b21;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .box button:hover {
+      background: #00c3a2;
+      transform: scale(1.02);
+    }
+
+    .user-list {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #8696a0;
+      text-align: left;
+      border-top: 1px solid #2e3b42;
+      padding-top: 15px;
+    }
+
+    .user-list span {
+      display: inline-block;
+      margin: 3px 6px;
+      background: #2a3942;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Chat Interface */
+    #chat {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #header {
+      background: #202c33;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2e3b42;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    #userInfo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00a884, #00d4b4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      color: #111b21;
+    }
+
+    #chatTitle {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    #status {
+      font-size: 11px;
+      color: #8696a0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background: #00a884;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: #2a3942;
+      border: none;
+      color: #e9edef;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #3e555f;
+      transform: scale(1.05);
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px 18px;
+      background-image: url('https://www.transparenttextures.com/patterns/dark-mosaic.png');
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .msg {
+      margin: 4px 0;
+      padding: 8px 12px;
+      border-radius: 14px;
+      max-width: 75%;
+      word-wrap: break-word;
+      position: relative;
+      animation: messageSlide 0.2s ease;
+    }
+
+    @keyframes messageSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .me {
+      background: #005c4b;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .other {
+      background: #202c33;
+      margin-right: auto;
+      border-bottom-left-radius: 4px;
+    }
+
+    .name {
+      font-size: 11px;
+      color: #53bdeb;
+      margin-bottom: 3px;
+      font-weight: 600;
+    }
+
+    .time {
+      font-size: 9px;
+      color: #8696a0;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .msg img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+
+    .msg video {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+
+    .msg audio {
+      width: 200px;
+      margin-top: 5px;
+    }
+
+    .file-badge {
+      background: #2e3b42;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    #typing {
+      padding: 5px 20px;
+      font-size: 11px;
+      color: #00a884;
+      font-style: italic;
+      height: 28px;
+      background: #0b141a;
+    }
+
+    #input-area {
+      display: flex;
+      padding: 10px 15px;
+      background: #202c33;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid #2e3b42;
+    }
+
+    #msgInput {
+      flex: 1;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 25px;
+      background: #2a3942;
+      color: #fff;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      background: #2a3942;
+      color: #e9edef;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .action-btn:hover {
+      background: #3e555f;
+      transform: scale(1.05);
+    }
+
+    .send-btn {
+      background: #00a884;
+      color: #111b21;
+    }
+
+    .send-btn:hover {
+      background: #00c3a2;
+    }
+
+    .recording {
+      background: #ff4444 !important;
+      animation: blink 0.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    #fileInput, #audioInput {
+      display: none;
+    }
+
+    /* Scrollbar */
+    #messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #messages::-webkit-scrollbar-track {
+      background: #1a252c;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background: #3e555f;
+      border-radius: 10px;
+    }
+
+    /* Admin Panel Modal */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .admin-content {
+      background: #202c33;
+      width: 90%;
+      max-width: 600px;
+      max-height: 85vh;
+      border-radius: 20px;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .admin-content h3 {
+      margin-bottom: 15px;
+      color: #00a884;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #2a3942;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #00a884;
+    }
+
+    .admin-user-item, .admin-msg-item {
+      background: #2a3942;
+      padding: 8px 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-btn {
+      background: #ff4444;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .close-modal {
+      background: #3e555f;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
   <div id="login">
     <div class="box">
-      <h2>🔒 Secret Chat Pro</h2>
-      <input id="secretCode" type="password" placeholder="Secret Code Daalo">
-      <button onclick="checkCode()">Enter Chat</button>
+      <h2>✨ 2020~FIRST TIME</h2>
+      <div class="sub">Private Secure Messenger</div>
+      <input id="secretCode" type="password" placeholder="Enter Secret Code" autocomplete="off">
+      <button onclick="checkCode()">➤ UNLOCK CHAT</button>
+      <div class="user-list">
+        📋 Authorized Users:<br>
+        <span>🔑 Shubham → #9569@</span>
+        <span>🔑 Sakshi → #9454@</span>
+        <span>👑 Owner → #OWNER@</span>
+      </div>
     </div>
   </div>
 
   <div id="chat">
     <div id="header">
       <div id="userInfo">
-        <div class="avatar" id="myAvatar"></div>
+        <div class="avatar" id="myAvatar">👤</div>
         <div>
-          <div id="chatTitle"></div>
-          <div id="status"><span class="online"></span>Online</div>
+          <div id="chatTitle">Secret Chat</div>
+          <div id="status"><span class="online-dot"></span>Online</div>
         </div>
       </div>
+      <div class="header-btns">
+        <button class="icon-btn" onclick="openAdminModal()" id="adminBtn" style="display:none;">⚙️</button>
+        <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
     <div id="messages"></div>
     <div id="typing"></div>
     <div id="input-area">
-      <input type="file" id="fileInput" accept="image/*,video/*">
-      <button class="file-btn" onclick="fileInput.click()">📎</button>
-      <input id="msgInput" type="text" placeholder="Message..." oninput="sendTyping()" onkeydown="if(event.key==='Enter') sendMsg()">
-      <button id="recordBtn" onmousedown="startRecord()" onmouseup="stopRecord()" ontouchstart="startRecord()" ontouchend="stopRecord()">🎤</button>
-      <button onclick="sendMsg()">➤</button>
+      <input type="file" id="fileInput" accept="image/*,video/*" style="display:none">
+      <button class="action-btn" onclick="document.getElementById('fileInput').click()">📎</button>
+      <input id="msgInput" type="text" placeholder="Aa message likho..." oninput="sendTyping()" onkeydown="if(event.key==='Enter') sendMsg()">
+      <button class="action-btn" id="recordBtn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()">🎤</button>
+      <button class="action-btn send-btn" onclick="sendMsg()">➤</button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js'
-    import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js'
-    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js'
+  <!-- Admin Modal -->
+  <div id="adminModal" class="admin-modal">
+    <div class="admin-content">
+      <h3>🔧 Admin Control Panel</h3>
+      <div class="admin-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalUsers">0</div>
+          <div>Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="onlineCount">0</div>
+          <div>Online Now</div>
+        </div>
+      </div>
+      <div id="adminUserList"></div>
+      <div id="adminMsgList"></div>
+      <div style="margin-top: 15px;">
+        <button onclick="exportChatHistory()" class="action-btn" style="width: auto; border-radius: 8px; padding: 10px;">📥 Export Chats</button>
+        <button onclick="clearAllChats()" class="delete-btn" style="margin-left: 10px;">⚠️ Delete All Messages</button>
+        <button onclick="closeAdminModal()" class="action-btn close-modal" style="width: auto; margin-top: 15px;">Close</button>
+      </div>
+    </div>
+  </div>
 
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js",
+        "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from 'firebase/app';
+    import { getDatabase, ref, push, onChildAdded, onValue, set, remove, onDisconnect, serverTimestamp, get } from 'firebase/database';
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
       authDomain: "secret-chat-ce77a.firebaseapp.com",
@@ -78,120 +549,292 @@
       appId: "1:332764244582:web:4f1ecef556ba1853a81ba7"
     };
 
-    // USER CODES - YAHAN ADD/REMOVE KARO
+    // User Database
     const USERS = {
-      "#9569@": "Shubham",
-      "#9454@": "Sakshi"
+      "#9569@": { name: "Shubham", avatar: "😎", role: "user" },
+      "#9454@": { name: "Sakshi", avatar: "🌸", role: "user" },
+      "#OWNER@": { name: "Owner", avatar: "👑", role: "owner" }
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const storage = getStorage(app);
-    const messagesRef = ref(db, 'chats');
+    const messagesRef = ref(db, 'messages');
     const statusRef = ref(db, 'status');
     const typingRef = ref(db, 'typing');
 
-    let username = "", mediaRecorder, audioChunks = [], typingTimeout;
+    let currentUser = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let typingTimeout = null;
+    let isDarkTheme = true;
 
     window.checkCode = () => {
-      const code = document.getElementById('secretCode').value;
-      if(USERS[code]) {
-        username = USERS[code];
+      const code = document.getElementById('secretCode').value.trim();
+      if (USERS[code]) {
+        currentUser = {
+          name: USERS[code].name,
+          avatar: USERS[code].avatar,
+          role: USERS[code].role,
+          code: code
+        };
+        
         document.getElementById('login').style.display = 'none';
         document.getElementById('chat').style.display = 'flex';
-        document.getElementById('chatTitle').innerText = username;
-        document.getElementById('myAvatar').innerText = username[0];
-        setOnline();
+        document.getElementById('chatTitle').innerHTML = `${currentUser.avatar} ${currentUser.name}`;
+        document.getElementById('myAvatar').innerHTML = currentUser.avatar;
+        
+        if (currentUser.role === 'owner') {
+          document.getElementById('adminBtn').style.display = 'flex';
+        }
+        
+        setOnlineStatus();
         loadMessages();
         watchTyping();
-      } else alert("Galat Code");
+      } else {
+        alert("❌ Invalid Secret Code! Only authorized users can enter.");
+      }
+    };
+
+    function setOnlineStatus() {
+      const userStatusRef = ref(db, `status/${currentUser.name}`);
+      set(userStatusRef, { online: true, lastSeen: serverTimestamp() });
+      onDisconnect(userStatusRef).set({ online: false, lastSeen: serverTimestamp() });
     }
 
-    // Online Status
-    function setOnline() {
-      const myStatusRef = ref(db, `status/${username}`);
-      set(myStatusRef, {online: true, lastSeen: serverTimestamp()});
-      onDisconnect(myStatusRef).set({online: false, lastSeen: serverTimestamp()});
-    }
-
-    // Typing Indicator
     window.sendTyping = () => {
-      set(ref(db, `typing/${username}`), true);
+      if (!currentUser) return;
+      set(ref(db, `typing/${currentUser.name}`), true);
       clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => set(ref(db, `typing/${username}`), false), 2000);
-    }
+      typingTimeout = setTimeout(() => {
+        set(ref(db, `typing/${currentUser.name}`), false);
+      }, 2000);
+    };
 
     function watchTyping() {
       onValue(typingRef, (snap) => {
-        const data = snap.val() || {};
-        const typingUsers = Object.keys(data).filter(u => u!== username && data[u]);
-        document.getElementById('typing').innerText = typingUsers.length? `${typingUsers[0]} typing...` : '';
+        const typingData = snap.val() || {};
+        const typingUsers = Object.keys(typingData).filter(u => u !== currentUser?.name && typingData[u] === true);
+        const typingDiv = document.getElementById('typing');
+        if (typingUsers.length > 0) {
+          typingDiv.innerHTML = `✍️ ${typingUsers[0]} is typing...`;
+        } else {
+          typingDiv.innerHTML = '';
+        }
       });
     }
 
-    // Voice Recording
-    window.startRecord = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
-      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-      mediaRecorder.start();
-      document.getElementById('recordBtn').classList.add('recording');
-    }
+    window.startRecording = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (e) => {
+          audioChunks.push(e.data);
+        };
+        
+        mediaRecorder.start();
+        document.getElementById('recordBtn').classList.add('recording');
+      } catch (err) {
+        console.error("Microphone error:", err);
+        alert("Microphone access required for voice messages");
+      }
+    };
 
-    window.stopRecord = () => {
-      if(mediaRecorder && mediaRecorder.state === 'recording') {
+    window.stopRecording = () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
         document.getElementById('recordBtn').classList.remove('recording');
+        
         mediaRecorder.onstop = async () => {
-          const blob = new Blob(audioChunks, {type: 'audio/webm'});
-          const fileRef = sRef(storage, `voice/${Date.now()}.webm`);
-          await uploadBytes(fileRef, blob);
-          const url = await getDownloadURL(fileRef);
-          push(messagesRef, {user: username, time: Date.now(), fileUrl: url, fileType: 'audio'});
-        }
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioRef = sRef(storage, `audio/${Date.now()}.webm`);
+          await uploadBytes(audioRef, audioBlob);
+          const audioUrl = await getDownloadURL(audioRef);
+          
+          await push(messagesRef, {
+            user: currentUser.name,
+            userAvatar: currentUser.avatar,
+            text: null,
+            fileUrl: audioUrl,
+            fileType: 'audio',
+            time: Date.now()
+          });
+          
+          mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        };
       }
-    }
+    };
 
     window.sendMsg = async () => {
       const text = document.getElementById('msgInput').value.trim();
       const file = document.getElementById('fileInput').files[0];
-      if(!text &&!file) return;
-
-      let fileUrl = null, fileType = null;
-      if(file) {
-        const fileRef = sRef(storage, `chats/${Date.now()}_${file.name}`);
+      
+      if (!text && !file) return;
+      
+      let fileUrl = null;
+      let fileType = null;
+      
+      if (file) {
+        const fileRef = sRef(storage, `media/${Date.now()}_${file.name}`);
         await uploadBytes(fileRef, file);
         fileUrl = await getDownloadURL(fileRef);
-        fileType = file.type.startsWith('image')? 'image' : 'video';
+        fileType = file.type.startsWith('image/') ? 'image' : 'video';
         document.getElementById('fileInput').value = '';
       }
-
-      push(messagesRef, {user: username, text: text, time: Date.now(), fileUrl, fileType});
+      
+      await push(messagesRef, {
+        user: currentUser.name,
+        userAvatar: currentUser.avatar,
+        text: text || null,
+        fileUrl: fileUrl,
+        fileType: fileType,
+        time: Date.now()
+      });
+      
       document.getElementById('msgInput').value = '';
-      set(ref(db, `typing/${username}`), false);
-    }
+      set(ref(db, `typing/${currentUser.name}`), false);
+    };
 
     function loadMessages() {
-      onChildAdded(messagesRef, (data) => {
-        const m = data.val();
-        const div = document.createElement('div');
-        div.className = 'msg ' + (m.user === username? 'me' : 'other');
-        let content = `<div class="name">${m.user}</div>`;
-        if(m.text) content += m.text;
-        if(m.fileUrl) {
-          if(m.fileType === 'image') content += `<img src="${m.fileUrl}">`;
-          else if(m.fileType === 'video') content += `<video src="${m.fileUrl}" controls></video>`;
-          else if(m.fileType === 'audio') content += `<audio src="${m.fileUrl}" controls></audio>`;
+      onChildAdded(messagesRef, (snapshot) => {
+        const msg = snapshot.val();
+        if (!msg) return;
+        
+        const messageDiv = document.createElement('div');
+        const isMe = msg.user === currentUser?.name;
+        messageDiv.className = `msg ${isMe ? 'me' : 'other'}`;
+        
+        let content = `<div class="name">${msg.userAvatar || '👤'} ${msg.user}</div>`;
+        
+        if (msg.text) {
+          content += `<div>${escapeHtml(msg.text)}</div>`;
         }
-        content += `<div class="time">${new Date(m.time).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`;
-        div.innerHTML = content;
-        messages.appendChild(div);
-        messages.scrollTop = messages.scrollHeight;
+        
+        if (msg.fileUrl) {
+          if (msg.fileType === 'image') {
+            content += `<img src="${msg.fileUrl}" onclick="window.open('${msg.fileUrl}','_blank')">`;
+          } else if (msg.fileType === 'video') {
+            content += `<video src="${msg.fileUrl}" controls></video>`;
+          } else if (msg.fileType === 'audio') {
+            content += `<audio src="${msg.fileUrl}" controls></audio>`;
+          } else {
+            content += `<div class="file-badge">📎 File attached</div>`;
+          }
+        }
+        
+        content += `<div class="time">${new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>`;
+        messageDiv.innerHTML = content;
+        
+        document.getElementById('messages').appendChild(messageDiv);
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
       });
     }
 
-    fileInput.onchange = () => sendMsg();
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Admin Functions
+    window.openAdminModal = () => {
+      if (currentUser?.role !== 'owner') {
+        alert("Only Owner can access admin panel!");
+        return;
+      }
+      loadAdminData();
+      document.getElementById('adminModal').style.display = 'flex';
+    };
+
+    window.closeAdminModal = () => {
+      document.getElementById('adminModal').style.display = 'none';
+    };
+
+    async function loadAdminData() {
+      // Load users
+      const statusSnap = await get(ref(db, 'status'));
+      const statusData = statusSnap.val() || {};
+      const userCount = Object.keys(statusData).length;
+      const onlineCount = Object.values(statusData).filter(s => s.online === true).length;
+      
+      document.getElementById('totalUsers').innerText = userCount;
+      document.getElementById('onlineCount').innerText = onlineCount;
+      
+      const userListDiv = document.getElementById('adminUserList');
+      userListDiv.innerHTML = '<h4>👥 Active Users</h4>';
+      for (const [user, data] of Object.entries(statusData)) {
+        userListDiv.innerHTML += `
+          <div class="admin-user-item">
+            <span>${user}</span>
+            <span style="color: ${data.online ? '#00a884' : '#8696a0'}">${data.online ? '🟢 Online' : '⚫ Offline'}</span>
+          </div>
+        `;
+      }
+      
+      // Load recent messages
+      const msgSnap = await get(messagesRef);
+      const msgs = msgSnap.val() || {};
+      const msgArray = Object.entries(msgs).slice(-15).reverse();
+      const msgListDiv = document.getElementById('adminMsgList');
+      msgListDiv.innerHTML = '<h4>📨 Recent Messages</h4>';
+      
+      for (const [key, msg] of msgArray) {
+        msgListDiv.innerHTML += `
+          <div class="admin-msg-item">
+            <div><strong>${msg.user}:</strong> ${msg.text || (msg.fileType || 'Media')}</div>
+            <button class="delete-btn" onclick="window.deleteMessage('${key}')">Delete</button>
+          </div>
+        `;
+      }
+    }
+
+    window.deleteMessage = async (key) => {
+      if (confirm("Delete this message?")) {
+        await remove(ref(db, `messages/${key}`));
+        loadAdminData();
+      }
+    };
+
+    window.clearAllChats = async () => {
+      if (confirm("⚠️ DANGER: This will delete ALL messages! Are you sure?")) {
+        await set(messagesRef, null);
+        alert("All messages deleted!");
+        loadAdminData();
+      }
+    };
+
+    window.exportChatHistory = async () => {
+      const snap = await get(messagesRef);
+      const data = snap.val() || {};
+      const jsonStr = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `chat_backup_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    window.toggleTheme = () => {
+      isDarkTheme = !isDarkTheme;
+      if (isDarkTheme) {
+        document.body.style.background = "#0b141a";
+        document.querySelector('.icon-btn:last-child').innerHTML = "🌙";
+      } else {
+        document.body.style.background = "#e9edef";
+        document.querySelector('.icon-btn:last-child').innerHTML = "☀️";
+      }
+    };
+
+    // File input trigger
+    document.getElementById('fileInput').addEventListener('change', () => {
+      if (document.getElementById('fileInput').files[0]) {
+        sendMsg();
+      }
+    });
   </script>
 </body>
 </html>

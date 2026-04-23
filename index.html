@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0b141a">
-  <title>✦ SECURE CHAT ✦ | Firebase Auth</title>
+  <title>✦ SECURE CHAT ✦ | Instant Messaging</title>
   <style>
     * {
       margin: 0;
@@ -103,10 +103,6 @@
     }
 
     .login-card button:active { transform: scale(0.97); }
-    .login-card button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
     .error-msg {
       color: #ff6b6b;
       font-size: 0.75rem;
@@ -335,6 +331,15 @@
       background: #00a884;
       border-radius: 4px;
     }
+
+    .info-banner {
+      background: #00a88420;
+      color: #00a884;
+      padding: 6px 12px;
+      font-size: 0.7rem;
+      text-align: center;
+      border-bottom: 1px solid #00a88430;
+    }
   </style>
 </head>
 <body>
@@ -356,7 +361,7 @@
     <div class="partner-info">
       <div class="partner-avatar" id="partnerAvatar">👤</div>
       <div class="partner-details">
-        <h3 id="partnerName">Connecting...</h3>
+        <h3 id="partnerName">Loading...</h3>
         <div class="online-status" id="onlineStatus">
           <span class="offline-dot"></span>
           <span id="statusText">Offline</span>
@@ -367,7 +372,7 @@
       <button id="logoutBtn">🚪</button>
     </div>
   </div>
-
+  <div class="info-banner" id="infoBanner">💬 Start chatting! Messages will be delivered when partner is online.</div>
   <div class="messages-area" id="messagesArea"></div>
   <div class="typing-badge" id="typingBadge"></div>
 
@@ -393,7 +398,7 @@
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect } from 'firebase/database';
+  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, query, orderByChild, limitToLast } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 
@@ -412,50 +417,29 @@
   const storage = getStorage(app);
   const auth = getAuth(app);
 
-  // Authorized users (only these emails can access)
-  const ALLOWED_USERS = {
-    "sp@sv.com": { name: "SP", avatar: "🔵", displayName: "SP" },
-    "sv@sp.com": { name: "SV", avatar: "🟢", displayName: "SV" }
+  // User mappings - email to display info
+  const USER_PROFILES = {
+    "sp@sv.com": { name: "Shubham", avatar: "😎", shortName: "SP" },
+    "sv@sp.com": { name: "Sakshi", avatar: "🌸", shortName: "SV" }
   };
 
   const messagesRef = ref(db, 'chat_messages');
+  const usersRef = ref(db, 'active_users');
   
   let currentUser = null;
-  let partnerUser = null;
+  let partnerInfo = null;
   let mediaRecorder = null;
   let audioChunks = [];
   let typingTimeout = null;
   let isRecording = false;
 
-  // Helper: get partner based on current email
-  function getPartnerForUser(email) {
-    if (email === "sp@sv.com") {
-      return { email: "sv@sp.com", ...ALLOWED_USERS["sv@sp.com"] };
-    }
-    if (email === "sv@sp.com") {
-      return { email: "sp@sv.com", ...ALLOWED_USERS["sp@sv.com"] };
-    }
+  // Get partner email based on current user
+  function getPartnerEmail(currentEmail) {
+    if (currentEmail === "sp@sv.com") return "sv@sp.com";
+    if (currentEmail === "sv@sp.com") return "sp@sv.com";
     return null;
   }
 
-  // Auto-create user if they don't exist
-  async function autoCreateUser(email, password) {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User created successfully:", email);
-      return userCredential.user;
-    } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        // User already exists, that's fine
-        console.log("User already exists, signing in...");
-        return null;
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  // Login or auto-create account
   async function loginOrCreate(email, password) {
     const errorMsgDiv = document.getElementById('errorMsg');
     const successMsgDiv = document.getElementById('successMsg');
@@ -463,48 +447,44 @@
     errorMsgDiv.innerText = '';
     successMsgDiv.innerText = '';
     
-    if (!email || !password) {
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail || !password) {
       errorMsgDiv.innerText = '❌ Please enter email and password';
       return false;
     }
     
-    if (!ALLOWED_USERS[email]) {
-      errorMsgDiv.innerText = '❌ Unauthorized email. Use sp@sv.com or sv@sp.com';
+    if (!USER_PROFILES[trimmedEmail]) {
+      errorMsgDiv.innerText = '❌ Unauthorized. Use sp@sv.com or sv@sp.com';
       return false;
     }
     
     try {
-      // First try to sign in
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, trimmedEmail, password);
         successMsgDiv.innerText = '✓ Login successful!';
-        setTimeout(() => successMsgDiv.innerText = '', 2000);
+        setTimeout(() => successMsgDiv.innerText = '', 1500);
         return true;
       } catch (signInError) {
-        // If user doesn't exist, create them
         if (signInError.code === 'auth/invalid-credential' || signInError.code === 'auth/user-not-found') {
-          successMsgDiv.innerText = 'Creating account...';
-          await autoCreateUser(email, password);
-          successMsgDiv.innerText = 'Account created! Logging in...';
-          // Sign in after creation
-          await signInWithEmailAndPassword(auth, email, password);
+          successMsgDiv.innerText = '🔄 Creating account...';
+          await createUserWithEmailAndPassword(auth, trimmedEmail, password);
+          successMsgDiv.innerText = '✓ Account created! Logging in...';
+          await signInWithEmailAndPassword(auth, trimmedEmail, password);
           successMsgDiv.innerText = '✓ Login successful!';
-          setTimeout(() => successMsgDiv.innerText = '', 2000);
+          setTimeout(() => successMsgDiv.innerText = '', 1500);
           return true;
         } else {
           throw signInError;
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Auth error:", error);
       if (error.code === 'auth/wrong-password') {
-        errorMsgDiv.innerText = '❌ Wrong password';
+        errorMsgDiv.innerText = '❌ Wrong password.';
       } else if (error.code === 'auth/weak-password') {
-        errorMsgDiv.innerText = '❌ Password too weak (min 6 characters)';
+        errorMsgDiv.innerText = '❌ Password must be at least 6 characters.';
       } else if (error.code === 'auth/invalid-email') {
-        errorMsgDiv.innerText = '❌ Invalid email format';
-      } else if (error.code === 'auth/operation-not-allowed') {
-        errorMsgDiv.innerText = '❌ Please enable Email/Password in Firebase Console';
+        errorMsgDiv.innerText = '❌ Invalid email format.';
       } else {
         errorMsgDiv.innerText = `❌ Login failed: ${error.message}`;
       }
@@ -512,13 +492,11 @@
     }
   }
 
-  // Setup chat after authentication
   async function setupChat(user) {
     const userEmail = user.email;
-    const userData = ALLOWED_USERS[userEmail];
+    const profile = USER_PROFILES[userEmail];
     
-    if (!userData) {
-      alert("Unauthorized user! Logging out.");
+    if (!profile) {
       await signOut(auth);
       return;
     }
@@ -526,81 +504,86 @@
     currentUser = {
       uid: user.uid,
       email: userEmail,
-      name: userData.name,
-      avatar: userData.avatar,
-      displayName: userData.displayName
+      name: profile.name,
+      avatar: profile.avatar
     };
 
-    // Get partner
-    const partnerInfo = getPartnerForUser(userEmail);
-    if (!partnerInfo) {
-      alert("No partner found.");
-      await signOut(auth);
-      return;
-    }
-
-    partnerUser = {
-      email: partnerInfo.email,
-      name: partnerInfo.name,
-      avatar: partnerInfo.avatar,
-      uid: null // Will get from database
+    const partnerEmail = getPartnerEmail(userEmail);
+    partnerInfo = {
+      email: partnerEmail,
+      name: USER_PROFILES[partnerEmail].name,
+      avatar: USER_PROFILES[partnerEmail].avatar
     };
 
-    // Store current user's UID mapping
-    await set(ref(db, `user_uid_mapping/${userEmail}`), user.uid);
-    
-    // Get partner's UID
-    const partnerUidRef = ref(db, `user_uid_mapping/${partnerUser.email}`);
-    onValue(partnerUidRef, (snap) => {
-      if (snap.exists()) {
-        partnerUser.uid = snap.val();
-        if (partnerUser.uid) {
-          document.getElementById('partnerName').innerText = partnerUser.name;
-          document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
-          
-          // Load messages if not loaded yet
-          if (!window._messagesLoaded) {
-            window._messagesLoaded = true;
-            loadMessages();
-          }
-          
-          // Listen to partner's online status
-          onValue(ref(db, `user_status/${partnerUser.uid}`), (statusSnap) => {
-            const data = statusSnap.val();
-            const statusDiv = document.getElementById('onlineStatus');
-            if (data && data.online) {
-              statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
-            } else {
-              statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
-            }
-          });
-          
-          // Listen to partner's typing status
-          onValue(ref(db, `user_typing/${partnerUser.uid}`), (typingSnap) => {
-            const typing = typingSnap.val();
-            if (typing) {
-              document.getElementById('typingBadge').innerHTML = `${partnerUser.name} is typing...`;
-            } else {
-              document.getElementById('typingBadge').innerHTML = '';
-            }
-          });
-        }
-      }
+    // Update UI with partner info immediately
+    document.getElementById('partnerName').innerHTML = partnerInfo.name;
+    document.getElementById('partnerAvatar').innerText = partnerInfo.avatar;
+
+    // Register current user online status
+    await set(ref(db, `status/${currentUser.uid}`), {
+      email: currentUser.email,
+      name: currentUser.name,
+      online: true,
+      lastSeen: Date.now()
     });
     
-    // Set current user's online status
-    await set(ref(db, `user_status/${user.uid}`), { online: true, lastSeen: Date.now() });
-    onDisconnect(ref(db, `user_status/${user.uid}`)).set({ online: false, lastSeen: Date.now() });
+    onDisconnect(ref(db, `status/${currentUser.uid}`)).set({
+      email: currentUser.email,
+      name: currentUser.name,
+      online: false,
+      lastSeen: Date.now()
+    });
+
+    // Listen to partner's online status using their email as identifier (more reliable)
+    const findPartnerStatus = () => {
+      onValue(ref(db, 'status'), (snapshot) => {
+        const statuses = snapshot.val();
+        let partnerOnline = false;
+        if (statuses) {
+          for (let [uid, data] of Object.entries(statuses)) {
+            if (data.email === partnerInfo.email && data.online === true) {
+              partnerOnline = true;
+              break;
+            }
+          }
+        }
+        const statusDiv = document.getElementById('onlineStatus');
+        if (partnerOnline) {
+          statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
+          document.getElementById('infoBanner').style.display = 'none';
+        } else {
+          statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
+          document.getElementById('infoBanner').style.display = 'block';
+        }
+      });
+    };
+    findPartnerStatus();
+
+    // Listen to partner's typing status
+    onValue(ref(db, `typing/${partnerInfo.email}`), (snapshot) => {
+      const isTyping = snapshot.val();
+      if (isTyping) {
+        document.getElementById('typingBadge').innerHTML = `${partnerInfo.name} is typing...`;
+      } else {
+        document.getElementById('typingBadge').innerHTML = '';
+      }
+    });
+
+    // Load all messages (both sent and received)
+    loadMessages();
   }
 
-  // Load messages from Firebase
   function loadMessages() {
+    // Load recent messages and listen for new ones
+    const recentMessagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(100));
+    
     onChildAdded(messagesRef, (snapshot) => {
       const msg = snapshot.val();
-      if (!msg || !currentUser || !partnerUser || !partnerUser.uid) return;
+      if (!msg || !currentUser) return;
       
-      const isRelevant = (msg.senderUid === currentUser.uid && msg.receiverUid === partnerUser.uid) ||
-                         (msg.senderUid === partnerUser.uid && msg.receiverUid === currentUser.uid);
+      // Show messages between these two users (regardless of order)
+      const isRelevant = (msg.senderEmail === currentUser.email && msg.receiverEmail === partnerInfo.email) ||
+                         (msg.senderEmail === partnerInfo.email && msg.receiverEmail === currentUser.email);
       
       if (isRelevant) {
         displayMessage(msg);
@@ -608,9 +591,8 @@
     });
   }
 
-  // Display message in UI
   function displayMessage(msg) {
-    const isMe = (msg.senderUid === currentUser.uid);
+    const isMe = (msg.senderEmail === currentUser.email);
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
     
@@ -629,7 +611,7 @@
       }
     }
     
-    const timeStr = new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeStr = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     content += `<div class="message-time">${timeStr}</div>`;
     msgDiv.innerHTML = content;
     
@@ -638,9 +620,8 @@
     scrollToBottom();
   }
 
-  // Send message
   async function sendMessage(text, fileBlob = null, fileType = null) {
-    if (!currentUser || !partnerUser || !partnerUser.uid) return;
+    if (!currentUser) return;
     if (!text && !fileBlob) return;
     
     let fileUrl = null;
@@ -648,20 +629,20 @@
     
     if (fileBlob) {
       const ext = fileType === 'image' ? 'jpg' : (fileType === 'audio' ? 'webm' : 'mp4');
-      const fileName = `media_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${ext}`;
-      const fileRef = sRef(storage, `chat_files/${currentUser.uid}/${fileName}`);
+      const fileName = `media_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+      const fileRef = sRef(storage, `chat_files/${fileName}`);
       await uploadBytes(fileRef, fileBlob);
       fileUrl = await getDownloadURL(fileRef);
     }
     
     const messageData = {
-      sender: currentUser.name,
-      senderUid: currentUser.uid,
-      receiverUid: partnerUser.uid,
+      senderName: currentUser.name,
+      senderEmail: currentUser.email,
+      receiverEmail: partnerInfo.email,
       text: text || null,
       fileUrl: fileUrl,
       fileType: finalType,
-      time: Date.now()
+      timestamp: Date.now()
     };
     
     await push(messagesRef, messageData);
@@ -670,30 +651,33 @@
       document.getElementById('msgInput').value = '';
     }
     
-    await set(ref(db, `user_typing/${currentUser.uid}`), false);
+    // Clear typing indicator
+    await set(ref(db, `typing/${currentUser.email}`), false);
   }
 
-  // Typing indicator
-  function sendTyping() {
+  async function sendTyping() {
     if (!currentUser) return;
-    set(ref(db, `user_typing/${currentUser.uid}`), true);
+    await set(ref(db, `typing/${currentUser.email}`), true);
     if (typingTimeout) clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      set(ref(db, `user_typing/${currentUser.uid}`), false);
+    typingTimeout = setTimeout(async () => {
+      await set(ref(db, `typing/${currentUser.email}`), false);
     }, 2000);
   }
 
-  // Voice recording
   async function startRecording() {
+    if (isRecording) return;
+    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder = new MediaRecorder(stream);
       audioChunks = [];
-      mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+      };
       
       mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        if (audioBlob.size > 0) {
+        if (audioBlob.size > 0 && currentUser) {
           await sendMessage(null, audioBlob, 'audio');
         }
         stream.getTracks().forEach(track => track.stop());
@@ -705,9 +689,17 @@
       mediaRecorder.start();
       document.getElementById('voiceBtn').classList.add('recording');
       isRecording = true;
-    } catch(e) {
-      console.error(e);
-      alert("Microphone access needed for voice notes.");
+      
+      // Auto-stop after 30 seconds
+      setTimeout(() => {
+        if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+          stopRecording();
+        }
+      }, 30000);
+      
+    } catch (err) {
+      console.error(err);
+      alert("Microphone access required for voice notes.");
     }
   }
 
@@ -724,7 +716,7 @@
 
   function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
+    return str.replace(/[&<>]/g, (m) => {
       if (m === '&') return '&amp;';
       if (m === '<') return '&lt;';
       if (m === '>') return '&gt;';
@@ -747,8 +739,7 @@
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('chatContainer').style.display = 'none';
       currentUser = null;
-      partnerUser = null;
-      window._messagesLoaded = false;
+      partnerInfo = null;
       document.getElementById('messagesArea').innerHTML = '';
       document.getElementById('typingBadge').innerHTML = '';
       document.getElementById('emailInput').value = '';
@@ -771,7 +762,8 @@
   
   document.getElementById('logoutBtn').onclick = async () => {
     if (currentUser) {
-      await set(ref(db, `user_status/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
+      await set(ref(db, `status/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
+      await set(ref(db, `typing/${currentUser.email}`), false);
     }
     await signOut(auth);
   };
@@ -809,7 +801,6 @@
     e.target.value = '';
   };
   
-  // Voice recording with pointer events
   const voiceBtn = document.getElementById('voiceBtn');
   voiceBtn.addEventListener('pointerdown', (e) => {
     e.preventDefault();
@@ -822,14 +813,13 @@
   voiceBtn.addEventListener('pointercancel', (e) => {
     if (isRecording) stopRecording();
   });
-  voiceBtn.addEventListener('contextmenu', (e) => e.preventDefault());
   
-  // Auto-scroll observer
   const observer = new MutationObserver(() => scrollToBottom());
-  observer.observe(document.getElementById('messagesArea'), { childList: true });
+  observer.observe(document.getElementById('messagesArea'), { childList: true, subtree: true });
   
-  console.log("Chat app ready with Firebase Authentication!");
-  console.log("IMPORTANT: Enable Email/Password sign-in in Firebase Console -> Authentication -> Sign-in methods");
+  console.log("✅ Secure Chat Ready!");
+  console.log("📧 Allowed emails: sp@sv.com (Shubham) and sv@sp.com (Sakshi)");
+  console.log("💬 You can start chatting immediately - messages are stored and delivered when partner comes online!");
 </script>
 </body>
 </html>

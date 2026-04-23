@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel | Firebase Auth + Database</title>
+  <title>Admin Panel | Control 2-Person Chat</title>
   <style>
     * {
       margin: 0;
@@ -116,16 +116,9 @@
       background: #f44336;
     }
 
-    .add-user-area {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 15px;
-    }
-
-    .add-user-area input {
-      flex: 1;
-      min-width: 120px;
+    .warning-btn {
+      background: #ff9800;
+      color: #111b21;
     }
 
     .msg-list {
@@ -144,7 +137,7 @@
       background: #111b21;
       padding: 4px 8px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       word-break: break-all;
     }
 
@@ -177,16 +170,28 @@
       color: #8696a0;
       margin-top: 2px;
     }
+    
+    .warning-box {
+      background: #ff980033;
+      border-left: 4px solid #ff9800;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>🔧 ADMIN CONTROL PANEL</h1>
+  
+  <div class="warning-box">
+    ⚠️ <strong>2-PERSON CHAT MODE:</strong> Only 2 regular users allowed (You + Your Partner). Admin can reset/clear.
+  </div>
 
   <div class="stats-grid">
     <div class="stat-box">
       <div class="stat-number" id="totalUsers">0</div>
-      <div class="stat-label">Total Users</div>
+      <div class="stat-label">Total Users (max 2)</div>
     </div>
     <div class="stat-box">
       <div class="stat-number" id="onlineUsers">0</div>
@@ -199,34 +204,39 @@
   </div>
 
   <div class="card">
-    <h2>👥 Registered Users (Email Auth)</h2>
+    <h2>👥 Chat Users (Maximum 2 People)</h2>
     <div id="usersList" class="loading">Loading users...</div>
-    <div class="add-user-area">
-      <input type="text" id="newUserName" placeholder="Full Name">
-      <input type="email" id="newUserEmail" placeholder="Email">
-      <input type="password" id="newUserPassword" placeholder="Password (min 6 chars)">
-      <input type="text" id="newUserAvatar" placeholder="Avatar Emoji" maxlength="2" value="👤">
-      <button id="addUserBtn">➕ Create User</button>
-    </div>
-    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">✅ Creates Firebase Auth account + Database profile</p>
   </div>
 
   <div class="card">
-    <h2>👑 Admin/Owner Account</h2>
+    <h2>➕ Add/Invite Second Person</h2>
+    <div class="add-user-area" style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <input type="text" id="newUserName" placeholder="Partner's Full Name" style="flex:1">
+      <input type="email" id="newUserEmail" placeholder="Partner's Email" style="flex:1">
+      <input type="password" id="newUserPassword" placeholder="Password (min 6 chars)" style="flex:1">
+      <input type="text" id="newUserAvatar" placeholder="Avatar Emoji" maxlength="2" value="💕" style="width:80px">
+      <button id="addUserBtn">➕ Create Partner Account</button>
+    </div>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">✅ Creates email/password account + adds to this private chat</p>
+  </div>
+
+  <div class="card">
+    <h2>👑 Admin Account Setup</h2>
     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-      <input type="email" id="adminEmail" placeholder="Admin Email" value="owner@secretchat.com">
-      <input type="password" id="adminPassword" placeholder="Admin Password" value="Admin@123456">
+      <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@privatechat.com" style="flex:1">
+      <input type="password" id="adminPassword" placeholder="Admin Password" value="Admin@123456" style="flex:1">
       <button id="createAdminBtn">👑 Create/Update Admin</button>
     </div>
-    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Admin users can access this panel</p>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Admin can view all messages and reset the chat</p>
   </div>
 
   <div class="card">
-    <h2>📨 Recent Messages</h2>
+    <h2>📨 All Messages (View Only)</h2>
     <div id="messagesList" class="msg-list loading">Loading messages...</div>
     <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
       <button id="exportChatBtn">📥 Export All Chats</button>
       <button id="clearAllBtn" class="danger-btn">⚠️ Delete All Messages</button>
+      <button id="resetChatBtn" class="warning-btn">🔄 Reset & Clear Everything</button>
     </div>
   </div>
 
@@ -249,7 +259,7 @@
 <script type="module">
   import { initializeApp } from 'firebase/app';
   import { getDatabase, ref, get, set, remove, onValue } from 'firebase/database';
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+  import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
@@ -270,10 +280,11 @@
 
   let USERS = {};
 
-  function showToast(message) {
+  function showToast(message, isError = false) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerText = message;
+    if (isError) toast.style.background = '#d32f2f';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
   }
@@ -283,10 +294,11 @@
     if (snap.exists()) {
       USERS = snap.val();
       renderUsers();
-      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+      const regularUsers = Object.values(USERS).filter(u => u.role !== 'owner').length;
+      document.getElementById('totalUsers').innerText = `${regularUsers}/2`;
     } else {
-      document.getElementById('usersList').innerHTML = '<div class="loading">No users yet. Create accounts above.</div>';
-      document.getElementById('totalUsers').innerText = '0';
+      document.getElementById('usersList').innerHTML = '<div class="loading">No users yet. Create admin first.</div>';
+      document.getElementById('totalUsers').innerText = '0/2';
     }
   }
 
@@ -308,22 +320,26 @@
     const container = document.getElementById('usersList');
     container.innerHTML = '';
     
-    if (Object.keys(USERS).length === 0) {
-      container.innerHTML = '<div class="loading">No users found</div>';
+    const regularUsers = Object.values(USERS).filter(u => u.role !== 'owner');
+    
+    if (regularUsers.length === 0) {
+      container.innerHTML = '<div class="loading">No regular users yet. Create partner account above.</div>';
       return;
     }
     
     for (let [uid, user] of Object.entries(USERS)) {
+      if (user.role === 'owner') continue;
+      
       const div = document.createElement('div');
       div.className = 'user-item';
       div.innerHTML = `
         <div style="flex:1">
-          <strong>${escapeHtml(user.avatar)} ${escapeHtml(user.name)}</strong>
-          <div class="email-preview">${escapeHtml(user.email)}</div>
-          <div class="code-display" style="margin-top: 4px; font-size:0.7rem;">UID: ${uid.substring(0, 12)}...</div>
+          <strong style="font-size:1.2rem;">${escapeHtml(user.avatar)} ${escapeHtml(user.name)}</strong>
+          <div class="email-preview">📧 ${escapeHtml(user.email)}</div>
+          <div class="code-display" style="margin-top: 4px;">🆔 ${uid.substring(0, 12)}...</div>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button class="danger-btn" onclick="window.deleteUser('${uid}')">🗑️ Delete</button>
+          <button class="danger-btn" onclick="window.deleteUser('${uid}')">🗑️ Remove User</button>
         </div>
       `;
       container.appendChild(div);
@@ -331,13 +347,13 @@
   }
 
   window.deleteUser = async (uid) => {
-    if (confirm(`Delete user ${USERS[uid]?.name}? This will NOT delete from Firebase Auth (must delete manually in Firebase Console).`)) {
+    if (confirm(`⚠️ Remove this user from the chat? This will delete their messages.`)) {
       await remove(ref(db, `app_users/${uid}`));
       await remove(ref(db, `user_status/${uid}`));
       delete USERS[uid];
       renderUsers();
-      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
-      showToast("User deleted from database");
+      await refreshStats();
+      showToast("User removed from chat");
     }
   };
 
@@ -358,9 +374,9 @@
       div.className = 'msg-item';
       div.innerHTML = `
         <div style="flex:1">
-          <strong>${escapeHtml(msg.senderName || msg.sender?.substring(0,8))}</strong> → ${escapeHtml(msg.receiver?.substring(0,8) || 'all')}<br>
-          <span style="font-size:0.8rem">${escapeHtml(msg.text || msg.fileType || 'Media')}</span>
-          <div style="font-size:0.7rem; color:#8696a0">${new Date(msg.time).toLocaleString()}</div>
+          <strong>👤 ${escapeHtml(msg.senderName || msg.sender?.substring(0,8))}</strong><br>
+          <span style="font-size:0.9rem">💬 ${escapeHtml(msg.text || msg.fileType || 'Media message')}</span>
+          <div style="font-size:0.7rem; color:#8696a0">📅 ${new Date(msg.time).toLocaleString()}</div>
         </div>
         <button class="delete-msg" onclick="window.deleteMessage('${key}')">Delete</button>
       `;
@@ -383,6 +399,7 @@
     
     const data = {
       exportedAt: new Date().toISOString(),
+      chatType: "2-Person Private Chat",
       users: usersSnap.val() || {},
       messages: msgsSnap.val() || {}
     };
@@ -392,18 +409,30 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `firebase_chat_export_${Date.now()}.json`;
+    a.download = `private_chat_export_${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
     showToast("Chat exported!");
   }
 
   async function clearAllMessages() {
-    if (confirm("⚠️ DANGER: Delete ALL messages from Firebase? This cannot be undone!")) {
+    if (confirm("⚠️ Delete ALL messages? This cannot be undone!")) {
       await set(messagesRef, null);
       await loadMessages();
       await refreshStats();
-      showToast("All messages deleted from Firebase");
+      showToast("All messages deleted");
+    }
+  }
+  
+  async function resetEverything() {
+    if (confirm("⚠️⚠️ COMPLETE RESET: Delete ALL users, ALL messages? This will clear the entire chat! ⚠️⚠️")) {
+      await set(usersRef, null);
+      await set(messagesRef, null);
+      await set(statusRef, null);
+      await loadUsersFromFirebase();
+      await loadMessages();
+      await refreshStats();
+      showToast("Chat completely reset!");
     }
   }
 
@@ -411,7 +440,7 @@
     const name = document.getElementById('newUserName').value.trim();
     const email = document.getElementById('newUserEmail').value.trim();
     const password = document.getElementById('newUserPassword').value;
-    const avatar = document.getElementById('newUserAvatar').value.trim() || "👤";
+    const avatar = document.getElementById('newUserAvatar').value.trim() || "💕";
     
     if (!name || !email || !password) {
       alert("Please fill name, email, and password");
@@ -420,6 +449,13 @@
     
     if (password.length < 6) {
       alert("Password must be at least 6 characters");
+      return;
+    }
+    
+    // Check if already 2 users exist
+    const regularUsers = Object.values(USERS).filter(u => u.role !== 'owner');
+    if (regularUsers.length >= 2) {
+      alert("❌ Maximum 2 users allowed! Remove existing user first.");
       return;
     }
     
@@ -440,19 +476,14 @@
       document.getElementById('newUserName').value = '';
       document.getElementById('newUserEmail').value = '';
       document.getElementById('newUserPassword').value = '';
-      document.getElementById('newUserAvatar').value = '👤';
       
       await loadUsersFromFirebase();
-      showToast(`✅ User "${name}" created with email: ${email}`);
+      showToast(`✅ Partner "${name}" created! They can now login.`);
       
     } catch (error) {
       console.error(error);
       if (error.code === 'auth/email-already-in-use') {
         alert("Email already registered");
-      } else if (error.code === 'auth/invalid-email') {
-        alert("Invalid email format");
-      } else if (error.code === 'auth/weak-password') {
-        alert("Password too weak (min 6 chars)");
       } else {
         alert("Error: " + error.message);
       }
@@ -493,7 +524,7 @@
       
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        // Try to update existing user to admin role
+        // Try to update existing user to admin
         const usersSnap = await get(usersRef);
         let foundUid = null;
         for (let [uid, user] of Object.entries(usersSnap.val() || {})) {
@@ -507,10 +538,10 @@
           await set(ref(db, `app_users/${foundUid}/role`), "owner");
           await set(ref(db, `app_users/${foundUid}/isAdmin`), true);
           await set(ref(db, `app_users/${foundUid}/avatar`), "👑");
-          showToast(`✅ User ${email} is now an ADMIN!`);
+          showToast(`✅ ${email} is now ADMIN!`);
           await loadUsersFromFirebase();
         } else {
-          alert("Email exists but user not found in database. Please check Firebase Console.");
+          alert("Email exists but user not found");
         }
       } else {
         alert("Error: " + error.message);
@@ -533,11 +564,12 @@
   document.getElementById('createAdminBtn').onclick = createAdminAccount;
   document.getElementById('exportChatBtn').onclick = exportChats;
   document.getElementById('clearAllBtn').onclick = clearAllMessages;
+  document.getElementById('resetChatBtn').onclick = resetEverything;
   document.getElementById('refreshBtn').onclick = async () => {
     await loadUsersFromFirebase();
     await refreshStats();
     await loadMessages();
-    showToast("Data refreshed from Firebase");
+    showToast("Data refreshed");
   };
 
   // Initial load

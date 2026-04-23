@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel | Firebase Sync</title>
   <style>
     * {
@@ -15,7 +15,7 @@
     body {
       background: #0b141a;
       color: #e9edef;
-      padding: 16px;
+      padding: 20px;
     }
 
     .container {
@@ -26,28 +26,28 @@
     h1 {
       color: #00a884;
       margin-bottom: 20px;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       border-left: 4px solid #00a884;
-      padding-left: 12px;
+      padding-left: 15px;
     }
 
     .card {
       background: #202c33;
       border-radius: 20px;
-      padding: 18px;
+      padding: 20px;
       margin-bottom: 20px;
     }
 
     .card h2 {
       margin-bottom: 15px;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       color: #00a884;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
       margin-bottom: 20px;
     }
 
@@ -59,13 +59,13 @@
     }
 
     .stat-number {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: bold;
       color: #00a884;
     }
 
     .stat-label {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #8696a0;
       margin-top: 5px;
     }
@@ -85,8 +85,8 @@
     input, select {
       background: #111b21;
       border: none;
-      padding: 10px 12px;
-      border-radius: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
       color: #e9edef;
       font-size: 0.9rem;
     }
@@ -94,20 +94,26 @@
     button {
       background: #00a884;
       border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
+      padding: 8px 16px;
+      border-radius: 8px;
       color: #111b21;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s;
-      font-size: 0.9rem;
     }
 
-    button:active { transform: scale(0.97); }
+    button:hover {
+      background: #00c3a2;
+      transform: scale(1.02);
+    }
 
     .danger-btn {
       background: #d32f2f;
       color: white;
+    }
+
+    .danger-btn:hover {
+      background: #f44336;
     }
 
     .add-user-area {
@@ -123,24 +129,22 @@
     }
 
     .msg-list {
-      max-height: 400px;
+      max-height: 300px;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
 
     .delete-msg {
       background: #d32f2f;
-      padding: 6px 14px;
+      padding: 4px 12px;
       font-size: 0.8rem;
     }
 
     .code-display {
       font-family: monospace;
       background: #111b21;
-      padding: 6px 10px;
-      border-radius: 8px;
+      padding: 4px 8px;
+      border-radius: 6px;
       font-size: 0.8rem;
-      word-break: break-all;
     }
 
     .loading {
@@ -152,50 +156,19 @@
     .toast {
       position: fixed;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      right: 20px;
       background: #00a884;
       color: #111b21;
       padding: 10px 20px;
-      border-radius: 30px;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 0.85rem;
-      animation: slideUp 0.3s ease;
+      animation: slideIn 0.3s ease;
       z-index: 1000;
-      white-space: nowrap;
-      max-width: 90%;
-      white-space: normal;
-      text-align: center;
     }
 
-    @keyframes slideUp {
-      from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-      to { transform: translateX(-50%) translateY(0); opacity: 1; }
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 12px;
-      }
-      .card {
-        padding: 15px;
-      }
-      button {
-        padding: 8px 14px;
-        font-size: 0.85rem;
-      }
-      .user-item, .msg-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .user-item div:last-child {
-        width: 100%;
-        display: flex;
-        gap: 8px;
-      }
-      .user-item button {
-        flex: 1;
-      }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
   </style>
 </head>
@@ -224,34 +197,34 @@
     <div class="add-user-area">
       <input type="text" id="newUserName" placeholder="Name">
       <input type="text" id="newUserCode" placeholder="Secret Code (e.g., #123@)">
-      <input type="text" id="newUserAvatar" placeholder="Avatar" maxlength="2" value="👤">
-      <button id="addUserBtn">➕ Add</button>
+      <input type="text" id="newUserAvatar" placeholder="Avatar Emoji" maxlength="2" value="👤">
+      <button id="addUserBtn">➕ Add User</button>
     </div>
-    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 12px;">✅ Changes save to Firebase (all devices sync)</p>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">✅ Changes save automatically to Firebase (all devices sync)</p>
   </div>
 
   <div class="card">
     <h2>🔑 Owner Access Code</h2>
     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
       <input type="text" id="ownerCodeInput" placeholder="New Owner Code" style="flex:1; font-family: monospace;">
-      <button id="updateOwnerBtn">Update</button>
+      <button id="updateOwnerBtn">Update Owner Code</button>
     </div>
-    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">Current: <span id="currentOwnerCode" class="code-display">Loading...</span></p>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Current Owner Code: <span id="currentOwnerCode" class="code-display">Loading...</span></p>
   </div>
 
   <div class="card">
     <h2>📨 Recent Messages</h2>
     <div id="messagesList" class="msg-list loading">Loading messages...</div>
     <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-      <button id="exportChatBtn">📥 Export Chats</button>
-      <button id="clearAllBtn" class="danger-btn">⚠️ Delete All</button>
+      <button id="exportChatBtn">📥 Export All Chats</button>
+      <button id="clearAllBtn" class="danger-btn">⚠️ Delete All Messages</button>
     </div>
   </div>
 
   <div class="card">
-    <h2>📊 Actions</h2>
-    <button id="refreshBtn">🔄 Refresh</button>
-    <button id="resetUsersBtn" class="danger-btn" style="margin-left: 10px;">Reset Default Users</button>
+    <h2>📊 Database Actions</h2>
+    <button id="refreshBtn">🔄 Refresh Data</button>
+    <button id="resetUsersBtn" class="danger-btn" style="margin-left: 10px;">🔄 Reset to Default Users</button>
   </div>
 </div>
 
@@ -266,7 +239,7 @@
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, get, set, remove, onValue, update } from 'firebase/database';
+  import { getDatabase, ref, get, set, remove, onValue, push, update } from 'firebase/database';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
@@ -288,8 +261,6 @@
   let USERS = {};
 
   function showToast(message) {
-    const existing = document.querySelector('.toast');
-    if (existing) existing.remove();
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerText = message;
@@ -304,6 +275,7 @@
       renderUsers();
       document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
     } else {
+      // Initialize default users
       const defaultUsers = {
         "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
         "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
@@ -312,7 +284,7 @@
       USERS = defaultUsers;
       renderUsers();
       document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
-      showToast("Default users created");
+      showToast("Default users created in Firebase");
     }
   }
 
@@ -345,22 +317,17 @@
     const container = document.getElementById('usersList');
     container.innerHTML = '';
     
-    if (Object.keys(USERS).length === 0) {
-      container.innerHTML = '<div class="loading">No users found</div>';
-      return;
-    }
-    
     for (let [id, user] of Object.entries(USERS)) {
       const div = document.createElement('div');
       div.className = 'user-item';
       div.innerHTML = `
         <div style="flex:1">
           <strong>${escapeHtml(user.avatar)} ${escapeHtml(user.name)}</strong>
-          <div class="code-display" style="margin-top: 5px;">${escapeHtml(user.code)}</div>
+          <div class="code-display" style="margin-top: 4px;">${escapeHtml(user.code)}</div>
         </div>
         <div style="display: flex; gap: 8px;">
           <button onclick="window.editUser('${id}')">✏️ Edit</button>
-          <button class="danger-btn" onclick="window.deleteUser('${id}')">🗑️ Del</button>
+          <button class="danger-btn" onclick="window.deleteUser('${id}')">🗑️ Delete</button>
         </div>
       `;
       container.appendChild(div);
@@ -371,13 +338,13 @@
     const user = USERS[id];
     const newName = prompt("Enter new name:", user.name);
     const newCode = prompt("Enter new secret code:", user.code);
-    const newAvatar = prompt("Enter avatar emoji:", user.avatar);
+    const newAvatar = prompt("Enter avatar emoji (1-2 chars):", user.avatar);
     if (newName && newCode) {
       const updatedUser = { ...user, name: newName, code: newCode, avatar: newAvatar || user.avatar };
       await update(ref(db, `app_users/${id}`), updatedUser);
       USERS[id] = updatedUser;
       renderUsers();
-      showToast("User updated!");
+      showToast("User updated in Firebase!");
     }
   };
 
@@ -387,7 +354,7 @@
       delete USERS[id];
       renderUsers();
       document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
-      showToast("User deleted");
+      showToast("User deleted from Firebase");
     }
   };
 
@@ -399,7 +366,7 @@
     container.innerHTML = '';
     
     if (msgArray.length === 0) {
-      container.innerHTML = '<div class="loading">No messages yet</div>';
+      container.innerHTML = '<div style="text-align:center; padding:20px;">No messages yet</div>';
       return;
     }
     
@@ -410,7 +377,7 @@
         <div style="flex:1">
           <strong>${escapeHtml(msg.sender)}</strong> → ${escapeHtml(msg.receiver || 'all')}<br>
           <span style="font-size:0.8rem">${escapeHtml(msg.text || msg.fileType || 'Media')}</span>
-          <div style="font-size:0.65rem; color:#8696a0; margin-top:4px;">${new Date(msg.time).toLocaleString()}</div>
+          <div style="font-size:0.7rem; color:#8696a0">${new Date(msg.time).toLocaleString()}</div>
         </div>
         <button class="delete-msg" onclick="window.deleteMessage('${key}')">Delete</button>
       `;
@@ -451,16 +418,16 @@
   }
 
   async function clearAllMessages() {
-    if (confirm("⚠️ DELETE ALL messages from Firebase?")) {
+    if (confirm("⚠️ DANGER: Delete ALL messages from Firebase? This cannot be undone!")) {
       await set(messagesRef, null);
       await loadMessages();
       await refreshStats();
-      showToast("All messages deleted");
+      showToast("All messages deleted from Firebase");
     }
   }
 
   async function resetToDefaultUsers() {
-    if (confirm("Reset to default users (Shubham & Sakshi)?")) {
+    if (confirm("Reset to default users (Shubham & Sakshi) in Firebase?")) {
       const defaultUsers = {
         "user1": { name: "Shubham", code: "#9569@", avatar: "😎", role: "user" },
         "user2": { name: "Sakshi", code: "#9454@", avatar: "🌸", role: "user" }
@@ -469,7 +436,7 @@
       USERS = defaultUsers;
       renderUsers();
       document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
-      showToast("Users reset to default");
+      showToast("Users reset to default in Firebase");
     }
   }
 
@@ -484,7 +451,7 @@
     }
     
     if (!code.match(/^#.*@$/)) {
-      alert("Secret code must start with # and end with @");
+      alert("Secret code must start with # and end with @ (example: #code@)");
       return;
     }
     
@@ -498,7 +465,7 @@
     document.getElementById('newUserName').value = '';
     document.getElementById('newUserCode').value = '';
     
-    showToast(`✅ User "${name}" added`);
+    showToast(`✅ User "${name}" added with code: ${code}`);
   }
 
   async function updateOwnerCode() {
@@ -514,7 +481,7 @@
     await set(ownerCodeRef, newCode);
     document.getElementById('currentOwnerCode').innerText = newCode;
     document.getElementById('ownerCodeInput').value = '';
-    showToast(`Owner code updated`);
+    showToast(`Owner code updated to: ${newCode}`);
   }
 
   function escapeHtml(str) {
@@ -537,7 +504,7 @@
     await loadOwnerCode();
     await refreshStats();
     await loadMessages();
-    showToast("Refreshed from Firebase");
+    showToast("Data refreshed from Firebase");
   };
   document.getElementById('resetUsersBtn').onclick = resetToDefaultUsers;
 
@@ -552,6 +519,7 @@
     await loadUsersFromFirebase();
     await refreshStats();
   });
+  
   onValue(statusRef, () => refreshStats());
   onValue(messagesRef, () => {
     refreshStats();

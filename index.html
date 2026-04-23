@@ -374,19 +374,16 @@
     "imports": {
       "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
       "firebase/database": "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js",
-      "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js",
-      "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"
+      "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
     }
   }
 </script>
 
 <script type="module">
   import { initializeApp } from 'firebase/app';
-  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp } from 'firebase/database';
+  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect } from 'firebase/database';
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 
-  // Firebase configuration (same as your original project)
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
     authDomain: "secret-chat-ce77a.firebaseapp.com",
@@ -400,28 +397,27 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const storage = getStorage(app);
-  const auth = getAuth(app);
 
-  // ========== AUTHORIZED USERS (email & display mapping) ==========
-  // Allowed credentials: sp@sv.com / sv@sp.com  (password for both: "secret123")
-  // For simplicity, using same demo password: "sp123" and "sv123" but any password works because emails are verified in Firebase Auth.
-  // To make it fully functional, ensure these emails exist in Firebase Auth console OR auto-create.
-  // We'll auto-create them if not exist? Firebase Auth doesn't allow client-side creation without admin SDK.
-  // Instead, I suggest you manually add them in Firebase Auth console with any password (e.g. "123456").
-  // But for seamless demo, we'll show error but also provide hint. However to make it work out-of-box,
-  // we assume you added these two email users in Firebase Auth (sp@sv.com, sv@sp.com) with password "secretpass".
-  // You can also set password via Firebase console. 
-  // The chat logic will pair sp@sv.com with sv@sp.com automatically.
-
-  const ALLOWED_USERS = {
-    "sp@sv.com": { name: "SP", avatar: "🔵", displayName: "SP" },
-    "sv@sp.com": { name: "SV", avatar: "🟢", displayName: "SV" }
+  // Authorized users with fixed credentials (no Firebase Auth needed)
+  const AUTHORIZED_USERS = {
+    "sp@sv.com": { 
+      name: "SP", 
+      avatar: "🔵", 
+      password: "sp123",
+      displayName: "SP"
+    },
+    "sv@sp.com": { 
+      name: "SV", 
+      avatar: "🟢", 
+      password: "sv123",
+      displayName: "SV"
+    }
   };
 
   const messagesRef = ref(db, 'chat_messages');
   
-  let currentUser = null;       // { uid, email, name, avatar }
-  let partnerUser = null;       // { uid, email, name, avatar }
+  let currentUser = null;
+  let partnerUser = null;
   let mediaRecorder = null;
   let audioChunks = [];
   let typingTimeout = null;
@@ -429,112 +425,148 @@
 
   // Helper: get partner based on current email
   function getPartnerForUser(email) {
-    if (email === "sp@sv.com") return { email: "sv@sp.com", ...ALLOWED_USERS["sv@sp.com"] };
-    if (email === "sv@sp.com") return { email: "sp@sv.com", ...ALLOWED_USERS["sp@sv.com"] };
+    if (email === "sp@sv.com") {
+      return { email: "sv@sp.com", ...AUTHORIZED_USERS["sv@sp.com"] };
+    }
+    if (email === "sv@sp.com") {
+      return { email: "sp@sv.com", ...AUTHORIZED_USERS["sp@sv.com"] };
+    }
     return null;
   }
 
-  // Login button click
-  document.getElementById('loginBtn').onclick = () => {
-    const email = document.getElementById('emailInput').value.trim().toLowerCase();
-    const password = document.getElementById('passwordInput').value;
+  // Login function
+  function login(email, password) {
     const errorMsgDiv = document.getElementById('errorMsg');
-
+    
     if (!email || !password) {
       errorMsgDiv.innerText = '❌ Please enter email and password';
-      return;
+      return false;
     }
-
-    if (!ALLOWED_USERS[email]) {
+    
+    const user = AUTHORIZED_USERS[email];
+    if (!user) {
       errorMsgDiv.innerText = '❌ Unauthorized email. Use sp@sv.com or sv@sp.com';
-      return;
+      return false;
     }
-
-    // Attempt sign in
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        errorMsgDiv.innerText = '';
-      })
-      .catch(err => {
-        console.error(err);
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-          errorMsgDiv.innerText = '⚠️ Wrong email or password. Make sure Firebase Auth has these emails.';
-        } else if (err.code === 'auth/invalid-email') {
-          errorMsgDiv.innerText = 'Invalid email format';
-        } else {
-          errorMsgDiv.innerText = 'Login failed: ' + err.message;
-        }
-      });
-  };
-
-  document.getElementById('passwordInput').onkeypress = (e) => {
-    if (e.key === 'Enter') document.getElementById('loginBtn').click();
-  };
-
-  // Logout
-  document.getElementById('logoutBtn').onclick = async () => {
-    await signOut(auth);
-  };
-
-  // Auto-scroll observer
-  function scrollToBottom() {
-    const msgArea = document.getElementById('messagesArea');
-    if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
+    
+    if (user.password !== password) {
+      errorMsgDiv.innerText = '❌ Wrong password. Try sp123 or sv123';
+      return false;
+    }
+    
+    // Login successful
+    currentUser = {
+      email: email,
+      name: user.name,
+      avatar: user.avatar,
+      uid: btoa(email).replace(/[^a-zA-Z0-9]/g, '_') // Simple UID from email
+    };
+    
+    // Get partner
+    partnerUser = getPartnerForUser(email);
+    if (!partnerUser) {
+      errorMsgDiv.innerText = '❌ Partner not found';
+      return false;
+    }
+    
+    // Add UID to partner
+    partnerUser.uid = btoa(partnerUser.email).replace(/[^a-zA-Z0-9]/g, '_');
+    
+    errorMsgDiv.innerText = '';
+    return true;
   }
 
+  // Setup chat UI after successful login
+  async function setupChatUI() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'flex';
+    
+    // Update partner info in header
+    document.getElementById('partnerName').innerText = partnerUser.name;
+    document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
+    
+    // Set current user online status
+    await set(ref(db, `user_status/${currentUser.uid}`), { online: true, lastSeen: Date.now() });
+    onDisconnect(ref(db, `user_status/${currentUser.uid}`)).set({ online: false, lastSeen: Date.now() });
+    
+    // Listen to partner's online status
+    onValue(ref(db, `user_status/${partnerUser.uid}`), (snap) => {
+      const data = snap.val();
+      const statusDiv = document.getElementById('onlineStatus');
+      if (data && data.online) {
+        statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
+      } else {
+        statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
+      }
+    });
+    
+    // Listen to partner's typing status
+    onValue(ref(db, `user_typing/${partnerUser.uid}`), (snap) => {
+      const typing = snap.val();
+      if (typing) {
+        document.getElementById('typingBadge').innerHTML = `${partnerUser.name} is typing...`;
+      } else {
+        document.getElementById('typingBadge').innerHTML = '';
+      }
+    });
+    
+    // Load messages
+    loadMessages();
+  }
+  
+  // Load messages from Firebase
+  function loadMessages() {
+    onChildAdded(messagesRef, (snapshot) => {
+      const msg = snapshot.val();
+      if (!msg || !currentUser || !partnerUser) return;
+      
+      const isRelevant = (msg.senderUid === currentUser.uid && msg.receiverUid === partnerUser.uid) ||
+                         (msg.senderUid === partnerUser.uid && msg.receiverUid === currentUser.uid);
+      
+      if (isRelevant) {
+        displayMessage(msg);
+      }
+    });
+  }
+  
   // Display message in UI
   function displayMessage(msg) {
-    if (!currentUser || !partnerUser) return;
     const isMe = (msg.senderUid === currentUser.uid);
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
-
+    
     let content = '';
     if (msg.text) {
       content += `<div class="message-text">${escapeHtml(msg.text)}</div>`;
     }
-
+    
     if (msg.fileUrl) {
       if (msg.fileType === 'image') {
-        content += `<div class="media-preview"><img src="${msg.fileUrl}" alt="image preview" onclick="window.open('${msg.fileUrl}')"></div>`;
+        content += `<div class="media-preview"><img src="${msg.fileUrl}" alt="image" onclick="window.open('${msg.fileUrl}')"></div>`;
       } else if (msg.fileType === 'video') {
         content += `<div class="media-preview"><video src="${msg.fileUrl}" controls preload="metadata"></video></div>`;
       } else if (msg.fileType === 'audio') {
         content += `<audio class="voice-note" src="${msg.fileUrl}" controls preload="metadata"></audio>`;
       }
     }
-
+    
     const timeStr = new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     content += `<div class="message-time">${timeStr}</div>`;
     msgDiv.innerHTML = content;
-
+    
     const container = document.getElementById('messagesArea');
     container.appendChild(msgDiv);
     scrollToBottom();
   }
-
-  // Load messages that concern current user and partner
-  function loadMessages() {
-    onChildAdded(messagesRef, (snapshot) => {
-      const msg = snapshot.val();
-      if (!msg || !currentUser || !partnerUser) return;
-
-      const isRelevant = (msg.senderUid === currentUser.uid && msg.receiverUid === partnerUser.uid) ||
-                         (msg.senderUid === partnerUser.uid && msg.receiverUid === currentUser.uid);
-      if (isRelevant) {
-        displayMessage(msg);
-      }
-    });
-  }
-
-  // Send message (text or file/voice)
+  
+  // Send message
   async function sendMessage(text, fileBlob = null, fileType = null) {
     if (!currentUser || !partnerUser) return;
     if (!text && !fileBlob) return;
-
+    
     let fileUrl = null;
     let finalType = fileType;
-
+    
     if (fileBlob) {
       const ext = fileType === 'image' ? 'jpg' : (fileType === 'audio' ? 'webm' : 'mp4');
       const fileName = `media_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${ext}`;
@@ -542,7 +574,7 @@
       await uploadBytes(fileRef, fileBlob);
       fileUrl = await getDownloadURL(fileRef);
     }
-
+    
     const messageData = {
       sender: currentUser.name,
       senderUid: currentUser.uid,
@@ -552,15 +584,17 @@
       fileType: finalType,
       time: Date.now()
     };
-
+    
     await push(messagesRef, messageData);
+    
     if (text) {
       document.getElementById('msgInput').value = '';
     }
+    
     // Clear typing indicator
     await set(ref(db, `user_typing/${currentUser.uid}`), false);
   }
-
+  
   // Typing indicator
   function sendTyping() {
     if (!currentUser) return;
@@ -570,7 +604,7 @@
       set(ref(db, `user_typing/${currentUser.uid}`), false);
     }, 2000);
   }
-
+  
   // Voice recording
   async function startRecording() {
     try {
@@ -598,7 +632,7 @@
       alert("Microphone access needed for voice notes.");
     }
   }
-
+  
   function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
@@ -609,7 +643,7 @@
       isRecording = false;
     }
   }
-
+  
   function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -619,137 +653,50 @@
       return m;
     });
   }
-
-  // Setup chat after successful auth
-  async function setupChat(user) {
-    const userEmail = user.email;
-    const userData = ALLOWED_USERS[userEmail];
-    if (!userData) {
-      alert("Unauthorized user! Logging out.");
-      await signOut(auth);
-      return;
-    }
-
-    currentUser = {
-      uid: user.uid,
-      email: userEmail,
-      name: userData.name,
-      avatar: userData.avatar,
-      displayName: userData.displayName
-    };
-
-    // Determine partner
-    const partnerInfo = getPartnerForUser(userEmail);
-    if (!partnerInfo) {
-      alert("No partner found.");
-      await signOut(auth);
-      return;
-    }
-
-    // Get partner UID from Firebase realtime database or fallback: we need partner's uid.
-    // Since UID is generated by Firebase Auth and not known to partner yet, we must store mapping.
-    // Better: we store user UID mapping under /userEmails/{email} -> uid. Also read partner's UID.
-    const userMappingRef = ref(db, `user_uid_mapping/${userEmail}`);
-    await set(userMappingRef, user.uid);
-    
-    // Retrieve partner's UID
-    const partnerEmail = partnerInfo.email;
-    const partnerUidRef = ref(db, `user_uid_mapping/${partnerEmail}`);
-    let partnerUid = null;
-    onValue(partnerUidRef, async (snap) => {
-      if (snap.exists()) {
-        partnerUid = snap.val();
-        if (partnerUid && !partnerUser) {
-          partnerUser = {
-            uid: partnerUid,
-            email: partnerEmail,
-            name: ALLOWED_USERS[partnerEmail].name,
-            avatar: ALLOWED_USERS[partnerEmail].avatar
-          };
-          document.getElementById('partnerName').innerText = partnerUser.name;
-          document.getElementById('partnerAvatar').innerText = partnerUser.avatar;
-          
-          // Load messages only once after partner is set
-          if (window._msgsLoaded !== true) {
-            window._msgsLoaded = true;
-            loadMessages();
-          }
-          
-          // Online status for partner
-          onValue(ref(db, `user_status/${partnerUser.uid}`), (snapStatus) => {
-            const data = snapStatus.val();
-            const statusDiv = document.getElementById('onlineStatus');
-            if (data && data.online) {
-              statusDiv.innerHTML = '<span class="online-dot"></span><span>Online now</span>';
-            } else {
-              statusDiv.innerHTML = '<span class="offline-dot"></span><span>Offline</span>';
-            }
-          });
-          
-          // Typing indicator from partner
-          onValue(ref(db, `user_typing/${partnerUser.uid}`), (snapTyping) => {
-            const isTyping = snapTyping.val();
-            if (isTyping) {
-              document.getElementById('typingBadge').innerHTML = `${partnerUser.name} is typing...`;
-            } else {
-              document.getElementById('typingBadge').innerHTML = '';
-            }
-          });
-        }
-      } else {
-        // If partner UID not yet stored, wait a bit (partner might not have logged in yet)
-        // Optionally set a listener to recheck
-        console.log("Waiting for partner UID...");
-      }
-    }, { onlyOnce: false });
-    
-    // Set current user online status & onDisconnect
-    await set(ref(db, `user_status/${user.uid}`), { online: true, lastSeen: Date.now() });
-    onDisconnect(ref(db, `user_status/${user.uid}`)).set({ online: false, lastSeen: Date.now() });
-    
-    // Also store own typing cleanup
+  
+  function scrollToBottom() {
+    const msgArea = document.getElementById('messagesArea');
+    if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
   }
-
-  // Auth state observer
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const email = user.email;
-      if (!ALLOWED_USERS[email]) {
-        alert("Access denied: Only sp@sv.com and sv@sp.com allowed.");
-        await signOut(auth);
-        return;
-      }
-      
-      // Show chat UI
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('chatContainer').style.display = 'flex';
-      
-      // Setup chat after slight delay for realtime DB mapping
-      await setupChat(user);
-      
-    } else {
-      // Clear UI
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('chatContainer').style.display = 'none';
-      currentUser = null;
-      partnerUser = null;
-      window._msgsLoaded = false;
-      // Clear messages area from previous session
-      const msgArea = document.getElementById('messagesArea');
-      if (msgArea) msgArea.innerHTML = '';
-      document.getElementById('typingBadge').innerHTML = '';
-      document.getElementById('emailInput').value = '';
-      document.getElementById('passwordInput').value = '';
-      document.getElementById('errorMsg').innerText = '';
+  
+  function logout() {
+    if (currentUser) {
+      // Set offline status
+      set(ref(db, `user_status/${currentUser.uid}`), { online: false, lastSeen: Date.now() });
     }
-  });
-
-  // ========== UI Event Listeners (safe after DOM ready) ==========
+    currentUser = null;
+    partnerUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('chatContainer').style.display = 'none';
+    document.getElementById('messagesArea').innerHTML = '';
+    document.getElementById('emailInput').value = '';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('errorMsg').innerText = '';
+  }
+  
+  // Event listeners
+  document.getElementById('loginBtn').onclick = () => {
+    const email = document.getElementById('emailInput').value.trim().toLowerCase();
+    const password = document.getElementById('passwordInput').value;
+    
+    if (login(email, password)) {
+      setupChatUI();
+    }
+  };
+  
+  document.getElementById('passwordInput').onkeypress = (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('loginBtn').click();
+    }
+  };
+  
+  document.getElementById('logoutBtn').onclick = logout;
+  
   document.getElementById('sendBtn').onclick = () => {
     const text = document.getElementById('msgInput').value.trim();
     if (text) sendMessage(text);
   };
-
+  
   document.getElementById('msgInput').onkeypress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -757,6 +704,7 @@
       if (text) sendMessage(text);
     }
   };
+  
   document.getElementById('msgInput').oninput = () => sendTyping();
   
   document.getElementById('attachBtn').onclick = () => {
@@ -777,11 +725,11 @@
     e.target.value = '';
   };
   
-  // Voice recording with pointer/ mouse events for cross-platform
+  // Voice recording with pointer events
   const voiceBtn = document.getElementById('voiceBtn');
   voiceBtn.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    if (!isRecording) startRecording();
+    if (!isRecording && currentUser) startRecording();
   });
   voiceBtn.addEventListener('pointerup', (e) => {
     e.preventDefault();
@@ -790,15 +738,13 @@
   voiceBtn.addEventListener('pointercancel', (e) => {
     if (isRecording) stopRecording();
   });
-  // For touch devices: prevent context menu
   voiceBtn.addEventListener('contextmenu', (e) => e.preventDefault());
   
-  // Smooth scroll on new message already handled in displayMessage
-  // Also re-trigger scroll when keyboard appears? fine.
-  window.addEventListener('resize', () => scrollToBottom());
+  // Auto-scroll on new messages
+  const observer = new MutationObserver(() => scrollToBottom());
+  observer.observe(document.getElementById('messagesArea'), { childList: true });
   
-  // Initial load note
-  console.log("Chat app ready — use sp@sv.com or sv@sp.com as email, ensure they exist in Firebase Auth.");
+  console.log("Chat app ready — Use sp@sv.com / sp123 or sv@sp.com / sv123");
 </script>
 </body>
 </html>

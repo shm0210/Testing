@@ -3,50 +3,236 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel | Firebase Auth</title>
+  <title>Admin Panel | Firebase Auth + Database</title>
   <style>
-    * {margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-    body {background:#0b141a;color:#e9edef;padding:20px}
-   .container {max-width:1000px;margin:0 auto}
-    h1 {color:#00a884;margin-bottom:20px;font-size:1.8rem;border-left:4px solid #00a884;padding-left:15px}
-   .card {background:#202c33;border-radius:20px;padding:20px;margin-bottom:20px}
-   .card h2 {margin-bottom:15px;font-size:1.3rem;color:#00a884}
-   .stats-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px}
-   .stat-box {background:#2a3942;padding:15px;border-radius:15px;text-align:center}
-   .stat-number {font-size:2rem;font-weight:bold;color:#00a884}
-   .stat-label {font-size:0.8rem;color:#8696a0;margin-top:5px}
-   .msg-item {background:#2a3942;padding:12px;margin:8px 0;border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-    button {background:#00a884;border:none;padding:8px 16px;border-radius:8px;color:#111b21;font-weight:bold;cursor:pointer;transition:all 0.2s}
-    button:hover {background:#00c3a2;transform:scale(1.02)}
-   .danger-btn {background:#d32f2f;color:white}
-   .danger-btn:hover {background:#f44336}
-   .msg-list {max-height:400px;overflow-y:auto}
-   .delete-msg {background:#d32f2f;padding:4px 12px;font-size:0.8rem}
-   .loading {text-align:center;padding:20px;color:#8696a0}
-   .toast {position:fixed;bottom:20px;right:20px;background:#00a884;color:#111b21;padding:10px 20px;border-radius:10px;font-weight:bold;animation:slideIn 0.3s ease;z-index:1000}
-    @keyframes slideIn {from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #0b141a;
+      color: #e9edef;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #00a884;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      border-left: 4px solid #00a884;
+      padding-left: 15px;
+    }
+
+    .card {
+      background: #202c33;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      color: #00a884;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background: #2a3942;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00a884;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #8696a0;
+      margin-top: 5px;
+    }
+
+    .user-item, .msg-item {
+      background: #2a3942;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    input, select {
+      background: #111b21;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #e9edef;
+      font-size: 0.9rem;
+    }
+
+    button {
+      background: #00a884;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: #111b21;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #00c3a2;
+      transform: scale(1.02);
+    }
+
+    .danger-btn {
+      background: #d32f2f;
+      color: white;
+    }
+
+    .danger-btn:hover {
+      background: #f44336;
+    }
+
+    .add-user-area {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .add-user-area input {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .msg-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .delete-msg {
+      background: #d32f2f;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+    }
+
+    .code-display {
+      font-family: monospace;
+      background: #111b21;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      word-break: break-all;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #8696a0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #00a884;
+      color: #111b21;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      animation: slideIn 0.3s ease;
+      z-index: 1000;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .email-preview {
+      font-size: 0.7rem;
+      color: #8696a0;
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>🔧 ADMIN CONTROL PANEL</h1>
-  <div id="authCheck" class="loading">Checking admin access...</div>
 
-  <div id="adminContent" style="display:none">
-    <div class="stats-grid">
-      <div class="stat-box"><div class="stat-number" id="onlineUsers">0</div><div class="stat-label">Online Now</div></div>
-      <div class="stat-box"><div class="stat-number" id="totalMsgs">0</div><div class="stat-label">Total Messages</div></div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-number" id="totalUsers">0</div>
+      <div class="stat-label">Total Users</div>
     </div>
+    <div class="stat-box">
+      <div class="stat-number" id="onlineUsers">0</div>
+      <div class="stat-label">Online Now</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="totalMsgs">0</div>
+      <div class="stat-label">Total Messages</div>
+    </div>
+  </div>
 
-    <div class="card">
-      <h2>📨 All Messages</h2>
-      <div id="messagesList" class="msg-list loading">Loading messages...</div>
-      <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button id="exportChatBtn">📥 Export All Chats</button>
-        <button id="clearAllBtn" class="danger-btn">⚠️ Delete All Messages</button>
-        <button id="logoutAdminBtn" class="danger-btn">🚪 Logout</button>
-      </div>
+  <div class="card">
+    <h2>👥 Registered Users (Email Auth)</h2>
+    <div id="usersList" class="loading">Loading users...</div>
+    <div class="add-user-area">
+      <input type="text" id="newUserName" placeholder="Full Name">
+      <input type="email" id="newUserEmail" placeholder="Email">
+      <input type="password" id="newUserPassword" placeholder="Password (min 6 chars)">
+      <input type="text" id="newUserAvatar" placeholder="Avatar Emoji" maxlength="2" value="👤">
+      <button id="addUserBtn">➕ Create User</button>
     </div>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 10px;">✅ Creates Firebase Auth account + Database profile</p>
+  </div>
+
+  <div class="card">
+    <h2>👑 Admin/Owner Account</h2>
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <input type="email" id="adminEmail" placeholder="Admin Email" value="owner@secretchat.com">
+      <input type="password" id="adminPassword" placeholder="Admin Password" value="Admin@123456">
+      <button id="createAdminBtn">👑 Create/Update Admin</button>
+    </div>
+    <p style="font-size: 0.7rem; color: #8696a0; margin-top: 8px;">Admin users can access this panel</p>
+  </div>
+
+  <div class="card">
+    <h2>📨 Recent Messages</h2>
+    <div id="messagesList" class="msg-list loading">Loading messages...</div>
+    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+      <button id="exportChatBtn">📥 Export All Chats</button>
+      <button id="clearAllBtn" class="danger-btn">⚠️ Delete All Messages</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Database Actions</h2>
+    <button id="refreshBtn">🔄 Refresh Data</button>
   </div>
 </div>
 
@@ -63,7 +249,7 @@
 <script type="module">
   import { initializeApp } from 'firebase/app';
   import { getDatabase, ref, get, set, remove, onValue } from 'firebase/database';
-  import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
@@ -80,6 +266,9 @@
   const auth = getAuth(app);
   const messagesRef = ref(db, 'chat_messages');
   const statusRef = ref(db, 'user_status');
+  const usersRef = ref(db, 'app_users');
+
+  let USERS = {};
 
   function showToast(message) {
     const toast = document.createElement('div');
@@ -89,35 +278,68 @@
     setTimeout(() => toast.remove(), 3000);
   }
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      document.getElementById('authCheck').innerHTML = '<h2>Please login first at index.html</h2>';
-      return;
+  async function loadUsersFromFirebase() {
+    const snap = await get(usersRef);
+    if (snap.exists()) {
+      USERS = snap.val();
+      renderUsers();
+      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+    } else {
+      document.getElementById('usersList').innerHTML = '<div class="loading">No users yet. Create accounts above.</div>';
+      document.getElementById('totalUsers').innerText = '0';
     }
-    if (user.email.toLowerCase()!== "sv@sp.com") {
-      document.getElementById('authCheck').innerHTML = '<h2>Access Denied - Admin only</h2>';
-      return;
-    }
-    document.getElementById('authCheck').style.display = 'none';
-    document.getElementById('adminContent').style.display = 'block';
-    await refreshStats();
-    await loadMessages();
-
-    onValue(statusRef, () => refreshStats());
-    onValue(messagesRef, () => { refreshStats(); loadMessages(); });
-  });
+  }
 
   async function refreshStats() {
     const usersSnap = await get(statusRef);
     const usersStatus = usersSnap.val() || {};
     let online = 0;
-    for (let u in usersStatus) if (usersStatus[u]?.online) online++;
+    for (let u in usersStatus) {
+      if (usersStatus[u]?.online) online++;
+    }
     document.getElementById('onlineUsers').innerText = online;
-
+    
     const msgsSnap = await get(messagesRef);
     const msgs = msgsSnap.val() || {};
     document.getElementById('totalMsgs').innerText = Object.keys(msgs).length;
   }
+
+  function renderUsers() {
+    const container = document.getElementById('usersList');
+    container.innerHTML = '';
+    
+    if (Object.keys(USERS).length === 0) {
+      container.innerHTML = '<div class="loading">No users found</div>';
+      return;
+    }
+    
+    for (let [uid, user] of Object.entries(USERS)) {
+      const div = document.createElement('div');
+      div.className = 'user-item';
+      div.innerHTML = `
+        <div style="flex:1">
+          <strong>${escapeHtml(user.avatar)} ${escapeHtml(user.name)}</strong>
+          <div class="email-preview">${escapeHtml(user.email)}</div>
+          <div class="code-display" style="margin-top: 4px; font-size:0.7rem;">UID: ${uid.substring(0, 12)}...</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="danger-btn" onclick="window.deleteUser('${uid}')">🗑️ Delete</button>
+        </div>
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  window.deleteUser = async (uid) => {
+    if (confirm(`Delete user ${USERS[uid]?.name}? This will NOT delete from Firebase Auth (must delete manually in Firebase Console).`)) {
+      await remove(ref(db, `app_users/${uid}`));
+      await remove(ref(db, `user_status/${uid}`));
+      delete USERS[uid];
+      renderUsers();
+      document.getElementById('totalUsers').innerText = Object.keys(USERS).length;
+      showToast("User deleted from database");
+    }
+  };
 
   async function loadMessages() {
     const msgsSnap = await get(messagesRef);
@@ -125,20 +347,20 @@
     const msgArray = Object.entries(msgs).sort((a,b) => b[1].time - a[1].time).slice(0, 50);
     const container = document.getElementById('messagesList');
     container.innerHTML = '';
-
+    
     if (msgArray.length === 0) {
-      container.innerHTML = '<div style="text-align:center;padding:20px;">No messages yet</div>';
+      container.innerHTML = '<div style="text-align:center; padding:20px;">No messages yet</div>';
       return;
     }
-
+    
     for (let [key, msg] of msgArray) {
       const div = document.createElement('div');
       div.className = 'msg-item';
       div.innerHTML = `
         <div style="flex:1">
-          <strong>${escapeHtml(msg.sender)}</strong> → ${escapeHtml(msg.receiver || 'all')}<br>
+          <strong>${escapeHtml(msg.senderName || msg.sender?.substring(0,8))}</strong> → ${escapeHtml(msg.receiver?.substring(0,8) || 'all')}<br>
           <span style="font-size:0.8rem">${escapeHtml(msg.text || msg.fileType || 'Media')}</span>
-          <div style="font-size:0.7rem;color:#8696a0">${new Date(msg.time).toLocaleString()}</div>
+          <div style="font-size:0.7rem; color:#8696a0">${new Date(msg.time).toLocaleString()}</div>
         </div>
         <button class="delete-msg" onclick="window.deleteMessage('${key}')">Delete</button>
       `;
@@ -149,14 +371,24 @@
   window.deleteMessage = async (key) => {
     if (confirm("Delete this message?")) {
       await remove(ref(db, `chat_messages/${key}`));
+      await loadMessages();
+      await refreshStats();
       showToast("Message deleted");
     }
   };
 
   async function exportChats() {
     const msgsSnap = await get(messagesRef);
-    const data = { exportedAt: new Date().toISOString(), messages: msgsSnap.val() || {} };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const usersSnap = await get(usersRef);
+    
+    const data = {
+      exportedAt: new Date().toISOString(),
+      users: usersSnap.val() || {},
+      messages: msgsSnap.val() || {}
+    };
+    
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -169,18 +401,161 @@
   async function clearAllMessages() {
     if (confirm("⚠️ DANGER: Delete ALL messages from Firebase? This cannot be undone!")) {
       await set(messagesRef, null);
+      await loadMessages();
+      await refreshStats();
       showToast("All messages deleted from Firebase");
+    }
+  }
+
+  async function createNewUser() {
+    const name = document.getElementById('newUserName').value.trim();
+    const email = document.getElementById('newUserEmail').value.trim();
+    const password = document.getElementById('newUserPassword').value;
+    const avatar = document.getElementById('newUserAvatar').value.trim() || "👤";
+    
+    if (!name || !email || !password) {
+      alert("Please fill name, email, and password");
+      return;
+    }
+    
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
+    
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      const userData = {
+        uid: userCredential.user.uid,
+        name: name,
+        email: email,
+        avatar: avatar,
+        role: "user",
+        createdAt: Date.now()
+      };
+      
+      await set(ref(db, `app_users/${userCredential.user.uid}`), userData);
+      
+      document.getElementById('newUserName').value = '';
+      document.getElementById('newUserEmail').value = '';
+      document.getElementById('newUserPassword').value = '';
+      document.getElementById('newUserAvatar').value = '👤';
+      
+      await loadUsersFromFirebase();
+      showToast(`✅ User "${name}" created with email: ${email}`);
+      
+    } catch (error) {
+      console.error(error);
+      if (error.code === 'auth/email-already-in-use') {
+        alert("Email already registered");
+      } else if (error.code === 'auth/invalid-email') {
+        alert("Invalid email format");
+      } else if (error.code === 'auth/weak-password') {
+        alert("Password too weak (min 6 chars)");
+      } else {
+        alert("Error: " + error.message);
+      }
+    }
+  }
+
+  async function createAdminAccount() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    
+    if (!email || !password) {
+      alert("Enter admin email and password");
+      return;
+    }
+    
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
+    
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      const adminData = {
+        uid: userCredential.user.uid,
+        name: "ADMIN",
+        email: email,
+        avatar: "👑",
+        role: "owner",
+        isAdmin: true,
+        createdAt: Date.now()
+      };
+      
+      await set(ref(db, `app_users/${userCredential.user.uid}`), adminData);
+      
+      showToast(`✅ Admin account created! Email: ${email}`);
+      await loadUsersFromFirebase();
+      
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') {
+        // Try to update existing user to admin role
+        const usersSnap = await get(usersRef);
+        let foundUid = null;
+        for (let [uid, user] of Object.entries(usersSnap.val() || {})) {
+          if (user.email === email) {
+            foundUid = uid;
+            break;
+          }
+        }
+        
+        if (foundUid) {
+          await set(ref(db, `app_users/${foundUid}/role`), "owner");
+          await set(ref(db, `app_users/${foundUid}/isAdmin`), true);
+          await set(ref(db, `app_users/${foundUid}/avatar`), "👑");
+          showToast(`✅ User ${email} is now an ADMIN!`);
+          await loadUsersFromFirebase();
+        } else {
+          alert("Email exists but user not found in database. Please check Firebase Console.");
+        }
+      } else {
+        alert("Error: " + error.message);
+      }
     }
   }
 
   function escapeHtml(str) {
     if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+    return String(str).replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
   }
 
+  // Event listeners
+  document.getElementById('addUserBtn').onclick = createNewUser;
+  document.getElementById('createAdminBtn').onclick = createAdminAccount;
   document.getElementById('exportChatBtn').onclick = exportChats;
   document.getElementById('clearAllBtn').onclick = clearAllMessages;
-  document.getElementById('logoutAdminBtn').onclick = () => signOut(auth);
+  document.getElementById('refreshBtn').onclick = async () => {
+    await loadUsersFromFirebase();
+    await refreshStats();
+    await loadMessages();
+    showToast("Data refreshed from Firebase");
+  };
+
+  // Initial load
+  await loadUsersFromFirebase();
+  await refreshStats();
+  await loadMessages();
+
+  // Real-time listeners
+  onValue(usersRef, async () => {
+    await loadUsersFromFirebase();
+    await refreshStats();
+  });
+  
+  onValue(statusRef, () => refreshStats());
+  onValue(messagesRef, () => {
+    refreshStats();
+    loadMessages();
+  });
 </script>
 </body>
 </html>

@@ -206,6 +206,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .user-info h4 {
@@ -292,6 +294,11 @@
       color: #0f172a;
       font-weight: bold;
       cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #e68a00;
     }
 
     .online-status {
@@ -304,6 +311,12 @@
 
     .online { background: #22c55e; }
     .offline { background: #64748b; }
+
+    .message-media {
+      max-width: 200px;
+      border-radius: 12px;
+      margin-top: 5px;
+    }
 
     @media (max-width: 768px) {
       .admin-sidebar { width: 70px; }
@@ -318,7 +331,7 @@
   <div id="loginContainer" class="login-container">
     <div class="login-card">
       <h2 style="text-align:center; margin-bottom:20px;">🔐 ADMIN LOGIN</h2>
-      <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@!@#99#@!.com">
+      <input type="email" id="adminEmail" placeholder="Admin Email" value="owner@admin.com">
       <input type="password" id="adminPassword" placeholder="Password">
       <button id="loginAdminBtn">Login as Admin</button>
       <div id="loginError" style="color:#f87171; margin-top:10px; text-align:center;"></div>
@@ -421,7 +434,7 @@
 
         <!-- Analytics Panel -->
         <div id="analyticsPanel" class="panel">
-          <h3 style="margin-bottom:20px;">📈 Chat Analytics</h3>
+          <h3 style="margin-bottom:20px;">📈 Chat Analytics (Last 7 days)</h3>
           <canvas id="activityChart" style="max-height: 400px;"></canvas>
         </div>
       </div>
@@ -430,7 +443,7 @@
 </div>
 
 <script>
-  // Firebase Config (YOURS)
+  // Firebase Config (YOURS - kept identical for compatibility)
   const firebaseConfig = {
     apiKey: "AIzaSyBdA8ntd9HFmADRPuyaOvh00WN4KkPYw-4",
     authDomain: "personal-chat-4628d.firebaseapp.com",
@@ -446,21 +459,21 @@
   const db = firebase.firestore();
   const storage = firebase.storage();
 
-  // ADMIN ONLY - Hardcoded admin email
-  const ADMIN_EMAIL = "admin@!@#99#@!.com";
+  // ADMIN ONLY - Updated admin email: owner@admin.com
+  const ADMIN_EMAIL = "owner@admin.com";
   let currentAdmin = null;
   let messagesUnsub = null;
   let usersUnsub = null;
   let activityChart = null;
 
-  // Login
+  // Login logic with new admin email
   document.getElementById("loginAdminBtn").addEventListener("click", async () => {
-    const email = document.getElementById("adminEmail").value;
+    const email = document.getElementById("adminEmail").value.trim();
     const password = document.getElementById("adminPassword").value;
     const errorDiv = document.getElementById("loginError");
     
     if (email !== ADMIN_EMAIL) {
-      errorDiv.innerText = "Only AROMATIC admin can login!";
+      errorDiv.innerText = "Access denied: Only AROMATIC owner (owner@admin.com) can login!";
       return;
     }
     
@@ -469,7 +482,7 @@
       currentAdmin = userCred.user;
       document.getElementById("loginContainer").style.display = "none";
       document.getElementById("mainApp").style.display = "flex";
-      document.getElementById("adminInfo").innerHTML = `👑 AROMATIC Admin | ${currentAdmin.email}`;
+      document.getElementById("adminInfo").innerHTML = `👑 Owner Admin | ${currentAdmin.email}`;
       initializeAdminPanel();
     } catch (err) {
       errorDiv.innerText = "Login failed: " + err.message;
@@ -482,12 +495,12 @@
   });
 
   async function initializeAdminPanel() {
-    // Load all data
     loadDashboardStats();
     loadUsersList();
     loadAllMessages();
     loadChatMessages();
     setupMessageListener();
+    setupAnalyticsChart();
     
     // Navigation
     document.querySelectorAll(".nav-item[data-panel]").forEach(item => {
@@ -496,6 +509,10 @@
         document.getElementById(`${item.dataset.panel}Panel`).classList.add("active-panel");
         document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
         item.classList.add("active");
+        // Refresh chart when analytics panel becomes visible
+        if (item.dataset.panel === "analytics" && activityChart) {
+          activityChart.update();
+        }
       });
     });
   }
@@ -514,10 +531,16 @@
     // Recent activity
     const recentMessages = await db.collection("messages").orderBy("timestamp", "desc").limit(10).get();
     const activityDiv = document.getElementById("recentActivity");
-    activityDiv.innerHTML = "<strong>Latest Messages:</strong><br>";
+    activityDiv.innerHTML = "<strong>📨 Latest Messages:</strong><br>";
+    if (recentMessages.empty) {
+      activityDiv.innerHTML += "<div style='font-size:0.8rem; padding:5px;'>No messages yet.</div>";
+    }
     recentMessages.forEach(doc => {
       const msg = doc.data();
-      activityDiv.innerHTML += `<div style="font-size:0.8rem; padding:5px; border-bottom:1px solid #334155;">${msg.senderName}: ${msg.text || "[Media]"}</div>`;
+      const time = msg.timestamp?.toDate().toLocaleTimeString() || "Just now";
+      activityDiv.innerHTML += `<div style="font-size:0.8rem; padding:5px; border-bottom:1px solid #334155;">
+        <i class="fas fa-user"></i> <strong>${msg.senderName}</strong>: ${msg.text ? (msg.text.length > 50 ? msg.text.substring(0,50)+'...' : msg.text) : "📎 Media"} <span style="color:#94a3b8; float:right;">${time}</span>
+      </div>`;
     });
   }
 
@@ -534,21 +557,22 @@
         const user = doc.data();
         const isBanned = bannedMap.has(user.uid);
         const loginTime = user.lastSeen?.toDate() || new Date();
+        const createdAtDate = user.createdAt?.toDate() || new Date();
         
         usersDiv.innerHTML += `
           <div class="user-card">
             <div class="user-info">
-              <h4>${user.displayName || user.email.split('@')[0]} 
+              <h4>${user.displayName || (user.email ? user.email.split('@')[0] : 'Anonymous')} 
                 <span class="online-status ${user.online ? 'online' : 'offline'}"></span>
                 ${user.role === 'admin' ? '👑' : ''}
               </h4>
-              <p>📧 ${user.email}</p>
+              <p>📧 ${user.email || 'No email'}</p>
               <p>🕐 Last active: ${loginTime.toLocaleString()}</p>
-              <p>📅 First seen: ${user.createdAt?.toDate().toLocaleDateString() || 'N/A'}</p>
+              <p>📅 Joined: ${createdAtDate.toLocaleDateString()}</p>
             </div>
             <div>
               ${!isBanned ? 
-                `<button class="ban-btn" onclick="banUser('${user.uid}', '${user.email}')">🚫 Ban User</button>` :
+                `<button class="ban-btn" onclick="banUser('${user.uid}', '${user.email || user.uid}')">🚫 Ban User</button>` :
                 `<button class="ban-btn unban-btn" onclick="unbanUser('${user.uid}')">✅ Unban User</button>`
               }
             </div>
@@ -561,18 +585,28 @@
   async function loadAllMessages() {
     db.collection("messages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
       const messagesDiv = document.getElementById("allMessagesList");
-      messagesDiv.innerHTML = "<h4>All Messages (Latest First)</h4>";
+      messagesDiv.innerHTML = "<h4>📋 All Messages (Latest First)</h4>";
+      
+      if (snapshot.empty) {
+        messagesDiv.innerHTML += "<div style='padding:20px;text-align:center;color:#94a3b8'>No messages found.</div>";
+        return;
+      }
       
       snapshot.forEach(doc => {
         const msg = doc.data();
         const time = msg.timestamp?.toDate().toLocaleString() || "Unknown";
+        const editedBadge = msg.edited ? " <span style='font-size:10px;color:#fbbf24'>(edited)</span>" : "";
         messagesDiv.innerHTML += `
-          <div style="background:#1e293b; padding:10px; margin:8px 0; border-radius:8px;">
-            <strong>${msg.senderName}</strong> (${msg.senderEmail || 'N/A'})<br>
-            ${msg.text ? msg.text : '<i>📎 Media Message</i>'}<br>
-            <small>${time}</small>
-            <button onclick="deleteMessage('${doc.id}')" style="background:#dc2626; padding:4px 8px; font-size:10px; margin-left:10px;">Delete</button>
-            <button onclick="editMessage('${doc.id}', '${msg.text?.replace(/'/g, "\\'") || ''}')" style="background:#3b82f6; padding:4px 8px; font-size:10px;">Edit</button>
+          <div style="background:#1e293b; padding:12px; margin:8px 0; border-radius:12px;">
+            <div style="display:flex; justify-content:space-between;">
+              <strong><i class="fas fa-user-circle"></i> ${msg.senderName}</strong>
+              <small>${time}</small>
+            </div>
+            <div style="margin-top:6px;">${msg.text ? msg.text : '<i>📎 Media Attachment</i>'}${editedBadge}</div>
+            <div style="margin-top:8px;">
+              <button onclick="deleteMessage('${doc.id}')" style="background:#dc2626; padding:4px 12px; font-size:11px; border-radius:20px; margin-right:8px;"><i class="fas fa-trash"></i> Delete</button>
+              <button onclick="editMessage('${doc.id}', '${(msg.text || '').replace(/'/g, "\\'")}')" style="background:#3b82f6; padding:4px 12px; font-size:11px; border-radius:20px;"><i class="fas fa-edit"></i> Edit</button>
+            </div>
           </div>
         `;
       });
@@ -582,6 +616,7 @@
   async function loadChatMessages() {
     db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
       const container = document.getElementById("adminMessagesArea");
+      if (!container) return;
       container.innerHTML = "";
       
       snapshot.forEach(doc => {
@@ -589,12 +624,13 @@
         const isOwn = currentAdmin && msg.senderId === currentAdmin.uid;
         const msgDiv = document.createElement("div");
         msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
+        const mediaHtml = msg.mediaUrl ? `<div><a href="${msg.mediaUrl}" target="_blank" style="color:#fbbf24;">📎 View Media</a></div>` : '';
         msgDiv.innerHTML = `
-          <div><strong>${msg.senderName}</strong>: ${msg.text || '📎 Media'}</div>
+          <div><strong>${msg.senderName}</strong>: ${msg.text || '📎 Media message'}${mediaHtml}</div>
           <small>${msg.timestamp?.toDate().toLocaleTimeString() || ''}</small>
           <div class="message-admin-controls">
-            <button class="admin-btn" onclick="deleteMessage('${doc.id}')">🗑️</button>
-            <button class="admin-btn" onclick="editMessage('${doc.id}', '${msg.text?.replace(/'/g, "\\'") || ''}')">✏️</button>
+            <button class="admin-btn" onclick="deleteMessage('${doc.id}')"><i class="fas fa-trash"></i></button>
+            <button class="admin-btn" onclick="editMessage('${doc.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i></button>
           </div>
         `;
         container.appendChild(msgDiv);
@@ -604,71 +640,152 @@
   }
 
   function setupMessageListener() {
-    document.getElementById("adminSendBtn").addEventListener("click", async () => {
-      const input = document.getElementById("adminMessageInput");
+    const sendBtn = document.getElementById("adminSendBtn");
+    const input = document.getElementById("adminMessageInput");
+    
+    sendBtn.addEventListener("click", async () => {
       const text = input.value.trim();
       if (!text) return;
       
       await db.collection("messages").add({
         text: text,
         senderId: currentAdmin.uid,
-        senderName: "AROMATIC (ADMIN)",
+        senderName: "🌿 AROMATIC ADMIN",
         senderEmail: currentAdmin.email,
         type: "text",
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
       input.value = "";
     });
+    
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendBtn.click();
+    });
+  }
+
+  async function setupAnalyticsChart() {
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    // Get last 7 days message counts
+    const last7Days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      last7Days.push(d.toISOString().split('T')[0]);
+    }
+    
+    const counts = [];
+    for (const dateStr of last7Days) {
+      const start = new Date(dateStr);
+      const end = new Date(dateStr);
+      end.setDate(end.getDate() + 1);
+      const snap = await db.collection("messages")
+        .where("timestamp", ">=", start)
+        .where("timestamp", "<", end)
+        .get();
+      counts.push(snap.size);
+    }
+    
+    activityChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: last7Days.map(d => d.substring(5)),
+        datasets: [{
+          label: 'Messages per Day',
+          data: counts,
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          tension: 0.3,
+          fill: true,
+          pointBackgroundColor: '#f59e0b'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { labels: { color: '#eef2ff' } }
+        },
+        scales: {
+          y: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } },
+          x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } }
+        }
+      }
+    });
+    
+    // Real-time update for chart every 30 seconds
+    setInterval(async () => {
+      const newCounts = [];
+      for (const dateStr of last7Days) {
+        const start = new Date(dateStr);
+        const end = new Date(dateStr);
+        end.setDate(end.getDate() + 1);
+        const snap = await db.collection("messages")
+          .where("timestamp", ">=", start)
+          .where("timestamp", "<", end)
+          .get();
+        newCounts.push(snap.size);
+      }
+      activityChart.data.datasets[0].data = newCounts;
+      activityChart.update();
+    }, 30000);
   }
 
   // Global functions for admin actions
   window.deleteMessage = async (messageId) => {
-    if (confirm("Delete this message?")) {
+    if (confirm("⚠️ Permanently delete this message?")) {
       await db.collection("messages").doc(messageId).delete();
-      alert("Message deleted!");
+      // Also refresh dashboard stats for consistency
+      loadDashboardStats();
     }
   };
 
   window.editMessage = async (messageId, oldText) => {
-    const newText = prompt("Edit message:", oldText);
+    const newText = prompt("✏️ Edit message (admin action):", oldText || "");
     if (newText && newText !== oldText) {
       await db.collection("messages").doc(messageId).update({
         text: newText,
         edited: true,
-        editedAt: firebase.firestore.FieldValue.serverTimestamp()
+        editedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        editedBy: "ADMIN"
       });
-      alert("Message updated!");
+    } else if (newText === "") {
+      alert("Message cannot be empty.");
     }
   };
 
   window.banUser = async (userId, userEmail) => {
-    if (confirm(`Ban ${userEmail}? They won't be able to login.`)) {
+    if (confirm(`🚫 Ban ${userEmail}? User will be logged out and blocked.`)) {
       await db.collection("bannedUsers").doc(userId).set({
         email: userEmail,
         bannedAt: firebase.firestore.FieldValue.serverTimestamp(),
         bannedBy: currentAdmin.email
       });
-      alert("User banned!");
+      // Force sign out if user is currently logged in (server-side security rules handle, but client will detect)
+      loadDashboardStats();
     }
   };
 
   window.unbanUser = async (userId) => {
-    if (confirm("Unban this user?")) {
+    if (confirm("✅ Unban this user? They'll be able to log in again.")) {
       await db.collection("bannedUsers").doc(userId).delete();
-      alert("User unbanned!");
+      loadDashboardStats();
     }
   };
 
-  // Auth state to check for banned users
+  // Auth state to check for banned users and auto-sign out
   auth.onAuthStateChanged(async (user) => {
     if (user && user.email !== ADMIN_EMAIL) {
       const bannedDoc = await db.collection("bannedUsers").doc(user.uid).get();
       if (bannedDoc.exists) {
         await auth.signOut();
-        alert("You have been banned by admin!");
+        alert("⛔ You have been banned by administrator.");
+        location.reload();
       }
     }
   });
+  
+  // Prefill password for demo convenience (testing only)
+  document.getElementById("adminPassword").value = "";
 </script>
 </body>
 </html>

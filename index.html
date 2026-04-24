@@ -366,9 +366,9 @@
   const CLOUDINARY_CLOUD_NAME = "dhzxhakci";
   const CLOUDINARY_UPLOAD_PRESET = "chat_uploads";
 
-  // ALLOWED USERS - only these emails can login
+  // ALLOWED USERS - Only member emails (Admin/Owner profile REMOVED as requested)
+  // Owner/admin now only accessible via separate admin panel, not as chat user
   const ALLOWED_USERS = new Map([
-    ["owner@admin.com", { name: "AROMATIC OWNER", role: "admin" }],
     ["sp@sp.com", { name: "SP", role: "member" }],
     ["sv@sv.com", { name: "SV", role: "member" }]
   ]);
@@ -499,7 +499,7 @@
     }, 15000);
   }
 
-  // CRITICAL FIX: Real-time online status listener - ONLY shows truly online users
+  // Real-time online status listener - ONLY shows truly online users
   function loadMembersWithRealOnlineStatus() {
     if (membersUnsub) membersUnsub();
     
@@ -514,15 +514,11 @@
         const data = doc.data();
         // Only include users from ALLOWED_USERS list
         if (data.email && isEmailAllowed(data.email)) {
-          // CRITICAL: Determine REAL online status
-          // A user is considered ONLINE only if:
-          // 1. Their 'online' flag is true AND
-          // 2. Their lastSeen is within the last 30 seconds (to prevent stale status)
+          // Determine REAL online status
           let isRealOnline = false;
           if (data.online === true && data.lastSeen) {
             const lastSeenTime = data.lastSeen.toDate ? data.lastSeen.toDate() : new Date(data.lastSeen);
             const secondsSinceLastSeen = (now - lastSeenTime.getTime()) / 1000;
-            // If last heartbeat was within 30 seconds, user is truly online
             isRealOnline = secondsSinceLastSeen < 30;
           }
           
@@ -544,22 +540,19 @@
       
       let html = '';
       usersList.forEach(user => {
-        const isAdmin = ALLOWED_USERS.get(user.email)?.role === "admin";
-        const isOnline = user.isRealOnline; // Use REAL online status only
+        const isOnline = user.isRealOnline;
         
-        // Online indicator with green dot for truly online users
         const onlineStatusHtml = isOnline ? 
           '<span class="online-dot" style="background:#22c55e; box-shadow:0 0 4px #22c55e;"></span>' : 
           '<span class="offline-dot"></span>';
         
         let lastSeenText = "";
-        // Only show last seen for admin users and when user is offline
-        if (currentUser && ALLOWED_USERS.get(currentUser.email)?.role === "admin" && !isOnline && user.lastSeen) {
+        if (!isOnline && user.lastSeen) {
           const date = user.lastSeen.toDate ? user.lastSeen.toDate() : new Date(user.lastSeen);
           lastSeenText = `<span class="lastseen-toast">last seen ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
         }
         
-        html += `<div class="member-chip ${isAdmin ? 'admin' : ''} ${isOnline ? 'online-member' : ''}">
+        html += `<div class="member-chip ${isOnline ? 'online-member' : ''}">
                   <strong>${user.displayName || user.email.split('@')[0]}</strong> ${onlineStatusHtml} ${lastSeenText}
                   <span style="font-size:9px; color:#94a3b8;">${user.email}</span>
                 </div>`;
@@ -583,7 +576,7 @@
       document.getElementById("authPanel").style.display = "none";
       document.getElementById("chatContainer").style.display = "flex";
       const userData = ALLOWED_USERS.get(user.email.toLowerCase());
-      document.getElementById("myEmailShort").innerHTML = `${userData?.name || user.email.split('@')[0]} ${userData?.role === 'admin' ? '👑' : ''}`;
+      document.getElementById("myEmailShort").innerHTML = `${userData?.name || user.email.split('@')[0]}`;
       
       await setUserOnlineStatus(true);
       startOnlineHeartbeat();
@@ -591,7 +584,7 @@
       addActivityListeners();
       
       startRealtimeFeatures();
-      loadMembersWithRealOnlineStatus(); // Use the fixed online status listener
+      loadMembersWithRealOnlineStatus();
       loadMessages();
       
       showToast(`Welcome back, ${userData?.name || user.email.split('@')[0]}! 🌿`, false);
@@ -645,7 +638,6 @@
     const inputField = document.getElementById("messageInput");
     if (!inputField) return;
     
-    // Remove old listener and reattach
     const newInputField = inputField.cloneNode(true);
     inputField.parentNode.replaceChild(newInputField, inputField);
     const freshInput = document.getElementById("messageInput");

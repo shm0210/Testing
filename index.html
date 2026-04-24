@@ -131,13 +131,6 @@
       color: transparent;
     }
 
-    /* Header actions group: both desktop icons and mobile message button */
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
     .user-badge {
       display: flex;
       align-items: center;
@@ -146,45 +139,6 @@
       background: #0f172a;
       padding: 5px 12px;
       border-radius: 40px;
-    }
-
-    /* Mobile message button inside header */
-    .mobile-msg-btn {
-      background: #f59e0b20;
-      border: 1px solid #f59e0b;
-      border-radius: 40px;
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #fbbf24;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .mobile-msg-btn i {
-      font-size: 1rem;
-    }
-
-    .mobile-msg-btn:active {
-      transform: scale(0.96);
-      background: #f59e0b40;
-    }
-
-    /* Desktop style: hide special mobile button on large screens */
-    @media (min-width: 551px) {
-      .mobile-msg-btn {
-        display: none;
-      }
-    }
-
-    /* On mobile, optionally make the existing input bar more compact? but we still keep it, but dialog overrides typing */
-    @media (max-width: 550px) {
-      .mobile-msg-btn {
-        display: flex;
-      }
     }
 
     .online-dot {
@@ -352,116 +306,8 @@
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    /* MESSAGE DIALOG (for mobile) - floating panel */
-    .mobile-chat-dialog {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #111827;
-      border-top-left-radius: 28px;
-      border-top-right-radius: 28px;
-      z-index: 1100;
-      box-shadow: 0 -8px 30px rgba(0,0,0,0.6);
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      display: flex;
-      flex-direction: column;
-      max-height: 70vh;
-      border-top: 1px solid #f59e0b40;
-    }
-
-    .mobile-chat-dialog.open {
-      transform: translateY(0);
-    }
-
-    .dialog-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-      background: #1e293b;
-      border-top-left-radius: 28px;
-      border-top-right-radius: 28px;
-      border-bottom: 1px solid #334155;
-    }
-
-    .dialog-header span {
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #fbbf24;
-    }
-
-    .close-dialog {
-      background: none;
-      width: auto;
-      margin: 0;
-      font-size: 1.4rem;
-      padding: 0;
-      color: #94a3b8;
-    }
-
-    .dialog-messages-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      background: #0f172a;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 55vh;
-    }
-
-    .dialog-input-bar {
-      background: #1e293b;
-      padding: 12px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      border-top: 1px solid #334155;
-    }
-
-    .dialog-input-bar input {
-      flex: 1;
-      margin: 0;
-      background: #0f172a;
-    }
-
-    .dialog-icon-btn {
-      background: transparent;
-      width: auto;
-      padding: 10px;
-      margin: 0;
-      font-size: 1.3rem;
-    }
-
-    /* backdrop overlay */
-    .dialog-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(3px);
-      z-index: 1050;
-      display: none;
-    }
-
-    .dialog-overlay.active {
-      display: block;
-    }
-
-    @media (min-width: 551px) {
-      .mobile-chat-dialog, .dialog-overlay {
-        display: none !important;
-      }
-    }
-
     @media (max-width: 550px) {
-      .input-bar {
-        /* keep original input bar but dialog will also be used; we don't remove original to keep full control */
-      }
+      .message { max-width: 90%; }
     }
   </style>
 </head>
@@ -482,22 +328,16 @@
   <div id="chatContainer" class="chat-container">
     <div class="chat-header">
       <span class="logo">🌿 AROMATIC · room</span>
-      <div class="header-actions">
-        <!-- NEW MESSAGE BUTTON (ICON AT TOP) - appears on mobile screens, triggers dialog -->
-        <div id="mobileMsgTrigger" class="mobile-msg-btn">
-          <i class="fas fa-comment-dots"></i> <span>Chat</span>
-        </div>
-        <div class="user-badge">
-          <span id="myEmailShort"></span>
-          <span id="userOnlineIndicator" class="online-dot"></span>
-          <button id="logoutBtn" style="background: none; width: auto; margin:0; padding:0 6px; color:#f87171;" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
+      <div class="user-badge">
+        <span id="myEmailShort"></span>
+        <span id="userOnlineIndicator" class="online-dot"></span>
+        <button id="logoutBtn" style="background: none; width: auto; margin:0; padding:0 6px; color:#f87171;" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
       </div>
     </div>
     <div class="members-panel" id="membersList"></div>
     <div id="typingStatusArea" class="typing-indicator"></div>
     <div class="messages-area" id="messagesArea"></div>
-    <div class="input-bar" id="desktopInputBar">
+    <div class="input-bar">
       <button id="attachMediaBtn" class="icon-btn"><i class="fas fa-image"></i></button>
       <button id="attachAudioBtn" class="icon-btn"><i class="fas fa-microphone"></i></button>
       <input type="text" id="messageInput" placeholder="Message...">
@@ -505,28 +345,6 @@
     </div>
     <input type="file" id="fileImageInput" accept="image/*,video/mp4" style="display:none">
     <input type="file" id="fileAudioInput" accept="audio/*" style="display:none">
-  </div>
-
-  <!-- Floating Mobile Chat Dialog (for MOBILE screens only) -->
-  <div id="dialogOverlay" class="dialog-overlay"></div>
-  <div id="mobileChatDialog" class="mobile-chat-dialog">
-    <div class="dialog-header">
-      <span><i class="fas fa-comment"></i> Quick Message</span>
-      <button id="closeDialogBtn" class="close-dialog icon-btn"><i class="fas fa-times-circle"></i></button>
-    </div>
-    <div id="dialogMessagesArea" class="dialog-messages-area">
-      <!-- messages will be mirrored from main chat for convenience -->
-      <div style="text-align:center; opacity:0.6; font-size:0.8rem;">✨ Tap to send message</div>
-    </div>
-    <div class="dialog-input-bar">
-      <button id="dialogAttachMedia" class="dialog-icon-btn icon-btn"><i class="fas fa-image"></i></button>
-      <button id="dialogAttachAudio" class="dialog-icon-btn icon-btn"><i class="fas fa-microphone"></i></button>
-      <input type="text" id="dialogMessageInput" placeholder="Type a message...">
-      <button id="dialogSendBtn" class="dialog-icon-btn icon-btn"><i class="fas fa-paper-plane"></i></button>
-    </div>
-    <!-- hidden file inputs for dialog media -->
-    <input type="file" id="dialogFileImageInput" accept="image/*,video/mp4" style="display:none">
-    <input type="file" id="dialogFileAudioInput" accept="audio/*" style="display:none">
   </div>
 </div>
 
@@ -548,6 +366,8 @@
   const CLOUDINARY_CLOUD_NAME = "dhzxhakci";
   const CLOUDINARY_UPLOAD_PRESET = "chat_uploads";
 
+  // ALLOWED USERS - Only member emails (Admin/Owner profile REMOVED as requested)
+  // Owner/admin now only accessible via separate admin panel, not as chat user
   const ALLOWED_USERS = new Map([
     ["sp@sp.com", { name: "SP", role: "member" }],
     ["sv@sv.com", { name: "SV", role: "member" }]
@@ -561,19 +381,6 @@
   let activityListenersAdded = false;
   let membersUnsub = null;
   const INACTIVITY_TIMEOUT = 60000;
-
-  // Dialog elements
-  const dialogOverlay = document.getElementById('dialogOverlay');
-  const mobileDialog = document.getElementById('mobileChatDialog');
-  const openDialogBtn = document.getElementById('mobileMsgTrigger');
-  const closeDialogBtn = document.getElementById('closeDialogBtn');
-  const dialogMsgInput = document.getElementById('dialogMessageInput');
-  const dialogSendBtn = document.getElementById('dialogSendBtn');
-  const dialogMessagesArea = document.getElementById('dialogMessagesArea');
-  const dialogAttachMedia = document.getElementById('dialogAttachMedia');
-  const dialogAttachAudio = document.getElementById('dialogAttachAudio');
-  const dialogFileImage = document.getElementById('dialogFileImageInput');
-  const dialogFileAudio = document.getElementById('dialogFileAudioInput');
 
   function showToast(message, isError = false) {
     const existingToast = document.querySelector('.auto-logout-toast');
@@ -597,14 +404,27 @@
   }
 
   function resetInactivityTimer() {
-    if (currentUser) scheduleAutoLogout();
+    if (currentUser) {
+      scheduleAutoLogout();
+    }
   }
 
   function addActivityListeners() {
     if (activityListenersAdded) return;
     const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'];
-    events.forEach(event => window.addEventListener(event, resetInactivityTimer));
+    events.forEach(event => {
+      window.addEventListener(event, resetInactivityTimer);
+    });
     activityListenersAdded = true;
+  }
+
+  function removeActivityListeners() {
+    if (!activityListenersAdded) return;
+    const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'];
+    events.forEach(event => {
+      window.removeEventListener(event, resetInactivityTimer);
+    });
+    activityListenersAdded = false;
   }
 
   async function uploadToCloudinary(file, resourceType = 'image') {
@@ -614,17 +434,24 @@
       formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
       try {
         let uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
-        if (resourceType === 'audio') uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`;
-        else if (resourceType === 'video') uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
+        if (resourceType === 'audio') {
+          uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`;
+        } else if (resourceType === 'video') {
+          uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
+        }
         const response = await fetch(uploadUrl, { method: 'POST', body: formData });
         if (!response.ok) throw new Error('Upload failed');
         const data = await response.json();
         resolve(data.secure_url);
-      } catch (error) { reject(error); }
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
-  function isEmailAllowed(email) { return ALLOWED_USERS.has(email?.toLowerCase()); }
+  function isEmailAllowed(email) {
+    return ALLOWED_USERS.has(email?.toLowerCase());
+  }
 
   async function ensureUserProfile(user) {
     if (!user) return;
@@ -632,161 +459,342 @@
     const docSnap = await userRef.get();
     const userData = ALLOWED_USERS.get(user.email.toLowerCase());
     if (!docSnap.exists) {
-      await userRef.set({ uid: user.uid, email: user.email, displayName: userData?.name || user.email.split('@')[0], role: userData?.role || "member", online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp(), createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    } else { await userRef.update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() }); }
+      await userRef.set({
+        uid: user.uid,
+        email: user.email,
+        displayName: userData?.name || user.email.split('@')[0],
+        role: userData?.role || "member",
+        online: true,
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      await userRef.update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+    }
     return userRef;
   }
 
   async function setUserOnlineStatus(isOnline) {
     if (!currentUser) return;
-    await db.collection("users").doc(currentUser.uid).update({ online: isOnline, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection("users").doc(currentUser.uid).update({ 
+      online: isOnline, 
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp() 
+    });
     const onlineIndicator = document.getElementById("userOnlineIndicator");
-    if (onlineIndicator) onlineIndicator.style.backgroundColor = isOnline ? "#22c55e" : "#64748b";
+    if (onlineIndicator) {
+      onlineIndicator.style.backgroundColor = isOnline ? "#22c55e" : "#64748b";
+      onlineIndicator.style.boxShadow = isOnline ? "0 0 4px #22c55e" : "none";
+    }
   }
 
   function startOnlineHeartbeat() {
     if (onlineStatusInterval) clearInterval(onlineStatusInterval);
-    onlineStatusInterval = setInterval(async () => { if(currentUser) await db.collection("users").doc(currentUser.uid).update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() }); }, 15000);
+    onlineStatusInterval = setInterval(async () => {
+      if (currentUser) {
+        await db.collection("users").doc(currentUser.uid).update({ 
+          online: true, 
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp() 
+        });
+      }
+    }, 15000);
   }
 
+  // Real-time online status listener - ONLY shows truly online users
   function loadMembersWithRealOnlineStatus() {
     if (membersUnsub) membersUnsub();
+    
     membersUnsub = db.collection("users").onSnapshot((snapshot) => {
       const membersDiv = document.getElementById("membersList");
       if (!membersDiv) return;
-      const usersList = [], now = Date.now();
+      
+      const usersList = [];
+      const now = Date.now();
+      
       snapshot.forEach(doc => {
         const data = doc.data();
+        // Only include users from ALLOWED_USERS list
         if (data.email && isEmailAllowed(data.email)) {
+          // Determine REAL online status
           let isRealOnline = false;
           if (data.online === true && data.lastSeen) {
             const lastSeenTime = data.lastSeen.toDate ? data.lastSeen.toDate() : new Date(data.lastSeen);
-            isRealOnline = (now - lastSeenTime.getTime()) / 1000 < 30;
+            const secondsSinceLastSeen = (now - lastSeenTime.getTime()) / 1000;
+            isRealOnline = secondsSinceLastSeen < 30;
           }
-          usersList.push({ id: doc.id, ...data, isRealOnline });
+          
+          usersList.push({ 
+            id: doc.id, 
+            ...data, 
+            isRealOnline: isRealOnline 
+          });
         }
       });
-      usersList.sort((a,b) => (a.isRealOnline === b.isRealOnline) ? (a.displayName || '').localeCompare(b.displayName || '') : a.isRealOnline ? -1 : 1);
-      membersDiv.innerHTML = usersList.map(user => `<div class="member-chip ${user.isRealOnline ? 'online-member' : ''}"><strong>${user.displayName || user.email.split('@')[0]}</strong> ${user.isRealOnline ? '<span class="online-dot" style="background:#22c55e;"></span>' : '<span class="offline-dot"></span>'} <span style="font-size:9px;">${user.email}</span></div>`).join('');
+      
+      // Sort: online users first, then offline
+      usersList.sort((a, b) => {
+        if (a.isRealOnline === b.isRealOnline) {
+          return (a.displayName || '').localeCompare(b.displayName || '');
+        }
+        return a.isRealOnline ? -1 : 1;
+      });
+      
+      let html = '';
+      usersList.forEach(user => {
+        const isOnline = user.isRealOnline;
+        
+        const onlineStatusHtml = isOnline ? 
+          '<span class="online-dot" style="background:#22c55e; box-shadow:0 0 4px #22c55e;"></span>' : 
+          '<span class="offline-dot"></span>';
+        
+        let lastSeenText = "";
+        if (!isOnline && user.lastSeen) {
+          const date = user.lastSeen.toDate ? user.lastSeen.toDate() : new Date(user.lastSeen);
+          lastSeenText = `<span class="lastseen-toast">last seen ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
+        }
+        
+        html += `<div class="member-chip ${isOnline ? 'online-member' : ''}">
+                  <strong>${user.displayName || user.email.split('@')[0]}</strong> ${onlineStatusHtml} ${lastSeenText}
+                  <span style="font-size:9px; color:#94a3b8;">${user.email}</span>
+                </div>`;
+      });
+      membersDiv.innerHTML = html;
     });
   }
 
-  function getDisplayNameForUser(user) { return ALLOWED_USERS.get(user.email.toLowerCase())?.name || (user.email ? user.email.split('@')[0] : 'User'); }
-
-  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-
-  async function sendMessageLogic(text, file, type) {
-    if (!currentUser) return;
-    resetInactivityTimer();
-    const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
-    if (text && text.trim()) {
-      await db.collection("messages").add({ text: text.trim(), senderId: currentUser.uid, senderName: userData?.name || currentUser.email.split('@')[0], type: "text", timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-      db.collection("status").doc("typing").update({ [currentUser.uid]: false });
-    } else if (file) {
-      const loadingRef = await db.collection("messages").add({ text: "📤 Uploading media...", senderId: currentUser.uid, senderName: getDisplayNameForUser(currentUser), type: "text", timestamp: firebase.firestore.FieldValue.serverTimestamp(), isLoading: true });
-      try {
-        const mediaType = type === 'image' ? 'image' : (type === 'video' ? 'video' : 'audio');
-        const url = await uploadToCloudinary(file, mediaType);
-        await loadingRef.delete();
-        await db.collection("messages").add({ fileUrl: url, senderId: currentUser.uid, senderName: userData?.name || currentUser.email.split('@')[0], type: type, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-      } catch(e) { await loadingRef.delete(); await db.collection("messages").add({ text: "❌ Failed to upload", senderId: currentUser.uid, senderName: getDisplayNameForUser(currentUser), type: "text", timestamp: firebase.firestore.FieldValue.serverTimestamp() }); }
-    }
-  }
-
-  // Mirror main messages into dialog
-  let lastDialogSnapshot = [];
-  function syncMessagesToDialog(snapshot) {
-    if (!dialogMessagesArea) return;
-    const container = dialogMessagesArea;
-    const oldScroll = container.scrollHeight - container.scrollTop;
-    container.innerHTML = '';
-    snapshot.forEach(doc => {
-      const msg = doc.data();
-      const isOwn = currentUser && msg.senderId === currentUser.uid;
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
-      let inner = `<div style="font-size:0.7rem;opacity:0.8;">${escapeHtml(msg.senderName || '?')}</div>`;
-      if (msg.type === 'text') inner += `<div>${escapeHtml(msg.text)}</div>`;
-      else if (msg.type === 'image' && msg.fileUrl) inner += `<img src="${msg.fileUrl}" class="media-msg" style="max-width:160px; border-radius:1rem;" onclick="window.open('${msg.fileUrl}')" />`;
-      else if (msg.type === 'audio' && msg.fileUrl) inner += `<audio controls src="${msg.fileUrl}" style="width:160px;"></audio>`;
-      else if (msg.type === 'video' && msg.fileUrl) inner += `<video controls src="${msg.fileUrl}" style="max-width:160px; border-radius:1rem;"></video>`;
-      const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-      inner += `<div class="msg-meta">${timeStr}</div>`;
-      msgDiv.innerHTML = inner;
-      container.appendChild(msgDiv);
-    });
-    if (container.scrollHeight - container.scrollTop - oldScroll < 60) container.scrollTop = container.scrollHeight;
-  }
-
-  function loadMessages() {
-    if (messagesUnsub) messagesUnsub();
-    messagesUnsub = db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
-      const container = document.getElementById("messagesArea");
-      if(container) {
-        const wasBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
-        container.innerHTML = "";
-        snapshot.forEach(doc => { const msg = doc.data(); const isOwn = currentUser && msg.senderId === currentUser.uid; const msgDiv = document.createElement('div'); msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`; let html = `<div style="font-size:0.7rem;">${escapeHtml(msg.senderName || '?')}</div>`; if(msg.type==='text') html+=`<div>${escapeHtml(msg.text)}</div>`; else if(msg.type==='image'&&msg.fileUrl) html+=`<img src="${msg.fileUrl}" class="media-msg" style="max-width:100%;" onclick="window.open('${msg.fileUrl}')" />`; else if(msg.type==='audio'&&msg.fileUrl) html+=`<audio controls src="${msg.fileUrl}"></audio>`; else if(msg.type==='video'&&msg.fileUrl) html+=`<video controls src="${msg.fileUrl}" style="max-width:200px;border-radius:1rem;"></video>`; const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ""; html+=`<div class="msg-meta">${timeStr}</div>`; msgDiv.innerHTML=html; container.appendChild(msgDiv); });
-        if(wasBottom) container.scrollTop = container.scrollHeight;
-      }
-      syncMessagesToDialog(snapshot); // update dialog mirror
-    });
-  }
-
-  function attachDialogMediaHandler(btn, fileInput, mediaType) {
-    btn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', async (e) => {
-      if(e.target.files.length && currentUser) {
-        const file = e.target.files[0];
-        const realType = file.type.startsWith('image/') ? 'image' : (file.type.startsWith('video/') ? 'video' : 'audio');
-        await sendMessageLogic(null, file, realType);
-        fileInput.value = '';
-        if(mobileDialog.classList.contains('open')) setTimeout(() => dialogMessagesArea.scrollTop = dialogMessagesArea.scrollHeight, 100);
-      }
-    });
-  }
-
-  function initDialog() {
-    openDialogBtn.addEventListener('click', () => { dialogOverlay.classList.add('active'); mobileDialog.classList.add('open'); });
-    function closeDialog() { dialogOverlay.classList.remove('active'); mobileDialog.classList.remove('open'); }
-    closeDialogBtn.addEventListener('click', closeDialog);
-    dialogOverlay.addEventListener('click', closeDialog);
-    dialogSendBtn.addEventListener('click', async () => { const txt = dialogMsgInput.value.trim(); if(txt && currentUser) { await sendMessageLogic(txt, null, null); dialogMsgInput.value = ''; if(mobileDialog.classList.contains('open')) setTimeout(() => dialogMessagesArea.scrollTop = dialogMessagesArea.scrollHeight, 50); } });
-    dialogMsgInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') dialogSendBtn.click(); });
-    attachDialogMediaHandler(dialogAttachMedia, dialogFileImage, 'image');
-    attachDialogMediaHandler(dialogAttachAudio, dialogFileAudio, 'audio');
-  }
-
+  // Authentication State Listener
   auth.onAuthStateChanged(async (user) => {
     if (user && isEmailAllowed(user.email)) {
       const bannedDoc = await db.collection("bannedUsers").doc(user.uid).get();
-      if (bannedDoc.exists) { await auth.signOut(); document.getElementById("authError").innerText = "⛔ You have been banned!"; return; }
+      if (bannedDoc.exists) {
+        await auth.signOut();
+        document.getElementById("authError").innerText = "⛔ You have been banned by admin!";
+        return;
+      }
+      
       currentUser = user;
       await ensureUserProfile(user);
       document.getElementById("authPanel").style.display = "none";
       document.getElementById("chatContainer").style.display = "flex";
       const userData = ALLOWED_USERS.get(user.email.toLowerCase());
       document.getElementById("myEmailShort").innerHTML = `${userData?.name || user.email.split('@')[0]}`;
-      await setUserOnlineStatus(true); startOnlineHeartbeat(); scheduleAutoLogout(); addActivityListeners();
-      loadMembersWithRealOnlineStatus(); loadMessages();
-      initDialog(); // attach dialog after login
+      
+      await setUserOnlineStatus(true);
+      startOnlineHeartbeat();
+      scheduleAutoLogout();
+      addActivityListeners();
+      
+      startRealtimeFeatures();
+      loadMembersWithRealOnlineStatus();
+      loadMessages();
+      
       showToast(`Welcome back, ${userData?.name || user.email.split('@')[0]}! 🌿`, false);
-      // attach original send events
-      document.getElementById("sendBtn").onclick = () => { const val = document.getElementById("messageInput").value; if(val) sendMessageLogic(val, null, null); document.getElementById("messageInput").value = ''; };
-      document.getElementById("messageInput").addEventListener("keypress", (e) => { if(e.key === 'Enter') document.getElementById("sendBtn").click(); });
-      document.getElementById("attachMediaBtn").onclick = () => document.getElementById("fileImageInput").click();
-      document.getElementById("attachAudioBtn").onclick = () => document.getElementById("fileAudioInput").click();
-      document.getElementById("fileImageInput").addEventListener("change", (e) => { if(e.target.files.length) { const f=e.target.files[0]; const t=f.type.startsWith('image/')?'image':'video'; sendMessageLogic(null, f, t); e.target.value=''; } });
-      document.getElementById("fileAudioInput").addEventListener("change", (e) => { if(e.target.files.length) { sendMessageLogic(null, e.target.files[0], 'audio'); e.target.value=''; } });
-      const typingRef = db.collection("status").doc("typing");
-      const inputField = document.getElementById("messageInput");
-      inputField.addEventListener("input", () => { if(currentUser) { typingRef.set({ [currentUser.uid]: true, name: getDisplayNameForUser(currentUser), timestamp: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true }); if(typingTimeout) clearTimeout(typingTimeout); typingTimeout = setTimeout(() => typingRef.update({ [currentUser.uid]: false }), 1500); } });
-      db.collection("status").doc("typing").onSnapshot((doc) => { const data=doc.data()||{}; const typingUsers=Object.keys(data).filter(uid=>data[uid]===true && uid!==currentUser?.uid); document.getElementById("typingStatusArea").innerHTML = typingUsers.length ? `<i class="fas fa-pen-fancy"></i> Someone is typing...` : ''; });
-    } else if(user && !isEmailAllowed(user.email)) { await auth.signOut(); document.getElementById("authError").innerText = "⛔ Not authorized."; document.getElementById("chatContainer").style.display = "none"; document.getElementById("authPanel").style.display = "flex"; }
-    else { if(onlineStatusInterval) clearInterval(onlineStatusInterval); if(messagesUnsub) messagesUnsub(); if(membersUnsub) membersUnsub(); currentUser=null; document.getElementById("authPanel").style.display = "flex"; document.getElementById("chatContainer").style.display = "none"; document.getElementById("loginEmail").value=""; document.getElementById("loginPassword").value=""; }
+      
+    } else if (user && !isEmailAllowed(user.email)) {
+      await auth.signOut();
+      document.getElementById("authError").innerText = "⛔ Your email is not authorized. Contact AROMATIC.";
+      document.getElementById("chatContainer").style.display = "none";
+      document.getElementById("authPanel").style.display = "flex";
+    } else {
+      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      removeActivityListeners();
+      if (messagesUnsub) messagesUnsub();
+      if (membersUnsub) membersUnsub();
+      currentUser = null;
+      
+      document.getElementById("authPanel").style.display = "flex";
+      document.getElementById("chatContainer").style.display = "none";
+      document.getElementById("loginEmail").value = "";
+      document.getElementById("loginPassword").value = "";
+    }
   });
-  document.getElementById("loginBtn").addEventListener("click", async () => { const email=document.getElementById("loginEmail").value.trim(), pwd=document.getElementById("loginPassword").value; if(!email||!pwd){document.getElementById("authError").innerText="Enter email & password"; return;} if(!isEmailAllowed(email)){document.getElementById("authError").innerText="Access denied."; return;} try{ await auth.signInWithEmailAndPassword(email,pwd); document.getElementById("authError").innerText=""; } catch(err){ document.getElementById("authError").innerText="Invalid credentials."; } });
-  document.getElementById("logoutBtn").addEventListener("click", async () => { if(currentUser) { await setUserOnlineStatus(false); if(onlineStatusInterval) clearInterval(onlineStatusInterval); await auth.signOut(); showToast("Logged out. See you soon! 👋"); } });
-  window.addEventListener("beforeunload", async () => { if(currentUser) await setUserOnlineStatus(false); });
+
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pwd = document.getElementById("loginPassword").value;
+    const errorDiv = document.getElementById("authError");
+    if (!email || !pwd) { errorDiv.innerText = "Enter email & password"; return; }
+    if (!isEmailAllowed(email)) { errorDiv.innerText = "Access denied: email not authorized."; return; }
+    try {
+      await auth.signInWithEmailAndPassword(email, pwd);
+      errorDiv.innerText = "";
+    } catch (err) {
+      errorDiv.innerText = "Invalid credentials. Make sure this user exists in Firebase Authentication.";
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    if (currentUser) {
+      await setUserOnlineStatus(false);
+      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      removeActivityListeners();
+      await auth.signOut();
+      showToast("You have been logged out. See you soon! 👋", false);
+    }
+  });
+
+  function startRealtimeFeatures() {
+    const inputField = document.getElementById("messageInput");
+    if (!inputField) return;
+    
+    const newInputField = inputField.cloneNode(true);
+    inputField.parentNode.replaceChild(newInputField, inputField);
+    const freshInput = document.getElementById("messageInput");
+    
+    freshInput.addEventListener("input", () => {
+      if (!currentUser) return;
+      const typingRef = db.collection("status").doc("typing");
+      typingRef.set({
+        [currentUser.uid]: true,
+        name: getDisplayNameForUser(currentUser),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      if (typingTimeout) clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        typingRef.update({ [currentUser.uid]: false });
+      }, 1500);
+      resetInactivityTimer();
+    });
+
+    db.collection("status").doc("typing").onSnapshot((doc) => {
+      const typingData = doc.data() || {};
+      const typingUsers = Object.keys(typingData).filter(uid => typingData[uid] === true && uid !== currentUser?.uid);
+      const typingArea = document.getElementById("typingStatusArea");
+      if (typingUsers.length > 0) {
+        typingArea.innerHTML = `<i class="fas fa-pen-fancy"></i> Someone is typing...`;
+      } else {
+        typingArea.innerHTML = "";
+      }
+    });
+  }
+
+  function getDisplayNameForUser(user) {
+    return ALLOWED_USERS.get(user.email.toLowerCase())?.name || (user.email ? user.email.split('@')[0] : 'User');
+  }
+
+  function loadMessages() {
+    if (messagesUnsub) messagesUnsub();
+    messagesUnsub = db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
+      const container = document.getElementById("messagesArea");
+      if (!container) return;
+      const wasScrolledToBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
+      container.innerHTML = "";
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const isOwn = currentUser && msg.senderId === currentUser.uid;
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
+        let contentHTML = '';
+        if (msg.type === 'text') {
+          contentHTML = `<div>${escapeHtml(msg.text)}</div>`;
+        } else if (msg.type === 'image' && msg.fileUrl) {
+          contentHTML = `<img src="${msg.fileUrl}" class="media-msg" style="max-width:100%; max-height:180px; border-radius:1rem;" onclick="window.open('${msg.fileUrl}')" />`;
+        } else if (msg.type === 'audio' && msg.fileUrl) {
+          contentHTML = `<audio controls src="${msg.fileUrl}" class="audio-msg" style="width:180px;"></audio>`;
+        } else if (msg.type === 'video' && msg.fileUrl) {
+          contentHTML = `<video controls src="${msg.fileUrl}" class="media-msg" style="max-width:200px; border-radius:1rem;"></video>`;
+        }
+        const senderName = msg.senderName || "unknown";
+        const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+        msgDiv.innerHTML = `<div style="font-size:0.7rem; opacity:0.8;">${senderName}</div>${contentHTML}<div class="msg-meta">${timeStr}</div>`;
+        container.appendChild(msgDiv);
+      });
+      if (wasScrolledToBottom) {
+        container.scrollTop = container.scrollHeight;
+      }
+    });
+  }
+
+  function escapeHtml(str) { 
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m){
+      if(m==='&') return '&amp;'; 
+      if(m==='<') return '&lt;'; 
+      if(m==='>') return '&gt;'; 
+      return m;
+    }); 
+  }
+
+  async function sendTextMessage() {
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+    if (!text || !currentUser) return;
+    const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
+    await db.collection("messages").add({
+      text: text,
+      senderId: currentUser.uid,
+      senderName: userData?.name || currentUser.email.split('@')[0],
+      type: "text",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    input.value = "";
+    db.collection("status").doc("typing").update({ [currentUser.uid]: false });
+    resetInactivityTimer();
+  }
+
+  async function uploadMedia(file, type) {
+    if (!currentUser) return;
+    resetInactivityTimer();
+    const loadingMsg = await db.collection("messages").add({
+      text: "📤 Uploading media...",
+      senderId: currentUser.uid,
+      senderName: getDisplayNameForUser(currentUser),
+      type: "text",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      isLoading: true
+    });
+    try {
+      let resourceType = type;
+      if (type === 'image') resourceType = 'image';
+      else if (type === 'audio') resourceType = 'audio';
+      else if (type === 'video') resourceType = 'video';
+      const downloadUrl = await uploadToCloudinary(file, resourceType);
+      await loadingMsg.delete();
+      const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
+      await db.collection("messages").add({
+        fileUrl: downloadUrl,
+        senderId: currentUser.uid,
+        senderName: userData?.name || currentUser.email.split('@')[0],
+        type: type,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (error) {
+      await loadingMsg.delete();
+      await db.collection("messages").add({
+        text: "❌ Failed to upload media",
+        senderId: currentUser.uid,
+        senderName: getDisplayNameForUser(currentUser),
+        type: "text",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  }
+
+  document.getElementById("sendBtn").addEventListener("click", sendTextMessage);
+  document.getElementById("messageInput").addEventListener("keypress", (e) => { if(e.key === 'Enter') sendTextMessage(); });
+  document.getElementById("attachMediaBtn").addEventListener("click", () => document.getElementById("fileImageInput").click());
+  document.getElementById("attachAudioBtn").addEventListener("click", () => document.getElementById("fileAudioInput").click());
+  document.getElementById("fileImageInput").addEventListener("change", (e) => {
+    if (e.target.files.length) {
+      const file = e.target.files[0];
+      const type = file.type.startsWith('image/') ? 'image' : (file.type.startsWith('video/') ? 'video' : 'image');
+      uploadMedia(file, type);
+      e.target.value = '';
+    }
+  });
+  document.getElementById("fileAudioInput").addEventListener("change", (e) => {
+    if (e.target.files.length) {
+      uploadMedia(e.target.files[0], 'audio');
+      e.target.value = '';
+    }
+  });
+
+  window.addEventListener("beforeunload", async () => {
+    if (currentUser) {
+      await setUserOnlineStatus(false);
+    }
+  });
 </script>
 </body>
 </html>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>AROMATIC · GOD MODE ULTIMATE SUITE</title>
+  <!-- FIREBASE 9 compat (stable) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -145,82 +146,94 @@
   const OWNER_EMAIL = "owner@admin.com";
   let currentAdmin = null;
   let msgChart = null, userChart = null;
+  let unsubscribeTyping = null, unsubscribeUsers = null, unsubscribeMessages = null, unsubscribeReports = null;
 
-  // Helper: Real-time Dashboard
+  // Helper: refresh dashboard stats
   async function refreshStats() {
-    const users = await db.collection("users").get();
-    const msgs = await db.collection("messages").get();
-    const banned = await db.collection("bannedUsers").get();
-    const reports = await db.collection("reports").get();
-    const warnings = await db.collection("warnings").get();
-    document.getElementById("totalUsers").innerText = users.size;
-    document.getElementById("totalMessages").innerText = msgs.size;
-    document.getElementById("bannedUsers").innerText = banned.size;
-    document.getElementById("reportCount").innerText = reports.size;
-    document.getElementById("warningCount").innerText = warnings.size;
-    const today = new Date(); today.setHours(0,0,0,0);
-    const newToday = await db.collection("users").where("createdAt", ">=", today).get();
-    document.getElementById("newUsersToday").innerText = newToday.size;
-    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
-    const activeWeekSnap = await db.collection("users").where("lastSeen", ">=", weekAgo).get();
-    document.getElementById("activeWeek").innerText = activeWeekSnap.size;
-    // Peak hour logic
-    const allMsgs = await db.collection("messages").get();
-    const hourCount = new Array(24).fill(0);
-    allMsgs.forEach(doc => { let h = doc.data().timestamp?.toDate?.()?.getHours(); if(h!==undefined) hourCount[h]++; });
-    let peak = hourCount.indexOf(Math.max(...hourCount));
-    document.getElementById("peakHourStat").innerText = peak !== -1 ? `${peak}:00` : 'N/A';
+    try {
+      const usersSnap = await db.collection("users").get();
+      const msgsSnap = await db.collection("messages").get();
+      const bannedSnap = await db.collection("bannedUsers").get();
+      const reportsSnap = await db.collection("reports").get();
+      const warningsSnap = await db.collection("warnings").get();
+      document.getElementById("totalUsers").innerText = usersSnap.size;
+      document.getElementById("totalMessages").innerText = msgsSnap.size;
+      document.getElementById("bannedUsers").innerText = bannedSnap.size;
+      document.getElementById("reportCount").innerText = reportsSnap.size;
+      document.getElementById("warningCount").innerText = warningsSnap.size;
+      const today = new Date(); today.setHours(0,0,0,0);
+      const newToday = await db.collection("users").where("createdAt", ">=", today).get();
+      document.getElementById("newUsersToday").innerText = newToday.size;
+      const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+      const activeWeekSnap = await db.collection("users").where("lastSeen", ">=", weekAgo).get();
+      document.getElementById("activeWeek").innerText = activeWeekSnap.size;
+      const hourCount = new Array(24).fill(0);
+      msgsSnap.forEach(doc => { let h = doc.data().timestamp?.toDate?.()?.getHours(); if(h!==undefined) hourCount[h]++; });
+      let peak = hourCount.indexOf(Math.max(...hourCount));
+      document.getElementById("peakHourStat").innerText = peak !== -1 ? `${peak}:00` : 'N/A';
+    } catch(e) { console.warn(e); }
   }
 
-  // Online & Typing Real-time
+  // Real-time monitors (online, typing)
   function startRealtimeMonitors() {
-    db.collection("users").where("online", "==", true).onSnapshot(snap => {
+    if(unsubscribeUsers) unsubscribeUsers();
+    unsubscribeUsers = db.collection("users").where("online", "==", true).onSnapshot(snap => {
       let realOnline = 0;
       const onlineUsers = [];
-      snap.forEach(d => { if(d.data().lastSeen && (Date.now() - (d.data().lastSeen.toDate?.()?.getTime() || 0)) < 30000) { realOnline++; onlineUsers.push(d.data()); } });
+      snap.forEach(d => { 
+        const lastSeen = d.data().lastSeen?.toDate?.()?.getTime() || 0;
+        if(Date.now() - lastSeen < 30000) { realOnline++; onlineUsers.push({ ...d.data(), uid: d.id }); } 
+      });
       document.getElementById("onlineNow").innerText = realOnline;
       const container = document.getElementById("onlineUsersList");
-      if(container) container.innerHTML = onlineUsers.map(u => `<div class="stat-card"><i class="fas fa-user-circle"></i><h3>${u.displayName || u.email.split('@')[0]}</h3><p>${u.email}</p><span class="online-status online"></span> Just now</div>`).join('');
+      if(container) container.innerHTML = onlineUsers.map(u => `<div class="stat-card"><i class="fas fa-user-circle"></i><h3>${u.displayName || (u.email ? u.email.split('@')[0] : 'User')}</h3><p>${u.email || 'no email'}</p><span class="online-status online"></span> Online now</div>`).join('');
+      const allUsersDiv = document.getElementById("allAuthUsersList");
+      if(allUsersDiv) {
+        db.collection("users").get().then(all => {
+          allUsersDiv.innerHTML = all.docs.map(d => `<div class="user-card"><div><strong>${d.data().displayName || d.data().email || d.id}</strong><br><small>${d.data().email || d.id}</small></div><span class="${d.data().online ? 'online-status online' : 'offline'}"></span></div>`).join('');
+        });
+      }
     });
-    db.collection("status").doc("typing").onSnapshot(doc => {
+    const typingRef = db.collection("status").doc("typing");
+    if(unsubscribeTyping) unsubscribeTyping();
+    unsubscribeTyping = typingRef.onSnapshot(doc => {
       const data = doc.data() || {};
       const typingUsers = Object.entries(data).filter(([k,v]) => v === true && k !== currentAdmin?.uid).map(([k]) => k);
       document.getElementById("typingCount").innerText = typingUsers.length;
       const globalDiv = document.getElementById("typingGlobalIndicator");
       if(globalDiv) globalDiv.innerHTML = typingUsers.length ? `✍️ <strong>${typingUsers.length} user(s) typing now...</strong>` : '✍️ No one typing';
     });
-    db.collection("messages").orderBy("timestamp", "desc").limit(15).onSnapshot(snap => {
+    if(unsubscribeMessages) unsubscribeMessages();
+    unsubscribeMessages = db.collection("messages").orderBy("timestamp", "desc").limit(15).onSnapshot(snap => {
       const feed = document.getElementById("recentActivity");
-      if(feed) feed.innerHTML = snap.docs.map(d => `<div style="padding:8px; border-bottom:1px solid #334155;"><strong>${d.data().senderName}</strong>: ${d.data().text?.substring(0,60) || '📎 Media'}</div>`).join('');
-    });
-    db.collection("users").onSnapshot(snap => {
-      const allUsersDiv = document.getElementById("allAuthUsersList");
-      if(allUsersDiv) allUsersDiv.innerHTML = snap.docs.map(d => `<div class="user-card"><div><strong>${d.data().displayName || d.data().email}</strong><br><small>${d.data().email}</small></div><span class="${d.data().online ? 'online-status online' : 'offline'}"></span></div>`).join('');
+      if(feed) feed.innerHTML = snap.docs.map(d => `<div style="padding:8px; border-bottom:1px solid #334155;"><strong>${d.data().senderName}</strong>: ${(d.data().text || '').substring(0,60) || '📎 Media'}</div>`).join('');
     });
   }
 
-  // User Control with Warn/Mute/Ban
+  // User Control with full functions (global)
   window.warnUser = async (userId, userName) => {
     const { value: reason } = await Swal.fire({ title: `Warn ${userName}`, input: 'text', inputLabel: 'Warning Reason', showCancelButton: true });
-    if(reason) { await db.collection("warnings").add({ userId, userName, reason, warnedBy: currentAdmin.email, timestamp: new Date() }); Swal.fire('⚠️ Warned!', `${userName} has been warned.`, 'warning'); refreshStats(); }
+    if(reason) { await db.collection("warnings").add({ userId, userName, reason, warnedBy: currentAdmin.email, timestamp: new Date() }); Swal.fire('⚠️ Warned!', `${userName} has been warned.`, 'warning'); refreshStats(); loadWarningsLog(); }
   };
   window.muteUser = async (userId, userName) => {
     const { value: mins } = await Swal.fire({ title: `Mute ${userName}`, input: 'number', inputLabel: 'Minutes to mute', showCancelButton: true });
     if(mins) { const until = Date.now() + mins*60000; await db.collection("mutedUsers").doc(userId).set({ mutedUntil: until, mutedBy: currentAdmin.email }); Swal.fire('🔇 Muted!', `${userName} muted for ${mins} min.`, 'info'); }
   };
-  window.banUser = async (uid) => { if(await Swal.fire({ title: 'Confirm Ban', text: 'User will be permanently banned', icon: 'warning', showCancelButton: true }).then(r=>r.isConfirmed)){ await db.collection("bannedUsers").doc(uid).set({ bannedAt: new Date(), by: currentAdmin.email }); Swal.fire('Banned!','User banned','success'); refreshStats(); } };
-  window.unbanUser = async (uid) => { await db.collection("bannedUsers").doc(uid).delete(); Swal.fire('Unbanned','User can login','info'); refreshStats(); };
+  window.banUser = async (uid) => { if(await Swal.fire({ title: 'Confirm Ban', text: 'User will be permanently banned', icon: 'warning', showCancelButton: true }).then(r=>r.isConfirmed)){ await db.collection("bannedUsers").doc(uid).set({ bannedAt: new Date(), by: currentAdmin.email }); Swal.fire('Banned!','User banned','success'); refreshStats(); loadUsersList(); } };
+  window.unbanUser = async (uid) => { await db.collection("bannedUsers").doc(uid).delete(); Swal.fire('Unbanned','User can login','info'); refreshStats(); loadUsersList(); };
   window.deleteMessageGod = async (msgId, sender) => {
     const { value: reason } = await Swal.fire({ title: 'Delete Message', input: 'text', inputLabel: 'Reason (logged)', showCancelButton: true });
     if(reason) { await db.collection("messages").doc(msgId).delete(); await db.collection("modLogs").add({ msgId, sender, reason, admin: currentAdmin.email }); Swal.fire('🗑️ Deleted','Message removed','success'); }
   };
-  window.resolveReport = async (reportId) => { await db.collection("reports").doc(reportId).delete(); Swal.fire('Resolved','Report closed','success'); refreshStats(); };
+  window.resolveReport = async (reportId) => { await db.collection("reports").doc(reportId).delete(); Swal.fire('Resolved','Report closed','success'); refreshStats(); loadReports(); };
+  window.removeBannedWord = async (word) => { const q = await db.collection("bannedWordsList").where("word","==",word).get(); q.forEach(d=>d.ref.delete()); Swal.fire('Removed','Word removed','info'); loadBannedWords(); };
+  window.cancelSchedule = async (id) => { await db.collection("scheduledMessages").doc(id).delete(); Swal.fire('Cancelled','Schedule removed','info'); loadScheduled(); };
 
-  // Load Users List with controls
   async function loadUsersList() {
     db.collection("users").onSnapshot(async snap => {
+      const warningsSnap = await db.collection("warnings").get();
       const warningsMap = new Map();
-      (await db.collection("warnings").get()).forEach(w => { warningsMap.set(w.data().userId, (warningsMap.get(w.data().userId)||0)+1); });
+      warningsSnap.forEach(w => { warningsMap.set(w.data().userId, (warningsMap.get(w.data().userId)||0)+1); });
       const bannedMap = new Map(); (await db.collection("bannedUsers").get()).forEach(b => bannedMap.set(b.id, true));
       const container = document.getElementById("usersList");
       if(!container) return;
@@ -228,51 +241,41 @@
       for(const doc of snap.docs){
         const u = doc.data();
         if(u.email === OWNER_EMAIL) continue;
-        const warns = warningsMap.get(u.uid) || 0;
-        const isBanned = bannedMap.has(u.uid);
-        container.innerHTML += `<div class="user-card"><div><strong>${u.displayName || u.email}</strong><br><small>${u.email}</small><br>⚠️ Warnings: ${warns}<br>Last: ${u.lastSeen?.toDate()?.toLocaleTimeString() || 'never'}</div><div style="display:flex; gap:8px;"><button class="warn-btn" onclick="warnUser('${u.uid}','${u.displayName}')">⚠️ Warn</button><button class="warn-btn" onclick="muteUser('${u.uid}','${u.displayName}')">🔇 Mute</button>${!isBanned ? `<button class="ban-btn" onclick="banUser('${u.uid}')">🚫 Ban</button>` : `<button class="ban-btn" style="background:#10b981;" onclick="unbanUser('${u.uid}')">✅ Unban</button>`}</div></div>`;
+        const warns = warningsMap.get(doc.id) || 0;
+        const isBanned = bannedMap.has(doc.id);
+        container.innerHTML += `<div class="user-card"><div><strong>${u.displayName || u.email || doc.id}</strong><br><small>${u.email || ''}</small><br>⚠️ Warnings: ${warns}<br>Last: ${u.lastSeen?.toDate?.()?.toLocaleTimeString() || 'never'}</div><div style="display:flex; gap:8px;"><button class="warn-btn" onclick="warnUser('${doc.id}','${(u.displayName || u.email || 'User').replace(/'/g, "\\'")}')">⚠️ Warn</button><button class="warn-btn" onclick="muteUser('${doc.id}','${(u.displayName || u.email || 'User').replace(/'/g, "\\'")}')">🔇 Mute</button>${!isBanned ? `<button class="ban-btn" onclick="banUser('${doc.id}')">🚫 Ban</button>` : `<button class="ban-btn" style="background:#10b981;" onclick="unbanUser('${doc.id}')">✅ Unban</button>`}</div></div>`;
       }
     });
   }
 
-  // Moderation: Banned Words
+  async function loadWarningsLog() {
+    const warnings = await db.collection("warnings").orderBy("timestamp","desc").get();
+    const container = document.getElementById("userWarningsList");
+    if(container) container.innerHTML = warnings.docs.map(d => `<div class="warning-item">⚠️ ${d.data().userName} - ${d.data().reason} <small>by ${d.data().warnedBy}</small></div>`).join('');
+  }
+
   async function loadBannedWords() {
     db.collection("bannedWordsList").onSnapshot(snap => {
-      const words = snap.docs.map(d => d.data().word);
       const container = document.getElementById("bannedWordsList");
-      if(container) container.innerHTML = words.map(w => `<span style="background:#dc2626; padding:6px 12px; border-radius:20px; margin:5px; display:inline-block;">${w} <button onclick="removeBannedWord('${w}')" style="background:none; color:white; margin-left:8px;">❌</button></span>`).join('');
+      if(container) container.innerHTML = snap.docs.map(d => `<span style="background:#dc2626; padding:6px 12px; border-radius:20px; margin:5px; display:inline-block;">${d.data().word} <button onclick="removeBannedWord('${d.data().word}')" style="background:none; color:white; margin-left:8px;">❌</button></span>`).join('');
     });
   }
-  window.removeBannedWord = async (word) => { const q = await db.collection("bannedWordsList").where("word","==",word).get(); q.forEach(d=>d.ref.delete()); Swal.fire('Removed','Word removed','info'); };
-  document.getElementById("addBannedWordBtn")?.addEventListener("click", async () => {
-    const w = document.getElementById("newBannedWord")?.value.trim().toLowerCase();
-    if(w) { await db.collection("bannedWordsList").add({ word: w }); Swal.fire('Added','Word banned','success'); document.getElementById("newBannedWord").value = ''; }
-  });
-
-  // Reports Panel
   function loadReports() {
-    db.collection("reports").orderBy("timestamp","desc").onSnapshot(snap => {
+    if(unsubscribeReports) unsubscribeReports();
+    unsubscribeReports = db.collection("reports").orderBy("timestamp","desc").onSnapshot(snap => {
       const container = document.getElementById("reportsList");
       if(!container) return;
-      container.innerHTML = snap.docs.map(d => `<div class="report-card"><div><strong>📢 ${d.data().senderName}</strong><br>${d.data().reason}<br><small>${new Date(d.data().timestamp?.toDate()).toLocaleString()}</small></div><div><button onclick="resolveReport('${d.id}')">✅ Resolve</button><button class="ban-btn" onclick="window.deleteMessageGod('${d.data().messageId}','${d.data().senderName}')">🗑️ Delete & Resolve</button></div></div>`).join('');
+      container.innerHTML = snap.docs.map(d => `<div class="report-card"><div><strong>📢 ${d.data().senderName}</strong><br>${d.data().reason}<br><small>${d.data().timestamp?.toDate?.()?.toLocaleString() || ''}</small></div><div><button onclick="resolveReport('${d.id}')">✅ Resolve</button><button class="ban-btn" onclick="window.deleteMessageGod('${d.data().messageId || ''}','${d.data().senderName}')">🗑️ Delete & Resolve</button></div></div>`).join('');
     });
   }
 
-  // Scheduled Messages
-  document.getElementById("scheduleMessageBtn")?.addEventListener("click", async () => {
-    const text = document.getElementById("scheduleMessageText")?.value;
-    const dt = document.getElementById("scheduleDateTime")?.value;
-    if(text && dt) { await db.collection("scheduledMessages").add({ text: `🔴 SCHEDULED: ${text}`, scheduledFor: new Date(dt), status: 'pending', createdBy: currentAdmin.email }); Swal.fire('Scheduled!','Message will broadcast','success'); }
-  });
   function loadScheduled() {
     db.collection("scheduledMessages").where("status","==","pending").onSnapshot(snap => {
       const container = document.getElementById("scheduledMessagesList");
-      if(container) container.innerHTML = snap.docs.map(d => `<div class="schedule-card">📅 ${d.data().text} - at ${new Date(d.data().scheduledFor?.toDate()).toLocaleString()} <button onclick="cancelSchedule('${d.id}')">Cancel</button></div>`).join('');
+      if(container) container.innerHTML = snap.docs.map(d => `<div class="schedule-card">📅 ${d.data().text} - at ${d.data().scheduledFor?.toDate?.()?.toLocaleString() || ''} <button onclick="cancelSchedule('${d.id}')">Cancel</button></div>`).join('');
     });
   }
-  window.cancelSchedule = async (id) => { await db.collection("scheduledMessages").doc(id).delete(); Swal.fire('Cancelled','Schedule removed','info'); };
 
-  // Auto-Mod Logs
   function loadAutoModLogs() {
     db.collection("autoModLogs").orderBy("timestamp","desc").limit(20).onSnapshot(snap => {
       const container = document.getElementById("autoModLogs");
@@ -281,22 +284,6 @@
     });
   }
 
-  // Backup & Clear
-  document.getElementById("backupNowBtn")?.addEventListener("click", async () => {
-    const msgs = await db.collection("messages").get(); const users = await db.collection("users").get();
-    const data = { messages: msgs.docs.map(d=>d.data()), users: users.docs.map(d=>d.data()), backupDate: new Date() };
-    const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `god_backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href);
-    Swal.fire('Backup Created','JSON exported','success');
-  });
-  document.getElementById("clearAllMessagesBtn")?.addEventListener("click", async () => {
-    if(await Swal.fire({ title: '⚠️ DANGER', text: 'Delete ALL messages? Permanent!', icon: 'warning', showCancelButton: true }).then(r=>r.isConfirmed)){
-      const msgs = await db.collection("messages").get(); msgs.forEach(async d=> await db.collection("messages").doc(d.id).delete());
-      Swal.fire('Cleared!','All messages deleted','success');
-    }
-  });
-
-  // Analytics Charts
   async function loadAnalyticsCharts() {
     const last7 = []; for(let i=6;i>=0;i--){ let d=new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0); last7.push(d); }
     const counts = []; const userCounts = [];
@@ -307,24 +294,25 @@
       const usersActive=new Set(); msgs.forEach(m=>usersActive.add(m.data().senderId));
       userCounts.push(usersActive.size);
     }
-    const ctx1 = document.getElementById('activityChart').getContext('2d');
-    const ctx2 = document.getElementById('userActivityChart').getContext('2d');
-    if(msgChart) msgChart.destroy(); if(userChart) userChart.destroy();
-    msgChart = new Chart(ctx1, { type: 'line', data: { labels: last7.map(d=>d.toLocaleDateString()), datasets: [{ label: 'Messages', data: counts, borderColor: '#f59e0b', tension: 0.3, fill: true }] }, options: { responsive: true } });
-    userChart = new Chart(ctx2, { type: 'bar', data: { labels: last7.map(d=>d.toLocaleDateString()), datasets: [{ label: 'Active Users', data: userCounts, backgroundColor: '#f59e0b' }] }, options: { responsive: true } });
+    const ctx1 = document.getElementById('activityChart')?.getContext('2d');
+    const ctx2 = document.getElementById('userActivityChart')?.getContext('2d');
+    if(ctx1 && ctx2){
+      if(msgChart) msgChart.destroy(); if(userChart) userChart.destroy();
+      msgChart = new Chart(ctx1, { type: 'line', data: { labels: last7.map(d=>d.toLocaleDateString()), datasets: [{ label: 'Messages', data: counts, borderColor: '#f59e0b', tension: 0.3, fill: true }] }, options: { responsive: true } });
+      userChart = new Chart(ctx2, { type: 'bar', data: { labels: last7.map(d=>d.toLocaleDateString()), datasets: [{ label: 'Active Users', data: userCounts, backgroundColor: '#f59e0b' }] }, options: { responsive: true } });
+    }
     const allMsgs = await db.collection("messages").get(); const userMsgCount = new Map(); let max=0, topUser='';
     allMsgs.forEach(m=>{ const email=m.data().senderEmail; if(email && email!==OWNER_EMAIL){ const c=(userMsgCount.get(email)||0)+1; userMsgCount.set(email,c); if(c>max){max=c; topUser=email;} } });
     document.getElementById("mostActiveUser").innerHTML = topUser ? `${topUser.split('@')[0]} (${max} msgs)` : 'None';
-    const hourStat = new Array(24).fill(0); allMsgs.forEach(m=>{ let h=m.data().timestamp?.toDate()?.getHours(); if(h!==undefined) hourStat[h]++; });
+    const hourStat = new Array(24).fill(0); allMsgs.forEach(m=>{ let h=m.data().timestamp?.toDate?.()?.getHours(); if(h!==undefined) hourStat[h]++; });
     let peakHourIdx = hourStat.indexOf(Math.max(...hourStat));
     document.getElementById("peakActivityTime").innerText = peakHourIdx !== -1 ? `${peakHourIdx}:00` : 'N/A';
   }
 
-  // Live Chat with GOD prefix
   function setupChat() {
     db.collection("messages").orderBy("timestamp","asc").onSnapshot(snap => {
       const container = document.getElementById("adminMessagesArea");
-      if(container) container.innerHTML = snap.docs.map(d => `<div class="message-item"><strong>${d.data().senderName}</strong> <small>${new Date(d.data().timestamp?.toDate()).toLocaleTimeString()}</small><br>${d.data().text || '📎 Media'}<br><button class="warn-btn" onclick="window.deleteMessageGod('${d.id}','${d.data().senderName}')">🗑️ Delete</button></div>`).join('');
+      if(container) container.innerHTML = snap.docs.map(d => `<div class="message-item"><strong>${d.data().senderName}</strong> <small>${d.data().timestamp?.toDate?.()?.toLocaleTimeString() || ''}</small><br>${d.data().text || '📎 Media'}<br><button class="warn-btn" onclick="window.deleteMessageGod('${d.id}','${d.data().senderName}')">🗑️ Delete</button></div>`).join('');
     });
     document.getElementById("adminSendBtn")?.addEventListener("click", async () => {
       const input = document.getElementById("adminMessageInput");
@@ -332,14 +320,6 @@
     });
   }
 
-  // Settings Save
-  document.getElementById("saveSettingsBtn")?.addEventListener("click", async () => {
-    const autoMod = document.getElementById("autoModEnabled").checked;
-    const profanity = document.getElementById("profanityFilterEnabled").checked;
-    const rate = parseInt(document.getElementById("maxMessagesPerMin").value);
-    await db.collection("config").doc("settings").set({ autoModEnabled: autoMod, profanityFilterEnabled: profanity, maxMessagesPerMin: rate });
-    Swal.fire('Settings Saved','Configuration updated','success');
-  });
   async function loadSettings() {
     const doc = await db.collection("config").doc("settings").get();
     if(doc.exists){
@@ -348,15 +328,55 @@
       document.getElementById("maxMessagesPerMin").value = doc.data().maxMessagesPerMin || 10;
     }
   }
+  document.getElementById("saveSettingsBtn")?.addEventListener("click", async () => {
+    await db.collection("config").doc("settings").set({ autoModEnabled: document.getElementById("autoModEnabled").checked, profanityFilterEnabled: document.getElementById("profanityFilterEnabled").checked, maxMessagesPerMin: parseInt(document.getElementById("maxMessagesPerMin").value) });
+    Swal.fire('Settings Saved','Configuration updated','success');
+  });
+
+  document.getElementById("addBannedWordBtn")?.addEventListener("click", async () => {
+    const w = document.getElementById("newBannedWord")?.value.trim().toLowerCase();
+    if(w) { await db.collection("bannedWordsList").add({ word: w }); Swal.fire('Added','Word banned','success'); document.getElementById("newBannedWord").value = ''; loadBannedWords(); }
+  });
+  document.getElementById("scheduleMessageBtn")?.addEventListener("click", async () => {
+    const text = document.getElementById("scheduleMessageText")?.value;
+    const dt = document.getElementById("scheduleDateTime")?.value;
+    if(text && dt) { await db.collection("scheduledMessages").add({ text: `🔴 SCHEDULED: ${text}`, scheduledFor: new Date(dt), status: 'pending', createdBy: currentAdmin.email }); Swal.fire('Scheduled!','Message will broadcast','success'); loadScheduled(); }
+  });
+  document.getElementById("backupNowBtn")?.addEventListener("click", async () => {
+    const msgs = await db.collection("messages").get(); const users = await db.collection("users").get();
+    const data = { messages: msgs.docs.map(d=>d.data()), users: users.docs.map(d=>d.data()), backupDate: new Date() };
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `god_backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href);
+    Swal.fire('Backup Created','JSON exported','success');
+  });
+  document.getElementById("clearAllMessagesBtn")?.addEventListener("click", async () => {
+    if(await Swal.fire({ title: '⚠️ DANGER', text: 'Delete ALL messages? Permanent!', icon: 'warning', showCancelButton: true }).then(r=>r.isConfirmed)){
+      const msgs = await db.collection("messages").get(); for(const d of msgs.docs) await db.collection("messages").doc(d.id).delete();
+      Swal.fire('Cleared!','All messages deleted','success');
+    }
+  });
+
+  // Navigation
+  document.querySelectorAll('.nav-item[data-panel]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      el.classList.add('active');
+      const panelId = el.getAttribute('data-panel') + 'Panel';
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active-panel'));
+      document.getElementById(panelId)?.classList.add('active-panel');
+      if(panelId === 'analyticsPanel') loadAnalyticsCharts();
+      if(panelId === 'moderationPanel') loadWarningsLog();
+    });
+  });
+  document.getElementById("logoutBtn").onclick = () => { auth.signOut(); location.reload(); };
 
   // LOGIN
   document.getElementById("loginAdminBtn").onclick = async () => {
     const email = document.getElementById("adminEmail").value.trim();
     const pwd = document.getElementById("adminPassword").value;
     if(email !== OWNER_EMAIL) { document.getElementById("loginError").innerText = "Only owner@admin.com allowed"; return; }
-    try { await auth.signInWithEmailAndPassword(email, pwd); currentAdmin = auth.currentUser; document.getElementById("loginContainer").style.display = "none"; document.getElementById("mainApp").style.display = "flex"; document.getElementById("adminInfo").innerHTML = "👑 GOD ACTIVE"; refreshStats(); startRealtimeMonitors(); loadUsersList(); loadBannedWords(); loadReports(); loadScheduled(); loadAutoModLogs(); loadAnalyticsCharts(); setupChat(); loadSettings(); setInterval(refreshStats, 30000); } catch(e){ document.getElementById("loginError").innerText = e.message; }
+    try { await auth.signInWithEmailAndPassword(email, pwd); currentAdmin = auth.currentUser; document.getElementById("loginContainer").style.display = "none"; document.getElementById("mainApp").style.display = "flex"; document.getElementById("adminInfo").innerHTML = "👑 GOD ACTIVE"; refreshStats(); startRealtimeMonitors(); loadUsersList(); loadBannedWords(); loadReports(); loadScheduled(); loadAutoModLogs(); loadAnalyticsCharts(); setupChat(); loadSettings(); loadWarningsLog(); setInterval(refreshStats, 30000); } catch(e){ document.getElementById("loginError").innerText = e.message; }
   };
-  document.getElementById("logoutBtn").onclick = () => { auth.signOut(); location.reload(); };
   auth.onAuthStateChanged(user => { if(!user && document.getElementById("mainApp").style.display !== "none") location.reload(); });
 </script>
 </body>

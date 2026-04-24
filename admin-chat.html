@@ -3,789 +3,361 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>AROMATIC · Admin Control Panel</title>
-  <!-- Firebase SDKs -->
+  <title>AROMATIC · GOD MODE ULTIMATE SUITE</title>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <!-- Chart.js for analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- Font Awesome -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: #0a0f1e;
-      font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      color: #eef2ff;
-    }
-
-    .app {
-      display: flex;
-      height: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      background: #111827;
-    }
-
-    /* Sidebar - Admin Panel */
-    .admin-sidebar {
-      width: 280px;
-      background: #0f172a;
-      border-right: 1px solid #334155;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    .sidebar-header {
-      padding: 20px;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #0f172a;
-    }
-
-    .sidebar-header h2 {
-      font-size: 1.3rem;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-header p {
-      font-size: 0.75rem;
-      opacity: 0.9;
-    }
-
-    .nav-item {
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: 0.2s;
-      border-left: 3px solid transparent;
-    }
-
-    .nav-item:hover {
-      background: #1e293b;
-    }
-
-    .nav-item.active {
-      background: #1e293b;
-      border-left-color: #f59e0b;
-      color: #f59e0b;
-    }
-
-    .nav-item i {
-      width: 24px;
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .chat-header {
-      background: #1e293b;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #334155;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    /* Panels */
-    .panel {
-      display: none;
-      height: 100%;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .panel.active-panel {
-      display: block;
-    }
-
-    /* Chat Area */
-    .chat-area {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .messages-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .message {
-      max-width: 70%;
-      padding: 10px 14px;
-      border-radius: 1rem;
-      position: relative;
-    }
-
-    .message-sent {
-      background: #f59e0b;
-      color: #0c0a2a;
-      align-self: flex-end;
-    }
-
-    .message-received {
-      background: #1e293b;
-      align-self: flex-start;
-    }
-
-    .message-admin-controls {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      display: none;
-      gap: 5px;
-    }
-
-    .message:hover .message-admin-controls {
-      display: flex;
-    }
-
-    .admin-btn {
-      background: #334155;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 10px;
-    }
-
-    /* Input Bar */
-    .input-bar {
-      background: #1e293b;
-      padding: 12px;
-      display: flex;
-      gap: 10px;
-    }
-
-    .input-bar input {
-      flex: 1;
-      background: #0f172a;
-      border: 1px solid #334155;
-      padding: 12px;
-      border-radius: 2rem;
-      color: white;
-    }
-
-    /* User Cards */
-    .user-card {
-      background: #1e293b;
-      padding: 15px;
-      border-radius: 1rem;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .user-info h4 {
-      margin-bottom: 5px;
-    }
-
-    .user-info p {
-      font-size: 0.75rem;
-      color: #94a3b8;
-    }
-
-    .ban-btn {
-      background: #dc2626;
-      padding: 8px 16px;
-      border-radius: 2rem;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-
-    .unban-btn {
-      background: #10b981;
-    }
-
-    /* Stats Cards */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 1rem;
-      text-align: center;
-    }
-
-    .stat-card i {
-      font-size: 2rem;
-      color: #f59e0b;
-      margin-bottom: 10px;
-    }
-
-    .stat-card h3 {
-      font-size: 1.8rem;
-    }
-
-    /* Login Screen */
-    .login-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #0a0f1e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .login-card {
-      background: #1e293b;
-      padding: 2rem;
-      border-radius: 2rem;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 1rem;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: white;
-    }
-
-    button {
-      background: #f59e0b;
-      color: #0f172a;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #e68a00;
-    }
-
-    .online-status {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 8px;
-    }
-
-    .online { background: #22c55e; }
-    .offline { background: #64748b; }
-
-    .message-media {
-      max-width: 200px;
-      border-radius: 12px;
-      margin-top: 5px;
-    }
-
-    @media (max-width: 768px) {
-      .admin-sidebar { width: 70px; }
-      .sidebar-header h2, .sidebar-header p, .nav-item span { display: none; }
-      .nav-item { justify-content: center; }
-      .nav-item i { margin: 0; }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0f1e; font-family: 'Segoe UI', 'Inter', sans-serif; height: 100vh; overflow: hidden; color: #eef2ff; }
+    .app { display: flex; height: 100%; max-width: 1600px; margin: 0 auto; background: #111827; }
+    .admin-sidebar { width: 280px; background: #0f172a; border-right: 1px solid #334155; overflow-y: auto; flex-shrink: 0; }
+    .sidebar-header { padding: 24px 20px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0f172a; }
+    .sidebar-header h2 { font-size: 1.4rem; margin-bottom: 4px; }
+    .nav-item { padding: 14px 20px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
+    .nav-item:hover { background: #1e293b; }
+    .nav-item.active { background: #1e293b; border-left-color: #f59e0b; color: #f59e0b; }
+    .nav-item i { width: 24px; font-size: 1.2rem; }
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .admin-header { background: #1e293b; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+    .logo { font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .panel { display: none; height: 100%; overflow-y: auto; padding: 24px; }
+    .panel.active-panel { display: block; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 24px; }
+    .stat-card { background: #1e293b; padding: 20px; border-radius: 1.2rem; text-align: center; transition: all 0.2s; cursor: pointer; border: 1px solid #334155; }
+    .stat-card:hover { transform: translateY(-3px); background: #2d3748; border-color: #f59e0b; }
+    .stat-card i { font-size: 2rem; color: #f59e0b; margin-bottom: 8px; }
+    .stat-card h3 { font-size: 1.8rem; }
+    .user-card, .message-item, .report-card, .schedule-card, .warning-item { background: #1e293b; padding: 16px; border-radius: 1rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border: 1px solid #334155; transition: 0.2s; }
+    .user-card:hover, .message-item:hover { background: #2d3748; transform: translateX(4px); }
+    .ban-btn { background: #dc2626; padding: 8px 18px; border-radius: 2rem; border: none; color: white; cursor: pointer; font-weight: bold; }
+    .warn-btn { background: #f59e0b; padding: 8px 18px; border-radius: 2rem; border: none; cursor: pointer; font-weight: bold; color: #0f172a; }
+    .online-status { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
+    .online { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .offline { background: #64748b; animation: none; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .typing-indicator-global { background: #f59e0b20; border: 1px solid #f59e0b; padding: 10px 16px; border-radius: 2rem; animation: glow 1s infinite; }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 0px #f59e0b; } 50% { box-shadow: 0 0 12px #f59e0b; } }
+    input, select, textarea { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 1rem; color: white; width: 100%; margin: 8px 0; }
+    button { background: #f59e0b; border: none; padding: 10px 20px; border-radius: 2rem; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    button:hover { transform: scale(1.02); opacity: 0.9; }
+    .login-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0a0f1e; display: flex; justify-content: center; align-items: center; z-index: 1000; }
+    .login-card { background: #1e293b; padding: 2rem; border-radius: 2rem; width: 90%; max-width: 400px; text-align: center; }
+    .badge-god { background: #f59e0b; color: #0f172a; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+    @media (max-width: 768px) { .admin-sidebar { width: 70px; } .sidebar-header h2, .sidebar-header p, .nav-item span { display: none; } .nav-item { justify-content: center; } }
   </style>
 </head>
 <body>
-<div id="app">
-  <div id="loginContainer" class="login-container">
-    <div class="login-card">
-      <h2 style="text-align:center; margin-bottom:20px;">🔐 ADMIN LOGIN</h2>
-      <input type="email" id="adminEmail" placeholder="Admin Email" value="owner@admin.com">
-      <input type="password" id="adminPassword" placeholder="Password">
-      <button id="loginAdminBtn">Login as Admin</button>
-      <div id="loginError" style="color:#f87171; margin-top:10px; text-align:center;"></div>
-    </div>
+<div id="loginContainer" class="login-container">
+  <div class="login-card">
+    <h2>👑 GOD MODE</h2>
+    <p style="margin-bottom: 20px;">owner@admin.com only</p>
+    <input type="email" id="adminEmail" placeholder="Admin Email" value="owner@admin.com">
+    <input type="password" id="adminPassword" placeholder="Password">
+    <button id="loginAdminBtn">Enter GOD MODE</button>
+    <div id="loginError" style="color:#f87171; margin-top:12px;"></div>
   </div>
+</div>
 
-  <div id="mainApp" style="display: none; width: 100%;">
-    <div class="app">
-      <!-- Admin Sidebar -->
-      <div class="admin-sidebar">
-        <div class="sidebar-header">
-          <h2>👑 AROMATIC</h2>
-          <p>Admin Control Panel</p>
+<div id="mainApp" style="display: none;">
+  <div class="app">
+    <div class="admin-sidebar">
+      <div class="sidebar-header"><h2>🌿 GOD MODE</h2><p>Ultimate Control</p></div>
+      <div class="nav-item active" data-panel="dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+      <div class="nav-item" data-panel="monitor"><i class="fas fa-eye"></i><span>Live Monitor</span></div>
+      <div class="nav-item" data-panel="chat"><i class="fas fa-comments"></i><span>Live Chat</span></div>
+      <div class="nav-item" data-panel="users"><i class="fas fa-users-cog"></i><span>User Control</span></div>
+      <div class="nav-item" data-panel="moderation"><i class="fas fa-gavel"></i><span>Moderation</span></div>
+      <div class="nav-item" data-panel="reports"><i class="fas fa-flag"></i><span>Reports</span></div>
+      <div class="nav-item" data-panel="schedule"><i class="fas fa-calendar-alt"></i><span>Schedule</span></div>
+      <div class="nav-item" data-panel="automod"><i class="fas fa-robot"></i><span>Auto-Mod</span></div>
+      <div class="nav-item" data-panel="backup"><i class="fas fa-database"></i><span>Backup</span></div>
+      <div class="nav-item" data-panel="analytics"><i class="fas fa-chart-line"></i><span>Analytics</span></div>
+      <div class="nav-item" data-panel="settings"><i class="fas fa-cog"></i><span>Settings</span></div>
+      <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
+    </div>
+    <div class="main-content">
+      <div class="admin-header"><span class="logo">🔱 AROMATIC · GOD MODE SUITE</span><span id="adminInfo" class="badge-god">OWNER</span></div>
+
+      <!-- DASHBOARD -->
+      <div id="dashboardPanel" class="panel active-panel">
+        <div class="stats-grid">
+          <div class="stat-card"><i class="fas fa-users"></i><h3 id="totalUsers">0</h3><p>Total Users</p></div>
+          <div class="stat-card"><i class="fas fa-comment-dots"></i><h3 id="totalMessages">0</h3><p>Messages</p></div>
+          <div class="stat-card"><i class="fas fa-ban"></i><h3 id="bannedUsers">0</h3><p>Banned</p></div>
+          <div class="stat-card"><i class="fas fa-clock"></i><h3 id="onlineNow">0</h3><p>Online</p></div>
+          <div class="stat-card"><i class="fas fa-keyboard"></i><h3 id="typingCount">0</h3><p>Typing</p></div>
+          <div class="stat-card"><i class="fas fa-flag"></i><h3 id="reportCount">0</h3><p>Reports</p></div>
+          <div class="stat-card"><i class="fas fa-exclamation-triangle"></i><h3 id="warningCount">0</h3><p>Warnings</p></div>
+          <div class="stat-card"><i class="fas fa-chart-line"></i><h3 id="peakHourStat">0</h3><p>Peak Hour</p></div>
         </div>
-        <div class="nav-item active" data-panel="dashboard">
-          <i class="fas fa-tachometer-alt"></i>
-          <span>Dashboard</span>
-        </div>
-        <div class="nav-item" data-panel="chat">
-          <i class="fas fa-comments"></i>
-          <span>Live Chat</span>
-        </div>
-        <div class="nav-item" data-panel="users">
-          <i class="fas fa-users"></i>
-          <span>Users & Ban</span>
-        </div>
-        <div class="nav-item" data-panel="messages">
-          <i class="fas fa-history"></i>
-          <span>All Messages</span>
-        </div>
-        <div class="nav-item" data-panel="analytics">
-          <i class="fas fa-chart-line"></i>
-          <span>Analytics</span>
-        </div>
-        <div class="nav-item" id="logoutBtn">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
-        </div>
+        <div style="background:#1e293b; padding:20px; border-radius:1rem;"><h3>📡 Live Activity Feed</h3><div id="recentActivity" style="max-height:300px; overflow-y:auto;"></div></div>
       </div>
 
-      <!-- Main Content -->
-      <div class="main-content">
-        <div class="chat-header">
-          <span class="logo">🌿 AROMATIC · Admin Suite</span>
-          <div id="adminInfo" style="font-size:0.8rem;"></div>
-        </div>
+      <!-- LIVE MONITOR -->
+      <div id="monitorPanel" class="panel"><h3>🟢 REAL-TIME MONITOR</h3><div id="typingGlobalIndicator" class="typing-indicator-global" style="margin-bottom:20px;">✍️ No one typing...</div><h4>🟢 Online Users (Real)</h4><div id="onlineUsersList" class="stats-grid"></div><hr style="margin:20px 0;"><h4>📋 All Registered Users</h4><div id="allAuthUsersList"></div></div>
 
-        <!-- Dashboard Panel -->
-        <div id="dashboardPanel" class="panel active-panel">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <i class="fas fa-users"></i>
-              <h3 id="totalUsers">0</h3>
-              <p>Total Users</p>
-            </div>
-            <div class="stat-card">
-              <i class="fas fa-comment-dots"></i>
-              <h3 id="totalMessages">0</h3>
-              <p>Total Messages</p>
-            </div>
-            <div class="stat-card">
-              <i class="fas fa-ban"></i>
-              <h3 id="bannedUsers">0</h3>
-              <p>Banned Users</p>
-            </div>
-            <div class="stat-card">
-              <i class="fas fa-clock"></i>
-              <h3 id="onlineNow">0</h3>
-              <p>Online Now</p>
-            </div>
-          </div>
-          <div style="background:#1e293b; padding:20px; border-radius:1rem;">
-            <h3>📊 Recent Activity</h3>
-            <div id="recentActivity" style="margin-top:15px;"></div>
-          </div>
-        </div>
+      <!-- LIVE CHAT -->
+      <div id="chatPanel" class="panel"><div style="height:70vh; display:flex; flex-direction:column;"><div id="adminMessagesArea" style="flex:1; overflow-y:auto; background:#0f172a; border-radius:1rem; padding:16px;"></div><div style="display:flex; gap:12px; margin-top:12px;"><input type="text" id="adminMessageInput" placeholder="GOD Broadcast..."><button id="adminSendBtn"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>
 
-        <!-- Chat Panel -->
-        <div id="chatPanel" class="panel">
-          <div class="chat-area">
-            <div class="messages-area" id="adminMessagesArea"></div>
-            <div class="input-bar">
-              <input type="text" id="adminMessageInput" placeholder="Broadcast message or chat...">
-              <button id="adminSendBtn" style="width: auto; padding: 12px 24px;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-          </div>
-        </div>
+      <!-- USER CONTROL -->
+      <div id="usersPanel" class="panel"><div class="stats-grid"><div class="stat-card"><i class="fas fa-user-plus"></i><h3 id="newUsersToday">0</h3><p>New Today</p></div><div class="stat-card"><i class="fas fa-calendar-week"></i><h3 id="activeWeek">0</h3><p>Active (7d)</p></div></div><div id="usersList"></div></div>
 
-        <!-- Users Panel -->
-        <div id="usersPanel" class="panel">
-          <h3 style="margin-bottom:20px;">👥 All Users & Control</h3>
-          <div id="usersList"></div>
-        </div>
+      <!-- MODERATION -->
+      <div id="moderationPanel" class="panel"><h3>🚫 Banned Words</h3><div id="bannedWordsList" style="background:#1e293b; padding:15px; border-radius:1rem; margin-bottom:20px;"></div><div style="display:flex; gap:10px;"><input type="text" id="newBannedWord" placeholder="Add banned word"><button id="addBannedWordBtn">Add Word</button></div><hr style="margin:20px 0;"><h3>⚠️ User Warnings Log</h3><div id="userWarningsList"></div></div>
 
-        <!-- All Messages Panel -->
-        <div id="messagesPanel" class="panel">
-          <h3 style="margin-bottom:20px;">📜 Message History (Admin Only)</h3>
-          <div id="allMessagesList" style="max-height: 70vh; overflow-y: auto;"></div>
-        </div>
+      <!-- REPORTS -->
+      <div id="reportsPanel" class="panel"><h3>🚩 User Reports</h3><div id="reportsList"></div></div>
 
-        <!-- Analytics Panel -->
-        <div id="analyticsPanel" class="panel">
-          <h3 style="margin-bottom:20px;">📈 Chat Analytics (Last 7 days)</h3>
-          <canvas id="activityChart" style="max-height: 400px;"></canvas>
-        </div>
-      </div>
+      <!-- SCHEDULE -->
+      <div id="schedulePanel" class="panel"><h3>⏰ Scheduled Messages</h3><div class="schedule-card"><input type="text" id="scheduleMessageText" placeholder="Message to broadcast"><input type="datetime-local" id="scheduleDateTime"><button id="scheduleMessageBtn">Schedule</button></div><div id="scheduledMessagesList"></div></div>
+
+      <!-- AUTO-MOD -->
+      <div id="automodPanel" class="panel"><div class="stat-card"><i class="fas fa-shield-alt"></i><h3 id="autoModCount">0</h3><p>Auto-Modded Msgs</p></div><div id="autoModLogs" style="margin-top:20px;"></div></div>
+
+      <!-- BACKUP -->
+      <div id="backupPanel" class="panel"><button id="backupNowBtn" style="background:#10b981;"><i class="fas fa-download"></i> Export All Data (JSON)</button><button id="clearAllMessagesBtn" style="background:#dc2626; margin-left:12px;"><i class="fas fa-trash"></i> Clear All Messages</button><div id="backupHistory" style="margin-top:20px;"></div></div>
+
+      <!-- ANALYTICS -->
+      <div id="analyticsPanel" class="panel"><canvas id="activityChart" style="max-height:300px; margin-bottom:20px;"></canvas><canvas id="userActivityChart" style="max-height:300px;"></canvas><div class="stats-grid" style="margin-top:20px;"><div class="stat-card"><i class="fas fa-clock"></i><h3 id="peakActivityTime">N/A</h3><p>Peak Activity</p></div><div class="stat-card"><i class="fas fa-user-crown"></i><h3 id="mostActiveUser">N/A</h3><p>Most Active</p></div></div></div>
+
+      <!-- SETTINGS -->
+      <div id="settingsPanel" class="panel"><h3>⚙️ System Configuration</h3><div class="stat-card"><label><input type="checkbox" id="autoModEnabled"> Enable Auto-Moderation (Banned words auto-delete)</label></div><div class="stat-card"><label><input type="checkbox" id="profanityFilterEnabled"> Enable Profanity Filter (Censor bad words)</label></div><div class="stat-card"><label>Max Messages Per Minute: <input type="number" id="maxMessagesPerMin" value="10" style="width:100px; display:inline-block;"></label></div><button id="saveSettingsBtn">Save Settings</button></div>
     </div>
   </div>
 </div>
 
 <script>
-  // Firebase Config (YOURS - kept identical for compatibility)
   const firebaseConfig = {
     apiKey: "AIzaSyBdA8ntd9HFmADRPuyaOvh00WN4KkPYw-4",
     authDomain: "personal-chat-4628d.firebaseapp.com",
     projectId: "personal-chat-4628d",
     storageBucket: "personal-chat-4628d.firebasestorage.app",
     messagingSenderId: "1033665500663",
-    appId: "1:1033665500663:web:e0399ffa0ba609ac230af2",
-    measurementId: "G-2JMZWFJ33E"
+    appId: "1:1033665500663:web:e0399ffa0ba609ac230af2"
   };
-
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  const storage = firebase.storage();
-
-  // ADMIN ONLY - Updated admin email: owner@admin.com
-  const ADMIN_EMAIL = "owner@admin.com";
+  const OWNER_EMAIL = "owner@admin.com";
   let currentAdmin = null;
-  let messagesUnsub = null;
-  let usersUnsub = null;
-  let activityChart = null;
+  let msgChart = null, userChart = null;
 
-  // Login logic with new admin email
-  document.getElementById("loginAdminBtn").addEventListener("click", async () => {
-    const email = document.getElementById("adminEmail").value.trim();
-    const password = document.getElementById("adminPassword").value;
-    const errorDiv = document.getElementById("loginError");
-    
-    if (email !== ADMIN_EMAIL) {
-      errorDiv.innerText = "Access denied: Only AROMATIC owner (owner@admin.com) can login!";
-      return;
-    }
-    
-    try {
-      const userCred = await auth.signInWithEmailAndPassword(email, password);
-      currentAdmin = userCred.user;
-      document.getElementById("loginContainer").style.display = "none";
-      document.getElementById("mainApp").style.display = "flex";
-      document.getElementById("adminInfo").innerHTML = `👑 Owner Admin | ${currentAdmin.email}`;
-      initializeAdminPanel();
-    } catch (err) {
-      errorDiv.innerText = "Login failed: " + err.message;
-    }
-  });
+  // Helper: Real-time Dashboard
+  async function refreshStats() {
+    const users = await db.collection("users").get();
+    const msgs = await db.collection("messages").get();
+    const banned = await db.collection("bannedUsers").get();
+    const reports = await db.collection("reports").get();
+    const warnings = await db.collection("warnings").get();
+    document.getElementById("totalUsers").innerText = users.size;
+    document.getElementById("totalMessages").innerText = msgs.size;
+    document.getElementById("bannedUsers").innerText = banned.size;
+    document.getElementById("reportCount").innerText = reports.size;
+    document.getElementById("warningCount").innerText = warnings.size;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const newToday = await db.collection("users").where("createdAt", ">=", today).get();
+    document.getElementById("newUsersToday").innerText = newToday.size;
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+    const activeWeekSnap = await db.collection("users").where("lastSeen", ">=", weekAgo).get();
+    document.getElementById("activeWeek").innerText = activeWeekSnap.size;
+    // Peak hour logic
+    const allMsgs = await db.collection("messages").get();
+    const hourCount = new Array(24).fill(0);
+    allMsgs.forEach(doc => { let h = doc.data().timestamp?.toDate?.()?.getHours(); if(h!==undefined) hourCount[h]++; });
+    let peak = hourCount.indexOf(Math.max(...hourCount));
+    document.getElementById("peakHourStat").innerText = peak !== -1 ? `${peak}:00` : 'N/A';
+  }
 
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    auth.signOut();
-    location.reload();
-  });
-
-  async function initializeAdminPanel() {
-    loadDashboardStats();
-    loadUsersList();
-    loadAllMessages();
-    loadChatMessages();
-    setupMessageListener();
-    setupAnalyticsChart();
-    
-    // Navigation
-    document.querySelectorAll(".nav-item[data-panel]").forEach(item => {
-      item.addEventListener("click", () => {
-        document.querySelectorAll(".panel").forEach(p => p.classList.remove("active-panel"));
-        document.getElementById(`${item.dataset.panel}Panel`).classList.add("active-panel");
-        document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
-        item.classList.add("active");
-        // Refresh chart when analytics panel becomes visible
-        if (item.dataset.panel === "analytics" && activityChart) {
-          activityChart.update();
-        }
-      });
+  // Online & Typing Real-time
+  function startRealtimeMonitors() {
+    db.collection("users").where("online", "==", true).onSnapshot(snap => {
+      let realOnline = 0;
+      const onlineUsers = [];
+      snap.forEach(d => { if(d.data().lastSeen && (Date.now() - (d.data().lastSeen.toDate?.()?.getTime() || 0)) < 30000) { realOnline++; onlineUsers.push(d.data()); } });
+      document.getElementById("onlineNow").innerText = realOnline;
+      const container = document.getElementById("onlineUsersList");
+      if(container) container.innerHTML = onlineUsers.map(u => `<div class="stat-card"><i class="fas fa-user-circle"></i><h3>${u.displayName || u.email.split('@')[0]}</h3><p>${u.email}</p><span class="online-status online"></span> Just now</div>`).join('');
+    });
+    db.collection("status").doc("typing").onSnapshot(doc => {
+      const data = doc.data() || {};
+      const typingUsers = Object.entries(data).filter(([k,v]) => v === true && k !== currentAdmin?.uid).map(([k]) => k);
+      document.getElementById("typingCount").innerText = typingUsers.length;
+      const globalDiv = document.getElementById("typingGlobalIndicator");
+      if(globalDiv) globalDiv.innerHTML = typingUsers.length ? `✍️ <strong>${typingUsers.length} user(s) typing now...</strong>` : '✍️ No one typing';
+    });
+    db.collection("messages").orderBy("timestamp", "desc").limit(15).onSnapshot(snap => {
+      const feed = document.getElementById("recentActivity");
+      if(feed) feed.innerHTML = snap.docs.map(d => `<div style="padding:8px; border-bottom:1px solid #334155;"><strong>${d.data().senderName}</strong>: ${d.data().text?.substring(0,60) || '📎 Media'}</div>`).join('');
+    });
+    db.collection("users").onSnapshot(snap => {
+      const allUsersDiv = document.getElementById("allAuthUsersList");
+      if(allUsersDiv) allUsersDiv.innerHTML = snap.docs.map(d => `<div class="user-card"><div><strong>${d.data().displayName || d.data().email}</strong><br><small>${d.data().email}</small></div><span class="${d.data().online ? 'online-status online' : 'offline'}"></span></div>`).join('');
     });
   }
 
-  async function loadDashboardStats() {
-    const usersSnap = await db.collection("users").get();
-    const messagesSnap = await db.collection("messages").get();
-    const bannedSnap = await db.collection("bannedUsers").get();
-    const onlineSnap = await db.collection("users").where("online", "==", true).get();
-    
-    document.getElementById("totalUsers").innerText = usersSnap.size;
-    document.getElementById("totalMessages").innerText = messagesSnap.size;
-    document.getElementById("bannedUsers").innerText = bannedSnap.size;
-    document.getElementById("onlineNow").innerText = onlineSnap.size;
-    
-    // Recent activity
-    const recentMessages = await db.collection("messages").orderBy("timestamp", "desc").limit(10).get();
-    const activityDiv = document.getElementById("recentActivity");
-    activityDiv.innerHTML = "<strong>📨 Latest Messages:</strong><br>";
-    if (recentMessages.empty) {
-      activityDiv.innerHTML += "<div style='font-size:0.8rem; padding:5px;'>No messages yet.</div>";
-    }
-    recentMessages.forEach(doc => {
-      const msg = doc.data();
-      const time = msg.timestamp?.toDate().toLocaleTimeString() || "Just now";
-      activityDiv.innerHTML += `<div style="font-size:0.8rem; padding:5px; border-bottom:1px solid #334155;">
-        <i class="fas fa-user"></i> <strong>${msg.senderName}</strong>: ${msg.text ? (msg.text.length > 50 ? msg.text.substring(0,50)+'...' : msg.text) : "📎 Media"} <span style="color:#94a3b8; float:right;">${time}</span>
-      </div>`;
-    });
-  }
+  // User Control with Warn/Mute/Ban
+  window.warnUser = async (userId, userName) => {
+    const { value: reason } = await Swal.fire({ title: `Warn ${userName}`, input: 'text', inputLabel: 'Warning Reason', showCancelButton: true });
+    if(reason) { await db.collection("warnings").add({ userId, userName, reason, warnedBy: currentAdmin.email, timestamp: new Date() }); Swal.fire('⚠️ Warned!', `${userName} has been warned.`, 'warning'); refreshStats(); }
+  };
+  window.muteUser = async (userId, userName) => {
+    const { value: mins } = await Swal.fire({ title: `Mute ${userName}`, input: 'number', inputLabel: 'Minutes to mute', showCancelButton: true });
+    if(mins) { const until = Date.now() + mins*60000; await db.collection("mutedUsers").doc(userId).set({ mutedUntil: until, mutedBy: currentAdmin.email }); Swal.fire('🔇 Muted!', `${userName} muted for ${mins} min.`, 'info'); }
+  };
+  window.banUser = async (uid) => { if(await Swal.fire({ title: 'Confirm Ban', text: 'User will be permanently banned', icon: 'warning', showCancelButton: true }).then(r=>r.isConfirmed)){ await db.collection("bannedUsers").doc(uid).set({ bannedAt: new Date(), by: currentAdmin.email }); Swal.fire('Banned!','User banned','success'); refreshStats(); } };
+  window.unbanUser = async (uid) => { await db.collection("bannedUsers").doc(uid).delete(); Swal.fire('Unbanned','User can login','info'); refreshStats(); };
+  window.deleteMessageGod = async (msgId, sender) => {
+    const { value: reason } = await Swal.fire({ title: 'Delete Message', input: 'text', inputLabel: 'Reason (logged)', showCancelButton: true });
+    if(reason) { await db.collection("messages").doc(msgId).delete(); await db.collection("modLogs").add({ msgId, sender, reason, admin: currentAdmin.email }); Swal.fire('🗑️ Deleted','Message removed','success'); }
+  };
+  window.resolveReport = async (reportId) => { await db.collection("reports").doc(reportId).delete(); Swal.fire('Resolved','Report closed','success'); refreshStats(); };
 
+  // Load Users List with controls
   async function loadUsersList() {
-    db.collection("users").onSnapshot(async (snapshot) => {
-      const bannedMap = new Map();
-      const bannedSnap = await db.collection("bannedUsers").get();
-      bannedSnap.forEach(doc => bannedMap.set(doc.id, doc.data()));
-      
-      const usersDiv = document.getElementById("usersList");
-      usersDiv.innerHTML = "";
-      
-      for (const doc of snapshot.docs) {
-        const user = doc.data();
-        const isBanned = bannedMap.has(user.uid);
-        const loginTime = user.lastSeen?.toDate() || new Date();
-        const createdAtDate = user.createdAt?.toDate() || new Date();
-        
-        usersDiv.innerHTML += `
-          <div class="user-card">
-            <div class="user-info">
-              <h4>${user.displayName || (user.email ? user.email.split('@')[0] : 'Anonymous')} 
-                <span class="online-status ${user.online ? 'online' : 'offline'}"></span>
-                ${user.role === 'admin' ? '👑' : ''}
-              </h4>
-              <p>📧 ${user.email || 'No email'}</p>
-              <p>🕐 Last active: ${loginTime.toLocaleString()}</p>
-              <p>📅 Joined: ${createdAtDate.toLocaleDateString()}</p>
-            </div>
-            <div>
-              ${!isBanned ? 
-                `<button class="ban-btn" onclick="banUser('${user.uid}', '${user.email || user.uid}')">🚫 Ban User</button>` :
-                `<button class="ban-btn unban-btn" onclick="unbanUser('${user.uid}')">✅ Unban User</button>`
-              }
-            </div>
-          </div>
-        `;
-      }
-    });
-  }
-
-  async function loadAllMessages() {
-    db.collection("messages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-      const messagesDiv = document.getElementById("allMessagesList");
-      messagesDiv.innerHTML = "<h4>📋 All Messages (Latest First)</h4>";
-      
-      if (snapshot.empty) {
-        messagesDiv.innerHTML += "<div style='padding:20px;text-align:center;color:#94a3b8'>No messages found.</div>";
-        return;
-      }
-      
-      snapshot.forEach(doc => {
-        const msg = doc.data();
-        const time = msg.timestamp?.toDate().toLocaleString() || "Unknown";
-        const editedBadge = msg.edited ? " <span style='font-size:10px;color:#fbbf24'>(edited)</span>" : "";
-        messagesDiv.innerHTML += `
-          <div style="background:#1e293b; padding:12px; margin:8px 0; border-radius:12px;">
-            <div style="display:flex; justify-content:space-between;">
-              <strong><i class="fas fa-user-circle"></i> ${msg.senderName}</strong>
-              <small>${time}</small>
-            </div>
-            <div style="margin-top:6px;">${msg.text ? msg.text : '<i>📎 Media Attachment</i>'}${editedBadge}</div>
-            <div style="margin-top:8px;">
-              <button onclick="deleteMessage('${doc.id}')" style="background:#dc2626; padding:4px 12px; font-size:11px; border-radius:20px; margin-right:8px;"><i class="fas fa-trash"></i> Delete</button>
-              <button onclick="editMessage('${doc.id}', '${(msg.text || '').replace(/'/g, "\\'")}')" style="background:#3b82f6; padding:4px 12px; font-size:11px; border-radius:20px;"><i class="fas fa-edit"></i> Edit</button>
-            </div>
-          </div>
-        `;
-      });
-    });
-  }
-
-  async function loadChatMessages() {
-    db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
-      const container = document.getElementById("adminMessagesArea");
-      if (!container) return;
+    db.collection("users").onSnapshot(async snap => {
+      const warningsMap = new Map();
+      (await db.collection("warnings").get()).forEach(w => { warningsMap.set(w.data().userId, (warningsMap.get(w.data().userId)||0)+1); });
+      const bannedMap = new Map(); (await db.collection("bannedUsers").get()).forEach(b => bannedMap.set(b.id, true));
+      const container = document.getElementById("usersList");
+      if(!container) return;
       container.innerHTML = "";
-      
-      snapshot.forEach(doc => {
-        const msg = doc.data();
-        const isOwn = currentAdmin && msg.senderId === currentAdmin.uid;
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
-        const mediaHtml = msg.mediaUrl ? `<div><a href="${msg.mediaUrl}" target="_blank" style="color:#fbbf24;">📎 View Media</a></div>` : '';
-        msgDiv.innerHTML = `
-          <div><strong>${msg.senderName}</strong>: ${msg.text || '📎 Media message'}${mediaHtml}</div>
-          <small>${msg.timestamp?.toDate().toLocaleTimeString() || ''}</small>
-          <div class="message-admin-controls">
-            <button class="admin-btn" onclick="deleteMessage('${doc.id}')"><i class="fas fa-trash"></i></button>
-            <button class="admin-btn" onclick="editMessage('${doc.id}', '${(msg.text || '').replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i></button>
-          </div>
-        `;
-        container.appendChild(msgDiv);
-      });
-      container.scrollTop = container.scrollHeight;
+      for(const doc of snap.docs){
+        const u = doc.data();
+        if(u.email === OWNER_EMAIL) continue;
+        const warns = warningsMap.get(u.uid) || 0;
+        const isBanned = bannedMap.has(u.uid);
+        container.innerHTML += `<div class="user-card"><div><strong>${u.displayName || u.email}</strong><br><small>${u.email}</small><br>⚠️ Warnings: ${warns}<br>Last: ${u.lastSeen?.toDate()?.toLocaleTimeString() || 'never'}</div><div style="display:flex; gap:8px;"><button class="warn-btn" onclick="warnUser('${u.uid}','${u.displayName}')">⚠️ Warn</button><button class="warn-btn" onclick="muteUser('${u.uid}','${u.displayName}')">🔇 Mute</button>${!isBanned ? `<button class="ban-btn" onclick="banUser('${u.uid}')">🚫 Ban</button>` : `<button class="ban-btn" style="background:#10b981;" onclick="unbanUser('${u.uid}')">✅ Unban</button>`}</div></div>`;
+      }
     });
   }
 
-  function setupMessageListener() {
-    const sendBtn = document.getElementById("adminSendBtn");
-    const input = document.getElementById("adminMessageInput");
-    
-    sendBtn.addEventListener("click", async () => {
-      const text = input.value.trim();
-      if (!text) return;
-      
-      await db.collection("messages").add({
-        text: text,
-        senderId: currentAdmin.uid,
-        senderName: "🌿 AROMATIC ADMIN",
-        senderEmail: currentAdmin.email,
-        type: "text",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      input.value = "";
+  // Moderation: Banned Words
+  async function loadBannedWords() {
+    db.collection("bannedWordsList").onSnapshot(snap => {
+      const words = snap.docs.map(d => d.data().word);
+      const container = document.getElementById("bannedWordsList");
+      if(container) container.innerHTML = words.map(w => `<span style="background:#dc2626; padding:6px 12px; border-radius:20px; margin:5px; display:inline-block;">${w} <button onclick="removeBannedWord('${w}')" style="background:none; color:white; margin-left:8px;">❌</button></span>`).join('');
     });
-    
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendBtn.click();
+  }
+  window.removeBannedWord = async (word) => { const q = await db.collection("bannedWordsList").where("word","==",word).get(); q.forEach(d=>d.ref.delete()); Swal.fire('Removed','Word removed','info'); };
+  document.getElementById("addBannedWordBtn")?.addEventListener("click", async () => {
+    const w = document.getElementById("newBannedWord")?.value.trim().toLowerCase();
+    if(w) { await db.collection("bannedWordsList").add({ word: w }); Swal.fire('Added','Word banned','success'); document.getElementById("newBannedWord").value = ''; }
+  });
+
+  // Reports Panel
+  function loadReports() {
+    db.collection("reports").orderBy("timestamp","desc").onSnapshot(snap => {
+      const container = document.getElementById("reportsList");
+      if(!container) return;
+      container.innerHTML = snap.docs.map(d => `<div class="report-card"><div><strong>📢 ${d.data().senderName}</strong><br>${d.data().reason}<br><small>${new Date(d.data().timestamp?.toDate()).toLocaleString()}</small></div><div><button onclick="resolveReport('${d.id}')">✅ Resolve</button><button class="ban-btn" onclick="window.deleteMessageGod('${d.data().messageId}','${d.data().senderName}')">🗑️ Delete & Resolve</button></div></div>`).join('');
     });
   }
 
-  async function setupAnalyticsChart() {
-    const ctx = document.getElementById('activityChart').getContext('2d');
-    // Get last 7 days message counts
-    const last7Days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      last7Days.push(d.toISOString().split('T')[0]);
-    }
-    
-    const counts = [];
-    for (const dateStr of last7Days) {
-      const start = new Date(dateStr);
-      const end = new Date(dateStr);
-      end.setDate(end.getDate() + 1);
-      const snap = await db.collection("messages")
-        .where("timestamp", ">=", start)
-        .where("timestamp", "<", end)
-        .get();
-      counts.push(snap.size);
-    }
-    
-    activityChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: last7Days.map(d => d.substring(5)),
-        datasets: [{
-          label: 'Messages per Day',
-          data: counts,
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245, 158, 11, 0.1)',
-          tension: 0.3,
-          fill: true,
-          pointBackgroundColor: '#f59e0b'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { labels: { color: '#eef2ff' } }
-        },
-        scales: {
-          y: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } },
-          x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } }
-        }
-      }
+  // Scheduled Messages
+  document.getElementById("scheduleMessageBtn")?.addEventListener("click", async () => {
+    const text = document.getElementById("scheduleMessageText")?.value;
+    const dt = document.getElementById("scheduleDateTime")?.value;
+    if(text && dt) { await db.collection("scheduledMessages").add({ text: `🔴 SCHEDULED: ${text}`, scheduledFor: new Date(dt), status: 'pending', createdBy: currentAdmin.email }); Swal.fire('Scheduled!','Message will broadcast','success'); }
+  });
+  function loadScheduled() {
+    db.collection("scheduledMessages").where("status","==","pending").onSnapshot(snap => {
+      const container = document.getElementById("scheduledMessagesList");
+      if(container) container.innerHTML = snap.docs.map(d => `<div class="schedule-card">📅 ${d.data().text} - at ${new Date(d.data().scheduledFor?.toDate()).toLocaleString()} <button onclick="cancelSchedule('${d.id}')">Cancel</button></div>`).join('');
     });
-    
-    // Real-time update for chart every 30 seconds
-    setInterval(async () => {
-      const newCounts = [];
-      for (const dateStr of last7Days) {
-        const start = new Date(dateStr);
-        const end = new Date(dateStr);
-        end.setDate(end.getDate() + 1);
-        const snap = await db.collection("messages")
-          .where("timestamp", ">=", start)
-          .where("timestamp", "<", end)
-          .get();
-        newCounts.push(snap.size);
-      }
-      activityChart.data.datasets[0].data = newCounts;
-      activityChart.update();
-    }, 30000);
+  }
+  window.cancelSchedule = async (id) => { await db.collection("scheduledMessages").doc(id).delete(); Swal.fire('Cancelled','Schedule removed','info'); };
+
+  // Auto-Mod Logs
+  function loadAutoModLogs() {
+    db.collection("autoModLogs").orderBy("timestamp","desc").limit(20).onSnapshot(snap => {
+      const container = document.getElementById("autoModLogs");
+      if(container) container.innerHTML = snap.docs.map(d => `<div class="message-item">🤖 Auto-deleted: "${d.data().word}" | User: ${d.data().senderId}</div>`).join('');
+      document.getElementById("autoModCount").innerText = snap.size;
+    });
   }
 
-  // Global functions for admin actions
-  window.deleteMessage = async (messageId) => {
-    if (confirm("⚠️ Permanently delete this message?")) {
-      await db.collection("messages").doc(messageId).delete();
-      // Also refresh dashboard stats for consistency
-      loadDashboardStats();
-    }
-  };
-
-  window.editMessage = async (messageId, oldText) => {
-    const newText = prompt("✏️ Edit message (admin action):", oldText || "");
-    if (newText && newText !== oldText) {
-      await db.collection("messages").doc(messageId).update({
-        text: newText,
-        edited: true,
-        editedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        editedBy: "ADMIN"
-      });
-    } else if (newText === "") {
-      alert("Message cannot be empty.");
-    }
-  };
-
-  window.banUser = async (userId, userEmail) => {
-    if (confirm(`🚫 Ban ${userEmail}? User will be logged out and blocked.`)) {
-      await db.collection("bannedUsers").doc(userId).set({
-        email: userEmail,
-        bannedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        bannedBy: currentAdmin.email
-      });
-      // Force sign out if user is currently logged in (server-side security rules handle, but client will detect)
-      loadDashboardStats();
-    }
-  };
-
-  window.unbanUser = async (userId) => {
-    if (confirm("✅ Unban this user? They'll be able to log in again.")) {
-      await db.collection("bannedUsers").doc(userId).delete();
-      loadDashboardStats();
-    }
-  };
-
-  // Auth state to check for banned users and auto-sign out
-  auth.onAuthStateChanged(async (user) => {
-    if (user && user.email !== ADMIN_EMAIL) {
-      const bannedDoc = await db.collection("bannedUsers").doc(user.uid).get();
-      if (bannedDoc.exists) {
-        await auth.signOut();
-        alert("⛔ You have been banned by administrator.");
-        location.reload();
-      }
+  // Backup & Clear
+  document.getElementById("backupNowBtn")?.addEventListener("click", async () => {
+    const msgs = await db.collection("messages").get(); const users = await db.collection("users").get();
+    const data = { messages: msgs.docs.map(d=>d.data()), users: users.docs.map(d=>d.data()), backupDate: new Date() };
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `god_backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href);
+    Swal.fire('Backup Created','JSON exported','success');
+  });
+  document.getElementById("clearAllMessagesBtn")?.addEventListener("click", async () => {
+    if(await Swal.fire({ title: '⚠️ DANGER', text: 'Delete ALL messages? Permanent!', icon: 'warning', showCancelButton: true }).then(r=>r.isConfirmed)){
+      const msgs = await db.collection("messages").get(); msgs.forEach(async d=> await db.collection("messages").doc(d.id).delete());
+      Swal.fire('Cleared!','All messages deleted','success');
     }
   });
-  
-  // Prefill password for demo convenience (testing only)
-  document.getElementById("adminPassword").value = "";
+
+  // Analytics Charts
+  async function loadAnalyticsCharts() {
+    const last7 = []; for(let i=6;i>=0;i--){ let d=new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0); last7.push(d); }
+    const counts = []; const userCounts = [];
+    for(let day of last7){
+      const next=new Date(day); next.setDate(next.getDate()+1);
+      const msgs=await db.collection("messages").where("timestamp",">=",day).where("timestamp","<",next).get();
+      counts.push(msgs.size);
+      const usersActive=new Set(); msgs.forEach(m=>usersActive.add(m.data().senderId));
+      userCounts.push(usersActive.size);
+    }
+    const ctx1 = document.getElementById('activityChart').getContext('2d');
+    const ctx2 = document.getElementById('userActivityChart').getContext('2d');
+    if(msgChart) msgChart.destroy(); if(userChart) userChart.destroy();
+    msgChart = new Chart(ctx1, { type: 'line', data: { labels: last7.map(d=>d.toLocaleDateString()), datasets: [{ label: 'Messages', data: counts, borderColor: '#f59e0b', tension: 0.3, fill: true }] }, options: { responsive: true } });
+    userChart = new Chart(ctx2, { type: 'bar', data: { labels: last7.map(d=>d.toLocaleDateString()), datasets: [{ label: 'Active Users', data: userCounts, backgroundColor: '#f59e0b' }] }, options: { responsive: true } });
+    const allMsgs = await db.collection("messages").get(); const userMsgCount = new Map(); let max=0, topUser='';
+    allMsgs.forEach(m=>{ const email=m.data().senderEmail; if(email && email!==OWNER_EMAIL){ const c=(userMsgCount.get(email)||0)+1; userMsgCount.set(email,c); if(c>max){max=c; topUser=email;} } });
+    document.getElementById("mostActiveUser").innerHTML = topUser ? `${topUser.split('@')[0]} (${max} msgs)` : 'None';
+    const hourStat = new Array(24).fill(0); allMsgs.forEach(m=>{ let h=m.data().timestamp?.toDate()?.getHours(); if(h!==undefined) hourStat[h]++; });
+    let peakHourIdx = hourStat.indexOf(Math.max(...hourStat));
+    document.getElementById("peakActivityTime").innerText = peakHourIdx !== -1 ? `${peakHourIdx}:00` : 'N/A';
+  }
+
+  // Live Chat with GOD prefix
+  function setupChat() {
+    db.collection("messages").orderBy("timestamp","asc").onSnapshot(snap => {
+      const container = document.getElementById("adminMessagesArea");
+      if(container) container.innerHTML = snap.docs.map(d => `<div class="message-item"><strong>${d.data().senderName}</strong> <small>${new Date(d.data().timestamp?.toDate()).toLocaleTimeString()}</small><br>${d.data().text || '📎 Media'}<br><button class="warn-btn" onclick="window.deleteMessageGod('${d.id}','${d.data().senderName}')">🗑️ Delete</button></div>`).join('');
+    });
+    document.getElementById("adminSendBtn")?.addEventListener("click", async () => {
+      const input = document.getElementById("adminMessageInput");
+      if(input.value.trim()){ await db.collection("messages").add({ text: `🔴 GOD: ${input.value.trim()}`, senderId: currentAdmin.uid, senderName: "👑 GOD MODE", senderEmail: currentAdmin.email, timestamp: new Date() }); input.value=""; }
+    });
+  }
+
+  // Settings Save
+  document.getElementById("saveSettingsBtn")?.addEventListener("click", async () => {
+    const autoMod = document.getElementById("autoModEnabled").checked;
+    const profanity = document.getElementById("profanityFilterEnabled").checked;
+    const rate = parseInt(document.getElementById("maxMessagesPerMin").value);
+    await db.collection("config").doc("settings").set({ autoModEnabled: autoMod, profanityFilterEnabled: profanity, maxMessagesPerMin: rate });
+    Swal.fire('Settings Saved','Configuration updated','success');
+  });
+  async function loadSettings() {
+    const doc = await db.collection("config").doc("settings").get();
+    if(doc.exists){
+      document.getElementById("autoModEnabled").checked = doc.data().autoModEnabled || false;
+      document.getElementById("profanityFilterEnabled").checked = doc.data().profanityFilterEnabled || false;
+      document.getElementById("maxMessagesPerMin").value = doc.data().maxMessagesPerMin || 10;
+    }
+  }
+
+  // LOGIN
+  document.getElementById("loginAdminBtn").onclick = async () => {
+    const email = document.getElementById("adminEmail").value.trim();
+    const pwd = document.getElementById("adminPassword").value;
+    if(email !== OWNER_EMAIL) { document.getElementById("loginError").innerText = "Only owner@admin.com allowed"; return; }
+    try { await auth.signInWithEmailAndPassword(email, pwd); currentAdmin = auth.currentUser; document.getElementById("loginContainer").style.display = "none"; document.getElementById("mainApp").style.display = "flex"; document.getElementById("adminInfo").innerHTML = "👑 GOD ACTIVE"; refreshStats(); startRealtimeMonitors(); loadUsersList(); loadBannedWords(); loadReports(); loadScheduled(); loadAutoModLogs(); loadAnalyticsCharts(); setupChat(); loadSettings(); setInterval(refreshStats, 30000); } catch(e){ document.getElementById("loginError").innerText = e.message; }
+  };
+  document.getElementById("logoutBtn").onclick = () => { auth.signOut(); location.reload(); };
+  auth.onAuthStateChanged(user => { if(!user && document.getElementById("mainApp").style.display !== "none") location.reload(); });
 </script>
 </body>
 </html>

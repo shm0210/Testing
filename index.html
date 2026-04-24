@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>✦ SECURE CHAT ✦ Private & Encrypted</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>AROMATIC · Private Chat</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -13,1151 +20,556 @@
     }
 
     body {
-      background: #0b141a;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      background: #0a0f1e;
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
       height: 100vh;
       overflow: hidden;
-      position: fixed;
-      width: 100%;
+      color: #eef2ff;
     }
 
-    /* Login Screen */
-    .login-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(145deg, #0a0f12 0%, #11181f 100%);
+    .app {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      overflow-y: auto;
-    }
-
-    .login-card {
-      background: #202c33;
-      padding: 2rem 1.5rem;
-      border-radius: 2rem;
-      width: 90%;
-      max-width: 380px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      border: 1px solid rgba(0,168,132,0.3);
-    }
-
-    .login-card h1 {
-      font-size: 1.8rem;
-      text-align: center;
-      background: linear-gradient(135deg, #00d4b4, #00a884);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.5rem;
-    }
-
-    .login-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin: 1.5rem 0 1rem;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 0.8rem;
-      background: #2a3942;
-      border: none;
-      border-radius: 2rem;
-      color: #8696a0;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .tab-btn.active {
-      background: #00a884;
-      color: #111b21;
-    }
-
-    .login-form {
-      display: none;
-    }
-
-    .login-form.active {
-      display: block;
-    }
-
-    .login-card input {
-      width: 100%;
-      padding: 1rem 1.2rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 2rem;
-      background: #2a3942;
-      color: #e9edef;
-      font-size: 1rem;
-      transition: all 0.2s;
-    }
-
-    .login-card input:focus {
-      outline: none;
-      background: #2f414c;
-      box-shadow: 0 0 0 2px #00a884;
-    }
-
-    .login-card button {
-      width: 100%;
-      padding: 1rem;
-      border: none;
-      border-radius: 2rem;
-      background: #00a884;
-      color: #111b21;
-      font-weight: 800;
-      font-size: 1rem;
-      margin-top: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .login-card button:active { transform: scale(0.97); }
-    .login-card button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .error-msg {
-      color: #ff6b6b;
-      font-size: 0.75rem;
-      text-align: center;
-      margin-top: 0.5rem;
-    }
-
-    .success-msg {
-      color: #00a884;
-      font-size: 0.75rem;
-      text-align: center;
-      margin-top: 0.5rem;
-    }
-
-    /* Chat Container */
-    .chat-container {
-      display: none;
-      height: 100vh;
       flex-direction: column;
-      background: #0b141a;
-    }
-
-    .chat-header {
-      background: #202c33;
-      padding: 0.8rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2e3b42;
-    }
-
-    .partner-info {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      flex: 1;
-    }
-
-    .partner-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #00d4b4, #00a884);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
+      height: 100%;
+      max-width: 550px;
+      margin: 0 auto;
+      background: #111827;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
       position: relative;
     }
 
-    .online-dot {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 12px;
-      height: 12px;
-      background: #00a884;
-      border-radius: 50%;
-      border: 2px solid #202c33;
-      animation: pulse 1.5s infinite;
-    }
-
-    .offline-dot {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 12px;
-      height: 12px;
-      background: #5e6f7e;
-      border-radius: 50%;
-      border: 2px solid #202c33;
-    }
-
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(0.9); }
-    }
-
-    .partner-details h3 { font-size: 1rem; font-weight: 600; }
-    .partner-details p { font-size: 0.7rem; color: #8696a0; }
-
-    .header-btns {
+    /* Auth Screen */
+    .auth-container {
+      padding: 2rem 1.5rem;
       display: flex;
-      gap: 0.5rem;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      background: linear-gradient(145deg, #0f172a, #0a0f1e);
     }
 
-    .header-btns button {
-      background: #2a3942;
+    .auth-card {
+      background: #1e293b;
+      border-radius: 2rem;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+    }
+
+    .auth-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .auth-sub {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      margin: 8px 0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 1.2rem;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.3);
+    }
+
+    button {
+      background: #f59e0b;
       border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      color: #e9edef;
-      font-size: 1.2rem;
+      padding: 12px;
+      width: 100%;
+      border-radius: 2rem;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #0f172a;
+      margin-top: 1rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
 
-    .header-btns button:active { transform: scale(0.95); }
+    button:active { transform: scale(0.97); }
+    .error-msg { color: #f87171; font-size: 0.8rem; margin-top: 0.5rem; text-align: center; }
+
+    /* Chat Container */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      display: none;
+    }
+
+    .chat-header {
+      background: #1e293b;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      background: #0f172a;
+      padding: 5px 12px;
+      border-radius: 40px;
+    }
+
+    .online-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 4px #22c55e;
+    }
+
+    .members-panel {
+      background: #0f172a;
+      border-bottom: 1px solid #334155;
+      padding: 8px 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+      display: flex;
+      gap: 12px;
+      scrollbar-width: thin;
+    }
+
+    .member-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e293b;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+
+    .member-chip.admin {
+      background: #f59e0b20;
+      border: 1px solid #f59e0b;
+    }
 
     .messages-area {
       flex: 1;
       overflow-y: auto;
-      padding: 1rem;
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 12px;
+      background: #0f172a;
     }
 
     .message {
-      max-width: 75%;
-      padding: 0.6rem 1rem;
-      border-radius: 1.2rem;
-      animation: fadeMsg 0.2s ease;
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 1.5rem;
       word-wrap: break-word;
-      position: relative;
     }
 
-    @keyframes fadeMsg {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message.sent {
-      background: #005c4b;
+    .message-sent {
+      background: #f59e0b;
+      color: #0c0a2a;
       align-self: flex-end;
-      border-bottom-right-radius: 0.3rem;
+      border-bottom-right-radius: 5px;
     }
 
-    .message.received {
-      background: #202c33;
+    .message-received {
+      background: #1e293b;
       align-self: flex-start;
-      border-bottom-left-radius: 0.3rem;
+      border-bottom-left-radius: 5px;
     }
 
-    .message-text { font-size: 0.9rem; line-height: 1.4; }
-    .message-time {
-      font-size: 0.6rem;
-      color: #8696a0;
-      text-align: right;
-      margin-top: 0.2rem;
+    .msg-meta {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      margin-top: 4px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
     }
 
-    .media-preview {
-      max-width: 200px;
-      border-radius: 0.8rem;
-      margin-top: 0.3rem;
+    .media-msg {
+      max-width: 220px;
+      border-radius: 1rem;
+      margin-top: 5px;
       cursor: pointer;
     }
-    .media-preview img, .media-preview video { width: 100%; border-radius: 0.8rem; max-height: 150px; object-fit: cover; }
-    .voice-note { width: 160px; margin-top: 0.3rem; }
 
-    .typing-badge {
-      padding: 0.2rem 1rem;
-      font-size: 0.7rem;
-      color: #00a884;
+    .typing-indicator {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin: 6px 12px;
       font-style: italic;
-      height: 28px;
-    }
-
-    .input-area {
-      background: #202c33;
-      padding: 0.7rem 1rem;
       display: flex;
-      gap: 0.6rem;
       align-items: center;
-      border-top: 1px solid #2e3b42;
+      gap: 6px;
     }
 
-    .input-area input {
+    .input-bar {
+      background: #1e293b;
+      padding: 12px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid #334155;
+    }
+
+    .input-bar input {
       flex: 1;
-      padding: 0.8rem 1.2rem;
-      border: none;
+      margin: 0;
+      background: #0f172a;
       border-radius: 2rem;
-      background: #2a3942;
-      color: #e9edef;
-      font-size: 0.9rem;
-      outline: none;
+      padding: 12px 16px;
     }
 
-    .input-area input:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .icon-btn {
+      background: transparent;
+      width: auto;
+      margin: 0;
+      padding: 10px;
+      font-size: 1.4rem;
+      color: #fbbf24;
     }
 
-    .action-btn {
-      background: #2a3942;
-      border: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: #e9edef;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+    .lastseen-toast {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      margin-left: 12px;
     }
 
-    .action-btn:active { transform: scale(0.95); }
-    .action-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .send-btn { background: #00a884; color: #111b21; }
-    .recording { background: #ff4444 !important; animation: blink 0.8s infinite; }
-
-    @keyframes blink {
-      0%,100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    /* Profile Modal */
-    .profile-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    .profile-modal-content {
-      background: #202c33;
-      border-radius: 2rem;
-      padding: 2rem;
-      width: 90%;
-      max-width: 350px;
-      text-align: center;
-    }
-
-    .profile-avatar-large {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #00d4b4, #00a884);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      margin: 0 auto 1rem;
-      cursor: pointer;
-    }
-
-    .profile-modal input {
-      width: 100%;
-      padding: 0.8rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 2rem;
-      background: #2a3942;
-      color: #e9edef;
-      text-align: center;
-    }
-
-    .profile-modal input:disabled {
-      opacity: 0.5;
-    }
-
-    .profile-modal button {
-      padding: 0.8rem 1.5rem;
-      margin: 0.5rem;
-      border: none;
-      border-radius: 2rem;
-      background: #00a884;
-      color: #111b21;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .close-modal {
-      background: #2a3942;
-      color: #e9edef;
-    }
-
-    .messages-area::-webkit-scrollbar { width: 4px; }
-    .messages-area::-webkit-scrollbar-track { background: #1a252c; }
-    .messages-area::-webkit-scrollbar-thumb { background: #00a884; border-radius: 4px; }
-    
-    .loading-spinner {
-      text-align: center;
-      color: #8696a0;
-      padding: 2rem;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #00a884;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .no-partner {
-      text-align: center;
-      color: #8696a0;
-      padding: 2rem;
+    @media (max-width: 550px) {
+      .message { max-width: 90%; }
     }
   </style>
 </head>
 <body>
-
-<!-- Login Screen -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <h1>✦ SECURE CHAT ✦</h1>
-    <div class="sub" style="text-align:center; color:#8696a0; font-size:0.7rem; margin-bottom:1rem;">Private & Encrypted</div>
-    <div class="login-tabs">
-      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-      <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
-    </div>
-    
-    <!-- Login Form -->
-    <div id="loginForm" class="login-form active">
-      <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
-      <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
-      <button id="loginBtn">✦ LOGIN ✦</button>
-      <div id="loginError" class="error-msg"></div>
-    </div>
-    
-    <!-- Signup Form -->
-    <div id="signupForm" class="login-form">
-      <input type="text" id="signupName" placeholder="Full Name">
-      <input type="email" id="signupEmail" placeholder="Email">
-      <input type="password" id="signupPassword" placeholder="Password (min 6 chars)">
-      <button id="signupBtn">✦ CREATE ACCOUNT ✦</button>
-      <div id="signupError" class="error-msg"></div>
-      <div id="signupSuccess" class="success-msg"></div>
+<div class="app" id="app">
+  <!-- Auth Panel -->
+  <div id="authPanel" class="auth-container">
+    <div class="auth-card">
+      <div class="auth-title">✨ AROMATIC</div>
+      <div class="auth-sub">private circle · approved access only</div>
+      <input type="email" id="loginEmail" placeholder="Your email" autocomplete="email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button id="loginBtn">🔐 Enter Chat Room</button>
+      <div id="authError" class="error-msg"></div>
+      <div style="font-size:0.7rem; text-align:center; margin-top:1rem;">Only authorized emails can login</div>
     </div>
   </div>
-</div>
 
-<!-- Profile Modal -->
-<div class="profile-modal" id="profileModal">
-  <div class="profile-modal-content">
-    <div class="profile-avatar-large" id="profileAvatarLarge" onclick="window.changeAvatar && window.changeAvatar()">
-      😎
-    </div>
-    <input type="text" id="profileNameInput" placeholder="Your Name">
-    <input type="email" id="profileEmailInput" disabled placeholder="Email">
-    <button onclick="window.updateProfile && window.updateProfile()">Save Changes</button>
-    <button class="close-modal" onclick="window.closeProfileModal && window.closeProfileModal()">Close</button>
-    <button onclick="window.logout && window.logout()" style="background:#ff4444; color:white;">Logout</button>
-  </div>
-</div>
-
-<!-- Chat Container -->
-<div class="chat-container" id="chatContainer">
-  <div class="chat-header">
-    <div class="partner-info">
-      <div class="partner-avatar" id="partnerAvatar">
-        👤
-        <span id="partnerOnlineDot" class="offline-dot"></span>
-      </div>
-      <div class="partner-details">
-        <h3 id="partnerName">Loading...</h3>
-        <p id="partnerStatus">Connecting...</p>
+  <!-- Main Chat Interface -->
+  <div id="chatContainer" class="chat-container">
+    <div class="chat-header">
+      <span class="logo">🌿 AROMATIC · room</span>
+      <div class="user-badge">
+        <span id="myEmailShort"></span>
+        <span class="online-dot"></span>
+        <button id="logoutBtn" style="background: none; width: auto; margin:0; padding:0 6px; color:#f87171;" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
       </div>
     </div>
-    <div class="header-btns">
-      <button id="settingsBtn" onclick="window.openProfileModal && window.openProfileModal()">👤</button>
+    <div class="members-panel" id="membersList"></div>
+    <div id="typingStatusArea" class="typing-indicator"></div>
+    <div class="messages-area" id="messagesArea"></div>
+    <div class="input-bar">
+      <button id="attachMediaBtn" class="icon-btn"><i class="fas fa-image"></i></button>
+      <button id="attachAudioBtn" class="icon-btn"><i class="fas fa-microphone"></i></button>
+      <input type="text" id="messageInput" placeholder="Message...">
+      <button id="sendBtn" class="icon-btn"><i class="fas fa-paper-plane"></i></button>
     </div>
+    <input type="file" id="fileImageInput" accept="image/*,video/mp4" style="display:none">
+    <input type="file" id="fileAudioInput" accept="audio/*" style="display:none">
   </div>
-  
-  <div class="messages-area" id="messagesArea">
-    <div class="loading-spinner">
-      <div class="spinner"></div>
-      <div style="margin-top: 10px;">Loading messages...</div>
-    </div>
-  </div>
-  <div class="typing-badge" id="typingBadge"></div>
-  
-  <div class="input-area">
-    <button id="attachBtn" class="action-btn" disabled>📎</button>
-    <input type="text" id="msgInput" placeholder="Waiting for chat to load..." autocomplete="off" disabled>
-    <button id="voiceBtn" class="action-btn" disabled>🎤</button>
-    <button id="sendBtn" class="action-btn send-btn" disabled>➤</button>
-  </div>
-  <input type="file" id="fileUpload" accept="image/*,video/*,audio/*" style="display:none">
 </div>
 
-<script type="importmap">
-  {
-    "imports": {
-      "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-      "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
-      "firebase/database": "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js",
-      "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
-    }
-  }
-</script>
-
-<script type="module">
-  import { initializeApp } from 'firebase/app';
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, onAuthStateChanged } from 'firebase/auth';
-  import { getDatabase, ref, push, onChildAdded, onValue, set, onDisconnect, serverTimestamp, get, query, orderByChild, limitToLast, off } from 'firebase/database';
-  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-
-  // ==================== FIREBASE CONFIGURATION ====================
-  // IMPORTANT: Replace this with your actual Firebase project config
+<script>
+  // Your Firebase configuration (already inserted!)
   const firebaseConfig = {
-    apiKey: "AIzaSyBhSSspPiiocfVirSMjRPgH-pWztbnZ7fk",
-    authDomain: "secret-chat-ce77a.firebaseapp.com",
-    databaseURL: "https://secret-chat-ce77a-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "secret-chat-ce77a",
-    storageBucket: "secret-chat-ce77a.appspot.com",
-    messagingSenderId: "332764244582",
-    appId: "1:332764244582:web:4f1ecef556ba1853a81ba7"
+    apiKey: "AIzaSyBdA8ntd9HFmADRPuyaOvh00WN4KkPYw-4",
+    authDomain: "personal-chat-4628d.firebaseapp.com",
+    projectId: "personal-chat-4628d",
+    storageBucket: "personal-chat-4628d.firebasestorage.app",
+    messagingSenderId: "1033665500663",
+    appId: "1:1033665500663:web:e0399ffa0ba609ac230af2",
+    measurementId: "G-2JMZWFJ33E"
   };
 
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
-  const storage = getStorage(app);
-  
-  // Global variables
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  // ALLOWED USERS - Only these emails can login
+  // IMPORTANT: You must create these users in Firebase Authentication Console!
+  const ALLOWED_USERS = new Map([
+    ["admin@admin.com", { name: "AROMATIC", role: "admin" }],  // YOU - Admin
+    ["sp@sp.com", { name: "SP", role: "member" }],            // Friend 1
+    ["sv@sv.com", { name: "SV", role: "member" }]             // Friend 2
+  ]);
+
   let currentUser = null;
-  let currentUserData = null;
-  let partnerUser = null;
-  let mediaRecorder = null;
-  let audioChunks = [];
+  let messagesUnsub = null;
   let typingTimeout = null;
-  let messagesListener = null;
-  let statusListener = null;
-  let typingListener = null;
+  let onlineStatusInterval = null;
 
-  // Allowed emails for this private chat
-  const ALLOWED_EMAILS = ['sp@sv.com', 'sv@sp.com'];
-
-  // ==================== UTILITY FUNCTIONS ====================
-  function getRandomAvatar() {
-    const avatars = ['😎', '😊', '🔥', '⭐', '💎', '🌟', '🎉', '💪', '🤖', '🦄', '🐱', '🐶'];
-    return avatars[Math.floor(Math.random() * avatars.length)];
+  // Check if email is allowed
+  function isEmailAllowed(email) {
+    return ALLOWED_USERS.has(email?.toLowerCase());
   }
 
-  function getChatId(uid1, uid2) {
-    if (!uid1 || !uid2) return '';
-    return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`;
-  }
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
-  }
-
-  function formatTime(timestamp) {
-    if (!timestamp) return '';
-    const date = new Date(timestamp);
-    const now = new Date();
-    const isToday = date.toDateString() === now.toDateString();
-    
-    if (isToday) {
-      return date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    } else {
-      return `${date.toLocaleDateString([], {month:'short', day:'numeric'})} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-    }
-  }
-
-  function enableChatInputs(enabled) {
-    const inputs = ['msgInput', 'sendBtn', 'attachBtn', 'voiceBtn'];
-    inputs.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.disabled = !enabled;
-    });
-  }
-
-  // ==================== PROFILE FUNCTIONS ====================
-  window.changeAvatar = async function() {
-    if (!currentUserData) return;
-    const newAvatar = prompt('Choose an emoji for your avatar:', currentUserData.avatar || '😎');
-    if (newAvatar && newAvatar.length <= 2) {
-      await set(ref(db, `users/${currentUser.uid}/avatar`), newAvatar);
-      currentUserData.avatar = newAvatar;
-      document.getElementById('profileAvatarLarge').innerText = newAvatar;
-    }
-  };
-
-  window.updateProfile = async function() {
-    const newName = document.getElementById('profileNameInput').value.trim();
-    if (newName && currentUser && currentUserData) {
-      try {
-        await updateProfile(currentUser, { displayName: newName });
-        await set(ref(db, `users/${currentUser.uid}/name`), newName);
-        currentUserData.name = newName;
-        alert('Profile updated successfully!');
-        window.closeProfileModal();
-      } catch (error) {
-        console.error('Update profile error:', error);
-        alert('Error updating profile: ' + error.message);
-      }
-    }
-  };
-
-  window.openProfileModal = function() {
-    if (currentUserData) {
-      document.getElementById('profileAvatarLarge').innerText = currentUserData.avatar || '😎';
-      document.getElementById('profileNameInput').value = currentUserData.name || '';
-      document.getElementById('profileEmailInput').value = currentUser.email || '';
-      document.getElementById('profileModal').style.display = 'flex';
-    }
-  };
-
-  window.closeProfileModal = function() {
-    document.getElementById('profileModal').style.display = 'none';
-  };
-
-  window.logout = async function() {
-    try {
-      if (currentUser) {
-        await set(ref(db, `users/${currentUser.uid}/online`), false);
-        await set(ref(db, `users/${currentUser.uid}/lastSeen`), serverTimestamp());
-      }
-      await signOut(auth);
-      window.location.reload();
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
-  // ==================== MESSAGE FUNCTIONS ====================
-  async function sendMessage(text, fileBlob = null, fileType = null) {
-    if ((!text || !text.trim()) && !fileBlob) return;
-    if (!partnerUser || !currentUser) {
-      alert('Chat not ready. Please wait...');
-      return;
-    }
-    
-    try {
-      let fileUrl = null;
-      let type = null;
-      
-      if (fileBlob) {
-        // Show uploading indicator
-        const uploadMsg = document.createElement('div');
-        uploadMsg.className = 'message sent';
-        uploadMsg.innerHTML = '<div class="message-text">📤 Uploading media...</div>';
-        document.getElementById('messagesArea').appendChild(uploadMsg);
-        
-        const ext = fileType === 'image' ? 'jpg' : (fileType === 'video' ? 'mp4' : 'webm');
-        const fileName = `media_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${ext}`;
-        const fileRef = sRef(storage, `chats/${getChatId(currentUser.uid, partnerUser.uid)}/${fileName}`);
-        await uploadBytes(fileRef, fileBlob);
-        fileUrl = await getDownloadURL(fileRef);
-        type = fileType;
-        
-        uploadMsg.remove();
-      }
-      
-      const chatId = getChatId(currentUser.uid, partnerUser.uid);
-      const messageData = {
-        senderId: currentUser.uid,
-        senderName: currentUserData.name,
-        receiverId: partnerUser.uid,
-        text: text && text.trim() ? text.trim() : null,
-        fileUrl: fileUrl,
-        fileType: type,
-        timestamp: Date.now(),
-      };
-      
-      const newMsgRef = push(ref(db, `messages/${chatId}`));
-      await set(newMsgRef, messageData);
-      
-      if (text && text.trim()) {
-        document.getElementById('msgInput').value = '';
-      }
-      
-      // Clear typing indicator
-      await set(ref(db, `typing/${currentUser.uid}`), false);
-      
-    } catch (error) {
-      console.error('Send message error:', error);
-      alert('Error sending message: ' + error.message);
-    }
-  }
-
-  function sendTyping() {
-    if (!currentUser || !partnerUser) return;
-    set(ref(db, `typing/${currentUser.uid}`), true);
-    if (typingTimeout) clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      set(ref(db, `typing/${currentUser.uid}`), false);
-    }, 2000);
-  }
-
-  function displayMessage(msg) {
-    if (!msg || !currentUser) return;
-    
-    const isMe = msg.senderId === currentUser.uid;
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
-    
-    let content = '';
-    
-    if (msg.text) {
-      content += `<div class="message-text">${escapeHtml(msg.text)}</div>`;
-    }
-    
-    if (msg.fileUrl) {
-      if (msg.fileType === 'image') {
-        content += `<div class="media-preview"><img src="${msg.fileUrl}" onclick="window.open('${msg.fileUrl}')" loading="lazy"></div>`;
-      } else if (msg.fileType === 'video') {
-        content += `<div class="media-preview"><video src="${msg.fileUrl}" controls preload="metadata"></video></div>`;
-      } else if (msg.fileType === 'audio') {
-        content += `<audio class="voice-note" src="${msg.fileUrl}" controls preload="none"></audio>`;
-      }
-    }
-    
-    content += `<div class="message-time">${formatTime(msg.timestamp)}</div>`;
-    msgDiv.innerHTML = content;
-    
-    const messagesArea = document.getElementById('messagesArea');
-    messagesArea.appendChild(msgDiv);
-    messagesArea.scrollTop = messagesArea.scrollHeight;
-  }
-
-  function loadMessages() {
-    // Remove old listener if exists
-    if (messagesListener && typeof messagesListener === 'function') {
-      if (partnerUser) {
-        const oldChatId = getChatId(currentUser.uid, partnerUser.uid);
-        off(ref(db, `messages/${oldChatId}`));
-      }
-    }
-    
-    if (!partnerUser || !currentUser) return;
-    
-    const chatId = getChatId(currentUser.uid, partnerUser.uid);
-    const messagesQuery = query(ref(db, `messages/${chatId}`), orderByChild('timestamp'), limitToLast(100));
-    
-    // Clear messages area
-    const messagesArea = document.getElementById('messagesArea');
-    messagesArea.innerHTML = '';
-    
-    messagesListener = onChildAdded(messagesQuery, (snapshot) => {
-      const msg = snapshot.val();
-      if (msg) displayMessage(msg);
-    });
-  }
-
-  // ==================== VOICE RECORDING ====================
-  async function startRecording() {
-    if (!partnerUser) {
-      alert('Please wait for chat to load');
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
-      mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-      mediaRecorder.start();
-      document.getElementById('voiceBtn').classList.add('recording');
-      
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        await sendMessage(null, audioBlob, 'audio');
-        stream.getTracks().forEach(track => track.stop());
-        document.getElementById('voiceBtn').classList.remove('recording');
-      };
-    } catch(e) {
-      console.error('Microphone error:', e);
-      alert("Microphone access required for voice messages. Please check permissions.");
-    }
-  }
-
-  function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-      mediaRecorder.stop();
-    }
-  }
-
-  // ==================== PARTNER DETECTION ====================
-  async function findPartner(currentUserId) {
-    try {
-      const usersSnap = await get(ref(db, 'users'));
-      if (usersSnap.exists()) {
-        const users = usersSnap.val();
-        for (let uid in users) {
-          if (uid !== currentUserId && ALLOWED_EMAILS.includes(users[uid].email)) {
-            return { uid, ...users[uid] };
-          }
-        }
-      }
-      return null;
-    } catch (error) {
-      console.error('Error finding partner:', error);
-      return null;
-    }
-  }
-
-  // ==================== SETUP CHAT ====================
-  async function setupChat(user) {
-    try {
-      console.log('Setting up chat for:', user.email);
-      currentUser = user;
-      
-      // Get or create user data
-      const userSnap = await get(ref(db, `users/${user.uid}`));
-      if (userSnap.exists()) {
-        currentUserData = userSnap.val();
-      } else {
-        currentUserData = {
-          name: user.displayName || user.email.split('@')[0],
-          email: user.email,
-          avatar: getRandomAvatar(),
-          online: true,
-          lastSeen: Date.now(),
-          createdAt: Date.now()
-        };
-        await set(ref(db, `users/${user.uid}`), currentUserData);
-      }
-      
-      // Find partner
-      partnerUser = await findPartner(user.uid);
-      
-      // Update UI
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('chatContainer').style.display = 'flex';
-      
-      if (!partnerUser) {
-        // No partner found - show waiting state
-        document.getElementById('partnerName').innerText = "Waiting...";
-        document.getElementById('partnerAvatar').innerHTML = '👤<span class="offline-dot"></span>';
-        document.getElementById('partnerStatus').innerHTML = "Waiting for other user to join";
-        document.getElementById('messagesArea').innerHTML = '<div class="no-partner">👥 Waiting for chat partner to join...<br><small>Both sp@sv.com and sv@sp.com need to exist</small></div>';
-        enableChatInputs(false);
-        
-        // Periodically check for partner
-        const checkInterval = setInterval(async () => {
-          const newPartner = await findPartner(user.uid);
-          if (newPartner) {
-            clearInterval(checkInterval);
-            partnerUser = newPartner;
-            await finishChatSetup();
-          }
-        }, 3000);
-        return;
-      }
-      
-      await finishChatSetup();
-      
-    } catch (error) {
-      console.error('Setup chat error:', error);
-      alert('Error setting up chat: ' + error.message);
-    }
-  }
-
-  async function finishChatSetup() {
-    console.log('Finishing chat setup with partner:', partnerUser?.email);
-    
-    // Update UI with partner info
-    document.getElementById('partnerName').innerText = partnerUser.name;
-    document.getElementById('partnerAvatar').innerHTML = partnerUser.avatar + '<span id="partnerOnlineDot" class="offline-dot"></span>';
-    document.getElementById('partnerStatus').innerHTML = 'Offline';
-    enableChatInputs(true);
-    document.getElementById('msgInput').placeholder = 'Type a message...';
-    
-    // Show loading in messages area
-    document.getElementById('messagesArea').innerHTML = '<div class="loading-spinner"><div class="spinner"></div><div>Loading messages...</div></div>';
-    
-    // Set online status for current user
-    await set(ref(db, `users/${currentUser.uid}/online`), true);
-    await set(ref(db, `users/${currentUser.uid}/lastSeen`), serverTimestamp());
-    
-    // Set up disconnect handler
-    onDisconnect(ref(db, `users/${currentUser.uid}`)).update({ 
-      online: false, 
-      lastSeen: serverTimestamp() 
-    });
-    
-    // Clean up old listeners
-    if (statusListener) statusListener();
-    if (typingListener) typingListener();
-    
-    // Watch partner online status
-    statusListener = onValue(ref(db, `users/${partnerUser.uid}/online`), (snap) => {
-      const online = snap.val();
-      const dot = document.getElementById('partnerOnlineDot');
-      const statusText = document.getElementById('partnerStatus');
-      if (online === true) {
-        dot.className = 'online-dot';
-        statusText.innerHTML = 'Online';
-      } else {
-        dot.className = 'offline-dot';
-        statusText.innerHTML = 'Offline';
-      }
-    });
-    
-    // Watch typing indicator
-    typingListener = onValue(ref(db, `typing/${partnerUser.uid}`), (snap) => {
-      const typing = snap.val();
-      const badge = document.getElementById('typingBadge');
-      if (typing === true) {
-        badge.innerHTML = `${partnerUser.name} is typing...`;
-      } else {
-        badge.innerHTML = '';
-      }
-    });
-    
-    // Load messages
-    loadMessages();
-  }
-
-  // ==================== TAB SWITCHING ====================
-  window.switchTab = function(tab) {
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const tabs = document.querySelectorAll('.tab-btn');
-    
-    tabs.forEach(btn => btn.classList.remove('active'));
-    
-    if (tab === 'login') {
-      loginForm.classList.add('active');
-      signupForm.classList.remove('active');
-      tabs[0].classList.add('active');
-      // Clear signup messages
-      document.getElementById('signupError').innerText = '';
-      document.getElementById('signupSuccess').innerText = '';
-    } else {
-      loginForm.classList.remove('active');
-      signupForm.classList.add('active');
-      tabs[1].classList.add('active');
-      // Clear login error
-      document.getElementById('loginError').innerText = '';
-    }
-  };
-
-  // ==================== AUTHENTICATION ====================
-  // Login handler
-  document.getElementById('loginBtn').onclick = async () => {
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const errorDiv = document.getElementById('loginError');
-    const loginBtn = document.getElementById('loginBtn');
-    
-    if (!email || !password) {
-      errorDiv.innerText = 'Please enter email and password';
-      return;
-    }
-    
-    if (!ALLOWED_EMAILS.includes(email.toLowerCase())) {
-      errorDiv.innerText = 'Only authorized emails can login (sp@sv.com or sv@sp.com)';
-      return;
-    }
-    
-    try {
-      loginBtn.disabled = true;
-      loginBtn.innerText = 'Logging in...';
-      await signInWithEmailAndPassword(auth, email, password);
-      errorDiv.innerText = '';
-    } catch (error) {
-      console.error('Login error:', error);
-      if (error.code === 'auth/user-not-found') {
-        errorDiv.innerText = 'User not found. Please sign up first.';
-      } else if (error.code === 'auth/wrong-password') {
-        errorDiv.innerText = 'Wrong password';
-      } else if (error.code === 'auth/invalid-email') {
-        errorDiv.innerText = 'Invalid email format';
-      } else if (error.code === 'auth/too-many-requests') {
-        errorDiv.innerText = 'Too many attempts. Try again later.';
-      } else {
-        errorDiv.innerText = error.message;
-      }
-    } finally {
-      loginBtn.disabled = false;
-      loginBtn.innerText = '✦ LOGIN ✦';
-    }
-  };
-  
-  // Signup handler
-  document.getElementById('signupBtn').onclick = async () => {
-    const name = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const errorDiv = document.getElementById('signupError');
-    const successDiv = document.getElementById('signupSuccess');
-    const signupBtn = document.getElementById('signupBtn');
-    
-    errorDiv.innerText = '';
-    successDiv.innerText = '';
-    
-    if (!name) {
-      errorDiv.innerText = 'Please enter your name';
-      return;
-    }
-    
-    if (!ALLOWED_EMAILS.includes(email.toLowerCase())) {
-      errorDiv.innerText = 'Only sp@sv.com and sv@sp.com can sign up';
-      return;
-    }
-    
-    if (password.length < 6) {
-      errorDiv.innerText = 'Password must be at least 6 characters';
-      return;
-    }
-    
-    try {
-      signupBtn.disabled = true;
-      signupBtn.innerText = 'Creating account...';
-      
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, { displayName: name });
-      
-      // Save user data to database
-      await set(ref(db, `users/${userCredential.user.uid}`), {
-        name: name,
-        email: email,
-        avatar: getRandomAvatar(),
-        lastSeen: Date.now(),
+  // Create user profile in Firestore
+  async function ensureUserProfile(user) {
+    if (!user) return;
+    const userRef = db.collection("users").doc(user.uid);
+    const docSnap = await userRef.get();
+    const userData = ALLOWED_USERS.get(user.email.toLowerCase());
+    if (!docSnap.exists) {
+      await userRef.set({
+        uid: user.uid,
+        email: user.email,
+        displayName: userData?.name || user.email.split('@')[0],
+        role: userData?.role || "member",
         online: true,
-        createdAt: Date.now()
+        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      
-      successDiv.innerText = 'Account created successfully! Logging in...';
-      errorDiv.innerText = '';
-      
-      // Wait a moment then reload
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-      
-    } catch (error) {
-      console.error('Signup error:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        errorDiv.innerText = 'Email already exists. Please login instead.';
-      } else if (error.code === 'auth/invalid-email') {
-        errorDiv.innerText = 'Invalid email format';
-      } else if (error.code === 'auth/weak-password') {
-        errorDiv.innerText = 'Password is too weak';
-      } else {
-        errorDiv.innerText = error.message;
-      }
-    } finally {
-      signupBtn.disabled = false;
-      signupBtn.innerText = '✦ CREATE ACCOUNT ✦';
+    } else {
+      await userRef.update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
     }
-  };
-  
-  // ==================== EVENT LISTENERS ====================
-  document.getElementById('sendBtn').onclick = () => {
-    const text = document.getElementById('msgInput').value;
-    if (text && text.trim()) {
-      sendMessage(text);
-    }
-  };
-  
-  document.getElementById('msgInput').onkeypress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      const text = e.target.value;
-      if (text && text.trim()) {
-        sendMessage(text);
-      }
-    }
-  };
-  
-  document.getElementById('msgInput').oninput = () => {
-    if (document.getElementById('msgInput').value.trim()) {
-      sendTyping();
-    }
-  };
-  
-  document.getElementById('attachBtn').onclick = () => {
-    document.getElementById('fileUpload').click();
-  };
-  
-  document.getElementById('fileUpload').onchange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        alert("File too large (max 10MB)");
-        e.target.value = '';
-        return;
-      }
+    return userRef;
+  }
+
+  // Authentication State Listener
+  auth.onAuthStateChanged(async (user) => {
+    if (user && isEmailAllowed(user.email)) {
+      currentUser = user;
+      await ensureUserProfile(user);
+      document.getElementById("authPanel").style.display = "none";
+      document.getElementById("chatContainer").style.display = "flex";
+      const userData = ALLOWED_USERS.get(user.email.toLowerCase());
+      document.getElementById("myEmailShort").innerHTML = `${userData?.name || user.email.split('@')[0]} ${userData?.role === 'admin' ? '👑' : ''}`;
+      startRealtimeFeatures();
+      loadMembersAndMessages();
+      setUserOnlineStatus(true);
       
-      let type = 'file';
-      if (file.type.startsWith('image/')) type = 'image';
-      else if (file.type.startsWith('video/')) type = 'video';
-      else if (file.type.startsWith('audio/')) type = 'audio';
-      
-      await sendMessage(null, file, type);
-    }
-    e.target.value = '';
-  };
-  
-  // Voice recording with both mouse and touch events
-  const voiceBtn = document.getElementById('voiceBtn');
-  voiceBtn.onmousedown = startRecording;
-  voiceBtn.onmouseup = stopRecording;
-  voiceBtn.onmouseleave = stopRecording;
-  voiceBtn.ontouchstart = (e) => {
-    e.preventDefault();
-    startRecording();
-  };
-  voiceBtn.ontouchend = (e) => {
-    e.preventDefault();
-    stopRecording();
-  };
-  
-  // Enter key on login/signup
-  document.getElementById('loginPassword').onkeypress = (e) => {
-    if (e.key === 'Enter') document.getElementById('loginBtn').click();
-  };
-  document.getElementById('signupPassword').onkeypress = (e) {
-    if (e.key === 'Enter') document.getElementById('signupBtn').click();
-  };
-  
-  // ==================== AUTH STATE LISTENER ====================
-  onAuthStateChanged(auth, async (user) => {
-    console.log('Auth state changed:', user ? user.email : 'No user');
-    if (user) {
-      if (ALLOWED_EMAILS.includes(user.email)) {
-        await setupChat(user);
-      } else {
-        await signOut(auth);
-        alert('Unauthorized email. Only sp@sv.com and sv@sp.com are allowed.');
-        window.location.reload();
-      }
+      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
+      onlineStatusInterval = setInterval(() => {
+        if (currentUser) db.collection("users").doc(currentUser.uid).update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+      }, 20000);
+    } else if (user && !isEmailAllowed(user.email)) {
+      await auth.signOut();
+      document.getElementById("authError").innerText = "⛔ Your email is not authorized. Contact AROMATIC.";
+      document.getElementById("chatContainer").style.display = "none";
+      document.getElementById("authPanel").style.display = "flex";
+    } else {
+      document.getElementById("authPanel").style.display = "flex";
+      document.getElementById("chatContainer").style.display = "none";
+      if (messagesUnsub) messagesUnsub();
     }
   });
-  
-  console.log('App initialized. Ready for authentication...');
+
+  // Login
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value.trim();
+    const pwd = document.getElementById("loginPassword").value;
+    const errorDiv = document.getElementById("authError");
+    if (!email || !pwd) { errorDiv.innerText = "Enter email & password"; return; }
+    if (!isEmailAllowed(email)) { errorDiv.innerText = "Access denied: email not authorized."; return; }
+    try {
+      await auth.signInWithEmailAndPassword(email, pwd);
+      errorDiv.innerText = "";
+    } catch (err) {
+      console.error(err);
+      errorDiv.innerText = "Invalid credentials. Make sure this user exists in Firebase Authentication.";
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => auth.signOut());
+
+  // Real-time features
+  function startRealtimeFeatures() {
+    const inputField = document.getElementById("messageInput");
+    inputField.addEventListener("input", () => {
+      if (!currentUser) return;
+      const typingRef = db.collection("status").doc("typing");
+      typingRef.set({
+        [currentUser.uid]: true,
+        name: getDisplayNameForUser(currentUser),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      if (typingTimeout) clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        typingRef.update({ [currentUser.uid]: false });
+      }, 1500);
+    });
+
+    db.collection("status").doc("typing").onSnapshot((doc) => {
+      const typingData = doc.data() || {};
+      const typingUsers = Object.keys(typingData).filter(uid => typingData[uid] === true && uid !== currentUser?.uid);
+      const typingArea = document.getElementById("typingStatusArea");
+      if (typingUsers.length > 0 && currentUser && ALLOWED_USERS.get(currentUser.email)?.role === "admin") {
+        typingArea.innerHTML = `<i class="fas fa-pen-fancy"></i> Someone is typing...`;
+      } else {
+        typingArea.innerHTML = "";
+      }
+    });
+  }
+
+  function getDisplayNameForUser(user) {
+    return ALLOWED_USERS.get(user.email.toLowerCase())?.name || user.email.split('@')[0];
+  }
+
+  // Load members and messages
+  function loadMembersAndMessages() {
+    db.collection("users").onSnapshot((snapshot) => {
+      const membersDiv = document.getElementById("membersList");
+      let html = '';
+      const usersList = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.email && isEmailAllowed(data.email)) {
+          usersList.push({ id: doc.id, ...data });
+        }
+      });
+      usersList.sort((a,b) => a.displayName?.localeCompare(b.displayName));
+      usersList.forEach(user => {
+        const isAdmin = ALLOWED_USERS.get(user.email)?.role === "admin";
+        const onlineStatus = user.online ? '<span class="online-dot"></span>' : '<i class="far fa-circle" style="font-size:8px; color:#64748b;"></i>';
+        let lastSeenText = "";
+        if (currentUser && ALLOWED_USERS.get(currentUser.email)?.role === "admin" && !user.online && user.lastSeen) {
+          const date = user.lastSeen.toDate ? user.lastSeen.toDate() : new Date(user.lastSeen);
+          lastSeenText = `<span class="lastseen-toast">last seen ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
+        }
+        html += `<div class="member-chip ${isAdmin ? 'admin' : ''}">
+                  <strong>${user.displayName || user.email.split('@')[0]}</strong> ${onlineStatus} ${lastSeenText}
+                  <span style="font-size:10px; color:#94a3b8;">${user.email}</span>
+                </div>`;
+      });
+      membersDiv.innerHTML = html;
+    });
+
+    if (messagesUnsub) messagesUnsub();
+    messagesUnsub = db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
+      const container = document.getElementById("messagesArea");
+      container.innerHTML = "";
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const isOwn = currentUser && msg.senderId === currentUser.uid;
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
+        let contentHTML = '';
+        if (msg.type === 'text') {
+          contentHTML = `<div>${escapeHtml(msg.text)}</div>`;
+        } else if (msg.type === 'image') {
+          contentHTML = `<img src="${msg.fileUrl}" class="media-msg" style="max-width:100%; max-height:180px; border-radius:1rem;" onclick="window.open('${msg.fileUrl}')" />`;
+        } else if (msg.type === 'audio') {
+          contentHTML = `<audio controls src="${msg.fileUrl}" class="audio-msg" style="width:180px;"></audio>`;
+        }
+        const senderName = msg.senderName || "unknown";
+        const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+        msgDiv.innerHTML = `<div style="font-size:0.7rem; opacity:0.8;">${senderName}</div>${contentHTML}<div class="msg-meta">${timeStr}</div>`;
+        container.appendChild(msgDiv);
+      });
+      container.scrollTop = container.scrollHeight;
+    });
+  }
+
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  // Send message
+  document.getElementById("sendBtn").addEventListener("click", () => sendTextMessage());
+  document.getElementById("messageInput").addEventListener("keypress", (e) => { if(e.key === 'Enter') sendTextMessage(); });
+
+  async function sendTextMessage() {
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+    if (!text || !currentUser) return;
+    const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
+    await db.collection("messages").add({
+      text: text,
+      senderId: currentUser.uid,
+      senderName: userData?.name || currentUser.email.split('@')[0],
+      type: "text",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    input.value = "";
+    db.collection("status").doc("typing").update({ [currentUser.uid]: false });
+  }
+
+  // Media upload
+  async function uploadMedia(file, type) {
+    if (!currentUser) return;
+    const fileRef = storage.ref(`chat_media/${Date.now()}_${file.name}`);
+    await fileRef.put(file);
+    const downloadUrl = await fileRef.getDownloadURL();
+    const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
+    await db.collection("messages").add({
+      fileUrl: downloadUrl,
+      senderId: currentUser.uid,
+      senderName: userData?.name || currentUser.email.split('@')[0],
+      type: type,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+
+  document.getElementById("attachMediaBtn").addEventListener("click", () => {
+    document.getElementById("fileImageInput").click();
+  });
+  document.getElementById("attachAudioBtn").addEventListener("click", () => {
+    document.getElementById("fileAudioInput").click();
+  });
+  document.getElementById("fileImageInput").addEventListener("change", (e) => {
+    if (e.target.files.length) {
+      const file = e.target.files[0];
+      const type = file.type.startsWith('image/') ? 'image' : 'video';
+      uploadMedia(file, type);
+      e.target.value = '';
+    }
+  });
+  document.getElementById("fileAudioInput").addEventListener("change", (e) => {
+    if (e.target.files.length) {
+      uploadMedia(e.target.files[0], 'audio');
+      e.target.value = '';
+    }
+  });
+
+  async function setUserOnlineStatus(isOnline) {
+    if (!currentUser) return;
+    await db.collection("users").doc(currentUser.uid).update({ online: isOnline, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
+  }
+  window.addEventListener("beforeunload", () => {
+    if (currentUser) db.collection("users").doc(currentUser.uid).update({ online: false });
+  });
 </script>
 </body>
 </html>

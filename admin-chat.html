@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>AROMATIC · Admin Control Panel</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <!-- Chart.js for analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #0a0f1e;
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      color: #eef2ff;
+    }
+
+    .app {
+      display: flex;
+      height: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #111827;
+    }
+
+    /* Sidebar - Admin Panel */
+    .admin-sidebar {
+      width: 280px;
+      background: #0f172a;
+      border-right: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+    }
+
+    .sidebar-header h2 {
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-header p {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .nav-item {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: #1e293b;
+    }
+
+    .nav-item.active {
+      background: #1e293b;
+      border-left-color: #f59e0b;
+      color: #f59e0b;
+    }
+
+    .nav-item i {
+      width: 24px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #1e293b;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Panels */
+    .panel {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .panel.active-panel {
+      display: block;
+    }
+
+    /* Chat Area */
+    .chat-area {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 1rem;
+      position: relative;
+    }
+
+    .message-sent {
+      background: #f59e0b;
+      color: #0c0a2a;
+      align-self: flex-end;
+    }
+
+    .message-received {
+      background: #1e293b;
+      align-self: flex-start;
+    }
+
+    .message-admin-controls {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      display: none;
+      gap: 5px;
+    }
+
+    .message:hover .message-admin-controls {
+      display: flex;
+    }
+
+    .admin-btn {
+      background: #334155;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
+    /* Input Bar */
+    .input-bar {
+      background: #1e293b;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-bar input {
+      flex: 1;
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 12px;
+      border-radius: 2rem;
+      color: white;
+    }
+
+    /* User Cards */
+    .user-card {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 1rem;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info h4 {
+      margin-bottom: 5px;
+    }
+
+    .user-info p {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .ban-btn {
+      background: #dc2626;
+      padding: 8px 16px;
+      border-radius: 2rem;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .unban-btn {
+      background: #10b981;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 1rem;
+      text-align: center;
+    }
+
+    .stat-card i {
+      font-size: 2rem;
+      color: #f59e0b;
+      margin-bottom: 10px;
+    }
+
+    .stat-card h3 {
+      font-size: 1.8rem;
+    }
+
+    /* Login Screen */
+    .login-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0a0f1e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .login-card {
+      background: #1e293b;
+      padding: 2rem;
+      border-radius: 2rem;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 1rem;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: white;
+    }
+
+    button {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .online-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .online { background: #22c55e; }
+    .offline { background: #64748b; }
+
+    @media (max-width: 768px) {
+      .admin-sidebar { width: 70px; }
+      .sidebar-header h2, .sidebar-header p, .nav-item span { display: none; }
+      .nav-item { justify-content: center; }
+      .nav-item i { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="loginContainer" class="login-container">
+    <div class="login-card">
+      <h2 style="text-align:center; margin-bottom:20px;">🔐 ADMIN LOGIN</h2>
+      <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@!@#99#@!.com">
+      <input type="password" id="adminPassword" placeholder="Password">
+      <button id="loginAdminBtn">Login as Admin</button>
+      <div id="loginError" style="color:#f87171; margin-top:10px; text-align:center;"></div>
+    </div>
+  </div>
+
+  <div id="mainApp" style="display: none; width: 100%;">
+    <div class="app">
+      <!-- Admin Sidebar -->
+      <div class="admin-sidebar">
+        <div class="sidebar-header">
+          <h2>👑 AROMATIC</h2>
+          <p>Admin Control Panel</p>
+        </div>
+        <div class="nav-item active" data-panel="dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item" data-panel="chat">
+          <i class="fas fa-comments"></i>
+          <span>Live Chat</span>
+        </div>
+        <div class="nav-item" data-panel="users">
+          <i class="fas fa-users"></i>
+          <span>Users & Ban</span>
+        </div>
+        <div class="nav-item" data-panel="messages">
+          <i class="fas fa-history"></i>
+          <span>All Messages</span>
+        </div>
+        <div class="nav-item" data-panel="analytics">
+          <i class="fas fa-chart-line"></i>
+          <span>Analytics</span>
+        </div>
+        <div class="nav-item" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="chat-header">
+          <span class="logo">🌿 AROMATIC · Admin Suite</span>
+          <div id="adminInfo" style="font-size:0.8rem;"></div>
+        </div>
+
+        <!-- Dashboard Panel -->
+        <div id="dashboardPanel" class="panel active-panel">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <i class="fas fa-users"></i>
+              <h3 id="totalUsers">0</h3>
+              <p>Total Users</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-comment-dots"></i>
+              <h3 id="totalMessages">0</h3>
+              <p>Total Messages</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-ban"></i>
+              <h3 id="bannedUsers">0</h3>
+              <p>Banned Users</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-clock"></i>
+              <h3 id="onlineNow">0</h3>
+              <p>Online Now</p>
+            </div>
+          </div>
+          <div style="background:#1e293b; padding:20px; border-radius:1rem;">
+            <h3>📊 Recent Activity</h3>
+            <div id="recentActivity" style="margin-top:15px;"></div>
+          </div>
+        </div>
+
+        <!-- Chat Panel -->
+        <div id="chatPanel" class="panel">
+          <div class="chat-area">
+            <div class="messages-area" id="adminMessagesArea"></div>
+            <div class="input-bar">
+              <input type="text" id="adminMessageInput" placeholder="Broadcast message or chat...">
+              <button id="adminSendBtn" style="width: auto; padding: 12px 24px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users Panel -->
+        <div id="usersPanel" class="panel">
+          <h3 style="margin-bottom:20px;">👥 All Users & Control</h3>
+          <div id="usersList"></div>
+        </div>
+
+        <!-- All Messages Panel -->
+        <div id="messagesPanel" class="panel">
+          <h3 style="margin-bottom:20px;">📜 Message History (Admin Only)</h3>
+          <div id="allMessagesList" style="max-height: 70vh; overflow-y: auto;"></div>
+        </div>
+
+        <!-- Analytics Panel -->
+        <div id="analyticsPanel" class="panel">
+          <h3 style="margin-bottom:20px;">📈 Chat Analytics</h3>
+          <canvas id="activityChart" style="max-height: 400px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Firebase Config (YOURS)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdA8ntd9HFmADRPuyaOvh00WN4KkPYw-4",
+    authDomain: "personal-chat-4628d.firebaseapp.com",
+    projectId: "personal-chat-4628d",
+    storageBucket: "personal-chat-4628d.firebasestorage.app",
+    messagingSenderId: "1033665500663",
+    appId: "1:1033665500663:web:e0399ffa0ba609ac230af2",
+    measurementId: "G-2JMZWFJ33E"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  // ADMIN ONLY - Hardcoded admin email
+  const ADMIN_EMAIL = "admin@!@#99#@!.com";
+  let currentAdmin = null;
+  let messagesUnsub = null;
+  let usersUnsub = null;
+  let activityChart = null;
+
+  // Login
+  document.getElementById("loginAdminBtn").addEventListener("click", async () => {
+    const email = document.getElementById("adminEmail").value;
+    const password = document.getElementById("adminPassword").value;
+    const errorDiv = document.getElementById("loginError");
+    
+    if (email !== ADMIN_EMAIL) {
+      errorDiv.innerText = "Only AROMATIC admin can login!";
+      return;
+    }
+    
+    try {
+      const userCred = await auth.signInWithEmailAndPassword(email, password);
+      currentAdmin = userCred.user;
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("mainApp").style.display = "flex";
+      document.getElementById("adminInfo").innerHTML = `👑 AROMATIC Admin | ${currentAdmin.email}`;
+      initializeAdminPanel();
+    } catch (err) {
+      errorDiv.innerText = "Login failed: " + err.message;
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    auth.signOut();
+    location.reload();
+  });
+
+  async function initializeAdminPanel() {
+    // Load all data
+    loadDashboardStats();
+    loadUsersList();
+    loadAllMessages();
+    loadChatMessages();
+    setupMessageListener();
+    
+    // Navigation
+    document.querySelectorAll(".nav-item[data-panel]").forEach(item => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".panel").forEach(p => p.classList.remove("active-panel"));
+        document.getElementById(`${item.dataset.panel}Panel`).classList.add("active-panel");
+        document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
+        item.classList.add("active");
+      });
+    });
+  }
+
+  async function loadDashboardStats() {
+    const usersSnap = await db.collection("users").get();
+    const messagesSnap = await db.collection("messages").get();
+    const bannedSnap = await db.collection("bannedUsers").get();
+    const onlineSnap = await db.collection("users").where("online", "==", true).get();
+    
+    document.getElementById("totalUsers").innerText = usersSnap.size;
+    document.getElementById("totalMessages").innerText = messagesSnap.size;
+    document.getElementById("bannedUsers").innerText = bannedSnap.size;
+    document.getElementById("onlineNow").innerText = onlineSnap.size;
+    
+    // Recent activity
+    const recentMessages = await db.collection("messages").orderBy("timestamp", "desc").limit(10).get();
+    const activityDiv = document.getElementById("recentActivity");
+    activityDiv.innerHTML = "<strong>Latest Messages:</strong><br>";
+    recentMessages.forEach(doc => {
+      const msg = doc.data();
+      activityDiv.innerHTML += `<div style="font-size:0.8rem; padding:5px; border-bottom:1px solid #334155;">${msg.senderName}: ${msg.text || "[Media]"}</div>`;
+    });
+  }
+
+  async function loadUsersList() {
+    db.collection("users").onSnapshot(async (snapshot) => {
+      const bannedMap = new Map();
+      const bannedSnap = await db.collection("bannedUsers").get();
+      bannedSnap.forEach(doc => bannedMap.set(doc.id, doc.data()));
+      
+      const usersDiv = document.getElementById("usersList");
+      usersDiv.innerHTML = "";
+      
+      for (const doc of snapshot.docs) {
+        const user = doc.data();
+        const isBanned = bannedMap.has(user.uid);
+        const loginTime = user.lastSeen?.toDate() || new Date();
+        
+        usersDiv.innerHTML += `
+          <div class="user-card">
+            <div class="user-info">
+              <h4>${user.displayName || user.email.split('@')[0]} 
+                <span class="online-status ${user.online ? 'online' : 'offline'}"></span>
+                ${user.role === 'admin' ? '👑' : ''}
+              </h4>
+              <p>📧 ${user.email}</p>
+              <p>🕐 Last active: ${loginTime.toLocaleString()}</p>
+              <p>📅 First seen: ${user.createdAt?.toDate().toLocaleDateString() || 'N/A'}</p>
+            </div>
+            <div>
+              ${!isBanned ? 
+                `<button class="ban-btn" onclick="banUser('${user.uid}', '${user.email}')">🚫 Ban User</button>` :
+                `<button class="ban-btn unban-btn" onclick="unbanUser('${user.uid}')">✅ Unban User</button>`
+              }
+            </div>
+          </div>
+        `;
+      }
+    });
+  }
+
+  async function loadAllMessages() {
+    db.collection("messages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+      const messagesDiv = document.getElementById("allMessagesList");
+      messagesDiv.innerHTML = "<h4>All Messages (Latest First)</h4>";
+      
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const time = msg.timestamp?.toDate().toLocaleString() || "Unknown";
+        messagesDiv.innerHTML += `
+          <div style="background:#1e293b; padding:10px; margin:8px 0; border-radius:8px;">
+            <strong>${msg.senderName}</strong> (${msg.senderEmail || 'N/A'})<br>
+            ${msg.text ? msg.text : '<i>📎 Media Message</i>'}<br>
+            <small>${time}</small>
+            <button onclick="deleteMessage('${doc.id}')" style="background:#dc2626; padding:4px 8px; font-size:10px; margin-left:10px;">Delete</button>
+            <button onclick="editMessage('${doc.id}', '${msg.text?.replace(/'/g, "\\'") || ''}')" style="background:#3b82f6; padding:4px 8px; font-size:10px;">Edit</button>
+          </div>
+        `;
+      });
+    });
+  }
+
+  async function loadChatMessages() {
+    db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
+      const container = document.getElementById("adminMessagesArea");
+      container.innerHTML = "";
+      
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const isOwn = currentAdmin && msg.senderId === currentAdmin.uid;
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
+        msgDiv.innerHTML = `
+          <div><strong>${msg.senderName}</strong>: ${msg.text || '📎 Media'}</div>
+          <small>${msg.timestamp?.toDate().toLocaleTimeString() || ''}</small>
+          <div class="message-admin-controls">
+            <button class="admin-btn" onclick="deleteMessage('${doc.id}')">🗑️</button>
+            <button class="admin-btn" onclick="editMessage('${doc.id}', '${msg.text?.replace(/'/g, "\\'") || ''}')">✏️</button>
+          </div>
+        `;
+        container.appendChild(msgDiv);
+      });
+      container.scrollTop = container.scrollHeight;
+    });
+  }
+
+  function setupMessageListener() {
+    document.getElementById("adminSendBtn").addEventListener("click", async () => {
+      const input = document.getElementById("adminMessageInput");
+      const text = input.value.trim();
+      if (!text) return;
+      
+      await db.collection("messages").add({
+        text: text,
+        senderId: currentAdmin.uid,
+        senderName: "AROMATIC (ADMIN)",
+        senderEmail: currentAdmin.email,
+        type: "text",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      input.value = "";
+    });
+  }
+
+  // Global functions for admin actions
+  window.deleteMessage = async (messageId) => {
+    if (confirm("Delete this message?")) {
+      await db.collection("messages").doc(messageId).delete();
+      alert("Message deleted!");
+    }
+  };
+
+  window.editMessage = async (messageId, oldText) => {
+    const newText = prompt("Edit message:", oldText);
+    if (newText && newText !== oldText) {
+      await db.collection("messages").doc(messageId).update({
+        text: newText,
+        edited: true,
+        editedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("Message updated!");
+    }
+  };
+
+  window.banUser = async (userId, userEmail) => {
+    if (confirm(`Ban ${userEmail}? They won't be able to login.`)) {
+      await db.collection("bannedUsers").doc(userId).set({
+        email: userEmail,
+        bannedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        bannedBy: currentAdmin.email
+      });
+      alert("User banned!");
+    }
+  };
+
+  window.unbanUser = async (userId) => {
+    if (confirm("Unban this user?")) {
+      await db.collection("bannedUsers").doc(userId).delete();
+      alert("User unbanned!");
+    }
+  };
+
+  // Auth state to check for banned users
+  auth.onAuthStateChanged(async (user) => {
+    if (user && user.email !== ADMIN_EMAIL) {
+      const bannedDoc = await db.collection("bannedUsers").doc(user.uid).get();
+      if (bannedDoc.exists) {
+        await auth.signOut();
+        alert("You have been banned by admin!");
+      }
+    }
+  });
+</script>
+</body>
+</html>

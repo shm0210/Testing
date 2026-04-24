@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>AROMATIC · Private Chat</title>
+  <title>AROMATIC · Premium Private Chat</title>
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -38,7 +37,6 @@
       position: relative;
     }
 
-    /* Auth Screen */
     .auth-container {
       padding: 2rem 1.5rem;
       display: flex;
@@ -108,7 +106,6 @@
     button:active { transform: scale(0.97); }
     .error-msg { color: #f87171; font-size: 0.8rem; margin-top: 0.5rem; text-align: center; }
 
-    /* Chat Container */
     .chat-container {
       display: flex;
       flex-direction: column;
@@ -153,6 +150,14 @@
       box-shadow: 0 0 4px #22c55e;
     }
 
+    .offline-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #64748b;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
     .members-panel {
       background: #0f172a;
       border-bottom: 1px solid #334155;
@@ -172,11 +177,16 @@
       padding: 6px 14px;
       border-radius: 40px;
       font-size: 0.8rem;
+      transition: all 0.2s ease;
     }
 
     .member-chip.admin {
       background: #f59e0b20;
       border: 1px solid #f59e0b;
+    }
+
+    .member-chip.online-member {
+      border-left: 3px solid #22c55e;
     }
 
     .messages-area {
@@ -194,6 +204,12 @@
       padding: 10px 14px;
       border-radius: 1.5rem;
       word-wrap: break-word;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .message-sent {
@@ -259,12 +275,35 @@
       padding: 10px;
       font-size: 1.4rem;
       color: #fbbf24;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
+    .icon-btn:hover { opacity: 0.8; transform: scale(1.05); }
     .lastseen-toast {
       font-size: 0.7rem;
       color: #9ca3af;
       margin-left: 12px;
+    }
+
+    .auto-logout-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #dc2626;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      z-index: 1000;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
     @media (max-width: 550px) {
@@ -274,7 +313,6 @@
 </head>
 <body>
 <div class="app" id="app">
-  <!-- Auth Panel -->
   <div id="authPanel" class="auth-container">
     <div class="auth-card">
       <div class="auth-title">✨ AROMATIC</div>
@@ -287,13 +325,12 @@
     </div>
   </div>
 
-  <!-- Main Chat Interface -->
   <div id="chatContainer" class="chat-container">
     <div class="chat-header">
       <span class="logo">🌿 AROMATIC · room</span>
       <div class="user-badge">
         <span id="myEmailShort"></span>
-        <span class="online-dot"></span>
+        <span id="userOnlineIndicator" class="online-dot"></span>
         <button id="logoutBtn" style="background: none; width: auto; margin:0; padding:0 6px; color:#f87171;" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
       </div>
     </div>
@@ -312,7 +349,6 @@
 </div>
 
 <script>
-  // Your Firebase configuration (already inserted!)
   const firebaseConfig = {
     apiKey: "AIzaSyBdA8ntd9HFmADRPuyaOvh00WN4KkPYw-4",
     authDomain: "personal-chat-4628d.firebaseapp.com",
@@ -323,31 +359,100 @@
     measurementId: "G-2JMZWFJ33E"
   };
 
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  const storage = firebase.storage();
 
-  // ALLOWED USERS - Only these emails can login
-  // IMPORTANT: You must create these users in Firebase Authentication Console!
+  const CLOUDINARY_CLOUD_NAME = "dhzxhakci";
+  const CLOUDINARY_UPLOAD_PRESET = "chat_uploads";
+
+  // ALLOWED USERS - only these emails can login
   const ALLOWED_USERS = new Map([
-    ["admin@admin.com", { name: "AROMATIC", role: "admin" }],  // YOU - Admin
-    ["sp@sp.com", { name: "SP", role: "member" }],            // Friend 1
-    ["sv@sv.com", { name: "SV", role: "member" }]             // Friend 2
+    ["owner@admin.com", { name: "AROMATIC OWNER", role: "admin" }],
+    ["sp@sp.com", { name: "SP", role: "member" }],
+    ["sv@sv.com", { name: "SV", role: "member" }]
   ]);
 
   let currentUser = null;
   let messagesUnsub = null;
   let typingTimeout = null;
   let onlineStatusInterval = null;
+  let inactivityTimer = null;
+  let activityListenersAdded = false;
+  let membersUnsub = null;
+  const INACTIVITY_TIMEOUT = 60000;
 
-  // Check if email is allowed
+  function showToast(message, isError = false) {
+    const existingToast = document.querySelector('.auto-logout-toast');
+    if (existingToast) existingToast.remove();
+    const toast = document.createElement('div');
+    toast.className = 'auto-logout-toast';
+    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i> ${message}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  function scheduleAutoLogout() {
+    if (inactivityTimer) clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(async () => {
+      if (currentUser) {
+        showToast("⚠️ You've been inactive for 1 minute. Logging out...", true);
+        await setUserOnlineStatus(false);
+        await auth.signOut();
+      }
+    }, INACTIVITY_TIMEOUT);
+  }
+
+  function resetInactivityTimer() {
+    if (currentUser) {
+      scheduleAutoLogout();
+    }
+  }
+
+  function addActivityListeners() {
+    if (activityListenersAdded) return;
+    const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'];
+    events.forEach(event => {
+      window.addEventListener(event, resetInactivityTimer);
+    });
+    activityListenersAdded = true;
+  }
+
+  function removeActivityListeners() {
+    if (!activityListenersAdded) return;
+    const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'];
+    events.forEach(event => {
+      window.removeEventListener(event, resetInactivityTimer);
+    });
+    activityListenersAdded = false;
+  }
+
+  async function uploadToCloudinary(file, resourceType = 'image') {
+    return new Promise(async (resolve, reject) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      try {
+        let uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+        if (resourceType === 'audio') {
+          uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`;
+        } else if (resourceType === 'video') {
+          uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
+        }
+        const response = await fetch(uploadUrl, { method: 'POST', body: formData });
+        if (!response.ok) throw new Error('Upload failed');
+        const data = await response.json();
+        resolve(data.secure_url);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   function isEmailAllowed(email) {
     return ALLOWED_USERS.has(email?.toLowerCase());
   }
 
-  // Create user profile in Firestore
   async function ensureUserProfile(user) {
     if (!user) return;
     const userRef = db.collection("users").doc(user.uid);
@@ -369,36 +474,148 @@
     return userRef;
   }
 
+  async function setUserOnlineStatus(isOnline) {
+    if (!currentUser) return;
+    await db.collection("users").doc(currentUser.uid).update({ 
+      online: isOnline, 
+      lastSeen: firebase.firestore.FieldValue.serverTimestamp() 
+    });
+    const onlineIndicator = document.getElementById("userOnlineIndicator");
+    if (onlineIndicator) {
+      onlineIndicator.style.backgroundColor = isOnline ? "#22c55e" : "#64748b";
+      onlineIndicator.style.boxShadow = isOnline ? "0 0 4px #22c55e" : "none";
+    }
+  }
+
+  function startOnlineHeartbeat() {
+    if (onlineStatusInterval) clearInterval(onlineStatusInterval);
+    onlineStatusInterval = setInterval(async () => {
+      if (currentUser) {
+        await db.collection("users").doc(currentUser.uid).update({ 
+          online: true, 
+          lastSeen: firebase.firestore.FieldValue.serverTimestamp() 
+        });
+      }
+    }, 15000);
+  }
+
+  // CRITICAL FIX: Real-time online status listener - ONLY shows truly online users
+  function loadMembersWithRealOnlineStatus() {
+    if (membersUnsub) membersUnsub();
+    
+    membersUnsub = db.collection("users").onSnapshot((snapshot) => {
+      const membersDiv = document.getElementById("membersList");
+      if (!membersDiv) return;
+      
+      const usersList = [];
+      const now = Date.now();
+      
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        // Only include users from ALLOWED_USERS list
+        if (data.email && isEmailAllowed(data.email)) {
+          // CRITICAL: Determine REAL online status
+          // A user is considered ONLINE only if:
+          // 1. Their 'online' flag is true AND
+          // 2. Their lastSeen is within the last 30 seconds (to prevent stale status)
+          let isRealOnline = false;
+          if (data.online === true && data.lastSeen) {
+            const lastSeenTime = data.lastSeen.toDate ? data.lastSeen.toDate() : new Date(data.lastSeen);
+            const secondsSinceLastSeen = (now - lastSeenTime.getTime()) / 1000;
+            // If last heartbeat was within 30 seconds, user is truly online
+            isRealOnline = secondsSinceLastSeen < 30;
+          }
+          
+          usersList.push({ 
+            id: doc.id, 
+            ...data, 
+            isRealOnline: isRealOnline 
+          });
+        }
+      });
+      
+      // Sort: online users first, then offline
+      usersList.sort((a, b) => {
+        if (a.isRealOnline === b.isRealOnline) {
+          return (a.displayName || '').localeCompare(b.displayName || '');
+        }
+        return a.isRealOnline ? -1 : 1;
+      });
+      
+      let html = '';
+      usersList.forEach(user => {
+        const isAdmin = ALLOWED_USERS.get(user.email)?.role === "admin";
+        const isOnline = user.isRealOnline; // Use REAL online status only
+        
+        // Online indicator with green dot for truly online users
+        const onlineStatusHtml = isOnline ? 
+          '<span class="online-dot" style="background:#22c55e; box-shadow:0 0 4px #22c55e;"></span>' : 
+          '<span class="offline-dot"></span>';
+        
+        let lastSeenText = "";
+        // Only show last seen for admin users and when user is offline
+        if (currentUser && ALLOWED_USERS.get(currentUser.email)?.role === "admin" && !isOnline && user.lastSeen) {
+          const date = user.lastSeen.toDate ? user.lastSeen.toDate() : new Date(user.lastSeen);
+          lastSeenText = `<span class="lastseen-toast">last seen ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
+        }
+        
+        html += `<div class="member-chip ${isAdmin ? 'admin' : ''} ${isOnline ? 'online-member' : ''}">
+                  <strong>${user.displayName || user.email.split('@')[0]}</strong> ${onlineStatusHtml} ${lastSeenText}
+                  <span style="font-size:9px; color:#94a3b8;">${user.email}</span>
+                </div>`;
+      });
+      membersDiv.innerHTML = html;
+    });
+  }
+
   // Authentication State Listener
   auth.onAuthStateChanged(async (user) => {
     if (user && isEmailAllowed(user.email)) {
+      const bannedDoc = await db.collection("bannedUsers").doc(user.uid).get();
+      if (bannedDoc.exists) {
+        await auth.signOut();
+        document.getElementById("authError").innerText = "⛔ You have been banned by admin!";
+        return;
+      }
+      
       currentUser = user;
       await ensureUserProfile(user);
       document.getElementById("authPanel").style.display = "none";
       document.getElementById("chatContainer").style.display = "flex";
       const userData = ALLOWED_USERS.get(user.email.toLowerCase());
       document.getElementById("myEmailShort").innerHTML = `${userData?.name || user.email.split('@')[0]} ${userData?.role === 'admin' ? '👑' : ''}`;
-      startRealtimeFeatures();
-      loadMembersAndMessages();
-      setUserOnlineStatus(true);
       
-      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
-      onlineStatusInterval = setInterval(() => {
-        if (currentUser) db.collection("users").doc(currentUser.uid).update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
-      }, 20000);
+      await setUserOnlineStatus(true);
+      startOnlineHeartbeat();
+      scheduleAutoLogout();
+      addActivityListeners();
+      
+      startRealtimeFeatures();
+      loadMembersWithRealOnlineStatus(); // Use the fixed online status listener
+      loadMessages();
+      
+      showToast(`Welcome back, ${userData?.name || user.email.split('@')[0]}! 🌿`, false);
+      
     } else if (user && !isEmailAllowed(user.email)) {
       await auth.signOut();
       document.getElementById("authError").innerText = "⛔ Your email is not authorized. Contact AROMATIC.";
       document.getElementById("chatContainer").style.display = "none";
       document.getElementById("authPanel").style.display = "flex";
     } else {
+      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      removeActivityListeners();
+      if (messagesUnsub) messagesUnsub();
+      if (membersUnsub) membersUnsub();
+      currentUser = null;
+      
       document.getElementById("authPanel").style.display = "flex";
       document.getElementById("chatContainer").style.display = "none";
-      if (messagesUnsub) messagesUnsub();
+      document.getElementById("loginEmail").value = "";
+      document.getElementById("loginPassword").value = "";
     }
   });
 
-  // Login
   document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("loginEmail").value.trim();
     const pwd = document.getElementById("loginPassword").value;
@@ -409,17 +626,31 @@
       await auth.signInWithEmailAndPassword(email, pwd);
       errorDiv.innerText = "";
     } catch (err) {
-      console.error(err);
       errorDiv.innerText = "Invalid credentials. Make sure this user exists in Firebase Authentication.";
     }
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", () => auth.signOut());
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    if (currentUser) {
+      await setUserOnlineStatus(false);
+      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      removeActivityListeners();
+      await auth.signOut();
+      showToast("You have been logged out. See you soon! 👋", false);
+    }
+  });
 
-  // Real-time features
   function startRealtimeFeatures() {
     const inputField = document.getElementById("messageInput");
-    inputField.addEventListener("input", () => {
+    if (!inputField) return;
+    
+    // Remove old listener and reattach
+    const newInputField = inputField.cloneNode(true);
+    inputField.parentNode.replaceChild(newInputField, inputField);
+    const freshInput = document.getElementById("messageInput");
+    
+    freshInput.addEventListener("input", () => {
       if (!currentUser) return;
       const typingRef = db.collection("status").doc("typing");
       typingRef.set({
@@ -431,13 +662,14 @@
       typingTimeout = setTimeout(() => {
         typingRef.update({ [currentUser.uid]: false });
       }, 1500);
+      resetInactivityTimer();
     });
 
     db.collection("status").doc("typing").onSnapshot((doc) => {
       const typingData = doc.data() || {};
       const typingUsers = Object.keys(typingData).filter(uid => typingData[uid] === true && uid !== currentUser?.uid);
       const typingArea = document.getElementById("typingStatusArea");
-      if (typingUsers.length > 0 && currentUser && ALLOWED_USERS.get(currentUser.email)?.role === "admin") {
+      if (typingUsers.length > 0) {
         typingArea.innerHTML = `<i class="fas fa-pen-fancy"></i> Someone is typing...`;
       } else {
         typingArea.innerHTML = "";
@@ -446,41 +678,15 @@
   }
 
   function getDisplayNameForUser(user) {
-    return ALLOWED_USERS.get(user.email.toLowerCase())?.name || user.email.split('@')[0];
+    return ALLOWED_USERS.get(user.email.toLowerCase())?.name || (user.email ? user.email.split('@')[0] : 'User');
   }
 
-  // Load members and messages
-  function loadMembersAndMessages() {
-    db.collection("users").onSnapshot((snapshot) => {
-      const membersDiv = document.getElementById("membersList");
-      let html = '';
-      const usersList = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.email && isEmailAllowed(data.email)) {
-          usersList.push({ id: doc.id, ...data });
-        }
-      });
-      usersList.sort((a,b) => a.displayName?.localeCompare(b.displayName));
-      usersList.forEach(user => {
-        const isAdmin = ALLOWED_USERS.get(user.email)?.role === "admin";
-        const onlineStatus = user.online ? '<span class="online-dot"></span>' : '<i class="far fa-circle" style="font-size:8px; color:#64748b;"></i>';
-        let lastSeenText = "";
-        if (currentUser && ALLOWED_USERS.get(currentUser.email)?.role === "admin" && !user.online && user.lastSeen) {
-          const date = user.lastSeen.toDate ? user.lastSeen.toDate() : new Date(user.lastSeen);
-          lastSeenText = `<span class="lastseen-toast">last seen ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
-        }
-        html += `<div class="member-chip ${isAdmin ? 'admin' : ''}">
-                  <strong>${user.displayName || user.email.split('@')[0]}</strong> ${onlineStatus} ${lastSeenText}
-                  <span style="font-size:10px; color:#94a3b8;">${user.email}</span>
-                </div>`;
-      });
-      membersDiv.innerHTML = html;
-    });
-
+  function loadMessages() {
     if (messagesUnsub) messagesUnsub();
     messagesUnsub = db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
       const container = document.getElementById("messagesArea");
+      if (!container) return;
+      const wasScrolledToBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
       container.innerHTML = "";
       snapshot.forEach(doc => {
         const msg = doc.data();
@@ -490,25 +696,33 @@
         let contentHTML = '';
         if (msg.type === 'text') {
           contentHTML = `<div>${escapeHtml(msg.text)}</div>`;
-        } else if (msg.type === 'image') {
+        } else if (msg.type === 'image' && msg.fileUrl) {
           contentHTML = `<img src="${msg.fileUrl}" class="media-msg" style="max-width:100%; max-height:180px; border-radius:1rem;" onclick="window.open('${msg.fileUrl}')" />`;
-        } else if (msg.type === 'audio') {
+        } else if (msg.type === 'audio' && msg.fileUrl) {
           contentHTML = `<audio controls src="${msg.fileUrl}" class="audio-msg" style="width:180px;"></audio>`;
+        } else if (msg.type === 'video' && msg.fileUrl) {
+          contentHTML = `<video controls src="${msg.fileUrl}" class="media-msg" style="max-width:200px; border-radius:1rem;"></video>`;
         }
         const senderName = msg.senderName || "unknown";
         const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
         msgDiv.innerHTML = `<div style="font-size:0.7rem; opacity:0.8;">${senderName}</div>${contentHTML}<div class="msg-meta">${timeStr}</div>`;
         container.appendChild(msgDiv);
       });
-      container.scrollTop = container.scrollHeight;
+      if (wasScrolledToBottom) {
+        container.scrollTop = container.scrollHeight;
+      }
     });
   }
 
-  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-  // Send message
-  document.getElementById("sendBtn").addEventListener("click", () => sendTextMessage());
-  document.getElementById("messageInput").addEventListener("keypress", (e) => { if(e.key === 'Enter') sendTextMessage(); });
+  function escapeHtml(str) { 
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m){
+      if(m==='&') return '&amp;'; 
+      if(m==='<') return '&lt;'; 
+      if(m==='>') return '&gt;'; 
+      return m;
+    }); 
+  }
 
   async function sendTextMessage() {
     const input = document.getElementById("messageInput");
@@ -524,34 +738,55 @@
     });
     input.value = "";
     db.collection("status").doc("typing").update({ [currentUser.uid]: false });
+    resetInactivityTimer();
   }
 
-  // Media upload
   async function uploadMedia(file, type) {
     if (!currentUser) return;
-    const fileRef = storage.ref(`chat_media/${Date.now()}_${file.name}`);
-    await fileRef.put(file);
-    const downloadUrl = await fileRef.getDownloadURL();
-    const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
-    await db.collection("messages").add({
-      fileUrl: downloadUrl,
+    resetInactivityTimer();
+    const loadingMsg = await db.collection("messages").add({
+      text: "📤 Uploading media...",
       senderId: currentUser.uid,
-      senderName: userData?.name || currentUser.email.split('@')[0],
-      type: type,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      senderName: getDisplayNameForUser(currentUser),
+      type: "text",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      isLoading: true
     });
+    try {
+      let resourceType = type;
+      if (type === 'image') resourceType = 'image';
+      else if (type === 'audio') resourceType = 'audio';
+      else if (type === 'video') resourceType = 'video';
+      const downloadUrl = await uploadToCloudinary(file, resourceType);
+      await loadingMsg.delete();
+      const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
+      await db.collection("messages").add({
+        fileUrl: downloadUrl,
+        senderId: currentUser.uid,
+        senderName: userData?.name || currentUser.email.split('@')[0],
+        type: type,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (error) {
+      await loadingMsg.delete();
+      await db.collection("messages").add({
+        text: "❌ Failed to upload media",
+        senderId: currentUser.uid,
+        senderName: getDisplayNameForUser(currentUser),
+        type: "text",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
   }
 
-  document.getElementById("attachMediaBtn").addEventListener("click", () => {
-    document.getElementById("fileImageInput").click();
-  });
-  document.getElementById("attachAudioBtn").addEventListener("click", () => {
-    document.getElementById("fileAudioInput").click();
-  });
+  document.getElementById("sendBtn").addEventListener("click", sendTextMessage);
+  document.getElementById("messageInput").addEventListener("keypress", (e) => { if(e.key === 'Enter') sendTextMessage(); });
+  document.getElementById("attachMediaBtn").addEventListener("click", () => document.getElementById("fileImageInput").click());
+  document.getElementById("attachAudioBtn").addEventListener("click", () => document.getElementById("fileAudioInput").click());
   document.getElementById("fileImageInput").addEventListener("change", (e) => {
     if (e.target.files.length) {
       const file = e.target.files[0];
-      const type = file.type.startsWith('image/') ? 'image' : 'video';
+      const type = file.type.startsWith('image/') ? 'image' : (file.type.startsWith('video/') ? 'video' : 'image');
       uploadMedia(file, type);
       e.target.value = '';
     }
@@ -563,12 +798,10 @@
     }
   });
 
-  async function setUserOnlineStatus(isOnline) {
-    if (!currentUser) return;
-    await db.collection("users").doc(currentUser.uid).update({ online: isOnline, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
-  }
-  window.addEventListener("beforeunload", () => {
-    if (currentUser) db.collection("users").doc(currentUser.uid).update({ online: false });
+  window.addEventListener("beforeunload", async () => {
+    if (currentUser) {
+      await setUserOnlineStatus(false);
+    }
   });
 </script>
 </body>

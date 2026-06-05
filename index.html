@@ -1,843 +1,842 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>AROMATIC · Premium Private Chat</title>
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: #0a0f1e;
-      font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      color: #eef2ff;
-    }
-
-    .app {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      max-width: 550px;
-      margin: 0 auto;
-      background: #111827;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      position: relative;
-    }
-
-    .auth-container {
-      padding: 2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 100%;
-      background: linear-gradient(145deg, #0f172a, #0a0f1e);
-    }
-
-    .auth-card {
-      background: #1e293b;
-      border-radius: 2rem;
-      padding: 2rem 1.5rem;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
-    }
-
-    .auth-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 0.25rem;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .auth-sub {
-      text-align: center;
-      color: #94a3b8;
-      margin-bottom: 2rem;
-      font-size: 0.85rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px 18px;
-      margin: 8px 0;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 1.2rem;
-      color: white;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.2s;
-    }
-
-    input:focus {
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 2px rgba(245,158,11,0.3);
-    }
-
-    button {
-      background: #f59e0b;
-      border: none;
-      padding: 12px;
-      width: 100%;
-      border-radius: 2rem;
-      font-weight: bold;
-      font-size: 1rem;
-      color: #0f172a;
-      margin-top: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:active { transform: scale(0.97); }
-    .error-msg { color: #f87171; font-size: 0.8rem; margin-top: 0.5rem; text-align: center; }
-
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      display: none;
-    }
-
-    .chat-header {
-      background: #1e293b;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #334155;
-    }
-
-    .logo {
-      font-weight: 800;
-      font-size: 1.4rem;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.8rem;
-      background: #0f172a;
-      padding: 5px 12px;
-      border-radius: 40px;
-    }
-
-    /* Mobile Chat Button in Header */
-    .mobile-chat-header-btn {
-      background: #f59e0b;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #0f172a;
-      font-size: 1.2rem;
-      transition: 0.2s;
-      border: none;
-    }
-    .mobile-chat-header-btn:active { transform: scale(0.92); }
-
-    .online-dot {
-      width: 10px;
-      height: 10px;
-      background-color: #22c55e;
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 0 4px #22c55e;
-    }
-
-    .offline-dot {
-      width: 10px;
-      height: 10px;
-      background-color: #64748b;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    /* Modal Overlay for Message Dialog - FULL FEATURED with media & voice */
-    .msg-dialog-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.92);
-      backdrop-filter: blur(8px);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: visibility 0.2s, opacity 0.2s;
-    }
-    .msg-dialog-overlay.active {
-      visibility: visible;
-      opacity: 1;
-    }
-    .msg-dialog-card {
-      background: #1e293b;
-      width: 92%;
-      max-width: 450px;
-      border-radius: 2rem;
-      padding: 1.5rem;
-      box-shadow: 0 30px 40px rgba(0,0,0,0.6);
-      animation: fadeInScale 0.2s ease;
-      border: 1px solid #f59e0b30;
-    }
-    @keyframes fadeInScale {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .msg-dialog-card h3 {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      color: #fbbf24;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .msg-dialog-card textarea {
-      width: 100%;
-      padding: 14px;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 1.2rem;
-      color: white;
-      font-size: 1rem;
-      resize: vertical;
-      font-family: inherit;
-      margin-bottom: 1rem;
-    }
-    .dialog-media-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 1rem;
-      justify-content: space-around;
-    }
-    .dialog-media-btn {
-      background: #0f172a;
-      border: 1px solid #f59e0b;
-      border-radius: 2rem;
-      padding: 8px 12px;
-      font-size: 0.85rem;
-      color: #fbbf24;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      justify-content: center;
-      transition: 0.2s;
-    }
-    .dialog-media-btn:active { background: #f59e0b20; transform: scale(0.96); }
-    .dialog-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
-    .dialog-actions button {
-      margin-top: 0;
-      flex: 1;
-    }
-    .dialog-actions .cancel-dialog {
-      background: #334155;
-      color: white;
-    }
-    .members-panel {
-      background: #0f172a;
-      border-bottom: 1px solid #334155;
-      padding: 8px 16px;
-      overflow-x: auto;
-      white-space: nowrap;
-      display: flex;
-      gap: 12px;
-      scrollbar-width: thin;
-    }
-
-    .member-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #1e293b;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      transition: all 0.2s ease;
-    }
-
-    .member-chip.admin {
-      background: #f59e0b20;
-      border: 1px solid #f59e0b;
-    }
-
-    .member-chip.online-member {
-      border-left: 3px solid #22c55e;
-    }
-
-    .messages-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #0f172a;
-    }
-
-    .message {
-      max-width: 85%;
-      padding: 10px 14px;
-      border-radius: 1.5rem;
-      word-wrap: break-word;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message-sent {
-      background: #f59e0b;
-      color: #0c0a2a;
-      align-self: flex-end;
-      border-bottom-right-radius: 5px;
-    }
-
-    .message-received {
-      background: #1e293b;
-      align-self: flex-start;
-      border-bottom-left-radius: 5px;
-    }
-
-    .msg-meta {
-      font-size: 0.65rem;
-      opacity: 0.7;
-      margin-top: 4px;
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .media-msg {
-      max-width: 220px;
-      border-radius: 1rem;
-      margin-top: 5px;
-      cursor: pointer;
-    }
-
-    .typing-indicator {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      margin: 6px 12px;
-      font-style: italic;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .input-bar {
-      background: #1e293b;
-      padding: 12px 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-top: 1px solid #334155;
-    }
-
-    .input-bar input {
-      flex: 1;
-      margin: 0;
-      background: #0f172a;
-      border-radius: 2rem;
-      padding: 12px 16px;
-    }
-
-    .icon-btn {
-      background: transparent;
-      width: auto;
-      margin: 0;
-      padding: 10px;
-      font-size: 1.4rem;
-      color: #fbbf24;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .icon-btn:hover { opacity: 0.8; transform: scale(1.05); }
-    .lastseen-toast {
-      font-size: 0.7rem;
-      color: #9ca3af;
-      margin-left: 12px;
-    }
-
-    .auto-logout-toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #dc2626;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 2rem;
-      font-size: 0.85rem;
-      z-index: 1000;
-      animation: slideUp 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-
-    /* Responsive: On mobile, show header chat button, hide bottom input bar */
-    @media (max-width: 550px) {
-      .message { max-width: 90%; }
-      .input-bar { display: none; }
-      .mobile-chat-header-btn { display: flex; }
-      .user-badge { gap: 8px; }
-    }
-    @media (min-width: 551px) {
-      .mobile-chat-header-btn { display: none; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NO MAN'S SKY PROTOTYPE | Zero-GC Space Engine v6.0</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            pointer-events: none;
+        }
+        
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #0f0;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+            border-left: 3px solid #0f0;
+            pointer-events: none;
+        }
+        
+        #speedometer {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            color: #0ff;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            backdrop-filter: blur(5px);
+            border: 1px solid #0ff;
+            pointer-events: none;
+        }
+        
+        #game-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ff0;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+        }
+        
+        #controls-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.6);
+            background: rgba(0,0,0,0.5);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: monospace;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+        
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 300;
+            border: 2px solid #0ff;
+            border-radius: 50%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        #crosshair.target-locked {
+            border-color: #ff0;
+            box-shadow: 0 0 10px rgba(255,255,0,0.5);
+        }
+        
+        #crosshair.target-landable {
+            border-color: #0f0;
+            box-shadow: 0 0 15px rgba(0,255,0,0.8);
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+        
+        .mode-panel {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            pointer-events: none;
+            z-index: 200;
+            transition: opacity 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        #nav-system {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #0ff;
+            font-family: monospace;
+            font-size: 12px;
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            border-right: 2px solid #0ff;
+            text-align: right;
+        }
+        
+        #fps-counter {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #0f0;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 10px;
+            pointer-events: none;
+            z-index: 200;
+        }
+        
+        #flight-model {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            color: #ffa500;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 10px;
+            pointer-events: none;
+            z-index: 200;
+        }
+        
+        #pointer-lock-warning {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #ff0;
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 18px;
+            text-align: center;
+            z-index: 1000;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff0;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        @media (max-width: 768px) {
+            #hud { font-size: 10px; padding: 8px 12px; }
+            #speedometer { font-size: 14px; padding: 10px 18px; }
+            .mode-panel { font-size: 11px; padding: 8px 16px; }
+            #nav-system { font-size: 9px; top: 80px; }
+        }
+    </style>
 </head>
 <body>
-<div class="app" id="app">
-  <div id="authPanel" class="auth-container">
-    <div class="auth-card">
-      <div class="auth-title">✨ AROMATIC</div>
-      <div class="auth-sub">private circle · approved access only</div>
-      <input type="email" id="loginEmail" placeholder="Your email" autocomplete="email">
-      <input type="password" id="loginPassword" placeholder="Password">
-      <button id="loginBtn">🔐 Enter Chat Room</button>
-      <div id="authError" class="error-msg"></div>
-      <div style="font-size:0.7rem; text-align:center; margin-top:1rem;">Only authorized emails can login</div>
-    </div>
-  </div>
-
-  <div id="chatContainer" class="chat-container">
-    <div class="chat-header">
-      <span class="logo">🌿 AROMATIC · room</span>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <div id="mobileChatHeaderBtn" class="mobile-chat-header-btn">
-          <i class="fas fa-comment-dots"></i>
+    <div id="ui">
+        <div id="hud">
+            🚀 SPACE ENGINE v6.0 • ZERO-GC<br>
+            <span id="current-mode">FLIGHT MODE</span>
         </div>
-        <div class="user-badge">
-          <span id="myEmailShort"></span>
-          <span id="userOnlineIndicator" class="online-dot"></span>
-          <button id="logoutBtn" style="background: none; width: auto; margin:0; padding:0 6px; color:#f87171;" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
+        <div id="game-mode">
+            🎮 ULTRA OPTIMIZED
         </div>
-      </div>
+        <div id="speedometer">
+            VEL: <span id="speed-value">0</span> km/s<br>
+            ⚡ BOOST: <span id="boost-status">READY</span>
+        </div>
+        <div id="nav-system">
+            🎯 TARGET: <span id="target-name">NONE</span><br>
+            📍 DIST: <span id="target-dist">---</span> km
+        </div>
+        <div id="controls-hint">
+            🖱️ CLICK to lock mouse • WASD: Fly • SPACE: Boost<br>
+            🔍 Q/E: Roll • L: Land • F: Toggle Flight Model
+        </div>
+        <div id="crosshair"></div>
     </div>
-    <div class="members-panel" id="membersList"></div>
-    <div id="typingStatusArea" class="typing-indicator"></div>
-    <div class="messages-area" id="messagesArea"></div>
-    <!-- Desktop input bar -->
-    <div class="input-bar" id="desktopInputBar">
-      <button id="attachMediaBtn" class="icon-btn"><i class="fas fa-image"></i></button>
-      <button id="attachAudioBtn" class="icon-btn"><i class="fas fa-microphone"></i></button>
-      <input type="text" id="messageInput" placeholder="Message...">
-      <button id="sendBtn" class="icon-btn"><i class="fas fa-paper-plane"></i></button>
+    <div id="mode-panel" class="mode-panel">
+        🚀 Click screen to enable mouse control • WASD to fly
     </div>
-    <input type="file" id="fileImageInput" accept="image/*,video/mp4" style="display:none">
-    <input type="file" id="fileAudioInput" accept="audio/*" style="display:none">
-  </div>
-  
-  <!-- Enhanced Mobile Message Dialog with Media & Voice (Audio) support -->
-  <div id="msgDialogOverlay" class="msg-dialog-overlay">
-    <div class="msg-dialog-card">
-      <h3><i class="fas fa-comment"></i> Quick Message</h3>
-      <textarea id="dialogMessageInput" rows="3" placeholder="Type your message..."></textarea>
-      <div class="dialog-media-bar">
-        <button id="dialogImageBtn" class="dialog-media-btn"><i class="fas fa-image"></i> Image/Video</button>
-        <button id="dialogAudioBtn" class="dialog-media-btn"><i class="fas fa-microphone"></i> Audio</button>
-      </div>
-      <div class="dialog-actions">
-        <button id="dialogSendBtn">Send <i class="fas fa-paper-plane"></i></button>
-        <button id="dialogCancelBtn" class="cancel-dialog">Cancel</button>
-      </div>
+    <div id="pointer-lock-warning">
+        🔒 Click anywhere to enable mouse control
     </div>
-  </div>
-  <!-- Hidden file inputs for dialog -->
-  <input type="file" id="dialogFileImageInput" accept="image/*,video/mp4" style="display:none">
-  <input type="file" id="dialogFileAudioInput" accept="audio/*" style="display:none">
-</div>
+    <div id="fps-counter">FPS: --</div>
+    <div id="flight-model">⚡ FLIGHT MODEL: ARCADE</div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBdA8ntd9HFmADRPuyaOvh00WN4KkPYw-4",
-    authDomain: "personal-chat-4628d.firebaseapp.com",
-    projectId: "personal-chat-4628d",
-    storageBucket: "personal-chat-4628d.firebasestorage.app",
-    messagingSenderId: "1033665500663",
-    appId: "1:1033665500663:web:e0399ffa0ba609ac230af2",
-    measurementId: "G-2JMZWFJ33E"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  const CLOUDINARY_CLOUD_NAME = "dhzxhakci";
-  const CLOUDINARY_UPLOAD_PRESET = "chat_uploads";
-
-  const ALLOWED_USERS = new Map([
-    ["sp@sp.com", { name: "SP", role: "member" }],
-    ["sv@sv.com", { name: "SV", role: "member" }]
-  ]);
-
-  let currentUser = null;
-  let messagesUnsub = null;
-  let typingTimeout = null;
-  let onlineStatusInterval = null;
-  let inactivityTimer = null;
-  let activityListenersAdded = false;
-  let membersUnsub = null;
-  const INACTIVITY_TIMEOUT = 60000;
-  let isSendingLock = false;
-
-  function showToast(message, isError = false) {
-    const existingToast = document.querySelector('.auto-logout-toast');
-    if (existingToast) existingToast.remove();
-    const toast = document.createElement('div');
-    toast.className = 'auto-logout-toast';
-    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i> ${message}`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 4000);
-  }
-
-  function scheduleAutoLogout() {
-    if (inactivityTimer) clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(async () => {
-      if (currentUser) {
-        showToast("⚠️ You've been inactive for 1 minute. Logging out...", true);
-        await setUserOnlineStatus(false);
-        await auth.signOut();
-      }
-    }, INACTIVITY_TIMEOUT);
-  }
-
-  function resetInactivityTimer() {
-    if (currentUser) scheduleAutoLogout();
-  }
-
-  function addActivityListeners() {
-    if (activityListenersAdded) return;
-    const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'];
-    events.forEach(event => window.addEventListener(event, resetInactivityTimer));
-    activityListenersAdded = true;
-  }
-
-  function removeActivityListeners() {
-    if (!activityListenersAdded) return;
-    const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'];
-    events.forEach(event => window.removeEventListener(event, resetInactivityTimer));
-    activityListenersAdded = false;
-  }
-
-  async function uploadToCloudinary(file, resourceType = 'image') {
-    return new Promise(async (resolve, reject) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-      try {
-        let uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
-        if (resourceType === 'audio') uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`;
-        else if (resourceType === 'video') uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
-        const response = await fetch(uploadUrl, { method: 'POST', body: formData });
-        if (!response.ok) throw new Error('Upload failed');
-        const data = await response.json();
-        resolve(data.secure_url);
-      } catch (error) { reject(error); }
-    });
-  }
-
-  function isEmailAllowed(email) { return ALLOWED_USERS.has(email?.toLowerCase()); }
-
-  async function ensureUserProfile(user) {
-    if (!user) return;
-    const userRef = db.collection("users").doc(user.uid);
-    const docSnap = await userRef.get();
-    const userData = ALLOWED_USERS.get(user.email.toLowerCase());
-    if (!docSnap.exists) {
-      await userRef.set({
-        uid: user.uid, email: user.email, displayName: userData?.name || user.email.split('@')[0],
-        role: userData?.role || "member", online: true,
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    } else { await userRef.update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() }); }
-    return userRef;
-  }
-
-  async function setUserOnlineStatus(isOnline) {
-    if (!currentUser) return;
-    await db.collection("users").doc(currentUser.uid).update({ online: isOnline, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
-    const onlineIndicator = document.getElementById("userOnlineIndicator");
-    if (onlineIndicator) onlineIndicator.style.backgroundColor = isOnline ? "#22c55e" : "#64748b";
-  }
-
-  function startOnlineHeartbeat() {
-    if (onlineStatusInterval) clearInterval(onlineStatusInterval);
-    onlineStatusInterval = setInterval(async () => {
-      if (currentUser) await db.collection("users").doc(currentUser.uid).update({ online: true, lastSeen: firebase.firestore.FieldValue.serverTimestamp() });
-    }, 15000);
-  }
-
-  function loadMembersWithRealOnlineStatus() {
-    if (membersUnsub) membersUnsub();
-    membersUnsub = db.collection("users").onSnapshot((snapshot) => {
-      const membersDiv = document.getElementById("membersList");
-      if (!membersDiv) return;
-      const usersList = [];
-      const now = Date.now();
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.email && isEmailAllowed(data.email)) {
-          let isRealOnline = false;
-          if (data.online === true && data.lastSeen) {
-            const lastSeenTime = data.lastSeen.toDate ? data.lastSeen.toDate() : new Date(data.lastSeen);
-            const secondsSinceLastSeen = (now - lastSeenTime.getTime()) / 1000;
-            isRealOnline = secondsSinceLastSeen < 30;
-          }
-          usersList.push({ id: doc.id, ...data, isRealOnline });
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
         }
-      });
-      usersList.sort((a, b) => (a.isRealOnline === b.isRealOnline) ? (a.displayName || '').localeCompare(b.displayName || '') : a.isRealOnline ? -1 : 1);
-      let html = '';
-      usersList.forEach(user => {
-        const isOnline = user.isRealOnline;
-        const onlineStatusHtml = isOnline ? '<span class="online-dot" style="background:#22c55e;"></span>' : '<span class="offline-dot"></span>';
-        let lastSeenText = "";
-        if (!isOnline && user.lastSeen) {
-          const date = user.lastSeen.toDate ? user.lastSeen.toDate() : new Date(user.lastSeen);
-          lastSeenText = `<span class="lastseen-toast">last seen ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        
+        // --- Game State ---
+        let gameMode = 'flight';
+        let isLanded = false;
+        let walkingMode = false;
+        let walkingActive = false;
+        let currentPlanet = null;
+        let currentTarget = null;
+        let simActive = true; // FIX 3: Global simulation flag
+        let flightModel = 'arcade'; // 'arcade' or 'inertial'
+        
+        // Walking mode cleanup references
+        let walkRAF = null;
+        let walkHandler = null;
+        let currentTerrainGroup = null;
+        
+        // --- FPS Counter ---
+        let fpsFrames = 0;
+        let fpsLastTime = performance.now();
+        
+        // --- Setup Scene ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x010118);
+        scene.fog = new THREE.FogExp2(0x010118, 0.00003);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 5, 15);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+        
+        // --- Post Processing ---
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.2, 0.4);
+        bloomPass.threshold = 0.2;
+        bloomPass.strength = 0.4;
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // --- Pointer Lock ---
+        let mouseX = 0, mouseY = 0;
+        let currentRotationX = 0, currentRotationY = 0;
+        let pointerLockActive = false;
+        
+        const pointerLockWarning = document.getElementById('pointer-lock-warning');
+        
+        renderer.domElement.addEventListener('click', () => {
+            renderer.domElement.requestPointerLock();
+        });
+        
+        document.addEventListener('pointerlockchange', lockChange);
+        document.addEventListener('mozpointerlockchange', lockChange);
+        
+        function lockChange() {
+            if (document.pointerLockElement === renderer.domElement) {
+                pointerLockActive = true;
+                pointerLockWarning.style.opacity = '0';
+                document.getElementById('mode-panel').innerHTML = '🚀 FLIGHT ACTIVE • Mouse to look • WASD to fly';
+            } else {
+                pointerLockActive = false;
+                pointerLockWarning.style.opacity = '1';
+                document.getElementById('mode-panel').innerHTML = '🔒 Click screen to enable mouse control';
+            }
         }
-        html += `<div class="member-chip ${isOnline ? 'online-member' : ''}"><strong>${user.displayName || user.email.split('@')[0]}</strong> ${onlineStatusHtml} ${lastSeenText}<span style="font-size:9px; color:#94a3b8;">${user.email}</span></div>`;
-      });
-      membersDiv.innerHTML = html;
-    });
-  }
-
-  async function sendTextMessageInternal(text) {
-    if (!currentUser || isSendingLock) { if(isSendingLock) showToast("Please wait...", false); return false; }
-    const cleanText = text.trim();
-    if (!cleanText) return false;
-    isSendingLock = true;
-    try {
-      const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
-      await db.collection("messages").add({
-        text: cleanText, senderId: currentUser.uid, senderName: userData?.name || currentUser.email.split('@')[0],
-        type: "text", timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      db.collection("status").doc("typing").update({ [currentUser.uid]: false });
-      resetInactivityTimer();
-      return true;
-    } catch (err) { showToast("Failed to send", true); return false; } 
-    finally { setTimeout(() => { isSendingLock = false; }, 500); }
-  }
-
-  async function uploadMedia(file, type) {
-    if (!currentUser || isSendingLock) { if(isSendingLock) showToast("Wait for previous media", false); return; }
-    isSendingLock = true;
-    resetInactivityTimer();
-    const loadingMsg = await db.collection("messages").add({
-      text: "📤 Uploading media...", senderId: currentUser.uid, senderName: getDisplayNameForUser(currentUser),
-      type: "text", timestamp: firebase.firestore.FieldValue.serverTimestamp(), isLoading: true
-    });
-    try {
-      let resourceType = type;
-      if (type === 'image') resourceType = 'image';
-      else if (type === 'audio') resourceType = 'audio';
-      else if (type === 'video') resourceType = 'video';
-      const downloadUrl = await uploadToCloudinary(file, resourceType);
-      await loadingMsg.delete();
-      const userData = ALLOWED_USERS.get(currentUser.email.toLowerCase());
-      await db.collection("messages").add({
-        fileUrl: downloadUrl, senderId: currentUser.uid, senderName: userData?.name || currentUser.email.split('@')[0],
-        type: type, timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    } catch (error) {
-      await loadingMsg.delete();
-      await db.collection("messages").add({ text: "❌ Failed to upload media", senderId: currentUser.uid, senderName: getDisplayNameForUser(currentUser), type: "text", timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-    } finally { setTimeout(() => { isSendingLock = false; }, 800); }
-  }
-
-  function getDisplayNameForUser(user) { return ALLOWED_USERS.get(user.email.toLowerCase())?.name || (user.email ? user.email.split('@')[0] : 'User'); }
-
-  function loadMessages() {
-    if (messagesUnsub) messagesUnsub();
-    messagesUnsub = db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
-      const container = document.getElementById("messagesArea");
-      if (!container) return;
-      const wasScrolledToBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
-      container.innerHTML = "";
-      snapshot.forEach(doc => {
-        const msg = doc.data();
-        const isOwn = currentUser && msg.senderId === currentUser.uid;
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${isOwn ? 'message-sent' : 'message-received'}`;
-        let contentHTML = '';
-        if (msg.type === 'text') contentHTML = `<div>${escapeHtml(msg.text)}</div>`;
-        else if (msg.type === 'image' && msg.fileUrl) contentHTML = `<img src="${msg.fileUrl}" class="media-msg" style="max-width:100%; max-height:180px; border-radius:1rem;" onclick="window.open('${msg.fileUrl}')" />`;
-        else if (msg.type === 'audio' && msg.fileUrl) contentHTML = `<audio controls src="${msg.fileUrl}" class="audio-msg" style="width:180px;"></audio>`;
-        else if (msg.type === 'video' && msg.fileUrl) contentHTML = `<video controls src="${msg.fileUrl}" class="media-msg" style="max-width:200px; border-radius:1rem;"></video>`;
-        const senderName = msg.senderName || "unknown";
-        const timeStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-        msgDiv.innerHTML = `<div style="font-size:0.7rem; opacity:0.8;">${senderName}</div>${contentHTML}<div class="msg-meta">${timeStr}</div>`;
-        container.appendChild(msgDiv);
-      });
-      if (wasScrolledToBottom) container.scrollTop = container.scrollHeight;
-    });
-  }
-
-  function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
-
-  function startRealtimeFeatures() {
-    const inputField = document.getElementById("messageInput");
-    if (!inputField) return;
-    const freshInput = inputField.cloneNode(true);
-    inputField.parentNode.replaceChild(freshInput, inputField);
-    const finalInput = document.getElementById("messageInput");
-    finalInput.addEventListener("input", () => {
-      if (!currentUser) return;
-      const typingRef = db.collection("status").doc("typing");
-      typingRef.set({ [currentUser.uid]: true, name: getDisplayNameForUser(currentUser), timestamp: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-      if (typingTimeout) clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => typingRef.update({ [currentUser.uid]: false }), 1500);
-      resetInactivityTimer();
-    });
-    db.collection("status").doc("typing").onSnapshot((doc) => {
-      const typingData = doc.data() || {};
-      const typingUsers = Object.keys(typingData).filter(uid => typingData[uid] === true && uid !== currentUser?.uid);
-      const typingArea = document.getElementById("typingStatusArea");
-      typingArea.innerHTML = typingUsers.length ? `<i class="fas fa-pen-fancy"></i> Someone is typing...` : "";
-    });
-  }
-
-  // Mobile Dialog Controllers
-  const mobileHeaderBtn = document.getElementById('mobileChatHeaderBtn');
-  const dialogOverlay = document.getElementById('msgDialogOverlay');
-  const dialogMessageInput = document.getElementById('dialogMessageInput');
-  const dialogSendBtn = document.getElementById('dialogSendBtn');
-  const dialogCancelBtn = document.getElementById('dialogCancelBtn');
-  const dialogImageBtn = document.getElementById('dialogImageBtn');
-  const dialogAudioBtn = document.getElementById('dialogAudioBtn');
-  const hiddenImageInput = document.getElementById('dialogFileImageInput');
-  const hiddenAudioInput = document.getElementById('dialogFileAudioInput');
-
-  function openDialog() { if(currentUser) dialogOverlay.classList.add('active'); }
-  function closeDialog() { dialogOverlay.classList.remove('active'); }
-  
-  mobileHeaderBtn?.addEventListener('click', openDialog);
-  dialogCancelBtn?.addEventListener('click', closeDialog);
-  dialogOverlay?.addEventListener('click', (e) => { if(e.target === dialogOverlay) closeDialog(); });
-  
-  dialogSendBtn?.addEventListener('click', async () => {
-    const msg = dialogMessageInput.value.trim();
-    if(!msg) { showToast("Type a message", false); return; }
-    const ok = await sendTextMessageInternal(msg);
-    if(ok) { closeDialog(); dialogMessageInput.value = ''; }
-  });
-  
-  // Media from dialog
-  dialogImageBtn?.addEventListener('click', () => hiddenImageInput.click());
-  dialogAudioBtn?.addEventListener('click', () => hiddenAudioInput.click());
-  
-  hiddenImageInput.addEventListener('change', (e) => {
-    if(e.target.files.length) {
-      const file = e.target.files[0];
-      const type = file.type.startsWith('image/') ? 'image' : (file.type.startsWith('video/') ? 'video' : 'image');
-      uploadMedia(file, type);
-      closeDialog();
-      e.target.value = '';
-    }
-  });
-  hiddenAudioInput.addEventListener('change', (e) => {
-    if(e.target.files.length) { uploadMedia(e.target.files[0], 'audio'); closeDialog(); e.target.value = ''; }
-  });
-
-  // Auth State
-  auth.onAuthStateChanged(async (user) => {
-    if (user && isEmailAllowed(user.email)) {
-      const bannedDoc = await db.collection("bannedUsers").doc(user.uid).get();
-      if (bannedDoc.exists) { await auth.signOut(); document.getElementById("authError").innerText = "⛔ You have been banned!"; return; }
-      currentUser = user;
-      await ensureUserProfile(user);
-      document.getElementById("authPanel").style.display = "none";
-      document.getElementById("chatContainer").style.display = "flex";
-      const userData = ALLOWED_USERS.get(user.email.toLowerCase());
-      document.getElementById("myEmailShort").innerHTML = `${userData?.name || user.email.split('@')[0]}`;
-      await setUserOnlineStatus(true);
-      startOnlineHeartbeat();
-      scheduleAutoLogout();
-      addActivityListeners();
-      startRealtimeFeatures();
-      loadMembersWithRealOnlineStatus();
-      loadMessages();
-      showToast(`Welcome back, ${userData?.name || user.email.split('@')[0]}! 🌿`, false);
-    } else if (user && !isEmailAllowed(user.email)) {
-      await auth.signOut();
-      document.getElementById("authError").innerText = "⛔ Your email is not authorized.";
-      document.getElementById("chatContainer").style.display = "none";
-      document.getElementById("authPanel").style.display = "flex";
-    } else {
-      if (onlineStatusInterval) clearInterval(onlineStatusInterval);
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-      removeActivityListeners();
-      if (messagesUnsub) messagesUnsub();
-      if (membersUnsub) membersUnsub();
-      currentUser = null;
-      document.getElementById("authPanel").style.display = "flex";
-      document.getElementById("chatContainer").style.display = "none";
-      closeDialog();
-    }
-  });
-
-  document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = document.getElementById("loginEmail").value.trim();
-    const pwd = document.getElementById("loginPassword").value;
-    const errorDiv = document.getElementById("authError");
-    if (!email || !pwd) { errorDiv.innerText = "Enter email & password"; return; }
-    if (!isEmailAllowed(email)) { errorDiv.innerText = "Access denied."; return; }
-    try { await auth.signInWithEmailAndPassword(email, pwd); errorDiv.innerText = ""; } 
-    catch (err) { errorDiv.innerText = "Invalid credentials."; }
-  });
-
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    if (currentUser) { await setUserOnlineStatus(false); if (onlineStatusInterval) clearInterval(onlineStatusInterval); if (inactivityTimer) clearTimeout(inactivityTimer); removeActivityListeners(); await auth.signOut(); showToast("Logged out 👋", false); }
-  });
-
-  document.getElementById("sendBtn")?.addEventListener("click", async () => { const input = document.getElementById("messageInput"); if(input) { await sendTextMessageInternal(input.value); input.value = ""; } });
-  document.getElementById("messageInput")?.addEventListener("keypress", async (e) => { if(e.key === 'Enter') { e.preventDefault(); const input = document.getElementById("messageInput"); if(input) { await sendTextMessageInternal(input.value); input.value = ""; } } });
-  document.getElementById("attachMediaBtn")?.addEventListener("click", () => document.getElementById("fileImageInput").click());
-  document.getElementById("attachAudioBtn")?.addEventListener("click", () => document.getElementById("fileAudioInput").click());
-  document.getElementById("fileImageInput")?.addEventListener("change", (e) => { if(e.target.files.length) { uploadMedia(e.target.files[0], e.target.files[0].type.startsWith('image/')?'image':'video'); e.target.value=''; } });
-  document.getElementById("fileAudioInput")?.addEventListener("change", (e) => { if(e.target.files.length) { uploadMedia(e.target.files[0], 'audio'); e.target.value=''; } });
-  window.addEventListener("beforeunload", async () => { if(currentUser) await setUserOnlineStatus(false); });
-</script>
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!pointerLockActive || walkingMode) return;
+            mouseX += e.movementX * 0.002;
+            mouseY += e.movementY * 0.002;
+            mouseY = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, mouseY));
+        });
+        
+        // --- FIX 1 & 3: Zero-GC reusable vectors ---
+        const tmpForward = new THREE.Vector3();
+        const tmpRight = new THREE.Vector3();
+        const tmpAccel = new THREE.Vector3();
+        const tmpCameraOffset = new THREE.Vector3(0, 1.5, 5);
+        const tmpCamTarget = new THREE.Vector3(); // FIX 4: Reusable camera target
+        const tmpPlanetPos = new THREE.Vector3();
+        
+        // --- Ship Model ---
+        const shipGroup = new THREE.Group();
+        const shipModel = new THREE.Group();
+        
+        const bodyGeo = new THREE.ConeGeometry(0.6, 1.5, 8);
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x3399ff, metalness: 0.9, roughness: 0.2 });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.rotation.x = Math.PI / 2;
+        shipModel.add(body);
+        
+        const wingGeo = new THREE.BoxGeometry(1.4, 0.1, 0.5);
+        const wings = new THREE.Mesh(wingGeo, bodyMat);
+        wings.position.y = -0.3;
+        shipModel.add(wings);
+        
+        const engineGeo = new THREE.CylinderGeometry(0.3, 0.4, 0.5, 8);
+        const engineMat = new THREE.MeshStandardMaterial({ color: 0xff6600, emissive: 0xff2200, emissiveIntensity: 0.2 });
+        const engineMesh = new THREE.Mesh(engineGeo, engineMat);
+        engineMesh.position.z = -0.7;
+        engineMesh.position.y = -0.2;
+        shipModel.add(engineMesh);
+        
+        const cockpitGeo = new THREE.SphereGeometry(0.3, 16, 16);
+        const cockpitMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x2288aa });
+        const cockpit = new THREE.Mesh(cockpitGeo, cockpitMat);
+        cockpit.position.z = 0.5;
+        cockpit.position.y = 0.2;
+        shipModel.add(cockpit);
+        
+        shipGroup.add(shipModel);
+        scene.add(shipGroup);
+        shipGroup.position.set(0, 5, 15);
+        
+        // --- Physics variables ---
+        let shipVelocity = new THREE.Vector3(0, 0, 0);
+        let shipBoost = false;
+        let boostCooldown = 0;
+        const MAX_SPEED = 45;
+        const THRUST_POWER = 18;
+        const BOOST_MULTIPLIER = 2.5;
+        const ARCADE_DAMPING = 0.98;
+        
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0x1a1a2e);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+        sunLight.position.set(10, 20, 5);
+        sunLight.castShadow = true;
+        scene.add(sunLight);
+        const fillLight = new THREE.PointLight(0x4466cc, 0.2);
+        fillLight.position.set(0, -10, 0);
+        scene.add(fillLight);
+        const rimLight = new THREE.PointLight(0xffaa66, 0.3);
+        rimLight.position.set(-5, 10, -15);
+        scene.add(rimLight);
+        const sunGlowLight = new THREE.PointLight(0xffaa66, 1.5, 90);
+        sunGlowLight.position.set(0, 0, 0);
+        scene.add(sunGlowLight);
+        
+        // --- Stars ---
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 2000;
+        const starPositions = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount; i++) {
+            starPositions[i*3] = (Math.random() - 0.5) * 1000;
+            starPositions[i*3+1] = (Math.random() - 0.5) * 600;
+            starPositions[i*3+2] = (Math.random() - 0.5) * 300 - 100;
+        }
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 }));
+        scene.add(stars);
+        
+        // --- Sun ---
+        const sunGeometry = new THREE.SphereGeometry(3.2, 64, 64);
+        const sunMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa55, emissive: 0xff4411, emissiveIntensity: 0.85 });
+        const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+        scene.add(sunMesh);
+        
+        // --- Planets Data ---
+        const planetsData = [
+            { name: "Mercury", color: 0xbc9a6c, size: 0.42, distance: 5.2, speed: 0.025, terrainColor: 0xbc9a6c, atmosphere: 0x886644 },
+            { name: "Venus", color: 0xe6b856, size: 0.48, distance: 7.4, speed: 0.018, terrainColor: 0xe6b856, atmosphere: 0xffaa66 },
+            { name: "Earth", color: 0x4c9eff, size: 0.52, distance: 9.8, speed: 0.015, terrainColor: 0x4c9eff, atmosphere: 0x88aaff },
+            { name: "Mars", color: 0xc46c3a, size: 0.46, distance: 12.5, speed: 0.012, terrainColor: 0xc46c3a, atmosphere: 0xcc8866 },
+            { name: "Jupiter", color: 0xd8a27a, size: 1.1, distance: 17.0, speed: 0.008, terrainColor: 0xd8a27a, atmosphere: 0xaa8866 },
+            { name: "Saturn", color: 0xf0d9b0, size: 1.0, distance: 21.5, speed: 0.006, terrainColor: 0xf0d9b0, atmosphere: 0xccaa88, hasRing: true },
+            { name: "Uranus", color: 0xb0e0e6, size: 0.82, distance: 25.8, speed: 0.005, terrainColor: 0xb0e0e6, atmosphere: 0xaaddff },
+            { name: "Neptune", color: 0x4a6eff, size: 0.80, distance: 30.2, speed: 0.004, terrainColor: 0x4a6eff, atmosphere: 0x6688ff }
+        ];
+        
+        const planets = [];
+        
+        planetsData.forEach((data) => {
+            const geometry = new THREE.SphereGeometry(data.size, 48, 48);
+            const material = new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.5, metalness: 0.1 });
+            const planet = new THREE.Mesh(geometry, material);
+            planet.userData = { name: data.name, distance: data.distance, size: data.size, color: data.terrainColor };
+            planet.castShadow = true;
+            planet.receiveShadow = true;
+            scene.add(planet);
+            
+            const atmosGeo = new THREE.SphereGeometry(data.size * 1.05, 32, 32);
+            const atmosMat = new THREE.MeshPhongMaterial({ color: data.atmosphere, transparent: true, opacity: 0.12, side: THREE.BackSide });
+            const atmosphere = new THREE.Mesh(atmosGeo, atmosMat);
+            planet.add(atmosphere);
+            
+            if (data.hasRing) {
+                const ringGeo = new THREE.TorusGeometry(data.size * 1.35, 0.18, 32, 100);
+                const ringMat = new THREE.MeshStandardMaterial({ color: 0xcbb88e, emissive: 0x442200 });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.rotation.x = Math.PI / 2.2;
+                planet.add(ring);
+            }
+            
+            const orbitPoints = [];
+            for (let i = 0; i <= 100; i++) {
+                const angle = (i / 100) * Math.PI * 2;
+                orbitPoints.push(new THREE.Vector3(Math.cos(angle) * data.distance, 0, Math.sin(angle) * data.distance));
+            }
+            const orbitGeo = new THREE.BufferGeometry().setFromPoints(orbitPoints);
+            const orbitMat = new THREE.LineBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.2 });
+            const orbit = new THREE.LineLoop(orbitGeo, orbitMat);
+            scene.add(orbit);
+            
+            planets.push({
+                mesh: planet,
+                distance: data.distance,
+                speed: data.speed,
+                angle: Math.random() * Math.PI * 2,
+                name: data.name,
+                size: data.size
+            });
+        });
+        
+        // --- Asteroid Field ---
+        const asteroidCount = 1200;
+        const asteroidGeo = new THREE.BufferGeometry();
+        const asteroidPositions = new Float32Array(asteroidCount * 3);
+        for (let i = 0; i < asteroidCount; i++) {
+            const r = 14 + Math.random() * 3.5;
+            const a = Math.random() * Math.PI * 2;
+            asteroidPositions[i*3] = Math.cos(a) * r;
+            asteroidPositions[i*3+1] = (Math.random() - 0.5) * 1.2;
+            asteroidPositions[i*3+2] = Math.sin(a) * r;
+        }
+        asteroidGeo.setAttribute('position', new THREE.BufferAttribute(asteroidPositions, 3));
+        const asteroids = new THREE.Points(asteroidGeo, new THREE.PointsMaterial({ color: 0xaa8866, size: 0.06 }));
+        scene.add(asteroids);
+        
+        // --- Terrain System ---
+        function disposeTerrain() {
+            if (currentTerrainGroup) {
+                currentTerrainGroup.traverse((obj) => {
+                    if (obj.isMesh) {
+                        if (obj.geometry) obj.geometry.dispose();
+                        if (obj.material) obj.material.dispose();
+                    }
+                });
+                scene.remove(currentTerrainGroup);
+                currentTerrainGroup = null;
+            }
+        }
+        
+        function generateTerrain(planetColor, size) {
+            disposeTerrain();
+            
+            const terrainGroup = new THREE.Group();
+            const groundSize = 25;
+            const segments = 40;
+            const geometry = new THREE.PlaneGeometry(groundSize, groundSize, segments, segments);
+            geometry.rotateX(-Math.PI / 2);
+            
+            const positions = geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                const x = positions[i];
+                const z = positions[i+2];
+                positions[i+1] = Math.sin(x * 1.2) * 0.3 + Math.cos(z * 1.2) * 0.3 + Math.sin(x * 2.5) * 0.15;
+            }
+            geometry.computeVertexNormals();
+            
+            const material = new THREE.MeshStandardMaterial({ color: planetColor, roughness: 0.7, metalness: 0.1 });
+            const ground = new THREE.Mesh(geometry, material);
+            ground.receiveShadow = true;
+            terrainGroup.add(ground);
+            
+            for (let i = 0; i < 150; i++) {
+                const rockGeo = new THREE.DodecahedronGeometry(0.08);
+                const rockMat = new THREE.MeshStandardMaterial({ color: planetColor, roughness: 0.9 });
+                const rock = new THREE.Mesh(rockGeo, rockMat);
+                const x = (Math.random() - 0.5) * 22;
+                const z = (Math.random() - 0.5) * 22;
+                const y = Math.sin(x * 1.2) * 0.3 + Math.cos(z * 1.2) * 0.3 + Math.sin(x * 2.5) * 0.15;
+                rock.position.set(x, y, z);
+                rock.scale.setScalar(0.5 + Math.random());
+                terrainGroup.add(rock);
+            }
+            
+            currentTerrainGroup = terrainGroup;
+            scene.add(terrainGroup);
+            return terrainGroup;
+        }
+        
+        function isThrustActive() {
+            return keys.w || keys.s || shipBoost;
+        }
+        
+        // Toggle flight model
+        function toggleFlightModel() {
+            flightModel = flightModel === 'arcade' ? 'inertial' : 'arcade';
+            const modelDisplay = document.getElementById('flight-model');
+            if (flightModel === 'arcade') {
+                modelDisplay.innerHTML = '⚡ FLIGHT MODEL: ARCADE (with damping)';
+                modelDisplay.style.color = '#ffa500';
+            } else {
+                modelDisplay.innerHTML = '🌌 FLIGHT MODEL: INERTIAL (no damping)';
+                modelDisplay.style.color = '#0ff';
+            }
+        }
+        
+        // --- Auto-targeting ---
+        function updateTargeting() {
+            let closest = null;
+            let minDist = Infinity;
+            
+            planets.forEach(planet => {
+                const dist = shipGroup.position.distanceTo(planet.mesh.position);
+                const targetRange = planet.size * 12;
+                if (dist < minDist && dist < targetRange) {
+                    minDist = dist;
+                    closest = planet;
+                }
+            });
+            
+            const crosshair = document.getElementById('crosshair');
+            
+            if (closest) {
+                currentTarget = closest;
+                document.getElementById('target-name').innerHTML = closest.name;
+                document.getElementById('target-dist').innerHTML = Math.floor(minDist * 10);
+                
+                if (minDist < closest.size + 2.5) {
+                    crosshair.className = 'target-landable';
+                } else {
+                    crosshair.className = 'target-locked';
+                }
+            } else {
+                currentTarget = null;
+                document.getElementById('target-name').innerHTML = 'NONE';
+                document.getElementById('target-dist').innerHTML = '---';
+                crosshair.className = '';
+            }
+        }
+        
+        // --- Landing System ---
+        function exitWalkingMode() {
+            walkingMode = false;
+            walkingActive = false;
+            isLanded = false;
+            currentPlanet = null;
+            
+            if (walkRAF) {
+                cancelAnimationFrame(walkRAF);
+                walkRAF = null;
+            }
+            if (walkHandler) {
+                window.removeEventListener('keydown', walkHandler);
+                window.removeEventListener('keyup', walkHandler);
+                walkHandler = null;
+            }
+            disposeTerrain();
+            
+            gameMode = 'flight';
+            shipGroup.visible = true;
+            camera.position.copy(shipGroup.position);
+            document.getElementById('crosshair').style.display = 'block';
+            document.getElementById('mode-panel').innerHTML = '🚀 FLIGHT ACTIVE • Mouse to look • WASD to fly';
+        }
+        
+        function landOnPlanet(planet) {
+            if (!planet || walkingMode) return;
+            
+            walkingMode = true;
+            walkingActive = true;
+            isLanded = true;
+            currentPlanet = planet;
+            shipGroup.visible = false;
+            
+            const planetPos = planet.mesh.position;
+            const terrain = generateTerrain(planet.userData.color || 0x4c9eff, planet.size * 5);
+            terrain.position.copy(planetPos);
+            terrain.position.y += planet.size + 0.15;
+            
+            camera.position.copy(terrain.position);
+            camera.position.y += 1.8;
+            
+            document.getElementById('mode-panel').innerHTML = `🌍 LANDED ON ${planet.name.toUpperCase()} • WASD to walk • M to return to space`;
+            document.getElementById('mode-panel').style.background = 'rgba(100,50,0,0.9)';
+            document.getElementById('crosshair').style.display = 'none';
+            
+            const walkKeys = { w: false, s: false, a: false, d: false };
+            
+            walkHandler = (e) => {
+                if (!walkingMode) return;
+                const key = e.key.toLowerCase();
+                if (walkKeys.hasOwnProperty(key)) {
+                    walkKeys[key] = e.type === 'keydown';
+                    e.preventDefault();
+                }
+            };
+            
+            window.addEventListener('keydown', walkHandler);
+            window.addEventListener('keyup', walkHandler);
+            
+            function walkUpdate() {
+                if (!walkingActive) return;
+                
+                let move = new THREE.Vector3(0, 0, 0);
+                if (walkKeys.w) move.z -= 0.35;
+                if (walkKeys.s) move.z += 0.35;
+                if (walkKeys.a) move.x -= 0.35;
+                if (walkKeys.d) move.x += 0.35;
+                
+                if (move.length() > 0) {
+                    move.normalize();
+                    camera.position.x += move.x * 0.3;
+                    camera.position.z += move.z * 0.3;
+                }
+                walkRAF = requestAnimationFrame(walkUpdate);
+            }
+            walkUpdate();
+        }
+        
+        // --- Input Handling ---
+        const keys = { w: false, s: false, a: false, d: false, q: false, e: false };
+        
+        window.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            
+            if (key === 'f') {
+                toggleFlightModel();
+                return;
+            }
+            
+            if (key === 'm' && walkingMode) {
+                exitWalkingMode();
+                return;
+            }
+            
+            if (key === 'l' && !walkingMode && gameMode === 'flight') {
+                let nearest = null;
+                let minDist = Infinity;
+                planets.forEach(planet => {
+                    const dist = shipGroup.position.distanceTo(planet.mesh.position);
+                    if (dist < minDist && dist < planet.size + 3) {
+                        minDist = dist;
+                        nearest = planet;
+                    }
+                });
+                if (nearest) {
+                    landOnPlanet(nearest);
+                } else {
+                    document.getElementById('mode-panel').innerHTML = '⚠️ Too far from planet! Get closer ⚠️';
+                    setTimeout(() => {
+                        if (!walkingMode) document.getElementById('mode-panel').innerHTML = '🚀 FLIGHT ACTIVE • Mouse to look • WASD to fly';
+                    }, 2000);
+                }
+                return;
+            }
+            
+            if (key === ' ') {
+                if (boostCooldown <= 0 && !walkingMode && pointerLockActive) {
+                    shipBoost = true;
+                    boostCooldown = 3.0;
+                    document.getElementById('boost-status').innerHTML = 'ACTIVE!';
+                    setTimeout(() => {
+                        shipBoost = false;
+                        document.getElementById('boost-status').innerHTML = 'READY';
+                    }, 500);
+                }
+                e.preventDefault();
+            }
+            
+            if (keys.hasOwnProperty(key)) keys[key] = true;
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+            if (keys.hasOwnProperty(key)) keys[key] = false;
+        });
+        
+        // --- FPS Counter ---
+        function updateFPS() {
+            fpsFrames++;
+            const now = performance.now();
+            if (now - fpsLastTime >= 1000) {
+                const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
+                document.getElementById('fps-counter').innerHTML = `FPS: ${fps}`;
+                fpsFrames = 0;
+                fpsLastTime = now;
+            }
+        }
+        
+        // --- Animation Loop with Zero-GC Physics ---
+        let lastTime = performance.now();
+        
+        function animate() {
+            const now = performance.now();
+            let delta = Math.min(0.033, (now - lastTime) / 1000);
+            lastTime = now;
+            
+            updateFPS();
+            
+            // FIX 3: Global simulation flag
+            if (simActive && !walkingMode) {
+                planets.forEach(planet => {
+                    planet.angle += planet.speed * 0.5 * delta * 30;
+                    const x = Math.cos(planet.angle) * planet.distance;
+                    const z = Math.sin(planet.angle) * planet.distance;
+                    planet.mesh.position.set(x, 0, z);
+                    planet.mesh.rotation.y += 0.01;
+                });
+            }
+            
+            stars.rotation.y += 0.0005;
+            asteroids.rotation.y += 0.001;
+            sunGlowLight.intensity = 1.4 + Math.sin(Date.now() * 0.002) * 0.15;
+            sunMaterial.emissiveIntensity = 0.7 + Math.sin(Date.now() * 0.0025) * 0.15;
+            
+            // Flight physics with zero-GC
+            if (gameMode === 'flight' && !walkingMode && pointerLockActive) {
+                const SMOOTH_FACTOR = 0.12;
+                currentRotationX += (mouseX - currentRotationX) * SMOOTH_FACTOR;
+                currentRotationY += (mouseY - currentRotationY) * SMOOTH_FACTOR;
+                shipGroup.rotation.order = 'YXZ';
+                shipGroup.rotation.y = currentRotationX;
+                shipGroup.rotation.x = currentRotationY;
+                
+                // Reusable vectors - NO CLONES
+                tmpForward.set(0, 0, -1);
+                tmpRight.set(1, 0, 0);
+                tmpForward.applyQuaternion(shipGroup.quaternion);
+                tmpRight.applyQuaternion(shipGroup.quaternion);
+                
+                const boost = shipBoost ? BOOST_MULTIPLIER : 1;
+                
+                // FIX 1: Zero-GC acceleration (no clones)
+                tmpAccel.set(0, 0, 0);
+                if (keys.w) tmpAccel.addScaledVector(tmpForward, 1);
+                if (keys.s) tmpAccel.addScaledVector(tmpForward, -0.7);
+                if (keys.d) tmpAccel.addScaledVector(tmpRight, 1);
+                if (keys.a) tmpAccel.addScaledVector(tmpRight, -1);
+                
+                tmpAccel.multiplyScalar(THRUST_POWER * boost);
+                shipVelocity.add(tmpAccel.multiplyScalar(delta));
+                
+                // FIX 2: Time-based damping for consistent feel
+                if (flightModel === 'arcade') {
+                    const damping = Math.pow(ARCADE_DAMPING, delta * 60);
+                    shipVelocity.multiplyScalar(damping);
+                }
+                // Inertial model: no damping, pure Newtonian physics
+                
+                // Speed limit
+                if (shipVelocity.length() > MAX_SPEED) {
+                    shipVelocity.multiplyScalar(MAX_SPEED / shipVelocity.length());
+                }
+                
+                // Position integration
+                shipGroup.position.x += shipVelocity.x * delta;
+                shipGroup.position.y += shipVelocity.y * delta;
+                shipGroup.position.z += shipVelocity.z * delta;
+                
+                // Roll control
+                if (keys.q) shipGroup.rotation.z += 2.5 * delta;
+                if (keys.e) shipGroup.rotation.z -= 2.5 * delta;
+                shipGroup.rotation.z *= 0.98;
+                
+                // FIX 4: Camera without clone (reusable vector)
+                tmpCamTarget.copy(shipGroup.position).add(tmpCameraOffset);
+                camera.position.lerp(tmpCamTarget, 0.15);
+                camera.lookAt(shipGroup.position);
+                
+                // HUD updates
+                const speed = shipVelocity.length() * 30;
+                document.getElementById('speed-value').innerHTML = Math.floor(speed);
+                
+                if (boostCooldown > 0) boostCooldown -= delta;
+                
+                updateTargeting();
+                engineMesh.material.emissiveIntensity = isThrustActive() ? 0.7 + Math.random() * 0.3 : 0.2;
+            }
+            
+            effectComposer.render();
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            effectComposer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        console.log('🚀 SPACE ENGINE v6.0 - Zero GC, time-based damping, dual flight models! Click to begin');
+        console.log('💡 Press F to toggle between ARCADE (damped) and INERTIAL (no damping) flight models');
+    </script>
 </body>
 </html>

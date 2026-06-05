@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SPACE ENGINE v7.0 | Deterministic Physics • Clean Architecture</title>
+    <title>SPACE ENGINE v6.1 | Gravity Wells • Orbital Physics • Production Ready</title>
     <style>
         body {
             margin: 0;
@@ -187,20 +187,6 @@
             border-right: 2px solid #ffaa66;
         }
         
-        #camera-mode {
-            position: absolute;
-            bottom: 140px;
-            left: 20px;
-            color: #88ff88;
-            background: rgba(0,0,0,0.5);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 10px;
-            pointer-events: none;
-            z-index: 200;
-        }
-        
         #pointer-lock-warning {
             position: absolute;
             top: 50%;
@@ -233,11 +219,11 @@
 <body>
     <div id="ui">
         <div id="hud">
-            🚀 SPACE ENGINE v7.0 • DETERMINISTIC PHYSICS<br>
+            🚀 SPACE ENGINE v6.1 • GRAVITY WELLS<br>
             <span id="current-mode">FLIGHT MODE</span>
         </div>
         <div id="game-mode">
-            🎯 TRUE INVERSE-SQUARE GRAVITY
+            🎮 REALISTIC ORBITAL PHYSICS
         </div>
         <div id="speedometer">
             VEL: <span id="speed-value">0</span> km/s<br>
@@ -252,7 +238,7 @@
         </div>
         <div id="controls-hint">
             🖱️ CLICK to lock mouse • WASD: Fly • SPACE: Boost<br>
-            🔍 Q/E: Roll • L: Land • F: Flight Model • C: Camera Mode
+            🔍 Q/E: Roll • L: Land • F: Toggle Flight Model
         </div>
         <div id="crosshair"></div>
     </div>
@@ -264,7 +250,6 @@
     </div>
     <div id="fps-counter">FPS: --</div>
     <div id="flight-model">⚡ FLIGHT MODEL: ARCADE</div>
-    <div id="camera-mode">📷 CAMERA: CINEMATIC</div>
 
     <script type="importmap">
         {
@@ -281,20 +266,18 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
-        // ========== UNIT SYSTEM ==========
-        // 1 unit = 1000 km (space scale)
-        // Speeds in km/s, distances in 1000s km
-        const KM_PER_UNIT = 1000;
-        
-        // ========== GAME STATE ==========
+        // --- Game State ---
         let gameMode = 'flight';
         let walkingMode = false;
         let walkingActive = false;
         let currentPlanet = null;
         let currentTarget = null;
         let simActive = true;
-        let flightModel = 'arcade'; // 'arcade' or 'inertial'
-        let cameraMode = 'cinematic'; // 'cinematic' or 'rigid'
+        let flightModel = 'arcade';
+        
+        // Gravity wells
+        let activeGravity = 0;
+        let gravityVector = new THREE.Vector3();
         
         // Walking mode references
         let walkRAF = null;
@@ -302,16 +285,15 @@
         let walkUpHandler = null;
         let currentTerrainGroup = null;
         
-        // Terrain rock pool (FIX 4: Instanced rocks)
-        let rockPool = [];
-        const ROCK_POOL_SIZE = 100;
+        // Terrain template cache (FIX 3: Reuse terrain geometry)
+        let terrainTemplate = null;
         
         // FPS counter
         let fpsFrames = 0;
         let fpsLastTime = performance.now();
         let fpsSmoothed = 60;
         
-        // ========== SCENE SETUP ==========
+        // --- Setup Scene ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010118);
         scene.fog = new THREE.FogExp2(0x010118, 0.00003);
@@ -325,7 +307,7 @@
         renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
         
-        // Post processing
+        // --- Post Processing ---
         const renderScene = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.2, 0.4);
         bloomPass.threshold = 0.2;
@@ -334,20 +316,24 @@
         effectComposer.addPass(renderScene);
         effectComposer.addPass(bloomPass);
         
-        // ========== POINTER LOCK (FIX 5: No lock in walking mode) ==========
+        // --- Pointer Lock (FIX 1: Better walking mode interaction)---
         let mouseX = 0, mouseY = 0;
         let currentRotationX = 0, currentRotationY = 0;
         let pointerLockActive = false;
         
         const pointerLockWarning = document.getElementById('pointer-lock-warning');
         
-        function requestPointerLockSafe() {
-            if (!walkingMode) {
-                renderer.domElement.requestPointerLock();
+        function exitPointerLock() {
+            if (document.pointerLockElement === renderer.domElement) {
+                document.exitPointerLock();
             }
         }
         
-        renderer.domElement.addEventListener('click', requestPointerLockSafe);
+        renderer.domElement.addEventListener('click', () => {
+            if (!walkingMode) {
+                renderer.domElement.requestPointerLock();
+            }
+        });
         
         document.addEventListener('pointerlockchange', lockChange);
         
@@ -372,16 +358,15 @@
             mouseY = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, mouseY));
         });
         
-        // ========== REUSABLE VECTORS (Zero GC) ==========
+        // --- Reusable vectors (zero-GC) ---
         const tmpForward = new THREE.Vector3();
         const tmpRight = new THREE.Vector3();
         const tmpAccel = new THREE.Vector3();
         const tmpCameraOffset = new THREE.Vector3(0, 1.5, 5);
         const tmpCamTarget = new THREE.Vector3();
-        const tmpGravityDir = new THREE.Vector3();
-        const tmpGravityAdd = new THREE.Vector3();
+        const tmpGravity = new THREE.Vector3();
         
-        // ========== SHIP MODEL ==========
+        // --- Ship Model ---
         const shipGroup = new THREE.Group();
         const shipModel = new THREE.Group();
         
@@ -414,17 +399,18 @@
         scene.add(shipGroup);
         shipGroup.position.set(0, 5, 15);
         
-        // ========== PHYSICS VARIABLES ==========
+        // --- Physics variables ---
         let shipVelocity = new THREE.Vector3(0, 0, 0);
-        let boostActiveUntil = 0; // FIX 6: Single boost state
-        let boostCooldownUntil = 0;
-        const MAX_SPEED = 45; // km/s
-        const THRUST_POWER = 18; // km/s²
+        let shipBoost = false;
+        let boostCooldown = 0;
+        let boostEndTime = 0; // FIX 6: Unified boost timing
+        const MAX_SPEED = 45;
+        const THRUST_POWER = 18;
         const BOOST_MULTIPLIER = 2.5;
         const ARCADE_DAMPING = 0.98;
-        const GRAVITY_CONSTANT = 12.0; // G * M scaling for gameplay
+        const GRAVITY_CONSTANT = 8.0;
         
-        // ========== LIGHTING ==========
+        // --- Lighting ---
         const ambientLight = new THREE.AmbientLight(0x1a1a2e);
         scene.add(ambientLight);
         const sunLight = new THREE.DirectionalLight(0xffeedd, 1.2);
@@ -441,7 +427,7 @@
         sunGlowLight.position.set(0, 0, 0);
         scene.add(sunGlowLight);
         
-        // ========== STARS ==========
+        // --- Stars ---
         const starGeometry = new THREE.BufferGeometry();
         const starCount = 2000;
         const starPositions = new Float32Array(starCount * 3);
@@ -454,23 +440,22 @@
         const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 }));
         scene.add(stars);
         
-        // ========== SUN ==========
+        // --- Sun ---
         const sunGeometry = new THREE.SphereGeometry(3.2, 64, 64);
         const sunMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa55, emissive: 0xff4411, emissiveIntensity: 0.85 });
         const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
         scene.add(sunMesh);
         
-        // ========== PLANETS (with consistent units) ==========
-        // Speeds in radians per second (FIX 2: Deterministic orbits)
+        // --- Planets Data ---
         const planetsData = [
-            { name: "Mercury", color: 0xbc9a6c, size: 0.42, orbitRadius: 5.2, orbitSpeed: 0.083, terrainColor: 0xbc9a6c, atmosphere: 0x886644, mass: 0.8 },
-            { name: "Venus",   color: 0xe6b856, size: 0.48, orbitRadius: 7.4, orbitSpeed: 0.060, terrainColor: 0xe6b856, atmosphere: 0xffaa66, mass: 1.0 },
-            { name: "Earth",   color: 0x4c9eff, size: 0.52, orbitRadius: 9.8, orbitSpeed: 0.050, terrainColor: 0x4c9eff, atmosphere: 0x88aaff, mass: 1.2 },
-            { name: "Mars",    color: 0xc46c3a, size: 0.46, orbitRadius: 12.5, orbitSpeed: 0.040, terrainColor: 0xc46c3a, atmosphere: 0xcc8866, mass: 0.9 },
-            { name: "Jupiter", color: 0xd8a27a, size: 1.1, orbitRadius: 17.0, orbitSpeed: 0.027, terrainColor: 0xd8a27a, atmosphere: 0xaa8866, mass: 3.5, hasRing: true },
-            { name: "Saturn",  color: 0xf0d9b0, size: 1.0, orbitRadius: 21.5, orbitSpeed: 0.020, terrainColor: 0xf0d9b0, atmosphere: 0xccaa88, mass: 3.0, hasRing: true },
-            { name: "Uranus",  color: 0xb0e0e6, size: 0.82, orbitRadius: 25.8, orbitSpeed: 0.016, terrainColor: 0xb0e0e6, atmosphere: 0xaaddff, mass: 2.0 },
-            { name: "Neptune", color: 0x4a6eff, size: 0.80, orbitRadius: 30.2, orbitSpeed: 0.013, terrainColor: 0x4a6eff, atmosphere: 0x6688ff, mass: 2.0 }
+            { name: "Mercury", color: 0xbc9a6c, size: 0.42, distance: 5.2, speed: 0.025, terrainColor: 0xbc9a6c, atmosphere: 0x886644, mass: 0.8 },
+            { name: "Venus", color: 0xe6b856, size: 0.48, distance: 7.4, speed: 0.018, terrainColor: 0xe6b856, atmosphere: 0xffaa66, mass: 1.0 },
+            { name: "Earth", color: 0x4c9eff, size: 0.52, distance: 9.8, speed: 0.015, terrainColor: 0x4c9eff, atmosphere: 0x88aaff, mass: 1.2 },
+            { name: "Mars", color: 0xc46c3a, size: 0.46, distance: 12.5, speed: 0.012, terrainColor: 0xc46c3a, atmosphere: 0xcc8866, mass: 0.9 },
+            { name: "Jupiter", color: 0xd8a27a, size: 1.1, distance: 17.0, speed: 0.008, terrainColor: 0xd8a27a, atmosphere: 0xaa8866, mass: 3.5, hasRing: true },
+            { name: "Saturn", color: 0xf0d9b0, size: 1.0, distance: 21.5, speed: 0.006, terrainColor: 0xf0d9b0, atmosphere: 0xccaa88, mass: 3.0, hasRing: true },
+            { name: "Uranus", color: 0xb0e0e6, size: 0.82, distance: 25.8, speed: 0.005, terrainColor: 0xb0e0e6, atmosphere: 0xaaddff, mass: 2.0 },
+            { name: "Neptune", color: 0x4a6eff, size: 0.80, distance: 30.2, speed: 0.004, terrainColor: 0x4a6eff, atmosphere: 0x6688ff, mass: 2.0 }
         ];
         
         const planets = [];
@@ -479,24 +464,16 @@
             const geometry = new THREE.SphereGeometry(data.size, 48, 48);
             const material = new THREE.MeshStandardMaterial({ color: data.color, roughness: 0.5, metalness: 0.1 });
             const planet = new THREE.Mesh(geometry, material);
-            planet.userData = { 
-                name: data.name, 
-                orbitRadius: data.orbitRadius, 
-                size: data.size, 
-                color: data.terrainColor, 
-                mass: data.mass 
-            };
+            planet.userData = { name: data.name, distance: data.distance, size: data.size, color: data.terrainColor, mass: data.mass };
             planet.castShadow = true;
             planet.receiveShadow = true;
             scene.add(planet);
             
-            // Atmosphere
             const atmosGeo = new THREE.SphereGeometry(data.size * 1.05, 32, 32);
             const atmosMat = new THREE.MeshPhongMaterial({ color: data.atmosphere, transparent: true, opacity: 0.12, side: THREE.BackSide });
             const atmosphere = new THREE.Mesh(atmosGeo, atmosMat);
             planet.add(atmosphere);
             
-            // Rings
             if (data.hasRing) {
                 const ringGeo = new THREE.TorusGeometry(data.size * 1.35, 0.18, 32, 100);
                 const ringMat = new THREE.MeshStandardMaterial({ color: 0xcbb88e, emissive: 0x442200 });
@@ -505,11 +482,10 @@
                 planet.add(ring);
             }
             
-            // Orbit line
             const orbitPoints = [];
             for (let i = 0; i <= 100; i++) {
                 const angle = (i / 100) * Math.PI * 2;
-                orbitPoints.push(new THREE.Vector3(Math.cos(angle) * data.orbitRadius, 0, Math.sin(angle) * data.orbitRadius));
+                orbitPoints.push(new THREE.Vector3(Math.cos(angle) * data.distance, 0, Math.sin(angle) * data.distance));
             }
             const orbitGeo = new THREE.BufferGeometry().setFromPoints(orbitPoints);
             const orbitMat = new THREE.LineBasicMaterial({ color: 0x4488ff, transparent: true, opacity: 0.2 });
@@ -518,8 +494,8 @@
             
             planets.push({
                 mesh: planet,
-                orbitRadius: data.orbitRadius,
-                orbitSpeed: data.orbitSpeed,
+                distance: data.distance,
+                speed: data.speed,
                 angle: Math.random() * Math.PI * 2,
                 name: data.name,
                 size: data.size,
@@ -527,7 +503,7 @@
             });
         });
         
-        // ========== ASTEROID FIELD ==========
+        // --- Asteroid Field ---
         const asteroidCount = 1200;
         const asteroidGeo = new THREE.BufferGeometry();
         const asteroidPositions = new Float32Array(asteroidCount * 3);
@@ -542,59 +518,46 @@
         const asteroids = new THREE.Points(asteroidGeo, new THREE.PointsMaterial({ color: 0xaa8866, size: 0.06 }));
         scene.add(asteroids);
         
-        // ========== TERRAIN SYSTEM (FIX 4: Reusable rock pool) ==========
-        function initRockPool() {
-            for (let i = 0; i < ROCK_POOL_SIZE; i++) {
-                const rockGeo = new THREE.DodecahedronGeometry(0.08);
-                const rockMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.9 });
-                const rock = new THREE.Mesh(rockGeo, rockMat);
-                rock.visible = false;
-                scene.add(rock);
-                rockPool.push(rock);
+        // --- FIX 3: Reusable terrain template ---
+        function createTerrainTemplate() {
+            const geometry = new THREE.PlaneGeometry(25, 25, 40, 40);
+            geometry.rotateX(-Math.PI / 2);
+            const positions = geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                const x = positions[i];
+                const z = positions[i+2];
+                positions[i+1] = Math.sin(x * 1.2) * 0.3 + Math.cos(z * 1.2) * 0.3 + Math.sin(x * 2.5) * 0.15;
             }
+            geometry.computeVertexNormals();
+            return geometry;
         }
         
-        function generateTerrain(planetColor, size, planetPos) {
+        const terrainBaseGeometry = createTerrainTemplate();
+        
+        function generateTerrain(planetColor, size) {
             if (currentTerrainGroup) {
                 scene.remove(currentTerrainGroup);
                 currentTerrainGroup = null;
             }
             
             const terrainGroup = new THREE.Group();
-            
-            // Ground plane
-            const groundGeometry = new THREE.PlaneGeometry(25, 25, 40, 40);
-            groundGeometry.rotateX(-Math.PI / 2);
-            const positions = groundGeometry.attributes.position.array;
-            for (let i = 0; i < positions.length; i += 3) {
-                const x = positions[i];
-                const z = positions[i+2];
-                positions[i+1] = Math.sin(x * 1.2) * 0.3 + Math.cos(z * 1.2) * 0.3 + Math.sin(x * 2.5) * 0.15;
-            }
-            groundGeometry.computeVertexNormals();
-            
-            const groundMaterial = new THREE.MeshStandardMaterial({ color: planetColor, roughness: 0.7, metalness: 0.1 });
-            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            const material = new THREE.MeshStandardMaterial({ color: planetColor, roughness: 0.7, metalness: 0.1 });
+            const ground = new THREE.Mesh(terrainBaseGeometry, material);
             ground.receiveShadow = true;
             terrainGroup.add(ground);
             
-            // Position rocks from pool
-            let rockIndex = 0;
-            for (let i = 0; i < 100 && rockIndex < rockPool.length; i++) {
-                const rock = rockPool[rockIndex];
-                rock.material.color.setHex(planetColor);
+            // Reuse rock instances
+            for (let i = 0; i < 100; i++) { // Reduced from 150 for performance
+                const rockGeo = new THREE.DodecahedronGeometry(0.08);
+                const rockMat = new THREE.MeshStandardMaterial({ color: planetColor, roughness: 0.9 });
+                const rock = new THREE.Mesh(rockGeo, rockMat);
                 const x = (Math.random() - 0.5) * 22;
                 const z = (Math.random() - 0.5) * 22;
                 const y = Math.sin(x * 1.2) * 0.3 + Math.cos(z * 1.2) * 0.3 + Math.sin(x * 2.5) * 0.15;
                 rock.position.set(x, y, z);
                 rock.scale.setScalar(0.5 + Math.random());
-                rock.visible = true;
                 terrainGroup.add(rock);
-                rockIndex++;
             }
-            
-            terrainGroup.position.copy(planetPos);
-            terrainGroup.position.y += size + 0.15;
             
             currentTerrainGroup = terrainGroup;
             scene.add(terrainGroup);
@@ -603,55 +566,12 @@
         
         function disposeTerrain() {
             if (currentTerrainGroup) {
-                // Return rocks to pool
-                currentTerrainGroup.children.forEach(child => {
-                    if (child.isMesh && child.geometry.type === 'DodecahedronGeometry') {
-                        child.visible = false;
-                    }
-                });
                 scene.remove(currentTerrainGroup);
                 currentTerrainGroup = null;
             }
         }
         
-        initRockPool();
-        
-        // ========== TRUE INVERSE-SQUARE GRAVITY (FIX 1) ==========
-        function applyGravityWells(delta) {
-            let totalGravity = 0;
-            tmpGravityAdd.set(0, 0, 0);
-            
-            planets.forEach(planet => {
-                tmpGravityDir.copy(planet.mesh.position).sub(shipGroup.position);
-                const distSq = tmpGravityDir.lengthSq();
-                const dist = Math.sqrt(distSq);
-                const gravityRadius = planet.size * 10;
-                
-                if (dist < gravityRadius) {
-                    // Pure inverse-square: F = G * M / r²
-                    let strength = (planet.mass * GRAVITY_CONSTANT) / distSq;
-                    
-                    // Soft clamp for gameplay (avoid insane acceleration at surface)
-                    const maxGravity = 25.0;
-                    strength = Math.min(strength, maxGravity);
-                    
-                    tmpGravityDir.normalize();
-                    tmpGravityAdd.addScaledVector(tmpGravityDir, strength);
-                    totalGravity += strength;
-                }
-            });
-            
-            const gravityStrengthElem = document.getElementById('gravity-strength');
-            if (gravityStrengthElem) {
-                gravityStrengthElem.innerHTML = totalGravity.toFixed(1);
-            }
-            
-            if (totalGravity > 0.01) {
-                shipVelocity.add(tmpGravityAdd.multiplyScalar(delta));
-            }
-        }
-        
-        // ========== WALKING MODE (FIX 3: Clean frame management) ==========
+        // --- FIX 1: Walking mode with proper cleanup ---
         function exitWalkingMode() {
             walkingMode = false;
             walkingActive = false;
@@ -681,7 +601,7 @@
         function landOnPlanet(planet) {
             if (!planet || walkingMode) return;
             
-            // Velocity check for landing (FIX 5)
+            // FIX 5: Velocity check for landing
             const landingSpeed = shipVelocity.length();
             if (landingSpeed > 15) {
                 document.getElementById('mode-panel').innerHTML = '⚠️ Too fast to land! Slow down below 15 km/s ⚠️';
@@ -696,12 +616,14 @@
             currentPlanet = planet;
             shipGroup.visible = false;
             
-            // Exit pointer lock when landing
             if (pointerLockActive) {
-                document.exitPointerLock();
+                exitPointerLock();
             }
             
-            const terrain = generateTerrain(planet.userData.color || 0x4c9eff, planet.size, planet.mesh.position);
+            const planetPos = planet.mesh.position;
+            const terrain = generateTerrain(planet.userData.color || 0x4c9eff, planet.size * 5);
+            terrain.position.copy(planetPos);
+            terrain.position.y += planet.size + 0.15;
             
             camera.position.copy(terrain.position);
             camera.position.y += 1.8;
@@ -754,9 +676,44 @@
             walkUpdate();
         }
         
-        // ========== UTILITY FUNCTIONS ==========
+        // --- Gravity well system (FIX 7: Soft gravity pull)---
+        function applyGravityWells(delta) {
+            let totalGravity = 0;
+            gravityVector.set(0, 0, 0);
+            
+            planets.forEach(planet => {
+                const toPlanet = tmpGravity.copy(planet.mesh.position).sub(shipGroup.position);
+                const distSq = toPlanet.lengthSq();
+                const dist = Math.sqrt(distSq);
+                const gravityRadius = planet.size * 8;
+                
+                if (dist < gravityRadius) {
+                    const strength = (planet.mass * GRAVITY_CONSTANT) / (distSq + 1);
+                    const gravityFactor = Math.min(1, (gravityRadius - dist) / gravityRadius);
+                    const gravityStrength = strength * gravityFactor;
+                    
+                    toPlanet.normalize();
+                    gravityVector.add(toPlanet.multiplyScalar(gravityStrength));
+                    totalGravity += gravityStrength;
+                    
+                    // Visual indicator for gravity well
+                    if (dist < planet.size * 4) {
+                        totalGravity = Math.max(totalGravity, 2);
+                    }
+                }
+            });
+            
+            activeGravity = totalGravity;
+            document.getElementById('gravity-strength').innerHTML = activeGravity.toFixed(1);
+            
+            // Apply gravity to velocity
+            if (totalGravity > 0.1) {
+                shipVelocity.add(gravityVector.multiplyScalar(delta));
+            }
+        }
+        
         function isThrustActive() {
-            return keys.w || keys.s || (performance.now() < boostActiveUntil);
+            return keys.w || keys.s || shipBoost;
         }
         
         function toggleFlightModel() {
@@ -771,26 +728,14 @@
             }
         }
         
-        function toggleCameraMode() {
-            cameraMode = cameraMode === 'cinematic' ? 'rigid' : 'cinematic';
-            const cameraDisplay = document.getElementById('camera-mode');
-            if (cameraMode === 'cinematic') {
-                cameraDisplay.innerHTML = '📷 CAMERA: CINEMATIC (smooth)';
-                cameraDisplay.style.color = '#88ff88';
-            } else {
-                cameraDisplay.innerHTML = '🎯 CAMERA: RIGID (direct)';
-                cameraDisplay.style.color = '#ff8888';
-            }
-        }
-        
-        // ========== AUTO-TARGETING (FIX 9: Less forgiving) ==========
+        // --- Auto-targeting ---
         function updateTargeting() {
             let closest = null;
             let minDist = Infinity;
             
             planets.forEach(planet => {
                 const dist = shipGroup.position.distanceTo(planet.mesh.position);
-                const targetRange = planet.size * 6; // Reduced from 12 for skill-based landing
+                const targetRange = planet.size * 12;
                 if (dist < minDist && dist < targetRange) {
                     minDist = dist;
                     closest = planet;
@@ -818,7 +763,7 @@
             }
         }
         
-        // ========== INPUT HANDLING ==========
+        // --- Input Handling ---
         const keys = { w: false, s: false, a: false, d: false, q: false, e: false };
         
         window.addEventListener('keydown', (e) => {
@@ -826,11 +771,6 @@
             
             if (key === 'f') {
                 toggleFlightModel();
-                return;
-            }
-            
-            if (key === 'c') {
-                toggleCameraMode();
                 return;
             }
             
@@ -866,10 +806,10 @@
             }
             
             if (key === ' ') {
-                const now = performance.now();
-                if (now >= boostCooldownUntil && !walkingMode && pointerLockActive) {
-                    boostActiveUntil = now + 500; // 0.5 second boost
-                    boostCooldownUntil = now + 3000; // 3 second cooldown
+                if (boostCooldown <= 0 && !walkingMode && pointerLockActive) {
+                    shipBoost = true;
+                    boostCooldown = 3.0;
+                    boostEndTime = performance.now() + 500;
                     document.getElementById('boost-status').innerHTML = 'ACTIVE!';
                 }
                 e.preventDefault();
@@ -883,7 +823,7 @@
             if (keys.hasOwnProperty(key)) keys[key] = false;
         });
         
-        // ========== FPS COUNTER ==========
+        // --- FPS Counter with smoothing ---
         function updateFPS() {
             fpsFrames++;
             const now = performance.now();
@@ -896,7 +836,15 @@
             }
         }
         
-        // ========== MAIN ANIMATION LOOP ==========
+        // --- FIX 6: Unified boost timing ---
+        function updateBoost() {
+            if (shipBoost && performance.now() > boostEndTime) {
+                shipBoost = false;
+                document.getElementById('boost-status').innerHTML = 'READY';
+            }
+        }
+        
+        // --- Animation Loop ---
         let lastTime = performance.now();
         
         function animate() {
@@ -905,30 +853,25 @@
             lastTime = now;
             
             updateFPS();
+            updateBoost();
             
-            // Update boost UI
-            const isBoosting = now < boostActiveUntil;
-            if (!isBoosting && document.getElementById('boost-status').innerHTML === 'ACTIVE!') {
-                document.getElementById('boost-status').innerHTML = 'READY';
-            }
-            
-            // FIX 2: Deterministic orbital motion (radians per second)
+            // Planet orbits
             if (simActive && !walkingMode) {
                 planets.forEach(planet => {
-                    planet.angle += planet.orbitSpeed * delta;
-                    const x = Math.cos(planet.angle) * planet.orbitRadius;
-                    const z = Math.sin(planet.angle) * planet.orbitRadius;
+                    planet.angle += planet.speed * 0.5 * delta * 30;
+                    const x = Math.cos(planet.angle) * planet.distance;
+                    const z = Math.sin(planet.angle) * planet.distance;
                     planet.mesh.position.set(x, 0, z);
-                    planet.mesh.rotation.y += 0.5 * delta;
+                    planet.mesh.rotation.y += 0.01;
                 });
             }
             
-            stars.rotation.y += 0.5 * delta;
-            asteroids.rotation.y += 1.0 * delta;
+            stars.rotation.y += 0.0005;
+            asteroids.rotation.y += 0.001;
             sunGlowLight.intensity = 1.4 + Math.sin(now * 0.002) * 0.15;
             sunMaterial.emissiveIntensity = 0.7 + Math.sin(now * 0.0025) * 0.15;
             
-            // Flight physics
+            // Flight physics with gravity wells
             if (gameMode === 'flight' && !walkingMode && pointerLockActive) {
                 const SMOOTH_FACTOR = 0.12;
                 currentRotationX += (mouseX - currentRotationX) * SMOOTH_FACTOR;
@@ -942,7 +885,7 @@
                 tmpForward.applyQuaternion(shipGroup.quaternion);
                 tmpRight.applyQuaternion(shipGroup.quaternion);
                 
-                const boost = isBoosting ? BOOST_MULTIPLIER : 1;
+                const boost = shipBoost ? BOOST_MULTIPLIER : 1;
                 
                 tmpAccel.set(0, 0, 0);
                 if (keys.w) tmpAccel.addScaledVector(tmpForward, 1);
@@ -953,7 +896,7 @@
                 tmpAccel.multiplyScalar(THRUST_POWER * boost);
                 shipVelocity.add(tmpAccel.multiplyScalar(delta));
                 
-                // True inverse-square gravity
+                // Apply gravity wells
                 applyGravityWells(delta);
                 
                 // Flight model damping
@@ -974,21 +917,15 @@
                 if (keys.e) shipGroup.rotation.z -= 2.5 * delta;
                 shipGroup.rotation.z *= 0.98;
                 
-                // FIX 8: Camera mode toggle
-                if (cameraMode === 'cinematic') {
-                    tmpCamTarget.copy(shipGroup.position).add(tmpCameraOffset);
-                    const camLerp = 1 - Math.pow(0.85, delta * 60);
-                    camera.position.lerp(tmpCamTarget, camLerp);
-                    camera.lookAt(shipGroup.position);
-                } else {
-                    // Rigid camera - direct follow
-                    tmpCamTarget.copy(shipGroup.position).add(tmpCameraOffset);
-                    camera.position.copy(tmpCamTarget);
-                    camera.lookAt(shipGroup.position);
-                }
+                tmpCamTarget.copy(shipGroup.position).add(tmpCameraOffset);
+                const camLerp = 1 - Math.pow(0.85, delta * 60);
+                camera.position.lerp(tmpCamTarget, camLerp);
+                camera.lookAt(shipGroup.position);
                 
-                const speed = shipVelocity.length() * 1; // Now in km/s directly
+                const speed = shipVelocity.length() * 30;
                 document.getElementById('speed-value').innerHTML = Math.floor(speed);
+                
+                if (boostCooldown > 0) boostCooldown -= delta;
                 
                 updateTargeting();
                 engineMesh.material.emissiveIntensity = isThrustActive() ? 0.7 + Math.random() * 0.3 : 0.2;
@@ -1007,11 +944,8 @@
             effectComposer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log('🚀 SPACE ENGINE v7.0 - Deterministic physics, true gravity, clean architecture!');
-        console.log('💡 New: Press C to toggle camera mode (cinematic/rigid)');
-        console.log('💡 True inverse-square gravity wells');
-        console.log('💡 Deterministic orbital motion (radians/second)');
-        console.log('💡 Reusable rock pool - no GC spikes');
+        console.log('🚀 SPACE ENGINE v6.1 - Gravity wells, orbital physics, production ready!');
+        console.log('💡 New features: Gravity pull near planets, velocity-based landing, unified boost timing');
     </script>
 </body>
-</html>
+</html>S

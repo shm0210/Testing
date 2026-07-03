@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Payment - SecurePay</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/payment.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/animation.css" />
+    <link rel="stylesheet" href="css/darkmode.css" />
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-card glassmorphism">
+            <h2>Payment Details</h2>
+            
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="customerName" required placeholder="John Doe" />
+                </div>
+
+                <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="mobile" required placeholder="9876543210" pattern="[0-9]{10}" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" required placeholder="john@example.com" />
+                </div>
+
+                <div class="form-group">
+                    <label>Amount (₹) *</label>
+                    <input type="number" id="amount" required placeholder="500" min="1" step="1" />
+                </div>
+
+                <div class="form-group">
+                    <label>Purpose</label>
+                    <input type="text" id="purpose" placeholder="Payment for services" />
+                </div>
+
+                <div class="form-group">
+                    <label>Order ID</label>
+                    <input type="text" id="orderId" readonly />
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-pay">Pay via UPI</button>
+                    <button type="button" class="btn-qr" id="showQR">Show QR</button>
+                    <button type="button" class="btn-copy" id="copyUPI">Copy UPI ID</button>
+                    <button type="reset" class="btn-cancel">Cancel</button>
+                </div>
+            </form>
+
+            <!-- QR Code Section -->
+            <div id="qrSection" class="hidden">
+                <h3>Scan to Pay</h3>
+                <div id="qrCode"></div>
+                <p class="upi-id">UPI: paytmqr281005050101whg6sa9wkmnz@paytm</p>
+                <p class="amount-display">Amount: ₹<span id="qrAmount">0</span></p>
+                <button class="btn-copy" id="copyQRUPI">Copy UPI ID</button>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/payment.js"></script>
+    <script src="js/qr.js"></script>
+    <script src="js/validator.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/notification.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

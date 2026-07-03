@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Payment Success - SecurePay</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/animation.css" />
+    <link rel="stylesheet" href="css/darkmode.css" />
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card glassmorphism">
+            <img src="images/payment-success.png" alt="Success" class="success-icon" />
+            <h2>Payment Successful!</h2>
+            <p>Your transaction has been initiated</p>
+
+            <div class="receipt">
+                <h3>Payment Receipt</h3>
+                <div class="receipt-row">
+                    <span>Order ID:</span>
+                    <span id="receiptOrderId">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Amount:</span>
+                    <span id="receiptAmount">₹0</span>
+                </div>
+                <div class="receipt-row">
+                    <span>UPI ID:</span>
+                    <span id="receiptUPI">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Customer:</span>
+                    <span id="receiptCustomer">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Transaction ID:</span>
+                    <input type="text" id="transactionId" placeholder="Enter UPI Transaction ID" />
+                    <button id="verifyTx" class="btn-verify">Verify</button>
+                </div>
+                <div class="receipt-row">
+                    <span>Date:</span>
+                    <span id="receiptDate">-</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-download" id="downloadReceipt">📥 Download Receipt</button>
+                <button class="btn-print" id="printReceipt">🖨️ Print Receipt</button>
+                <a href="index.html" class="btn-home">🏠 Back Home</a>
+            </div>
+
+            <p class="disclaimer">
+                ⚠️ This receipt is based on customer-provided transaction details.
+                Verify with your bank for confirmation.
+            </p>
+        </div>
+    </div>
+
+    <script src="js/receipt.js"></script>
+    <script src="js/invoice.js"></script>
+    <script src="js/download.js"></script>
+    <script src="js/notification.js"></script>
+</body>
+</html>

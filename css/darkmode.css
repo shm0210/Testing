@@ -1,0 +1,61 @@
+body.dark-mode {
+    background: linear-gradient(135deg, #1a202c, #2d3748);
+}
+
+body.dark-mode .container,
+body.dark-mode .payment-card,
+body.dark-mode .success-card {
+    background: rgba(26, 32, 44, 0.95);
+    color: #e2e8f0;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #f7fafc;
+}
+
+body.dark-mode .form-group label {
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-group input {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: white;
+}
+
+body.dark-mode .feature-card {
+    background: #2d3748;
+    color: #e2e8f0;
+}
+
+body.dark-mode footer {
+    border-color: #4a5568;
+}
+
+body.dark-mode footer a {
+    color: #90cdf4;
+}
+
+/* Dark mode toggle button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.3);
+}

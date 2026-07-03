@@ -9,11 +9,261 @@
     <link rel="stylesheet" href="css/responsive.css" />
     <link rel="stylesheet" href="css/animation.css" />
     <link rel="stylesheet" href="css/darkmode.css" />
+    <style>
+        /* Telegram verification styles */
+        .telegram-verification {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e90ff10, #0088cc10);
+            border: 2px solid #0088cc;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+        .telegram-verification.active {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+        .telegram-verification::before {
+            content: '🤖';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 60px;
+            opacity: 0.1;
+        }
+        .telegram-verification h3 {
+            color: #0088cc;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .telegram-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+        .status-dot.online {
+            background: #48bb78;
+        }
+        .status-dot.waiting {
+            background: #ed8936;
+        }
+        .status-dot.verified {
+            background: #48bb78;
+            animation: none;
+        }
+        .status-dot.error {
+            background: #fc8181;
+            animation: none;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        .tx-input-group {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .tx-input-group input {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+            font-family: monospace;
+            min-width: 200px;
+        }
+        .tx-input-group input:focus {
+            border-color: #0088cc;
+            outline: none;
+            box-shadow: 0 0 0 3px #0088cc30;
+        }
+        .tx-input-group input:valid {
+            border-color: #48bb78;
+        }
+        .btn-telegram-verify {
+            background: linear-gradient(135deg, #0088cc, #006699);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-telegram-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 136, 204, 0.4);
+        }
+        .btn-telegram-verify:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .verification-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .verification-result.success {
+            display: block;
+            background: #c6f6d5;
+            border: 1px solid #48bb78;
+            color: #22543d;
+        }
+        .verification-result.error {
+            display: block;
+            background: #fed7d7;
+            border: 1px solid #fc8181;
+            color: #9b2c2c;
+        }
+        .verification-result.pending {
+            display: block;
+            background: #fef5e7;
+            border: 1px solid #ed8936;
+            color: #744210;
+        }
+        .telegram-timer {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        .telegram-timer span {
+            font-weight: bold;
+            color: #0088cc;
+        }
+        .btn-telegram-open {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .btn-telegram-open:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+        }
+        .telegram-instructions {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .telegram-instructions ol {
+            margin: 5px 0 5px 20px;
+        }
+        .telegram-instructions code {
+            background: #edf2f7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        /* Floating Telegram button */
+        .telegram-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0088cc;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .telegram-float-btn:hover {
+            transform: scale(1.1) rotate(-10deg);
+            box-shadow: 0 15px 40px rgba(0, 136, 204, 0.5);
+        }
+        .telegram-float-btn.show {
+            display: flex;
+        }
+        .telegram-float-btn .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #fc8181;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        /* Dark mode overrides */
+        body.dark-mode .telegram-verification {
+            background: linear-gradient(135deg, #1e90ff20, #0088cc20);
+        }
+        body.dark-mode .telegram-status {
+            background: #2d3748;
+        }
+        body.dark-mode .telegram-instructions {
+            background: #2d3748;
+        }
+        body.dark-mode .telegram-instructions code {
+            background: #1a202c;
+            color: #a0aec0;
+        }
+        body.dark-mode .tx-input-group input {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Loading Secure Gateway...</p>
+    </div>
+
     <div class="payment-container">
         <div class="payment-card glassmorphism">
-            <h2>Payment Details</h2>
+            <h2>💳 Payment Details</h2>
             
             <form id="paymentForm">
                 <div class="form-group">
@@ -67,8 +317,52 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
+
+            <!-- TELEGRAM VERIFICATION SECTION -->
+            <div id="telegramVerification" class="telegram-verification">
+                <h3>🤖 Telegram Verification</h3>
+                
+                <div class="telegram-status">
+                    <span class="status-dot waiting" id="statusDot"></span>
+                    <span id="statusText">Waiting for payment...</span>
+                </div>
+
+                <div class="telegram-instructions">
+                    <strong>📋 How to verify your payment:</strong>
+                    <ol>
+                        <li>Complete the UPI payment in your UPI app</li>
+                        <li>Copy the <strong>12-digit Transaction ID</strong> from your UPI app</li>
+                        <li>Open Telegram and search for <strong>@Securepaymentverificationbot</strong></li>
+                        <li>Send the Transaction ID to the bot</li>
+                        <li>Enter the same Transaction ID below and click Verify</li>
+                    </ol>
+                    <button class="btn-telegram-open" onclick="openTelegram()">
+                        📱 Open Telegram
+                    </button>
+                </div>
+
+                <div class="tx-input-group">
+                    <input type="text" id="telegramTxId" placeholder="Enter 12-digit UPI Transaction ID" 
+                           pattern="[0-9]{12}" maxlength="12" />
+                    <button class="btn-telegram-verify" id="telegramVerifyBtn">
+                        🔍 Verify
+                    </button>
+                </div>
+
+                <div id="verificationResult" class="verification-result"></div>
+
+                <div class="telegram-timer">
+                    ⏱️ Auto-verify in: <span id="telegramTimer">60</span>s
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Floating Telegram Button -->
+    <button class="telegram-float-btn" id="telegramFloatBtn">
+        🤖
+        <span class="badge" id="notificationBadge">1</span>
+    </button>
 
     <script src="js/payment.js"></script>
     <script src="js/qr.js"></script>
@@ -76,5 +370,649 @@
     <script src="js/storage.js"></script>
     <script src="js/notification.js"></script>
     <script src="js/theme.js"></script>
+
+    <!-- Telegram Verification Script -->
+    <script>
+    // ============================================
+    // YOUR TELEGRAM BOT CONFIGURATION
+    // ============================================
+    
+    const TELEGRAM_CONFIG = {
+        botToken: '8993241021:AAHD4FGv2vydYKxxGaOEo47IdJFlgX9WxUw',
+        chatId: '6359263403',
+        botUsername: 'Securepaymentverificationbot'
+    };
+
+    // ============================================
+    // COMPLETE TELEGRAM VERIFICATION SYSTEM
+    // ============================================
+
+    class TelegramVerifier {
+        constructor(config) {
+            this.botToken = config.botToken;
+            this.chatId = config.chatId;
+            this.botUsername = config.botUsername;
+            this.pollingInterval = null;
+            this.verifiedTransactions = new Set();
+            this.pendingTransactions = [];
+            this.isVerifying = false;
+            this.timeout = 120;
+            this.lastUpdateId = 0;
+        }
+
+        // Test bot connection
+        async testConnection() {
+            try {
+                const response = await fetch(
+                    `https://api.telegram.org/bot${this.botToken}/getMe`
+                );
+                const data = await response.json();
+                if (data.ok) {
+                    console.log('✅ Bot connected:', data.result.username);
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('❌ Bot connection failed:', error);
+                return false;
+            }
+        }
+
+        // Start listening for Telegram messages
+        startPolling(callback) {
+            if (this.pollingInterval) {
+                clearInterval(this.pollingInterval);
+            }
+
+            // Poll every 3 seconds
+            this.pollingInterval = setInterval(() => {
+                this.checkForVerifications(callback);
+            }, 3000);
+
+            console.log('🤖 Telegram polling started');
+            return this.pollingInterval;
+        }
+
+        // Check for new verification messages
+        async checkForVerifications(callback) {
+            if (this.isVerifying) return;
+            
+            try {
+                this.isVerifying = true;
+                const updates = await this.getUpdates();
+                
+                for (const update of updates) {
+                    if (update.message && update.message.text) {
+                        const txId = this.extractTransactionId(update.message.text);
+                        if (txId && !this.verifiedTransactions.has(txId)) {
+                            this.verifiedTransactions.add(txId);
+                            
+                            // Check if this transaction is pending
+                            const pending = this.pendingTransactions.find(
+                                t => t.transactionId === txId
+                            );
+                            
+                            if (pending) {
+                                callback({
+                                    success: true,
+                                    transactionId: txId,
+                                    message: update.message.text,
+                                    amount: pending.amount,
+                                    customer: pending.customer,
+                                    chatId: update.message.chat.id
+                                });
+                                
+                                // Remove from pending
+                                this.pendingTransactions = this.pendingTransactions.filter(
+                                    t => t.transactionId !== txId
+                                );
+                                
+                                // Send confirmation
+                                await this.sendMessage(
+                                    `✅ Transaction ${txId} verified successfully!\nOrder: ${pending.orderId}\nAmount: ₹${pending.amount}`
+                                );
+                            } else {
+                                // Check if this is a new transaction ID not in pending
+                                // Maybe the user sent it directly
+                                callback({
+                                    success: true,
+                                    transactionId: txId,
+                                    message: update.message.text,
+                                    isNew: true
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Telegram polling error:', error);
+            } finally {
+                this.isVerifying = false;
+            }
+        }
+
+        // Get updates from Telegram API
+        async getUpdates() {
+            const url = `https://api.telegram.org/bot${this.botToken}/getUpdates?offset=${this.lastUpdateId + 1}&timeout=10`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.ok && data.result.length > 0) {
+                    // Update last update ID
+                    const lastUpdate = data.result[data.result.length - 1];
+                    this.lastUpdateId = lastUpdate.update_id;
+                }
+                return data.result || [];
+            } catch (error) {
+                console.error('Error fetching updates:', error);
+                return [];
+            }
+        }
+
+        // Extract transaction ID from message (10-12 digits)
+        extractTransactionId(text) {
+            // Look for 10-12 digit numbers (UPI transaction IDs)
+            const matches = text.match(/\b\d{10,12}\b/g);
+            return matches ? matches[0] : null;
+        }
+
+        // Send message to Telegram
+        async sendMessage(message) {
+            const url = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: this.chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                return null;
+            }
+        }
+
+        // Send payment notification to Telegram
+        async notifyPayment(transaction) {
+            const message = `
+🔔 <b>NEW PAYMENT REQUEST</b>
+
+🆔 Order: <code>${transaction.orderId}</code>
+👤 Customer: ${transaction.name}
+📱 Mobile: ${transaction.mobile}
+📧 Email: ${transaction.email}
+💰 Amount: ₹${transaction.amount}
+📝 Purpose: ${transaction.purpose || 'N/A'}
+⏰ Time: ${new Date().toLocaleString()}
+
+<b>Waiting for Transaction ID...</b>
+Send the UPI transaction ID to @${this.botUsername}
+            `;
+            
+            return this.sendMessage(message);
+        }
+
+        // Verify transaction manually
+        async verifyManually(transactionId) {
+            // Check if already verified
+            if (this.verifiedTransactions.has(transactionId)) {
+                return { success: true, message: 'Already verified' };
+            }
+
+            // Check recent messages
+            const updates = await this.getUpdates();
+            for (const update of updates) {
+                if (update.message && update.message.text) {
+                    const extracted = this.extractTransactionId(update.message.text);
+                    if (extracted === transactionId) {
+                        this.verifiedTransactions.add(transactionId);
+                        return { 
+                            success: true, 
+                            message: 'Transaction verified from Telegram',
+                            data: update.message 
+                        };
+                    }
+                }
+            }
+
+            return { success: false, message: 'Transaction ID not found in Telegram. Make sure you sent it to @' + this.botUsername };
+        }
+
+        // Add to pending transactions
+        addPending(transaction) {
+            this.pendingTransactions.push({
+                ...transaction,
+                transactionId: 'pending',
+                timestamp: Date.now()
+            });
+            
+            // Clean old pending (older than 5 minutes)
+            this.pendingTransactions = this.pendingTransactions.filter(
+                t => Date.now() - t.timestamp < 300000
+            );
+        }
+
+        // Stop polling
+        stopPolling() {
+            if (this.pollingInterval) {
+                clearInterval(this.pollingInterval);
+                this.pollingInterval = null;
+                console.log('🤖 Telegram polling stopped');
+            }
+        }
+
+        // Get verification status
+        getStatus() {
+            return {
+                polling: !!this.pollingInterval,
+                pendingCount: this.pendingTransactions.length,
+                verifiedCount: this.verifiedTransactions.size
+            };
+        }
+    }
+
+    // ============================================
+    // INTEGRATE WITH PAYMENT FLOW
+    // ============================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Telegram Verifier
+        const verifier = new TelegramVerifier(TELEGRAM_CONFIG);
+        window.telegramVerifier = verifier;
+
+        // DOM elements
+        const telegramSection = document.getElementById('telegramVerification');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const txInput = document.getElementById('telegramTxId');
+        const verifyBtn = document.getElementById('telegramVerifyBtn');
+        const resultDiv = document.getElementById('verificationResult');
+        const timerSpan = document.getElementById('telegramTimer');
+        const floatBtn = document.getElementById('telegramFloatBtn');
+        const badge = document.getElementById('notificationBadge');
+
+        // Test bot connection on load
+        verifier.testConnection().then(connected => {
+            if (connected) {
+                console.log('✅ Telegram bot is ready!');
+            } else {
+                console.warn('⚠️ Telegram bot not responding. Check your token.');
+            }
+        });
+
+        // Payment form handler
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('customerName').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const amount = document.getElementById('amount').value;
+            const purpose = document.getElementById('purpose').value.trim();
+            const orderId = document.getElementById('orderId').value;
+
+            // Validate
+            if (!name || !mobile || !email || !amount) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Show Telegram section
+            telegramSection.classList.add('active');
+            
+            // Update status
+            statusDot.className = 'status-dot online';
+            statusText.textContent = '✅ Bot online - waiting for your transaction ID';
+            
+            // Send notification to Telegram
+            const transaction = {
+                orderId: orderId,
+                name: name,
+                mobile: mobile,
+                email: email,
+                amount: amount,
+                purpose: purpose
+            };
+
+            // Add to pending
+            verifier.addPending(transaction);
+
+            // Notify Telegram
+            verifier.notifyPayment(transaction)
+                .then(() => {
+                    showNotification('📱 Notification sent to Telegram bot', 'success');
+                    startVerificationTimer(transaction);
+                })
+                .catch(error => {
+                    showNotification('⚠️ Could not reach Telegram bot. Please verify manually.', 'error');
+                });
+
+            // Show floating button
+            floatBtn.classList.add('show');
+            badge.textContent = '1';
+
+            // Start polling for verification
+            verifier.startPolling((verification) => {
+                handleVerificationSuccess(verification, transaction);
+            });
+
+            // Save transaction
+            const txData = {
+                ...transaction,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            saveTransaction(txData);
+            sessionStorage.setItem('currentTransaction', JSON.stringify(txData));
+
+            // Update progress
+            updateProgress(50);
+
+            // Generate UPI link and open app
+            const upiLink = generateUPILink(amount, orderId, purpose);
+            
+            // Open UPI app
+            window.location.href = upiLink;
+
+            showNotification('Redirecting to UPI app...', 'success');
+        });
+
+        // Manual verification
+        verifyBtn.addEventListener('click', async function() {
+            const txId = txInput.value.trim();
+            
+            if (!txId) {
+                showNotification('Please enter transaction ID', 'error');
+                return;
+            }
+
+            if (txId.length < 10) {
+                showNotification('Transaction ID should be at least 10 digits', 'error');
+                return;
+            }
+
+            // Show loading
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '⏳ Verifying...';
+            resultDiv.className = 'verification-result pending';
+            resultDiv.innerHTML = '⏳ Checking with Telegram bot...';
+            resultDiv.style.display = 'block';
+
+            try {
+                const result = await verifier.verifyManually(txId);
+                
+                if (result.success) {
+                    handleVerificationSuccess({
+                        transactionId: txId,
+                        success: true,
+                        message: 'Transaction verified via Telegram'
+                    }, null);
+                } else {
+                    resultDiv.className = 'verification-result error';
+                    resultDiv.innerHTML = `
+                        <strong>❌ Verification Failed</strong>
+                        <p>${result.message}</p>
+                        <p style="font-size: 14px; margin-top: 10px;">
+                            💡 Make sure you sent the transaction ID to 
+                            <strong>@${verifier.botUsername}</strong>
+                        </p>
+                        <button onclick="openTelegram()" class="btn-telegram-open" style="margin-top: 10px;">
+                            📱 Open Telegram
+                        </button>
+                    `;
+                    showNotification('Verification failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                resultDiv.className = 'verification-result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ Error</strong>
+                    <p>${error.message || 'Could not connect to Telegram'}</p>
+                `;
+                showNotification('Error verifying payment', 'error');
+            }
+
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = '🔍 Verify';
+        });
+
+        // Enter key for verification
+        txInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyBtn.click();
+            }
+        });
+
+        // Auto-format transaction ID
+        txInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 12);
+            if (this.value.length === 12) {
+                this.style.borderColor = '#48bb78';
+            } else {
+                this.style.borderColor = '#e2e8f0';
+            }
+        });
+
+        // Floating button click
+        floatBtn.addEventListener('click', function() {
+            openTelegram();
+            this.classList.remove('show');
+        });
+
+        // Verification timer
+        let timerInterval;
+
+        function startVerificationTimer(transaction) {
+            let timeLeft = 120; // 2 minutes
+            timerSpan.textContent = timeLeft;
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerSpan.textContent = timeLeft;
+                
+                if (timeLeft <= 10) {
+                    timerSpan.style.color = '#fc8181';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerSpan.textContent = '⏰ Time expired';
+                    resultDiv.className = 'verification-result error';
+                    resultDiv.innerHTML = `
+                        <strong>⏰ Verification Timeout</strong>
+                        <p>Please send your transaction ID to the bot manually.</p>
+                        <button onclick="openTelegram()" class="btn-telegram-open" style="margin-top: 10px;">
+                            📱 Open Telegram
+                        </button>
+                    `;
+                    resultDiv.style.display = 'block';
+                    showNotification('Verification timeout', 'error');
+                }
+            }, 1000);
+        }
+
+        // Handle successful verification
+        function handleVerificationSuccess(verification, transaction) {
+            // Show success
+            resultDiv.className = 'verification-result success';
+            resultDiv.innerHTML = `
+                <strong>✅ Payment Verified!</strong>
+                <p>Transaction ID: <code>${verification.transactionId}</code></p>
+                <p>${verification.message || 'Payment confirmed'}</p>
+                <button onclick="goToSuccess('${verification.transactionId}')" 
+                        class="btn-primary" style="margin-top: 15px;">
+                    📄 Generate Receipt →
+                </button>
+            `;
+            resultDiv.style.display = 'block';
+
+            // Update status
+            statusDot.className = 'status-dot verified';
+            statusText.textContent = '✅ Payment verified successfully!';
+
+            // Hide timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerSpan.textContent = '✅ Verified';
+            }
+
+            // Save to storage
+            const orderId = document.getElementById('orderId').value;
+            const txData = {
+                orderId: orderId,
+                transactionId: verification.transactionId,
+                status: 'verified',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Update existing transaction
+            const transactions = getTransactions();
+            const index = transactions.findIndex(t => t.orderId === orderId);
+            if (index !== -1) {
+                transactions[index] = { ...transactions[index], ...txData };
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+            } else {
+                saveTransaction(txData);
+            }
+            
+            sessionStorage.setItem('currentTransaction', JSON.stringify(txData));
+
+            showNotification('🎉 Payment verified successfully!', 'success');
+
+            // Stop polling
+            verifier.stopPolling();
+        }
+
+        // Helper functions
+        window.openTelegram = function() {
+            // Open Telegram app or web
+            const url = `https://t.me/${TELEGRAM_CONFIG.botUsername}`;
+            window.open(url, '_blank');
+        };
+
+        window.goToSuccess = function(txId) {
+            const orderId = document.getElementById('orderId').value;
+            window.location.href = `success.html?tx=${txId}&order=${orderId}`;
+        };
+
+        // Update progress function
+        function updateProgress(percent) {
+            const progressFill = document.getElementById('progressFill');
+            if (progressFill) {
+                progressFill.style.width = percent + '%';
+            }
+        }
+
+        // Generate UPI link function
+        function generateUPILink(amount, orderId, purpose) {
+            const upiId = 'paytmqr281005050101whg6sa9wkmnz@paytm';
+            const merchantName = 'SHUBHAM VISHWAKARMA';
+            
+            const params = new URLSearchParams({
+                pa: upiId,
+                pn: merchantName,
+                am: amount,
+                cu: 'INR',
+                tn: `Order-${orderId}`
+            });
+
+            if (purpose) {
+                params.append('purpose', purpose);
+            }
+
+            return `upi://pay?${params.toString()}`;
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (verifier) {
+                verifier.stopPolling();
+            }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        });
+
+        // Show QR function
+        document.getElementById('showQR').addEventListener('click', function() {
+            const amount = document.getElementById('amount').value;
+            const orderId = document.getElementById('orderId').value;
+
+            if (!amount || amount < 1) {
+                showNotification('Please enter a valid amount first', 'error');
+                return;
+            }
+
+            document.getElementById('qrAmount').textContent = amount;
+            document.getElementById('qrSection').classList.remove('hidden');
+
+            const upiLink = generateUPILink(amount, orderId);
+            generateQR(upiLink);
+
+            updateProgress(30);
+            showNotification('QR Code generated successfully', 'success');
+        });
+
+        // Copy UPI ID
+        document.getElementById('copyUPI').addEventListener('click', function() {
+            const upiId = 'paytmqr281005050101whg6sa9wkmnz@paytm';
+            navigator.clipboard.writeText(upiId).then(() => {
+                showNotification('UPI ID copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = upiId;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                textArea.remove();
+                showNotification('UPI ID copied!', 'success');
+            });
+        });
+
+        // Copy QR UPI ID
+        document.getElementById('copyQRUPI')?.addEventListener('click', function() {
+            const upiId = 'paytmqr281005050101whg6sa9wkmnz@paytm';
+            navigator.clipboard.writeText(upiId).then(() => {
+                showNotification('UPI ID copied!', 'success');
+            });
+        });
+
+        // Cancel button
+        document.querySelector('.btn-cancel').addEventListener('click', function() {
+            if (confirm('Are you sure you want to cancel this payment?')) {
+                document.getElementById('paymentForm').reset();
+                document.getElementById('orderId').value = generateOrderId();
+                document.getElementById('qrSection').classList.add('hidden');
+                telegramSection.classList.remove('active');
+                updateProgress(0);
+                showNotification('Payment cancelled', 'error');
+                if (verifier) {
+                    verifier.stopPolling();
+                }
+            }
+        });
+
+        // Generate Order ID
+        function generateOrderId() {
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+            return `ORD-${timestamp}-${random}`;
+        }
+
+        // Set initial Order ID
+        document.getElementById('orderId').value = generateOrderId();
+
+        console.log('🤖 Telegram verification system ready!');
+        console.log('Bot username: @' + TELEGRAM_CONFIG.botUsername);
+        console.log('Chat ID: ' + TELEGRAM_CONFIG.chatId);
+    });
+    </script>
 </body>
 </html>

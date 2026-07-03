@@ -1,0 +1,59 @@
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-pay {
+        grid-column: span 1;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-card {
+        padding: 20px;
+    }
+
+    .success-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+
+    .form-group input {
+        font-size: 16px; /* Prevents zoom on mobile */
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 90%;
+    }
+}

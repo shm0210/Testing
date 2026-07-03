@@ -1,0 +1,77 @@
+/* Smooth Transitions */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #2d3748;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transform: translateX(120%);
+    transition: transform 0.5s;
+    z-index: 999;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.success {
+    background: #48bb78;
+}
+
+.toast.error {
+    background: #fc8181;
+}
+
+/* Button hover effects */
+.hover-grow {
+    transition: transform 0.3s;
+}
+
+.hover-grow:hover {
+    transform: scale(1.05);
+}
+
+/* Pulse Animation for buttons */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Shimmer effect for loading */
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

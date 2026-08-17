@@ -30,16 +30,25 @@ button{color:inherit}
 .arrow-svg{transition:transform .2s}
 .channel-dropdown.open .arrow-svg{transform:rotate(180deg)}
 
-.channel-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:240px;max-height:400px;overflow-y:auto;background:rgba(20,17,14,.96);backdrop-filter:blur(24px);border:1px solid var(--line);border-radius:16px;padding:8px 6px;box-shadow:0 20px 60px rgba(0,0,0,.6);display:none;z-index:50}
+.channel-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:250px;max-height:400px;overflow-y:auto;background:rgba(20,17,14,.96);backdrop-filter:blur(24px);border:1px solid var(--line);border-radius:16px;padding:8px 6px;box-shadow:0 20px 60px rgba(0,0,0,.6);display:none;z-index:50}
 .channel-menu.open{display:block}
 .channel-header{font-size:10px;font-weight:800;color:#847a70;padding:6px 12px 10px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--line);margin-bottom:4px}
 .channel-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;color:#c2b7ab;transition:.15s;position:relative}
 .channel-item:hover{background:rgba(255,255,255,.08);color:#fff}
 .channel-item.active{background:rgba(238,173,101,.12);color:var(--accent)}
-.channel-icon-s{display:flex;align-items:center;width:24px;justify-content:center}
-.channel-check{display:none;margin-left:auto;color:var(--accent)}
-.channel-item.active .channel-check{display:block}
-.new-badge{margin-left:auto;background:#ff4757;color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em}
+.channel-icon-s{display:flex;align-items:center;width:24px;justify-content:center;flex:0 0 auto}
+.channel-item-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.channel-badges{display:flex;align-items:center;gap:6px;flex:0 0 auto;margin-left:auto}
+.pin-icon{display:flex;align-items:center;color:#7c7266;opacity:.55;transition:.2s}
+.pin-icon svg{fill:none;stroke:currentColor;stroke-width:1.5}
+.channel-item:hover .pin-icon{opacity:.8}
+.channel-item.active .pin-icon{color:#ffe9cf;opacity:1}
+.channel-item.active .pin-icon svg{fill:currentColor;stroke:none}
+.channel-footer{margin-top:6px;padding:14px 12px 10px;border-top:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.channel-footer span{font-size:10px;color:#8f8579}
+.channel-footer-cta{border:0;background:transparent;color:#7ee6a8;font-size:11px;font-weight:700;cursor:pointer;padding:2px;transition:.15s}
+.channel-footer-cta:hover{color:#a3f3c0}
+.new-badge{background:#ff4757;color:#fff;font-size:8px;font-weight:800;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em}
 
 /* Volume Control */
 .top-volume{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:rgba(255,255,255,.055);backdrop-filter:blur(14px);border-radius:999px;padding:0 14px 0 4px;height:42px}

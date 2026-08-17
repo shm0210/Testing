@@ -347,6 +347,13 @@ volumeIcon.onclick=toggleMute;
 muteBtn.onclick=toggleMute;
 seek.oninput=()=>{if(audio.duration)audio.currentTime=(+seek.value/100)*audio.duration};
 document.getElementById("supportBtn").onclick=()=>notify("☕ Support us — add your own payment link in app.js.");
+const channelFooterCta = document.getElementById("channelFooterCta");
+if(channelFooterCta){
+  channelFooterCta.onclick = (e) => {
+    e.stopPropagation();
+    notify("☕ Support us — add your own payment link in app.js.");
+  };
+}
 document.getElementById("fullscreenBtn").onclick=async()=>{
   try{
     if(!document.fullscreenElement) await document.documentElement.requestFullscreen();

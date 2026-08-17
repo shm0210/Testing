@@ -1,6 +1,14 @@
 const PLAYLIST_ID = "9495307201/papa-ke-jamane-ke-gaane";
-const BASE_URL = "https://pub-dca67106d684416ebbeaf0588d7d3363.r2.dev/papa-ke-jamane-ke-gaane/";
-const BHOJPURI_BASE_URL = "https://pub-dca67106d684416ebbeaf0588d7d3363.r2.dev/bihari-banger/";
+const R2_ROOT = "https://pub-dca67106d684416ebbeaf0588d7d3363.r2.dev/";
+const BASE_URL = R2_ROOT + "papa-ke-jamane-ke-gaane/";
+const BHOJPURI_BASE_URL = R2_ROOT + "bihari-banger/";
+const URL_2009 = R2_ROOT + "2009-vibes/";
+const BARTAN_URL = R2_ROOT + "bartan-time/";
+const GYM_URL = R2_ROOT + "gym-jam/";
+const GENZ_URL = R2_ROOT + "genz-gaane/";
+const NEENDI_URL = R2_ROOT + "neendi-time/";
+const SHADI_URL = R2_ROOT + "shadi-samarav/";
+const KK_URL = R2_ROOT + "the-great-kk/";
 const CHANNEL_KEY = "pkj-channel-v1";
 
 const audio = document.getElementById("audio");
@@ -31,7 +39,9 @@ const queueTitle = document.getElementById("queueTitle");
 const heroTitle = document.getElementById("heroTitle");
 const heroSub = document.getElementById("heroSub");
 
-// Channel configurations
+// Channel configurations — every channel below now has a real song list
+// (channels with no supplied links — Chatpate Songs, Tamil Hits, Punjabi
+// Tadka — have been removed until links are provided for them)
 const CHANNELS = {
   papa: {
     id: 'papa',
@@ -44,7 +54,7 @@ const CHANNELS = {
   bhojpuri: {
     id: 'bhojpuri',
     name: 'Bhojpuri Banger',
-    songList: bhojpuriSongs, // Merged Bhojpuri Tadka + Bihari Banger
+    songList: bhojpuriSongs,
     baseUrl: BHOJPURI_BASE_URL,
     heroTitle: 'भोजपुरी<br>बैंगर',
     heroSub: 'गाँव की मस्ती, ढोलक की थाप — पूरा यूपी-बिहार झूमेगा!'
@@ -52,72 +62,56 @@ const CHANNELS = {
   '2009': {
     id: '2009',
     name: '2009s Vibe',
-    songList: [],
-    baseUrl: '',
+    songList: songs2009,
+    baseUrl: URL_2009,
     heroTitle: '2009<br>की यादें',
     heroSub: 'वो साल, वो गाने — एक सुनहरी यात्रा।'
   },
   bartam: {
     id: 'bartam',
     name: 'Bartan Time',
-    songList: [],
-    baseUrl: '',
+    songList: bartanSongs,
+    baseUrl: BARTAN_URL,
     heroTitle: 'बर्तन<br>टाइम',
     heroSub: 'किचन में काम करते हुए गाने — मज़ा आ जाए!'
   },
   gym: {
     id: 'gym',
     name: 'Gym Jam',
-    songList: [],
-    baseUrl: '',
+    songList: gymSongs,
+    baseUrl: GYM_URL,
     heroTitle: 'GYM<br>JAM',
     heroSub: 'पंप करो, मसल्स बनाओ — हार्ड वर्कआउट के लिए!'
   },
   genz: {
     id: 'genz',
     name: 'Genz Gaane',
-    songList: [],
-    baseUrl: '',
+    songList: genzSongs,
+    baseUrl: GENZ_URL,
     heroTitle: 'Gen Z<br>गाने',
     heroSub: 'नई पीढ़ी के हिट्स — हर दिन नया ट्रेंड!'
   },
   neendi: {
     id: 'neendi',
     name: 'Neendi Time',
-    songList: [],
-    baseUrl: '',
+    songList: neendiSongs,
+    baseUrl: NEENDI_URL,
     heroTitle: 'नींदी<br>टाइम',
     heroSub: 'सुकून भरी रातें, मीठे सपने — आराम की लोरी।'
   },
-  chatpate: {
-    id: 'chatpate',
-    name: 'Chatpate Songs',
-    songList: [],
-    baseUrl: '',
-    heroTitle: 'चटपटे<br>गाने',
-    heroSub: 'मसालेदार गाने जो दिल को छू जाएं — बस चटपट!'
-  },
-  tamil: {
-    id: 'tamil',
-    name: 'Tamil Hits',
-    songList: [],
-    baseUrl: '',
-    heroTitle: 'TAMIL<br>HITS',
-    heroSub: 'तमिल सिनेमा का जादू — साउथ की धमाकेदार म्यूजिक।'
-  },
-  punjabi: {
-    id: 'punjabi',
-    name: 'Punjabi Tadka',
-    songList: [],
-    baseUrl: '',
-    heroTitle: 'PUNJABI<br>TADKA',
-    heroSub: 'भंगड़ा, ढोल, और मस्ती — पंजाब का असली स्वाद!'
+  shadi: {
+    id: 'shadi',
+    name: 'Shadi Samaroh',
+    songList: shadiSongs,
+    baseUrl: SHADI_URL,
+    heroTitle: 'शादी<br>समारोह',
+    heroSub: 'बैंड, बाजा, बारात — हर शादी का जश्न इन्हीं गानों से!'
   },
   kk: {
     id: 'kk',
     name: 'The Great KK',
-    songList: [],
-    baseUrl: '',
+    songList: kkSongs,
+    baseUrl: KK_URL,
     heroTitle: 'THE GREAT<br>KK',
     heroSub: 'KK के सबसे बेहतरीन गाने — एक शानदार श्रद्धांजलि।'
   }
@@ -145,27 +139,21 @@ const fmt = seconds => {
   return `${m}:${String(s).padStart(2,"0")}`;
 };
 
-// EXACT URL construction for Papa songs
+// URL construction — matches the exact encoding pattern used across every
+// supplied R2 link (spaces become %20; & , ( ) + are left as literal
+// characters, same as encodeURIComponent leaves ' outside the escape set)
 const urlFor = (filename, channelId) => {
   const channel = CHANNELS[channelId || state.channel];
   const base = channel.baseUrl || '';
-  
-  // For Papa channel, use the exact URL format from your file
-  if (channelId === 'papa' || state.channel === 'papa') {
-    let encoded = encodeURIComponent(filename)
-      .replace(/%2C/g, ',')
-      .replace(/%20/g, '%20');
-    
-    encoded = encoded
-      .replace(/%26/g, '&')
-      .replace(/%28/g, '(')
-      .replace(/%29/g, ')')
-      .replace(/%2B/g, '+');
-    
-    return base + encoded;
-  }
-  
-  return base + encodeURIComponent(filename);
+
+  const encoded = encodeURIComponent(filename)
+    .replace(/%2C/g, ',')
+    .replace(/%26/g, '&')
+    .replace(/%28/g, '(')
+    .replace(/%29/g, ')')
+    .replace(/%2B/g, '+');
+
+  return base + encoded;
 };
 
 function savePrefs(){

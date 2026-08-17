@@ -1,4 +1,3 @@
-const PLAYLIST_ID = "9495307201/papa-ke-jamane-ke-gaane";
 const R2_ROOT = "https://pub-dca67106d684416ebbeaf0588d7d3363.r2.dev/";
 const BASE_URL = R2_ROOT + "papa-ke-jamane-ke-gaane/";
 const BHOJPURI_BASE_URL = R2_ROOT + "bihari-banger/";
@@ -340,6 +339,7 @@ function closePlaylistPopup() {
 // Channel switching
 function switchChannel(channelId) {
   if(channelId === state.channel) return;
+  const wasPlaying = !audio.paused;
   state.channel = channelId;
   state.index = -1;
   
@@ -362,7 +362,7 @@ function switchChannel(channelId) {
   state.queue = buildShuffleQueue();
   state.queuePos = 0;
   if(state.queue.length > 0){
-    loadSong(state.queue[state.queuePos], true);
+    loadSong(state.queue[state.queuePos], wasPlaying);
   }
   
   notify(`📻 Switched to ${channel.name}`);

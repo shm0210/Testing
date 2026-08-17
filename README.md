@@ -71,10 +71,8 @@ and returns an audio response.
 ## Not implemented
 
 The player does **not** have: favorites, recently played, in-app search, a
-theme switcher, or a repeat-track toggle (there's an internal `repeat` flag
-in `app.js` but no UI wired to it — it's currently always off). If you want
-any of these, they'd need to be built; this README no longer claims they
-exist.
+theme switcher, or a repeat-track toggle. If you want any of these, they'd
+need to be built; this README no longer claims they exist.
 
 ## Important privacy note
 

@@ -114,16 +114,16 @@ const CHANNELS = {
   }
 };
 
+const savedChannel = localStorage.getItem(CHANNEL_KEY);
+
 const state = {
   index: -1,
   queue: [],       // shuffled permutation of song indices for the current channel
   queuePos: -1,    // pointer into state.queue — this IS the play history
   shuffle: true, // Always on
-  repeat: false,
-  channel: localStorage.getItem(CHANNEL_KEY) || 'papa'
+  channel: CHANNELS[savedChannel] ? savedChannel : 'papa'
 };
 
-const clean = s => s.replace(/\.mp3$/i, "");
 const artistOf = title => {
   const i = title.indexOf(" - ");
   return i > -1 ? title.slice(0, i) : "Unknown artist";
@@ -429,7 +429,7 @@ audio.addEventListener("error",(e) => {
   console.error("Audio error:", e);
   showPlaybackError();
 });
-audio.addEventListener("ended",()=>{ if(state.repeat) loadSong(state.index,true); else next(true); });
+audio.addEventListener("ended",()=>{ next(true); });
 window.addEventListener("keydown",escapeKey);
 
 function tickClock(){

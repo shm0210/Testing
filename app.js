@@ -117,6 +117,8 @@ const CHANNELS = {
 
 const state = {
   index: -1,
+  queue: [],       // shuffled permutation of song indices for the current channel
+  queuePos: -1,    // pointer into state.queue — this IS the play history
   shuffle: true, // Always on
   repeat: false,
   channel: localStorage.getItem(CHANNEL_KEY) || 'papa'
@@ -166,6 +168,45 @@ function getCurrentSongs() {
   return CHANNELS[state.channel].songList || [];
 }
 
+// Proper shuffle: build one shuffled permutation of every song index (a
+// "bag"), walk through it front-to-back so every song plays exactly once,
+// then build a fresh permutation when the bag is exhausted. state.queuePos
+// doubles as real play history, so Previous always returns to the actual
+// song that played before — not an arithmetic neighbour in the raw list.
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function buildShuffleQueue(avoidIndex) {
+  const currentSongs = getCurrentSongs();
+  const queue = shuffleArray(currentSongs.map((_, i) => i));
+  // avoid an immediate repeat of the last-played song when a new bag starts
+  if (avoidIndex != null && queue.length > 1 && queue[0] === avoidIndex) {
+    const swapWith = 1 + Math.floor(Math.random() * (queue.length - 1));
+    [queue[0], queue[swapWith]] = [queue[swapWith], queue[0]];
+  }
+  return queue;
+}
+// Jump to an explicit song (e.g. picked from the playlist popup) without
+// breaking shuffle history: the picked song is spliced in right after the
+// current position, so Previous still leads back to whatever was playing,
+// and Next continues the same shuffle bag afterward.
+function jumpToIndex(index, autoplay = true) {
+  const currentSongs = getCurrentSongs();
+  if (index < 0 || index >= currentSongs.length) return;
+  if (!state.queue.length) state.queue = buildShuffleQueue();
+  const existingPos = state.queue.indexOf(index);
+  if (existingPos > -1) state.queue.splice(existingPos, 1);
+  const insertPos = state.queuePos + 1;
+  state.queue.splice(insertPos, 0, index);
+  state.queuePos = insertPos;
+  loadSong(index, autoplay);
+}
+
 function renderPopup() {
   const currentSongs = getCurrentSongs();
   if(!currentSongs.length) {
@@ -185,7 +226,7 @@ function renderPopup() {
         <div class="popup-song-artist">${escapeHtml(artistOf(title))}</div>
       </div>`;
     row.addEventListener("click", () => {
-      loadSong(index, true);
+      jumpToIndex(index, true);
       closePlaylistPopup();
     });
     popupList.appendChild(row);
@@ -225,25 +266,39 @@ function showPlaybackError(err){
 }
 function togglePlay(){
   const currentSongs = getCurrentSongs();
-  if(state.index<0 || state.index>=currentSongs.length){ 
-    const randomIndex = Math.floor(Math.random() * currentSongs.length);
-    loadSong(randomIndex, true);
-    return; 
+  if(state.index<0 || state.index>=currentSongs.length){
+    if(!currentSongs.length) return;
+    if(!state.queue.length) state.queue = buildShuffleQueue();
+    state.queuePos = 0;
+    loadSong(state.queue[state.queuePos], true);
+    return;
   }
   if(audio.paused) audio.play().catch(showPlaybackError);
   else audio.pause();
 }
 function next(autoplay=false){
   const currentSongs = getCurrentSongs();
-  if(!currentSongs.length)return;
-  let nextIndex;
-  do { nextIndex=Math.floor(Math.random()*currentSongs.length); } while(currentSongs.length>1 && nextIndex===state.index);
-  loadSong(nextIndex,autoplay);
+  if(!currentSongs.length) return;
+  if(!state.queue.length) state.queue = buildShuffleQueue();
+  if(state.queuePos >= state.queue.length - 1){
+    // bag exhausted — every song has played once, start a fresh shuffle
+    state.queue = buildShuffleQueue(state.queue[state.queuePos]);
+    state.queuePos = -1;
+  }
+  state.queuePos++;
+  loadSong(state.queue[state.queuePos], autoplay);
 }
-function previous(){
+function previous(autoplay=false){
   const currentSongs = getCurrentSongs();
+  if(!currentSongs.length) return;
   if(audio.currentTime>4){audio.currentTime=0;return;}
-  loadSong((state.index-1+currentSongs.length)%currentSongs.length,false);
+  if(state.queuePos > 0){
+    state.queuePos--;
+    loadSong(state.queue[state.queuePos], autoplay);
+  } else {
+    // already at the start of this shuffle bag — nothing earlier to return to
+    audio.currentTime = 0;
+  }
 }
 function syncPlayer(){
   const isPaused = audio.paused;
@@ -304,17 +359,17 @@ function switchChannel(channelId) {
   savePrefs();
   renderPopup();
   
-  const songs = getCurrentSongs();
-  if(songs.length > 0) {
-    const randomIndex = Math.floor(Math.random() * songs.length);
-    loadSong(randomIndex, true);
+  state.queue = buildShuffleQueue();
+  state.queuePos = 0;
+  if(state.queue.length > 0){
+    loadSong(state.queue[state.queuePos], true);
   }
   
   notify(`📻 Switched to ${channel.name}`);
 }
 
 document.getElementById("nextBtn").onclick=()=>next(true);
-document.getElementById("prevBtn").onclick=previous;
+document.getElementById("prevBtn").onclick=()=>previous(true);
 playBtn.onclick=togglePlay;
 document.getElementById("retryBtn").onclick=()=>loadSong(state.index,false);
 volumeRange.oninput=()=>{audio.volume=+volumeRange.value;audio.muted=audio.volume===0};
@@ -398,9 +453,9 @@ if(channel) {
 
 renderPopup();
 
-// Auto-play random song on load (user must press play)
-const initialSongs = getCurrentSongs();
-if(initialSongs.length > 0) {
-  const randomIndex = Math.floor(Math.random() * initialSongs.length);
-  loadSong(randomIndex, false);
+// Load a random-but-shuffle-consistent first song on load (user must press play)
+state.queue = buildShuffleQueue();
+state.queuePos = 0;
+if(state.queue.length > 0){
+  loadSong(state.queue[state.queuePos], false);
 }

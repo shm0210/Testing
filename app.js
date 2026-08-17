@@ -368,10 +368,10 @@ function switchChannel(channelId) {
   notify(`📻 Switched to ${channel.name}`);
 }
 
-document.getElementById("nextBtn").onclick=()=>next(true);
-document.getElementById("prevBtn").onclick=()=>previous(true);
+document.getElementById("nextBtn").onclick=()=>next(!audio.paused);
+document.getElementById("prevBtn").onclick=()=>previous(!audio.paused);
 playBtn.onclick=togglePlay;
-document.getElementById("retryBtn").onclick=()=>loadSong(state.index,false);
+document.getElementById("retryBtn").onclick=()=>loadSong(state.index,true);
 volumeRange.oninput=()=>{audio.volume=+volumeRange.value;audio.muted=audio.volume===0};
 volumeIcon.onclick=toggleMute;
 muteBtn.onclick=toggleMute;

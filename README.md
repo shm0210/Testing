@@ -47,17 +47,17 @@ The player uses the normal browser `<audio>` element. This is deliberate:
 it avoids Web Audio/CORS processing that can cause cross-origin playback
 problems. Browsers still require a user gesture before starting audio in
 many cases, so the first song loads on page load but does not auto-play —
-you press Play once. After that, Next/Previous always keep playing.
-Switching channels preserves whatever state playback was already in: if
-music was playing, the new channel's first song starts automatically; if
-it was paused (including the initial pre-Play state), the new song loads
-but stays paused until you press Play.
+you press Play once. After that, Next/Previous preserve whatever playback
+state you were in: paused stays paused, playing keeps playing. Switching
+channels does the same.
 
 Tap anywhere on the mini player (cover, title, artist) to open the full
 playlist for the current channel; the transport buttons and seek bar are
 excluded from that tap zone so they keep working normally. If a particular
-MP3 fails, the player shows a **Playback unavailable** panel with Retry.
-Check that the R2 URL is public/reachable and returns an audio response.
+MP3 fails, the player shows a **Playback unavailable** panel with Retry —
+clicking Retry counts as a fresh user gesture, so it both reloads the
+track and attempts to play it. Check that the R2 URL is public/reachable
+and returns an audio response.
 
 ## Other controls
 

@@ -12,11 +12,11 @@ const KK_URL = R2_ROOT + "the-great-kk/";
 const CHANNEL_KEY = "pkj-channel-v1";
 
 const audio = document.getElementById("audio");
-const playlistEl = document.getElementById("playlist");
 const nowTitle = document.getElementById("nowTitle");
 const nowArtist = document.getElementById("nowArtist");
 const cover = document.getElementById("cover");
 const playBtn = document.getElementById("playBtn");
+const miniPlayer = document.getElementById("miniPlayer");
 const seek = document.getElementById("seek");
 const currentTime = document.getElementById("currentTime");
 const duration = document.getElementById("duration");
@@ -27,14 +27,12 @@ const toast = document.getElementById("toast");
 const errorPanel = document.getElementById("errorPanel");
 const errorText = document.getElementById("errorText");
 const playlistPopup = document.getElementById("playlistPopup");
-const playlistPopupBtn = document.getElementById("playlistPopupBtn");
 const playlistPopupClose = document.getElementById("playlistPopupClose");
 const popupList = document.getElementById("popupList");
 const popupCount = document.getElementById("popupCount");
 const channelBtn = document.getElementById("channelBtn");
 const channelMenu = document.getElementById("channelMenu");
 const currentChannelName = document.getElementById("currentChannelName");
-const playlistTitle = document.getElementById("playlistTitle");
 const queueTitle = document.getElementById("queueTitle");
 const heroTitle = document.getElementById("heroTitle");
 const heroSub = document.getElementById("heroSub");
@@ -168,26 +166,6 @@ function getCurrentSongs() {
   return CHANNELS[state.channel].songList || [];
 }
 
-function render(){
-  const currentSongs = getCurrentSongs();
-  playlistEl.innerHTML = "";
-  if(!currentSongs.length){
-    playlistEl.innerHTML = `<div style="padding:25px 14px;color:#847a70;font-size:11px">No songs found.</div>`;
-    return;
-  }
-  currentSongs.forEach((title, index)=>{
-    const row = document.createElement("div");
-    row.className = "song" + (index===state.index ? " active" : "");
-    row.innerHTML = `
-      <div class="song-num">${index===state.index && !audio.paused ? "♫" : String(index+1).padStart(2,"0")}</div>
-      <div class="song-info"><div class="song-title">${escapeHtml(nameOf(title))}</div><div class="song-artist">${escapeHtml(artistOf(title))}</div></div>`;
-    row.addEventListener("click", e=>{
-      loadSong(index,false);
-    });
-    playlistEl.appendChild(row);
-  });
-}
-
 function renderPopup() {
   const currentSongs = getCurrentSongs();
   if(!currentSongs.length) {
@@ -231,7 +209,6 @@ async function loadSong(index, autoplay=false){
   audio.src = fullUrl;
   audio.load();
   errorPanel.hidden=true;
-  render();
   renderPopup();
   if(autoplay){
     try { await audio.play(); }
@@ -276,7 +253,7 @@ function syncPlayer(){
   seek.value=audio.duration?((audio.currentTime/audio.duration)*100):0;
   currentTime.textContent=fmt(audio.currentTime);
   duration.textContent=fmt(audio.duration);
-  if(state.index>=0) { render(); renderPopup(); }
+  if(state.index>=0) { renderPopup(); }
 }
 function toggleMute(){
   audio.muted=!audio.muted;
@@ -313,7 +290,6 @@ function switchChannel(channelId) {
   
   const channel = CHANNELS[channelId];
   currentChannelName.textContent = channel.name;
-  playlistTitle.textContent = channel.name;
   queueTitle.textContent = channel.name;
   heroTitle.innerHTML = channel.heroTitle || 'पापा के<br>ज़माने के गाने';
   heroSub.textContent = channel.heroSub || 'पुराने गीत, वही एहसास — एक सुकून भरी शाम के लिए।';
@@ -326,7 +302,6 @@ function switchChannel(channelId) {
   channelBtn.parentElement.classList.remove('open');
   
   savePrefs();
-  render();
   renderPopup();
   
   const songs = getCurrentSongs();
@@ -361,11 +336,16 @@ document.getElementById("fullscreenBtn").onclick=async()=>{
   }catch{notify("Fullscreen is not available in this browser")}
 };
 
-// Playlist popup events
-playlistPopupBtn.onclick = openPlaylistPopup;
-playlistPopupClose.onclick = closePlaylistPopup;
+// Playlist popup events — clicking the mini player opens the playlist;
+// clicks on the actual transport controls or seek bar are excluded so
+// play/pause/skip/seek still work without popping the playlist open.
+miniPlayer.addEventListener('click', (e) => {
+  if(e.target.closest('.mini-controls') || e.target.closest('#seek')) return;
+  openPlaylistPopup();
+});
+playlistPopupClose.onclick = (e) => { e.stopPropagation(); closePlaylistPopup(); };
 document.addEventListener('click', (e) => {
-  if(!playlistPopup.hidden && !playlistPopup.contains(e.target) && e.target !== playlistPopupBtn) {
+  if(!playlistPopup.hidden && !playlistPopup.contains(e.target) && !miniPlayer.contains(e.target)) {
     closePlaylistPopup();
   }
 });
@@ -408,7 +388,6 @@ const initialChannel = state.channel;
 const channel = CHANNELS[initialChannel];
 if(channel) {
   currentChannelName.textContent = channel.name;
-  playlistTitle.textContent = channel.name;
   queueTitle.textContent = channel.name;
   heroTitle.innerHTML = channel.heroTitle || 'पापा के<br>ज़माने के गाने';
   heroSub.textContent = channel.heroSub || 'पुराने गीत, वही एहसास — एक सुकून भरी शाम के लिए।';
@@ -417,7 +396,6 @@ if(channel) {
   });
 }
 
-render();
 renderPopup();
 
 // Auto-play random song on load (user must press play)

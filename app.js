@@ -35,10 +35,9 @@ const currentChannelName = document.getElementById("currentChannelName");
 const queueTitle = document.getElementById("queueTitle");
 const heroTitle = document.getElementById("heroTitle");
 const heroSub = document.getElementById("heroSub");
+const beatBars = document.getElementById("beatBars");
 
 // Channel configurations — every channel below now has a real song list
-// (channels with no supplied links — Chatpate Songs, Tamil Hits, Punjabi
-// Tadka — have been removed until links are provided for them)
 const CHANNELS = {
   papa: {
     id: 'papa',
@@ -234,6 +233,16 @@ function renderPopup() {
 
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
+function toggleBeatAnimation(playing) {
+  if (beatBars) {
+    if (playing) {
+      beatBars.classList.add('active');
+    } else {
+      beatBars.classList.remove('active');
+    }
+  }
+}
+
 async function loadSong(index, autoplay=false){
   const currentSongs = getCurrentSongs();
   if(index<0 || index>=currentSongs.length) return;
@@ -262,6 +271,7 @@ function showPlaybackError(err){
     ? "Browser blocked automatic playback. Press Play again after interacting with the page."
     : "The MP3 URL may be unavailable, blocked by the host, or not reachable right now.";
   playBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+  toggleBeatAnimation(false);
 }
 function togglePlay(){
   const currentSongs = getCurrentSongs();
@@ -308,6 +318,9 @@ function syncPlayer(){
   currentTime.textContent=fmt(audio.currentTime);
   duration.textContent=fmt(audio.duration);
   if(state.index>=0) { renderPopup(); }
+  
+  // Update beat animation
+  toggleBeatAnimation(!isPaused);
 }
 function toggleMute(){
   audio.muted=!audio.muted;
@@ -395,7 +408,7 @@ document.getElementById("fullscreenBtn").onclick=async()=>{
 // clicks on the actual transport controls or seek bar are excluded so
 // play/pause/skip/seek still work without popping the playlist open.
 miniPlayer.addEventListener('click', (e) => {
-  if(e.target.closest('.mini-controls') || e.target.closest('#seek')) return;
+  if(e.target.closest('.mini-controls') || e.target.closest('#seek') || e.target.closest('.beat-bars')) return;
   openPlaylistPopup();
 });
 playlistPopupClose.onclick = (e) => { e.stopPropagation(); closePlaylistPopup(); };
@@ -428,6 +441,7 @@ audio.addEventListener("loadedmetadata",syncPlayer);
 audio.addEventListener("error",(e) => {
   console.error("Audio error:", e);
   showPlaybackError();
+  toggleBeatAnimation(false);
 });
 audio.addEventListener("ended",()=>{ next(true); });
 window.addEventListener("keydown",escapeKey);

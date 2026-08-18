@@ -1,4 +1,3 @@
-const PLAYLIST_ID = "9495307201/papa-ke-jamane-ke-gaane";
 const R2_ROOT = "https://pub-dca67106d684416ebbeaf0588d7d3363.r2.dev/";
 const BASE_URL = R2_ROOT + "papa-ke-jamane-ke-gaane/";
 const BHOJPURI_BASE_URL = R2_ROOT + "bihari-banger/";
@@ -36,10 +35,9 @@ const currentChannelName = document.getElementById("currentChannelName");
 const queueTitle = document.getElementById("queueTitle");
 const heroTitle = document.getElementById("heroTitle");
 const heroSub = document.getElementById("heroSub");
+const beatBars = document.getElementById("beatBars");
 
 // Channel configurations — every channel below now has a real song list
-// (channels with no supplied links — Chatpate Songs, Tamil Hits, Punjabi
-// Tadka — have been removed until links are provided for them)
 const CHANNELS = {
   papa: {
     id: 'papa',
@@ -115,16 +113,16 @@ const CHANNELS = {
   }
 };
 
+const savedChannel = localStorage.getItem(CHANNEL_KEY);
+
 const state = {
   index: -1,
-  queue: [],       // shuffled permutation of song indices for the current channel
-  queuePos: -1,    // pointer into state.queue — this IS the play history
-  shuffle: true, // Always on
-  repeat: false,
-  channel: localStorage.getItem(CHANNEL_KEY) || 'papa'
+  queue: [],
+  queuePos: -1,
+  shuffle: true,
+  channel: CHANNELS[savedChannel] ? savedChannel : 'papa'
 };
 
-const clean = s => s.replace(/\.mp3$/i, "");
 const artistOf = title => {
   const i = title.indexOf(" - ");
   return i > -1 ? title.slice(0, i) : "Unknown artist";
@@ -139,9 +137,6 @@ const fmt = seconds => {
   return `${m}:${String(s).padStart(2,"0")}`;
 };
 
-// URL construction — matches the exact encoding pattern used across every
-// supplied R2 link (spaces become %20; & , ( ) + are left as literal
-// characters, same as encodeURIComponent leaves ' outside the escape set)
 const urlFor = (filename, channelId) => {
   const channel = CHANNELS[channelId || state.channel];
   const base = channel.baseUrl || '';
@@ -168,11 +163,6 @@ function getCurrentSongs() {
   return CHANNELS[state.channel].songList || [];
 }
 
-// Proper shuffle: build one shuffled permutation of every song index (a
-// "bag"), walk through it front-to-back so every song plays exactly once,
-// then build a fresh permutation when the bag is exhausted. state.queuePos
-// doubles as real play history, so Previous always returns to the actual
-// song that played before — not an arithmetic neighbour in the raw list.
 function shuffleArray(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -184,17 +174,12 @@ function shuffleArray(arr) {
 function buildShuffleQueue(avoidIndex) {
   const currentSongs = getCurrentSongs();
   const queue = shuffleArray(currentSongs.map((_, i) => i));
-  // avoid an immediate repeat of the last-played song when a new bag starts
   if (avoidIndex != null && queue.length > 1 && queue[0] === avoidIndex) {
     const swapWith = 1 + Math.floor(Math.random() * (queue.length - 1));
     [queue[0], queue[swapWith]] = [queue[swapWith], queue[0]];
   }
   return queue;
 }
-// Jump to an explicit song (e.g. picked from the playlist popup) without
-// breaking shuffle history: the picked song is spliced in right after the
-// current position, so Previous still leads back to whatever was playing,
-// and Next continues the same shuffle bag afterward.
 function jumpToIndex(index, autoplay = true) {
   const currentSongs = getCurrentSongs();
   if (index < 0 || index >= currentSongs.length) return;
@@ -235,6 +220,16 @@ function renderPopup() {
 
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
+function toggleBeatAnimation(playing) {
+  if (beatBars) {
+    if (playing) {
+      beatBars.classList.add('active');
+    } else {
+      beatBars.classList.remove('active');
+    }
+  }
+}
+
 async function loadSong(index, autoplay=false){
   const currentSongs = getCurrentSongs();
   if(index<0 || index>=currentSongs.length) return;
@@ -263,6 +258,7 @@ function showPlaybackError(err){
     ? "Browser blocked automatic playback. Press Play again after interacting with the page."
     : "The MP3 URL may be unavailable, blocked by the host, or not reachable right now.";
   playBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+  toggleBeatAnimation(false);
 }
 function togglePlay(){
   const currentSongs = getCurrentSongs();
@@ -281,7 +277,6 @@ function next(autoplay=false){
   if(!currentSongs.length) return;
   if(!state.queue.length) state.queue = buildShuffleQueue();
   if(state.queuePos >= state.queue.length - 1){
-    // bag exhausted — every song has played once, start a fresh shuffle
     state.queue = buildShuffleQueue(state.queue[state.queuePos]);
     state.queuePos = -1;
   }
@@ -296,7 +291,6 @@ function previous(autoplay=false){
     state.queuePos--;
     loadSong(state.queue[state.queuePos], autoplay);
   } else {
-    // already at the start of this shuffle bag — nothing earlier to return to
     audio.currentTime = 0;
   }
 }
@@ -305,11 +299,11 @@ function syncPlayer(){
   playBtn.innerHTML = isPaused 
     ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`
     : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
-  miniPlayer.classList.toggle("is-playing", !isPaused);
   seek.value=audio.duration?((audio.currentTime/audio.duration)*100):0;
   currentTime.textContent=fmt(audio.currentTime);
   duration.textContent=fmt(audio.duration);
   if(state.index>=0) { renderPopup(); }
+  toggleBeatAnimation(!isPaused);
 }
 function toggleMute(){
   audio.muted=!audio.muted;
@@ -327,7 +321,6 @@ function escapeKey(e){
   if(e.code==="ArrowDown"){e.preventDefault();volumeRange.value=Math.max(0,+volumeRange.value-.05);audio.volume=+volumeRange.value}
 }
 
-// Playlist Popup
 function openPlaylistPopup() {
   renderPopup();
   playlistPopup.hidden = false;
@@ -338,9 +331,9 @@ function closePlaylistPopup() {
   document.body.style.overflow = '';
 }
 
-// Channel switching
 function switchChannel(channelId) {
   if(channelId === state.channel) return;
+  const wasPlaying = !audio.paused;
   state.channel = channelId;
   state.index = -1;
   
@@ -363,40 +356,45 @@ function switchChannel(channelId) {
   state.queue = buildShuffleQueue();
   state.queuePos = 0;
   if(state.queue.length > 0){
-    loadSong(state.queue[state.queuePos], true);
+    loadSong(state.queue[state.queuePos], wasPlaying);
   }
   
   notify(`📻 Switched to ${channel.name}`);
 }
 
-document.getElementById("nextBtn").onclick=()=>next(true);
-document.getElementById("prevBtn").onclick=()=>previous(true);
+document.getElementById("nextBtn").onclick=()=>next(!audio.paused);
+document.getElementById("prevBtn").onclick=()=>previous(!audio.paused);
 playBtn.onclick=togglePlay;
-document.getElementById("retryBtn").onclick=()=>loadSong(state.index,false);
+document.getElementById("retryBtn").onclick=()=>loadSong(state.index,true);
 volumeRange.oninput=()=>{audio.volume=+volumeRange.value;audio.muted=audio.volume===0};
 volumeIcon.onclick=toggleMute;
 muteBtn.onclick=toggleMute;
 seek.oninput=()=>{if(audio.duration)audio.currentTime=(+seek.value/100)*audio.duration};
-document.getElementById("supportBtn").onclick=()=>notify("☕ Support us — add your own payment link in app.js.");
-const channelFooterCta = document.getElementById("channelFooterCta");
+
+// Updated: Support button opens payment page
+document.getElementById("supportBtn").onclick=(e) => {
+  e.preventDefault();
+  window.location.href = 'payment.html';
+};
+
+const channelFooterCta = document.querySelector('.channel-footer-cta');
 if(channelFooterCta){
-  channelFooterCta.onclick = (e) => {
-    e.stopPropagation();
-    notify("☕ Support us — add your own payment link in app.js.");
-  };
+  channelFooterCta.addEventListener('click', (e) => {
+    // Let the anchor tag handle navigation
+    // Just close the dropdown
+    channelMenu.classList.remove('open');
+    channelBtn.parentElement.classList.remove('open');
+  });
 }
 document.getElementById("fullscreenBtn").onclick=async()=>{
   try{
     if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
     else await document.exitFullscreen();
-  }catch{notify("Fullscreen is not available in this browser")}
+  } catch{notify("Fullscreen is not available in this browser")}
 };
 
-// Playlist popup events — clicking the mini player opens the playlist;
-// clicks on the actual transport controls or seek bar are excluded so
-// play/pause/skip/seek still work without popping the playlist open.
 miniPlayer.addEventListener('click', (e) => {
-  if(e.target.closest('.mini-controls') || e.target.closest('#seek')) return;
+  if(e.target.closest('.mini-controls') || e.target.closest('#seek') || e.target.closest('.beat-bars')) return;
   openPlaylistPopup();
 });
 playlistPopupClose.onclick = (e) => { e.stopPropagation(); closePlaylistPopup(); };
@@ -406,7 +404,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Channel dropdown events
 channelBtn.onclick = (e) => {
   e.stopPropagation();
   channelMenu.classList.toggle('open');
@@ -429,8 +426,9 @@ audio.addEventListener("loadedmetadata",syncPlayer);
 audio.addEventListener("error",(e) => {
   console.error("Audio error:", e);
   showPlaybackError();
+  toggleBeatAnimation(false);
 });
-audio.addEventListener("ended",()=>{ if(state.repeat) loadSong(state.index,true); else next(true); });
+audio.addEventListener("ended",()=>{ next(true); });
 window.addEventListener("keydown",escapeKey);
 
 function tickClock(){
@@ -439,7 +437,6 @@ function tickClock(){
 tickClock(); setInterval(tickClock,30000);
 audio.volume=0.85;
 
-// Initialize channel
 const initialChannel = state.channel;
 const channel = CHANNELS[initialChannel];
 if(channel) {
@@ -454,7 +451,6 @@ if(channel) {
 
 renderPopup();
 
-// Load a random-but-shuffle-consistent first song on load (user must press play)
 state.queue = buildShuffleQueue();
 state.queuePos = 0;
 if(state.queue.length > 0){

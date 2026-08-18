@@ -1,3 +1,4 @@
+const PLAYLIST_ID = "9495307201/papa-ke-jamane-ke-gaane";
 const R2_ROOT = "https://pub-dca67106d684416ebbeaf0588d7d3363.r2.dev/";
 const BASE_URL = R2_ROOT + "papa-ke-jamane-ke-gaane/";
 const BHOJPURI_BASE_URL = R2_ROOT + "bihari-banger/";
@@ -35,9 +36,10 @@ const currentChannelName = document.getElementById("currentChannelName");
 const queueTitle = document.getElementById("queueTitle");
 const heroTitle = document.getElementById("heroTitle");
 const heroSub = document.getElementById("heroSub");
-const beatBars = document.getElementById("beatBars");
 
 // Channel configurations — every channel below now has a real song list
+// (channels with no supplied links — Chatpate Songs, Tamil Hits, Punjabi
+// Tadka — have been removed until links are provided for them)
 const CHANNELS = {
   papa: {
     id: 'papa',
@@ -113,16 +115,16 @@ const CHANNELS = {
   }
 };
 
-const savedChannel = localStorage.getItem(CHANNEL_KEY);
-
 const state = {
   index: -1,
   queue: [],       // shuffled permutation of song indices for the current channel
   queuePos: -1,    // pointer into state.queue — this IS the play history
   shuffle: true, // Always on
-  channel: CHANNELS[savedChannel] ? savedChannel : 'papa'
+  repeat: false,
+  channel: localStorage.getItem(CHANNEL_KEY) || 'papa'
 };
 
+const clean = s => s.replace(/\.mp3$/i, "");
 const artistOf = title => {
   const i = title.indexOf(" - ");
   return i > -1 ? title.slice(0, i) : "Unknown artist";
@@ -233,16 +235,6 @@ function renderPopup() {
 
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
-function toggleBeatAnimation(playing) {
-  if (beatBars) {
-    if (playing) {
-      beatBars.classList.add('active');
-    } else {
-      beatBars.classList.remove('active');
-    }
-  }
-}
-
 async function loadSong(index, autoplay=false){
   const currentSongs = getCurrentSongs();
   if(index<0 || index>=currentSongs.length) return;
@@ -271,7 +263,6 @@ function showPlaybackError(err){
     ? "Browser blocked automatic playback. Press Play again after interacting with the page."
     : "The MP3 URL may be unavailable, blocked by the host, or not reachable right now.";
   playBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
-  toggleBeatAnimation(false);
 }
 function togglePlay(){
   const currentSongs = getCurrentSongs();
@@ -314,13 +305,11 @@ function syncPlayer(){
   playBtn.innerHTML = isPaused 
     ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`
     : `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
+  miniPlayer.classList.toggle("is-playing", !isPaused);
   seek.value=audio.duration?((audio.currentTime/audio.duration)*100):0;
   currentTime.textContent=fmt(audio.currentTime);
   duration.textContent=fmt(audio.duration);
   if(state.index>=0) { renderPopup(); }
-  
-  // Update beat animation
-  toggleBeatAnimation(!isPaused);
 }
 function toggleMute(){
   audio.muted=!audio.muted;
@@ -352,7 +341,6 @@ function closePlaylistPopup() {
 // Channel switching
 function switchChannel(channelId) {
   if(channelId === state.channel) return;
-  const wasPlaying = !audio.paused;
   state.channel = channelId;
   state.index = -1;
   
@@ -375,16 +363,16 @@ function switchChannel(channelId) {
   state.queue = buildShuffleQueue();
   state.queuePos = 0;
   if(state.queue.length > 0){
-    loadSong(state.queue[state.queuePos], wasPlaying);
+    loadSong(state.queue[state.queuePos], true);
   }
   
   notify(`📻 Switched to ${channel.name}`);
 }
 
-document.getElementById("nextBtn").onclick=()=>next(!audio.paused);
-document.getElementById("prevBtn").onclick=()=>previous(!audio.paused);
+document.getElementById("nextBtn").onclick=()=>next(true);
+document.getElementById("prevBtn").onclick=()=>previous(true);
 playBtn.onclick=togglePlay;
-document.getElementById("retryBtn").onclick=()=>loadSong(state.index,true);
+document.getElementById("retryBtn").onclick=()=>loadSong(state.index,false);
 volumeRange.oninput=()=>{audio.volume=+volumeRange.value;audio.muted=audio.volume===0};
 volumeIcon.onclick=toggleMute;
 muteBtn.onclick=toggleMute;
@@ -408,7 +396,7 @@ document.getElementById("fullscreenBtn").onclick=async()=>{
 // clicks on the actual transport controls or seek bar are excluded so
 // play/pause/skip/seek still work without popping the playlist open.
 miniPlayer.addEventListener('click', (e) => {
-  if(e.target.closest('.mini-controls') || e.target.closest('#seek') || e.target.closest('.beat-bars')) return;
+  if(e.target.closest('.mini-controls') || e.target.closest('#seek')) return;
   openPlaylistPopup();
 });
 playlistPopupClose.onclick = (e) => { e.stopPropagation(); closePlaylistPopup(); };
@@ -441,9 +429,8 @@ audio.addEventListener("loadedmetadata",syncPlayer);
 audio.addEventListener("error",(e) => {
   console.error("Audio error:", e);
   showPlaybackError();
-  toggleBeatAnimation(false);
 });
-audio.addEventListener("ended",()=>{ next(true); });
+audio.addEventListener("ended",()=>{ if(state.repeat) loadSong(state.index,true); else next(true); });
 window.addEventListener("keydown",escapeKey);
 
 function tickClock(){

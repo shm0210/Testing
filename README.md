@@ -47,17 +47,14 @@ The player uses the normal browser `<audio>` element. This is deliberate:
 it avoids Web Audio/CORS processing that can cause cross-origin playback
 problems. Browsers still require a user gesture before starting audio in
 many cases, so the first song loads on page load but does not auto-play —
-you press Play once. After that, Next/Previous preserve whatever playback
-state you were in: paused stays paused, playing keeps playing. Switching
-channels does the same.
+you press Play once, and Next/Previous/channel switches keep playing after
+that.
 
 Tap anywhere on the mini player (cover, title, artist) to open the full
 playlist for the current channel; the transport buttons and seek bar are
 excluded from that tap zone so they keep working normally. If a particular
-MP3 fails, the player shows a **Playback unavailable** panel with Retry —
-clicking Retry counts as a fresh user gesture, so it both reloads the
-track and attempts to play it. Check that the R2 URL is public/reachable
-and returns an audio response.
+MP3 fails, the player shows a **Playback unavailable** panel with Retry.
+Check that the R2 URL is public/reachable and returns an audio response.
 
 ## Other controls
 
@@ -71,8 +68,10 @@ and returns an audio response.
 ## Not implemented
 
 The player does **not** have: favorites, recently played, in-app search, a
-theme switcher, or a repeat-track toggle. If you want any of these, they'd
-need to be built; this README no longer claims they exist.
+theme switcher, or a repeat-track toggle (there's an internal `repeat` flag
+in `app.js` but no UI wired to it — it's currently always off). If you want
+any of these, they'd need to be built; this README no longer claims they
+exist.
 
 ## Important privacy note
 
